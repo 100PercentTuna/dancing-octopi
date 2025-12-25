@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/glossary-term",
+    "version": "1.0.0",
+    "title": "Glossary Term",
+    "category": "kunaal-editorial",
+    "icon": "tag",
+    "description": "A term and its definition.",
+    "parent": ["kunaal/glossary"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "term": {
+            "type": "string",
+            "default": ""
+        },
+        "definition": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-glossary-term-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

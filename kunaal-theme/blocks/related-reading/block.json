@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/related-reading",
+    "version": "1.0.0",
+    "title": "Related Reading",
+    "category": "kunaal-editorial",
+    "icon": "book",
+    "description": "Curated list of related articles and resources.",
+    "keywords": ["related", "reading", "links", "resources", "further"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Further Reading"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-related-reading-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

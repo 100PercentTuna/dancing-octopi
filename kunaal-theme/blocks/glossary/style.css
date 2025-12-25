@@ -1,0 +1,25 @@
+/**
+ * Glossary Block Styles
+ */
+.wp-block-kunaal-glossary {
+    margin: var(--space-8, 64px) 0;
+    background: var(--bgWarm, #F9F7F4);
+    border-radius: 0;
+    padding: var(--space-5, 40px);
+    border-left: 3px solid var(--blue, #1E5AFF);
+}
+
+.glossary-title {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue, #1E5AFF);
+    margin: 0 0 var(--space-4, 32px);
+}
+
+.glossary-list {
+    margin: 0;
+}
+

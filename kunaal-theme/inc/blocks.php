@@ -89,6 +89,20 @@ function kunaal_register_block_scripts() {
         'scrollytelling'    => 'kunaal-scrollytelling-editor',
         'scrolly-step'      => 'kunaal-scrolly-step-editor',
         'reveal-wrapper'    => 'kunaal-reveal-wrapper-editor',
+        // Epic 2 - Editorial blocks
+        'magazine-figure'   => 'kunaal-magazine-figure-editor',
+        'timeline'          => 'kunaal-timeline-editor',
+        'timeline-item'     => 'kunaal-timeline-item-editor',
+        'glossary'          => 'kunaal-glossary-editor',
+        'glossary-term'     => 'kunaal-glossary-term-editor',
+        'annotation'        => 'kunaal-annotation-editor',
+        'argument-map'      => 'kunaal-argument-map-editor',
+        'know-dont-know'    => 'kunaal-know-dont-know-editor',
+        'source-excerpt'    => 'kunaal-source-excerpt-editor',
+        'context-panel'     => 'kunaal-context-panel-editor',
+        'related-reading'   => 'kunaal-related-reading-editor',
+        'related-link'      => 'kunaal-related-link-editor',
+        'lede-package'      => 'kunaal-lede-package-editor',
     );
     
     foreach ($blocks as $folder => $handle) {
@@ -110,6 +124,18 @@ function kunaal_register_block_scripts() {
         wp_register_script(
             'kunaal-sidenote-view',
             $blocks_uri . '/sidenote/view.js',
+            array(),
+            $version,
+            true
+        );
+    }
+    
+    // Register annotation view script (frontend)
+    $annotation_view = $blocks_dir . '/annotation/view.js';
+    if (file_exists($annotation_view)) {
+        wp_register_script(
+            'kunaal-annotation-view',
+            $blocks_uri . '/annotation/view.js',
             array(),
             $version,
             true
@@ -141,6 +167,20 @@ function kunaal_register_blocks() {
         'scrollytelling',
         'scrolly-step',
         'reveal-wrapper',
+        // Epic 2 - Editorial blocks
+        'magazine-figure',
+        'timeline',
+        'timeline-item',
+        'glossary',
+        'glossary-term',
+        'annotation',
+        'argument-map',
+        'know-dont-know',
+        'source-excerpt',
+        'context-panel',
+        'related-reading',
+        'related-link',
+        'lede-package',
     );
     
     foreach ($block_folders as $block) {

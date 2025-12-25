@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/lede-package",
+    "version": "1.0.0",
+    "title": "Lede Package",
+    "category": "kunaal-editorial",
+    "icon": "align-full-width",
+    "description": "Opening image with headline and dek for essays.",
+    "keywords": ["lede", "hero", "header", "opening", "headline"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "mediaId": {
+            "type": "number",
+            "default": 0
+        },
+        "mediaUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "headline": {
+            "type": "string",
+            "default": ""
+        },
+        "dek": {
+            "type": "string",
+            "default": ""
+        },
+        "credit": {
+            "type": "string",
+            "default": ""
+        },
+        "layout": {
+            "type": "string",
+            "default": "overlay"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true,
+        "align": ["wide", "full"]
+    },
+    "editorScript": "kunaal-lede-package-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

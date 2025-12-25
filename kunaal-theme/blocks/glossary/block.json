@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/glossary",
+    "version": "1.0.0",
+    "title": "Glossary",
+    "category": "kunaal-editorial",
+    "icon": "book-alt",
+    "description": "List of key terms with definitions.",
+    "keywords": ["glossary", "terms", "definitions", "concepts", "vocabulary"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Key Terms"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-glossary-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

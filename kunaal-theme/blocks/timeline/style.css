@@ -1,0 +1,63 @@
+/**
+ * Timeline Block Styles
+ */
+.wp-block-kunaal-timeline {
+    margin: var(--space-8, 64px) 0;
+}
+
+.timeline-title {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 var(--space-4, 32px);
+    color: var(--ink, #0b1220);
+}
+
+/* Vertical Timeline */
+.timeline-vertical .timeline-events {
+    position: relative;
+    padding-left: var(--space-6, 48px);
+}
+
+.timeline-vertical .timeline-events::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--hair, rgba(11,18,32,0.14));
+}
+
+/* Horizontal Timeline */
+.timeline-horizontal .timeline-events {
+    display: flex;
+    gap: var(--space-4, 32px);
+    overflow-x: auto;
+    padding-bottom: var(--space-2, 16px);
+    position: relative;
+}
+
+.timeline-horizontal .timeline-events::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 8px;
+    height: 2px;
+    background: var(--hair, rgba(11,18,32,0.14));
+}
+
+@media (max-width: 640px) {
+    .timeline-horizontal .timeline-events {
+        flex-direction: column;
+    }
+    
+    .timeline-horizontal .timeline-events::before {
+        width: 2px;
+        height: 100%;
+        top: 0;
+        left: 8px;
+    }
+}
+

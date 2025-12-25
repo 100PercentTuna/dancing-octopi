@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/timeline",
+    "version": "1.0.0",
+    "title": "Timeline",
+    "category": "kunaal-editorial",
+    "icon": "backup",
+    "description": "Chronological timeline with events.",
+    "keywords": ["timeline", "chronology", "history", "events", "dates"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "orientation": {
+            "type": "string",
+            "default": "vertical"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-timeline-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

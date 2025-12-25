@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '3.9.0');
+define('KUNAAL_THEME_VERSION', '4.0.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -56,6 +56,19 @@ function kunaal_enqueue_assets() {
         array('kunaal-google-fonts'),
         KUNAAL_THEME_VERSION
     );
+    
+    // Custom font for sidenotes (Garfield Signature)
+    $font_url = KUNAAL_THEME_URI . '/assets/fonts/garfield-signature.otf';
+    $custom_css = "
+        @font-face {
+            font-family: 'Garfield Signature';
+            src: url('{$font_url}') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+    ";
+    wp_add_inline_style('kunaal-theme-style', $custom_css);
     
     // Print stylesheet
     wp_enqueue_style(

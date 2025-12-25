@@ -1,0 +1,65 @@
+/**
+ * Timeline Item Block Styles
+ */
+.wp-block-kunaal-timeline-item {
+    position: relative;
+    padding-bottom: var(--space-4, 32px);
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -40px;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    background: var(--blue, #1E5AFF);
+    border: 3px solid var(--bg, #FDFCFA);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--blue, #1E5AFF);
+}
+
+.timeline-content {
+    padding-left: var(--space-1, 8px);
+}
+
+.timeline-date {
+    display: block;
+    font-family: var(--mono, monospace);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--blue, #1E5AFF);
+    margin-bottom: var(--space-1, 8px);
+}
+
+.timeline-event-title {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink, #0b1220);
+    margin: 0 0 var(--space-1, 8px);
+}
+
+.timeline-description {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0;
+}
+
+/* Horizontal layout adjustments */
+.timeline-horizontal .wp-block-kunaal-timeline-item {
+    flex: 0 0 200px;
+    padding-bottom: 0;
+    padding-top: var(--space-5, 40px);
+}
+
+.timeline-horizontal .timeline-marker {
+    left: 0;
+    top: 0;
+}
+
+.timeline-horizontal .timeline-content {
+    padding-left: 0;
+}
+

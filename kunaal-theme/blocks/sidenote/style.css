@@ -1,8 +1,8 @@
 /**
  * Sidenote Block Styles
  * True Tufte-style margin notes positioned to the right
- * Uses CSS counter for auto-numbering
- * Font: Garfield Signature (loaded in main style.css)
+ * Uses blue bullet marker (•) to distinguish from numbered footnotes
+ * Font: Garfield Signature (loaded via PHP)
  */
 
 /* Sidenote wrapper - inline element */
@@ -15,30 +15,27 @@
     display: none;
 }
 
-/* Auto-numbered reference marker */
+/* Blue bullet reference marker (distinct from footnote numbers) */
 .sidenote-number {
-    counter-increment: sidenote;
     display: inline;
     cursor: pointer;
 }
 
 .sidenote-number::after {
-    content: counter(sidenote);
-    font-size: 0.65em;
-    font-weight: 600;
+    content: "•";
+    font-size: 1.1em;
+    font-weight: 700;
     font-family: var(--sans, system-ui, sans-serif);
     color: var(--blue, #1E5AFF);
-    vertical-align: super;
+    vertical-align: middle;
     line-height: 0;
-    margin: 0 0.1em;
-    padding: 0.1em 0.25em;
-    border-radius: 2px;
-    transition: background 150ms ease, color 150ms ease;
+    margin: 0 0.15em;
+    transition: transform 150ms ease, color 150ms ease;
 }
 
 .sidenote-number:hover::after {
-    background: var(--blue, #1E5AFF);
-    color: #fff;
+    color: var(--blueMuted, #5B7BA8);
+    transform: scale(1.2);
 }
 
 /* The sidenote content - margin positioning on desktop */

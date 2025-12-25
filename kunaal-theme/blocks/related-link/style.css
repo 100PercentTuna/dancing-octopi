@@ -1,0 +1,72 @@
+/**
+ * Related Link Block Styles
+ */
+.wp-block-kunaal-related-link {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2, 16px);
+    padding: var(--space-2, 16px);
+    margin: 0 calc(-1 * var(--space-2, 16px));
+    text-decoration: none;
+    color: inherit;
+    transition: background 150ms ease;
+}
+
+a.wp-block-kunaal-related-link:hover {
+    background: rgba(0,0,0,0.03);
+}
+
+.related-link-arrow {
+    font-size: 16px;
+    color: var(--blue, #1E5AFF);
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: transform 150ms ease;
+}
+
+a.wp-block-kunaal-related-link:hover .related-link-arrow {
+    transform: translateX(4px);
+}
+
+.related-link-content {
+    flex: 1;
+}
+
+.related-link-title {
+    display: block;
+    font-family: var(--serif, Georgia, serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink, #0b1220);
+    line-height: 1.4;
+}
+
+a.wp-block-kunaal-related-link:hover .related-link-title {
+    color: var(--blue, #1E5AFF);
+}
+
+.related-link-source {
+    display: block;
+    font-family: var(--mono, monospace);
+    font-size: 11px;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin-top: 4px;
+}
+
+.related-link-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 8px 0 0;
+}
+
+/* Editor */
+.related-link-url {
+    flex-shrink: 0;
+    width: 200px;
+}
+
+.related-link-url input {
+    font-size: 12px !important;
+}
+

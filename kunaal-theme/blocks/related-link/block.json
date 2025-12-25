@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/related-link",
+    "version": "1.0.0",
+    "title": "Related Link",
+    "category": "kunaal-editorial",
+    "icon": "admin-links",
+    "description": "A single related reading item.",
+    "parent": ["kunaal/related-reading"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "url": {
+            "type": "string",
+            "default": ""
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "source": {
+            "type": "string",
+            "default": ""
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-related-link-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

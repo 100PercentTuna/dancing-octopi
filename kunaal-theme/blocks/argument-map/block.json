@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/argument-map",
+    "version": "1.0.0",
+    "title": "Argument Map",
+    "category": "kunaal-editorial",
+    "icon": "networking",
+    "description": "Visual argument structure with claims and evidence.",
+    "keywords": ["argument", "map", "pros", "cons", "evidence", "claims"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "claim": {
+            "type": "string",
+            "default": ""
+        },
+        "supporting": {
+            "type": "array",
+            "default": []
+        },
+        "opposing": {
+            "type": "array",
+            "default": []
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-argument-map-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/timeline-item",
+    "version": "1.0.0",
+    "title": "Timeline Event",
+    "category": "kunaal-editorial",
+    "icon": "marker",
+    "description": "A single event in a timeline.",
+    "parent": ["kunaal/timeline"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "date": {
+            "type": "string",
+            "default": ""
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-timeline-item-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

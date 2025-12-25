@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/know-dont-know",
+    "version": "1.0.0",
+    "title": "What We Know / Don't Know",
+    "category": "kunaal-editorial",
+    "icon": "visibility",
+    "description": "Two-column layout showing established facts vs. uncertainties.",
+    "keywords": ["know", "unknown", "certainty", "uncertainty", "facts"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "knowItems": {
+            "type": "array",
+            "default": []
+        },
+        "dontKnowItems": {
+            "type": "array",
+            "default": []
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-know-dont-know-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

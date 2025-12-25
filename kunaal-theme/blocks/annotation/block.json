@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/annotation",
+    "version": "1.0.0",
+    "title": "Inline Annotation",
+    "category": "kunaal-editorial",
+    "icon": "edit",
+    "description": "Highlighted text with a popup annotation or note.",
+    "keywords": ["annotation", "highlight", "note", "comment", "markup"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "text": {
+            "type": "string",
+            "default": ""
+        },
+        "note": {
+            "type": "string",
+            "default": ""
+        },
+        "highlightColor": {
+            "type": "string",
+            "default": "yellow"
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-annotation-editor",
+    "viewScript": "kunaal-annotation-view",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

@@ -1,0 +1,46 @@
+/**
+ * Context Panel Block Styles
+ */
+.wp-block-kunaal-context-panel {
+    margin: var(--space-6, 48px) 0;
+    padding: var(--space-4, 32px);
+    background: linear-gradient(135deg, rgba(30, 90, 255, 0.03) 0%, rgba(30, 90, 255, 0.06) 100%);
+    border-left: 3px solid var(--blue, #1E5AFF);
+    position: relative;
+}
+
+.context-label {
+    display: inline-block;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue, #1E5AFF);
+    margin-bottom: var(--space-2, 16px);
+}
+
+.context-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink, #0b1220);
+}
+
+.context-content p {
+    margin: 0 0 var(--space-2, 16px);
+}
+
+.context-content p:last-child {
+    margin-bottom: 0;
+}
+
+.context-content ul,
+.context-content ol {
+    margin: var(--space-2, 16px) 0;
+    padding-left: var(--space-3, 24px);
+}
+
+.context-content li {
+    margin-bottom: var(--space-1, 8px);
+}
+

@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/context-panel",
+    "version": "1.0.0",
+    "title": "Context Panel",
+    "category": "kunaal-editorial",
+    "icon": "info-outline",
+    "description": "Sidebar-style context box with additional information.",
+    "keywords": ["context", "panel", "info", "background", "sidebar"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": "Context"
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-context-panel-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

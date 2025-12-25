@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/source-excerpt",
+    "version": "1.0.0",
+    "title": "Primary Source Excerpt",
+    "category": "kunaal-editorial",
+    "icon": "media-document",
+    "description": "Styled excerpt from a primary source document.",
+    "keywords": ["source", "document", "excerpt", "quote", "primary", "transcript"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "content": {
+            "type": "string",
+            "default": ""
+        },
+        "source": {
+            "type": "string",
+            "default": ""
+        },
+        "sourceType": {
+            "type": "string",
+            "default": "document"
+        },
+        "date": {
+            "type": "string",
+            "default": ""
+        },
+        "sourceUrl": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-source-excerpt-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+
