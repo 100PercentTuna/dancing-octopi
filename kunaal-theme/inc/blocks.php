@@ -256,6 +256,11 @@ function kunaal_register_inline_formats() {
     $formats_dir = KUNAAL_THEME_DIR . '/blocks/inline-formats';
     $formats_uri = KUNAAL_THEME_URI . '/blocks/inline-formats';
     
+    // Only register if file exists
+    if (!file_exists($formats_dir . '/index.js')) {
+        return;
+    }
+    
     // Register editor script for inline formats
     wp_register_script(
         'kunaal-inline-formats',
@@ -279,8 +284,23 @@ add_action('init', 'kunaal_register_inline_formats', 5);
  * Enqueue Inline Formats in Editor
  */
 function kunaal_enqueue_inline_formats_editor() {
-    wp_enqueue_script('kunaal-inline-formats');
-    wp_enqueue_style('kunaal-inline-formats-style');
+    // Only enqueue in block editor context
+    if (!function_exists('get_current_screen')) {
+        return;
+    }
+    
+    $screen = get_current_screen();
+    if (!$screen || !in_array($screen->post_type, array('essay', 'jotting', 'page', 'post'))) {
+        return;
+    }
+    
+    // Only enqueue if script is registered (file exists)
+    if (wp_script_is('kunaal-inline-formats', 'registered')) {
+        wp_enqueue_script('kunaal-inline-formats');
+    }
+    if (wp_style_is('kunaal-inline-formats-style', 'registered')) {
+        wp_enqueue_style('kunaal-inline-formats-style');
+    }
 }
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_inline_formats_editor');
 
@@ -289,7 +309,9 @@ add_action('enqueue_block_editor_assets', 'kunaal_enqueue_inline_formats_editor'
  */
 function kunaal_enqueue_inline_formats_frontend() {
     if (is_singular(array('essay', 'jotting', 'page'))) {
-        wp_enqueue_style('kunaal-inline-formats-style');
+        if (wp_style_is('kunaal-inline-formats-style', 'registered')) {
+            wp_enqueue_style('kunaal-inline-formats-style');
+        }
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');

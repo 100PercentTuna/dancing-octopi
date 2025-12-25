@@ -9,11 +9,25 @@
  * - Key Term: Subtle emphasis for important concepts
  */
 
-const { registerFormatType, toggleFormat, applyFormat, removeFormat } = wp.richText;
-const { RichTextToolbarButton } = wp.blockEditor;
-const { Popover, TextControl, Button, Modal } = wp.components;
-const { useState, useCallback } = wp.element;
-const { __ } = wp.i18n;
+(function(wp) {
+    'use strict';
+    
+    // Safety check - only run in block editor context
+    if (typeof wp === 'undefined' || 
+        typeof wp.richText === 'undefined' || 
+        typeof wp.blockEditor === 'undefined' ||
+        typeof wp.components === 'undefined' ||
+        typeof wp.element === 'undefined' ||
+        typeof wp.i18n === 'undefined') {
+        console.warn('Kunaal inline formats: WordPress dependencies not available');
+        return;
+    }
+    
+    const { registerFormatType, toggleFormat, applyFormat, removeFormat } = wp.richText;
+    const { RichTextToolbarButton } = wp.blockEditor;
+    const { TextControl, Button, Modal } = wp.components;
+    const { useState, useCallback } = wp.element;
+    const { __ } = wp.i18n;
 
 // ============================================
 // SIDENOTE FORMAT
@@ -353,3 +367,4 @@ registerFormatType('kunaal/data-ref', {
     edit: DataRefButton,
 });
 
+})(window.wp); // Pass wp as parameter

@@ -2,7 +2,7 @@
 
 A sophisticated WordPress theme for [kunaalwadhwa.com](https://kunaalwadhwa.com) — featuring magazine-quality editorial design with enterprise-grade Gutenberg authoring.
 
-**Version**: 4.5.0  
+**Version**: 4.5.1  
 **Requires WordPress**: 6.0+  
 **Requires PHP**: 8.0+
 
