@@ -51,7 +51,13 @@ add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
  */
 function kunaal_unregister_core_blocks() {
     // Unregister core pullquote - we have kunaal/pullquote
-    unregister_block_type('core/pullquote');
+    // Check if block registry exists and block is registered before unregistering
+    if (class_exists('WP_Block_Type_Registry')) {
+        $registry = WP_Block_Type_Registry::get_instance();
+        if ($registry->is_registered('core/pullquote')) {
+            unregister_block_type('core/pullquote');
+        }
+    }
 }
 add_action('init', 'kunaal_unregister_core_blocks', 100);
 
@@ -285,13 +291,24 @@ add_action('init', 'kunaal_register_inline_formats', 5);
  * Enqueue Inline Formats in Editor
  */
 function kunaal_enqueue_inline_formats_editor() {
+    // Only run in admin
+    if (!is_admin()) {
+        return;
+    }
+    
     // Only enqueue in block editor context
     if (!function_exists('get_current_screen')) {
         return;
     }
     
     $screen = get_current_screen();
-    if (!$screen || !in_array($screen->post_type, array('essay', 'jotting', 'page', 'post'))) {
+    if (!$screen) {
+        return;
+    }
+    
+    // Check if we're editing a supported post type
+    $supported_types = array('essay', 'jotting', 'page', 'post');
+    if (!isset($screen->post_type) || !in_array($screen->post_type, $supported_types)) {
         return;
     }
     

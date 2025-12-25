@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.5.2');
+define('KUNAAL_THEME_VERSION', '4.5.3');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 

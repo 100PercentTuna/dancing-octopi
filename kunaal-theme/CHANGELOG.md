@@ -4,14 +4,25 @@ All notable changes to the Kunaal Theme.
 
 ---
 
+## [4.5.3] - 2025-12-25
+
+### Fixed
+- **Critical Error Fix**: Multiple PHP issues causing 500 error
+  - Moved DOMPDF autoloader inside function to prevent top-level class loading errors
+  - Used fully qualified class names (`\Dompdf\Dompdf`, `\Dompdf\Options`) instead of `use` statements
+  - Added safety check before unregistering core/pullquote block
+  - Fixed chart block function redeclaration error (renamed to `kunaal_parse_chart_data`, `kunaal_format_chart_value`)
+  - Added `is_admin()` check to inline formats enqueue
+  - Added null checks for `get_current_screen()` return value
+
+---
+
 ## [4.5.2] - 2025-12-25
 
 ### Fixed
-- **Critical Error Fix**: Completely rewrote inline formats script initialization
+- Inline formats script initialization improvements
 - Script now properly waits for DOM and WordPress to be ready
-- All format registrations moved inside init function
 - Added wp-dom-ready dependency for proper loading
-- Improved error handling - silently fails if dependencies unavailable
 
 ---
 
