@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Kunaal Theme Functions
  *
@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.9.4');
+define('KUNAAL_THEME_VERSION', '4.10.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -541,7 +541,7 @@ function kunaal_validate_essay_rest($prepared_post, $request) {
     }
     
     if (empty($subtitle)) {
-        $errors[] = '📝 SUBTITLE/DEK is required — Find "Essay Details" in the right sidebar';
+        $errors[] = 'ðŸ“ SUBTITLE/DEK is required â€” Find "Essay Details" in the right sidebar';
     }
     
     // Check for read time
@@ -553,7 +553,7 @@ function kunaal_validate_essay_rest($prepared_post, $request) {
     }
     
     if (empty($read_time)) {
-        $errors[] = '⏱️ READ TIME is required — Find "Essay Details" in the right sidebar';
+        $errors[] = 'â±ï¸ READ TIME is required â€” Find "Essay Details" in the right sidebar';
     }
     
     // Check for topics
@@ -570,7 +570,7 @@ function kunaal_validate_essay_rest($prepared_post, $request) {
     }
     
     if (!$has_topics) {
-        $errors[] = '🏷️ At least one TOPIC is required — Find "Topics" in the right sidebar';
+        $errors[] = 'ðŸ·ï¸ At least one TOPIC is required â€” Find "Topics" in the right sidebar';
     }
     
     // Check for card image or featured image
@@ -585,13 +585,13 @@ function kunaal_validate_essay_rest($prepared_post, $request) {
     $has_image = !empty($card_image) || !empty($featured_media) || ($post_id && has_post_thumbnail($post_id));
     
     if (!$has_image) {
-        $errors[] = '🖼️ A CARD IMAGE is required — Find "Card Image" or "Featured Image" in the right sidebar';
+        $errors[] = 'ðŸ–¼ï¸ A CARD IMAGE is required â€” Find "Card Image" or "Featured Image" in the right sidebar';
     }
     
     if (!empty($errors)) {
         return new WP_Error(
             'kunaal_essay_incomplete',
-            "📝 ESSAY CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
+            "ðŸ“ ESSAY CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
             array('status' => 400)
         );
     }
@@ -626,13 +626,13 @@ function kunaal_validate_jotting_rest($prepared_post, $request) {
     }
     
     if (empty($subtitle)) {
-        $errors[] = '📝 SUBTITLE/DEK is required — Find "Jotting Details" in the right sidebar';
+        $errors[] = 'ðŸ“ SUBTITLE/DEK is required â€” Find "Jotting Details" in the right sidebar';
     }
     
     if (!empty($errors)) {
         return new WP_Error(
             'kunaal_jotting_incomplete',
-            "📝 JOTTING CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
+            "ðŸ“ JOTTING CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
             array('status' => 400)
         );
     }
@@ -717,7 +717,7 @@ function kunaal_display_essay_errors() {
     if ($errors) {
         delete_transient('kunaal_essay_errors_' . $post_id);
         echo '<div class="notice notice-error">';
-        echo '<p><strong>⚠️ Essay could not be published. Please complete these required fields:</strong></p>';
+        echo '<p><strong>âš ï¸ Essay could not be published. Please complete these required fields:</strong></p>';
         echo '<ul style="margin-left:20px;list-style:disc;">';
         foreach ($errors as $error) {
             echo '<li>' . esc_html($error) . '</li>';
@@ -2221,3 +2221,4 @@ function kunaal_enqueue_inline_formats_frontend() {
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');
+

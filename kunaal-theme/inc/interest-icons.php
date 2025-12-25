@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
  * @param string $interest The interest name
  * @return string The emoji icon
  */
+if (!function_exists('kunaal_get_interest_icon')) :
 function kunaal_get_interest_icon($interest) {
     $interest_lower = strtolower(trim($interest));
     
@@ -41,16 +42,10 @@ function kunaal_get_interest_icon($interest) {
         'chocolate' => '🍫',
         'ice cream' => '🍦',
         'seafood' => '🦐',
-        'vegetarian' => '🥗',
-        'vegan' => '🌱',
         'dim sum' => '🥟',
         'dumplings' => '🥟',
         'curry' => '🍛',
         'indian food' => '🍛',
-        'thai food' => '🍜',
-        'chinese food' => '🥡',
-        'korean food' => '🍲',
-        'japanese food' => '🍱',
         'brunch' => '🥞',
         'breakfast' => '🍳',
         
@@ -79,11 +74,9 @@ function kunaal_get_interest_icon($interest) {
         'yoga' => '🧘',
         'cricket' => '🏏',
         'rugby' => '🏉',
-        'volleyball' => '🏐',
         'f1' => '🏎️',
         'formula 1' => '🏎️',
         'racing' => '🏎️',
-        'motorsports' => '🏎️',
         
         // Technology & Work
         'data visualization' => '📊',
@@ -105,11 +98,8 @@ function kunaal_get_interest_icon($interest) {
         'finance' => '💰',
         'economics' => '📉',
         'investing' => '📈',
-        'crypto' => '₿',
-        'blockchain' => '⛓️',
         'design' => '🎨',
         'ux' => '✏️',
-        'ui' => '🖥️',
         'product' => '📦',
         'strategy' => '🎯',
         'consulting' => '📋',
@@ -119,19 +109,14 @@ function kunaal_get_interest_icon($interest) {
         'ww2' => '⚔️',
         'ww2 history' => '⚔️',
         'world war 2' => '⚔️',
-        'world war ii' => '⚔️',
         'ww1' => '⚔️',
         'military history' => '⚔️',
         'ancient history' => '🏛️',
-        'roman history' => '🏛️',
-        'medieval' => '🏰',
         'geopolitics' => '🌍',
         'politics' => '🏛️',
-        'political science' => '🏛️',
         'international relations' => '🌐',
         'diplomacy' => '🤝',
         'elections' => '🗳️',
-        'democracy' => '🗳️',
         
         // Arts & Culture
         'music' => '🎵',
@@ -153,8 +138,6 @@ function kunaal_get_interest_icon($interest) {
         'theater' => '🎭',
         'theatre' => '🎭',
         'dance' => '💃',
-        'ballet' => '🩰',
-        'opera' => '🎭',
         'poetry' => '📝',
         
         // Reading & Writing
@@ -216,7 +199,6 @@ function kunaal_get_interest_icon($interest) {
         'meditation' => '🧘',
         'mindfulness' => '🧘',
         'wellness' => '🌸',
-        'self-improvement' => '📈',
         'productivity' => '⚡',
         
         // Entertainment
@@ -240,14 +222,12 @@ function kunaal_get_interest_icon($interest) {
         'networking' => '🔗',
         'leadership' => '👑',
         'mentoring' => '🎓',
-        'parenting' => '👨‍👩‍👧',
         'family' => '👨‍👩‍👧',
         'fashion' => '👗',
         'style' => '👔',
         'minimalism' => '◻️',
         'interior design' => '🛋️',
         'home' => '🏠',
-        'real estate' => '🏘️',
     );
     
     // Try exact match first
@@ -265,12 +245,15 @@ function kunaal_get_interest_icon($interest) {
     // Default icon
     return '✨';
 }
+endif;
 
 /**
  * Get initials from name
  */
+if (!function_exists('kunaal_get_initials')) :
 function kunaal_get_initials() {
     $first = get_theme_mod('kunaal_author_first_name', 'K');
     $last = get_theme_mod('kunaal_author_last_name', 'W');
     return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
 }
+endif;

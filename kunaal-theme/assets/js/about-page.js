@@ -1,43 +1,30 @@
 /**
- * Kunaal Theme - About Page
- * Scrollytelling and parallax effects
- * 
- * Dependencies: Scrollama.js
+ * About Page - The Layered Exhibition
+ * Scrollytelling, parallax, and interactive elements
  */
 (function() {
   'use strict';
 
-  // Only run on About page
-  if (!document.querySelector('.about-page-premium')) return;
+  // ========================================
+  // STATE
+  // ========================================
+  var scrollY = 0;
+  var ticking = false;
+  var mapInstance = null;
+  var countriesLayer = null;
 
   // ========================================
-  // PARALLAX SYSTEM
+  // SCROLL TRACKING
   // ========================================
-  const parallaxElements = document.querySelectorAll('[data-parallax]');
-  const speeds = { slow: 0.3, medium: 0.5, fast: 0.8 };
-  
-  function updateParallax() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    
-    const scrollY = window.scrollY;
-    
-    parallaxElements.forEach(function(el) {
-      const speed = speeds[el.dataset.parallax] || 0.5;
-      const rect = el.getBoundingClientRect();
-      const centerY = rect.top + rect.height / 2;
-      const viewportCenter = window.innerHeight / 2;
-      const offset = (centerY - viewportCenter) * speed;
-      
-      el.style.transform = 'translateY(' + offset + 'px)';
-    });
+  function updateScrollY() {
+    document.documentElement.style.setProperty('--scroll-y', scrollY);
   }
 
-  // Throttled scroll handler
-  let ticking = false;
   function onScroll() {
+    scrollY = window.scrollY || window.pageYOffset;
     if (!ticking) {
       requestAnimationFrame(function() {
-        updateParallax();
+        updateScrollY();
         ticking = false;
       });
       ticking = true;
@@ -45,302 +32,302 @@
   }
 
   // ========================================
-  // SCROLLAMA INITIALIZATION
+  // REVEAL ANIMATIONS
   // ========================================
-  let scroller = null;
-  
-  function initScrollama() {
-    if (typeof scrollama === 'undefined') {
-      console.warn('Scrollama not loaded');
+  function initReveals() {
+    var revealElements = document.querySelectorAll('.reveal-up, .about-image-reveal');
+    if (!revealElements.length) return;
+
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      revealElements.forEach(function(el) {
+        el.classList.add('is-visible');
+      });
       return;
     }
 
-    scroller = scrollama();
-    
-    scroller
-      .setup({
-        step: '.about-step',
-        offset: 0.5,
-        progress: true
-      })
-      .onStepEnter(handleStepEnter)
-      .onStepProgress(handleStepProgress)
-      .onStepExit(handleStepExit);
-  }
-
-  function handleStepEnter(response) {
-    const el = response.element;
-    el.classList.add('is-active');
-    
-    // Trigger reveal animations
-    const reveals = el.querySelectorAll('.reveal');
-    reveals.forEach(function(reveal, i) {
-      setTimeout(function() {
-        reveal.classList.add('is-visible');
-      }, i * 150);
-    });
-  }
-
-  function handleStepProgress(response) {
-    const el = response.element;
-    const progress = response.progress;
-    
-    // Hero section fade out
-    if (el.classList.contains('about-hero')) {
-      if (progress > 0.8) {
-        const fadeProgress = (progress - 0.8) / 0.2;
-        el.style.opacity = 1 - (fadeProgress * 0.3);
-        const scale = 1 - (fadeProgress * 0.05);
-        el.querySelector('.hero-content').style.transform = 'scale(' + scale + ')';
-      }
-    }
-  }
-
-  function handleStepExit(response) {
-    // Keep active state for visited sections
-  }
-
-  // ========================================
-  // REVEAL ANIMATIONS (Intersection Observer)
-  // ========================================
-  function initRevealAnimations() {
-    const reveals = document.querySelectorAll('.reveal');
-    
-    const observer = new IntersectionObserver(function(entries) {
+    var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
         }
       });
     }, {
-      threshold: 0.1,
+      threshold: 0.15,
       rootMargin: '0px 0px -50px 0px'
     });
-    
-    reveals.forEach(function(el) {
+
+    revealElements.forEach(function(el) {
       observer.observe(el);
     });
   }
 
   // ========================================
-  // HERO SCROLL INDICATOR
+  // GRAYSCALE TO COLOR IMAGE REVEALS
   // ========================================
-  function initScrollIndicator() {
-    const indicator = document.querySelector('.scroll-indicator');
-    if (!indicator) return;
-    
-    // Hide after 3 seconds or first scroll
-    let hidden = false;
-    
-    function hideIndicator() {
-      if (hidden) return;
-      hidden = true;
-      indicator.style.opacity = '0';
-      setTimeout(function() {
-        indicator.style.display = 'none';
-      }, 500);
-    }
-    
-    setTimeout(hideIndicator, 3000);
-    
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 50) hideIndicator();
-    }, { once: true });
+  function initImageReveals() {
+    var images = document.querySelectorAll('.about-image');
+    if (!images.length) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          setTimeout(function() {
+            entry.target.classList.add('is-revealed');
+          }, 100);
+        }
+      });
+    }, {
+      threshold: 0.4,
+      rootMargin: '0px 0px -100px 0px'
+    });
+
+    images.forEach(function(img) {
+      observer.observe(img);
+    });
   }
 
   // ========================================
-  // STATS COUNTER ANIMATION
+  // LEAFLET MAP
+  // ========================================
+  function initMap() {
+    var mapContainer = document.getElementById('about-map');
+    if (!mapContainer) return;
+
+    if (typeof L === 'undefined') {
+      console.warn('Leaflet not loaded');
+      return;
+    }
+
+    var visitedCountries = [];
+    var livedCountries = [];
+    var countryNotes = {};
+    var placesData = [];
+
+    try {
+      if (mapContainer.dataset.visited) {
+        visitedCountries = mapContainer.dataset.visited.split(',').map(function(s) { return s.trim().toUpperCase(); });
+      }
+      if (mapContainer.dataset.lived) {
+        livedCountries = mapContainer.dataset.lived.split(',').map(function(s) { return s.trim().toUpperCase(); });
+      }
+      if (mapContainer.dataset.notes) {
+        countryNotes = JSON.parse(mapContainer.dataset.notes);
+      }
+      if (mapContainer.dataset.places) {
+        placesData = JSON.parse(mapContainer.dataset.places);
+      }
+    } catch (e) {
+      console.warn('Error parsing map data:', e);
+    }
+
+    mapInstance = L.map('about-map', {
+      center: [25, 0],
+      zoom: 2,
+      minZoom: 1.5,
+      maxZoom: 6,
+      zoomControl: true,
+      scrollWheelZoom: false,
+      attributionControl: false
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19
+    }).addTo(mapInstance);
+
+    // Load countries GeoJSON
+    fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        addCountryLayer(data, visitedCountries, livedCountries, countryNotes);
+      })
+      .catch(function(err) {
+        console.warn('Could not load country boundaries:', err);
+      });
+
+    addPlaceMarkers(placesData);
+  }
+
+  function addCountryLayer(geoData, visited, lived, notes) {
+    if (!mapInstance) return;
+
+    countriesLayer = L.geoJSON(geoData, {
+      style: function(feature) {
+        var iso = (feature.properties.ISO_A2 || feature.properties.ISO_A3 || '').toUpperCase();
+        var iso3 = (feature.properties.ISO_A3 || '').toUpperCase();
+        
+        var isLived = lived.indexOf(iso) !== -1 || lived.indexOf(iso3) !== -1;
+        var isVisited = visited.indexOf(iso) !== -1 || visited.indexOf(iso3) !== -1;
+
+        if (isLived) {
+          return { fillColor: '#1E5AFF', fillOpacity: 0.6, color: '#1E5AFF', weight: 1 };
+        } else if (isVisited) {
+          return { fillColor: '#B8A99A', fillOpacity: 0.5, color: '#B8A99A', weight: 1 };
+        } else {
+          return { fillColor: '#E8E6E3', fillOpacity: 0.3, color: '#D4D0CC', weight: 0.5 };
+        }
+      },
+      onEachFeature: function(feature, layer) {
+        var iso = (feature.properties.ISO_A2 || feature.properties.ISO_A3 || '').toUpperCase();
+        var iso3 = (feature.properties.ISO_A3 || '').toUpperCase();
+        var name = feature.properties.ADMIN || feature.properties.name || iso;
+        
+        var isLived = lived.indexOf(iso) !== -1 || lived.indexOf(iso3) !== -1;
+        var isVisited = visited.indexOf(iso) !== -1 || visited.indexOf(iso3) !== -1;
+
+        if (isLived || isVisited) {
+          var status = isLived ? 'Lived here' : 'Visited';
+          var note = notes[iso] || notes[iso3] || notes[name] || '';
+          
+          var popupContent = '<div class="map-popup">';
+          popupContent += '<strong>' + name + '</strong><br>';
+          popupContent += '<small>' + status + '</small>';
+          if (note) {
+            popupContent += '<br><em>' + note + '</em>';
+          }
+          popupContent += '</div>';
+          
+          layer.bindPopup(popupContent);
+
+          layer.on('mouseover', function() {
+            this.setStyle({ weight: 2, fillOpacity: 0.8 });
+          });
+
+          layer.on('mouseout', function() {
+            countriesLayer.resetStyle(this);
+          });
+        }
+      }
+    }).addTo(mapInstance);
+  }
+
+  function addPlaceMarkers(places) {
+    if (!mapInstance || !places || !places.length) return;
+
+    places.forEach(function(place) {
+      if (!place.lat || !place.lng) return;
+
+      var isLived = place.type === 'lived';
+      var markerColor = isLived ? '#1E5AFF' : '#B8A99A';
+
+      var marker = L.circleMarker([place.lat, place.lng], {
+        radius: isLived ? 8 : 6,
+        fillColor: markerColor,
+        color: '#fff',
+        weight: 2,
+        fillOpacity: 0.9
+      }).addTo(mapInstance);
+
+      if (place.name || place.note) {
+        var popupContent = '<strong>' + (place.name || '') + '</strong>';
+        if (place.years) popupContent += '<br><small>' + place.years + '</small>';
+        if (place.note) popupContent += '<br><em>' + place.note + '</em>';
+        marker.bindPopup(popupContent);
+      }
+    });
+  }
+
+  // ========================================
+  // BOOKSHELF
+  // ========================================
+  function initBookshelf() {
+    var books = document.querySelectorAll('.book-slot');
+    if (!books.length) return;
+
+    books.forEach(function(book) {
+      book.addEventListener('touchstart', function() {
+        this.classList.add('is-touched');
+      }, { passive: true });
+
+      book.addEventListener('touchend', function() {
+        var self = this;
+        setTimeout(function() {
+          self.classList.remove('is-touched');
+        }, 300);
+      }, { passive: true });
+    });
+  }
+
+  // ========================================
+  // INTERESTS CLOUD
+  // ========================================
+  function initInterestsCloud() {
+    var interests = document.querySelectorAll('.interest-item');
+    if (!interests.length) return;
+
+    interests.forEach(function(item, index) {
+      var delay = (Math.random() * 2).toFixed(2);
+      var duration = (3 + Math.random() * 2).toFixed(2);
+      item.style.animationDelay = '-' + delay + 's';
+      item.style.animationDuration = duration + 's';
+    });
+  }
+
+  // ========================================
+  // STATS COUNTERS
   // ========================================
   function initStatsCounters() {
-    const stats = document.querySelectorAll('.stat-number[data-value]');
+    var stats = document.querySelectorAll('.stat-number[data-target]');
     if (!stats.length) return;
-    
-    const observer = new IntersectionObserver(function(entries) {
+
+    var animated = new Set();
+
+    var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !animated.has(entry.target)) {
+          animated.add(entry.target);
           animateCounter(entry.target);
-          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.5 });
-    
+
     stats.forEach(function(stat) {
       observer.observe(stat);
     });
   }
 
-  function animateCounter(el) {
-    const value = el.dataset.value;
-    const match = value.match(/^(\d+)(.*)$/);
-    if (!match) {
-      el.textContent = value;
+  function animateCounter(element) {
+    var target = element.dataset.target;
+    var matches = target.match(/^([^0-9]*)([0-9,]+)(.*)$/);
+    if (!matches) {
+      element.textContent = target;
       return;
     }
-    
-    const target = parseInt(match[1], 10);
-    const suffix = match[2] || '';
-    const duration = 2000;
-    const start = performance.now();
-    
-    function update(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out
-      const current = Math.floor(target * eased);
+
+    var prefix = matches[1];
+    var number = parseInt(matches[2].replace(/,/g, ''), 10);
+    var suffix = matches[3];
+    var duration = 1500;
+    var startTime = null;
+
+    function animate(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = Math.floor(number * eased);
       
-      el.textContent = current + suffix;
-      
+      element.textContent = prefix + current.toLocaleString() + suffix;
+
       if (progress < 1) {
-        requestAnimationFrame(update);
+        requestAnimationFrame(animate);
+      } else {
+        element.textContent = target;
       }
     }
-    
-    requestAnimationFrame(update);
+
+    requestAnimationFrame(animate);
   }
 
   // ========================================
-  // LEAFLET MAP INITIALIZATION
+  // OPENING ANIMATION
   // ========================================
-  function initMap() {
-    const mapContainer = document.getElementById('places-map');
-    if (!mapContainer || typeof L === 'undefined') return;
-    
-    const placesData = mapContainer.dataset.places;
-    let places = [];
-    try {
-      places = JSON.parse(placesData);
-    } catch (e) {
-      console.warn('Invalid places data');
-      return;
-    }
-    
-    if (!places.length) return;
-    
-    // Initialize map
-    const map = L.map('places-map', {
-      zoomControl: false,
-      scrollWheelZoom: false,
-      dragging: !L.Browser.mobile
-    });
-    
-    // CartoDB Positron tiles (elegant grayscale)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap, &copy; CARTO',
-      maxZoom: 19
-    }).addTo(map);
-    
-    // Custom marker styles
-    const livedIcon = L.divIcon({
-      className: 'map-marker lived',
-      iconSize: [12, 12],
-      iconAnchor: [6, 6]
-    });
-    
-    const visitedIcon = L.divIcon({
-      className: 'map-marker visited',
-      iconSize: [10, 10],
-      iconAnchor: [5, 5]
-    });
-    
-    // Add markers
-    const markers = [];
-    const sidebar = document.getElementById('map-sidebar');
-    
-    places.forEach(function(place) {
-      const icon = place.type === 'lived' ? livedIcon : visitedIcon;
-      const marker = L.marker([place.lat, place.lng], { icon: icon }).addTo(map);
-      markers.push(marker);
-      
-      marker.on('click', function() {
-        showPlaceDetails(place, sidebar);
-      });
-    });
-    
-    // Fit bounds to show all markers
-    if (markers.length) {
-      const group = L.featureGroup(markers);
-      map.fitBounds(group.getBounds().pad(0.2));
-    }
-  }
+  function initOpeningAnimation() {
+    var opening = document.querySelector('.about-opening');
+    if (!opening) return;
 
-  function showPlaceDetails(place, sidebar) {
-    if (!sidebar) return;
-    
-    sidebar.innerHTML = 
-      '<button class="sidebar-close" aria-label="Close">&times;</button>' +
-      '<h3>' + escapeHtml(place.name) + '</h3>' +
-      (place.years ? '<p class="place-years">' + escapeHtml(place.years) + '</p>' : '') +
-      '<span class="place-type">' + (place.type === 'lived' ? 'Lived here' : 'Visited') + '</span>' +
-      (place.note ? '<p class="place-note">' + escapeHtml(place.note) + '</p>' : '');
-    
-    sidebar.classList.add('is-open');
-    
-    sidebar.querySelector('.sidebar-close').addEventListener('click', function() {
-      sidebar.classList.remove('is-open');
-    });
-  }
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  // ========================================
-  // BOOKSHELF SCROLL ANIMATION
-  // ========================================
-  function initBookshelf() {
-    const bookshelf = document.querySelector('.bookshelf');
-    if (!bookshelf) return;
-    
-    const books = bookshelf.querySelectorAll('.book');
-    const shelf = bookshelf.querySelector('.shelf-line');
-    
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          // Animate books from right to left
-          books.forEach(function(book, i) {
-            setTimeout(function() {
-              book.classList.add('is-visible');
-            }, i * 150);
-          });
-          
-          // Animate shelf line
-          if (shelf) {
-            setTimeout(function() {
-              shelf.classList.add('is-visible');
-            }, books.length * 150);
-          }
-          
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    
-    observer.observe(bookshelf);
-  }
-
-  // ========================================
-  // INTERESTS FLOATING ANIMATION
-  // ========================================
-  function initInterests() {
-    const tags = document.querySelectorAll('.interest-tag');
-    
-    tags.forEach(function(tag) {
-      // Random rotation
-      const rotation = (Math.random() - 0.5) * 4; // -2 to +2 degrees
-      tag.style.setProperty('--rotation', rotation + 'deg');
-      
-      // Random float duration
-      const duration = 4 + Math.random() * 4; // 4-8s
-      tag.style.setProperty('--float-duration', duration + 's');
-      
-      // Random delay
-      const delay = Math.random() * 2;
-      tag.style.setProperty('--float-delay', delay + 's');
-    });
+    setTimeout(function() {
+      opening.classList.add('is-loaded');
+    }, 100);
   }
 
   // ========================================
@@ -348,20 +335,17 @@
   // ========================================
   function init() {
     window.addEventListener('scroll', onScroll, { passive: true });
-    
-    initScrollama();
-    initRevealAnimations();
-    initScrollIndicator();
-    initStatsCounters();
+    onScroll();
+
+    initReveals();
+    initImageReveals();
+    initOpeningAnimation();
     initMap();
     initBookshelf();
-    initInterests();
-    
-    // Initial parallax
-    updateParallax();
+    initInterestsCloud();
+    initStatsCounters();
   }
 
-  // Run when DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -369,4 +353,3 @@
   }
 
 })();
-
