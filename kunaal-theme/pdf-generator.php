@@ -203,8 +203,16 @@ function kunaal_build_pdf_html($data) {
  * Process content for PDF output
  */
 function kunaal_process_content_for_pdf($content) {
-    // Expand accordions (only add 'open' if not already present)
-    $content = preg_replace('/<details(?![^>]*\bopen\b)([^>]*)>/', '<details$1 open>', $content);
+    // Expand accordions (only add 'open' if not already present - more robust check)
+    $content = preg_replace_callback('/<details([^>]*)>/i', function($matches) {
+        $attrs = $matches[1];
+        // Check if 'open' attribute already exists (case-insensitive, with or without quotes)
+        if (preg_match('/\bopen\b/i', $attrs)) {
+            return '<details' . $attrs . '>';
+        }
+        // Add space before 'open' if attributes exist, otherwise just 'open'
+        return '<details' . ($attrs ? $attrs . ' ' : ' ') . 'open>';
+    }, $content);
     
     // Remove interactive elements
     $content = preg_replace('/<button[^>]*>.*?<\/button>/s', '', $content);

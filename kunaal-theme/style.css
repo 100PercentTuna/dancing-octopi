@@ -3,7 +3,7 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 4.1.0
+Version: 4.2.0
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
@@ -1272,12 +1272,12 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
 
 .articleTitle {
   margin: 0 0 var(--space-3);
-  font-family: var(--sans);
-  font-weight: 650;
-  letter-spacing: -0.025em;
-  font-size: clamp(26px, 4vw, 34px);
-  line-height: 1.12;
-  color: var(--ink);
+  font-family: var(--serif, Georgia, serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: clamp(28px, 4.5vw, 40px);
+  line-height: 1.15;
+  color: rgba(11,18,32,0.85);
 }
 .articleTitle::after { display: none; }
 

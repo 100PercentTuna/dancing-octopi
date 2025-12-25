@@ -119,6 +119,7 @@ function kunaal_register_block_scripts() {
         'pub-table'         => 'kunaal-pub-table-editor',
         'flowchart'         => 'kunaal-flowchart-editor',
         'flowchart-step'    => 'kunaal-flowchart-step-editor',
+        'chart'             => 'kunaal-chart-editor',
     );
     
     foreach ($blocks as $folder => $handle) {
@@ -213,6 +214,7 @@ function kunaal_register_blocks() {
         'pub-table',
         'flowchart',
         'flowchart-step',
+        'chart',
     );
     
     foreach ($block_folders as $block) {

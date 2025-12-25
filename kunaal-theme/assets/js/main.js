@@ -615,6 +615,10 @@
               }
             });
             return;
+          case 'pdf':
+            generatePDF();
+            closeAllPanels();
+            return;
         }
 
         if (shareUrl) {

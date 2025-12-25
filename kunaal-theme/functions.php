@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.1.0');
+define('KUNAAL_THEME_VERSION', '4.2.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -41,10 +41,10 @@ add_action('after_setup_theme', 'kunaal_theme_setup');
  * Enqueue Scripts and Styles
  */
 function kunaal_enqueue_assets() {
-    // Google Fonts
+    // Google Fonts (including Caveat for sidenotes)
     wp_enqueue_style(
         'kunaal-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Inter:opsz,wght@14..32,300..700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Inter:opsz,wght@14..32,300..700&family=Caveat:wght@400;500;600;700&display=swap',
         array(),
         null
     );
@@ -57,18 +57,7 @@ function kunaal_enqueue_assets() {
         KUNAAL_THEME_VERSION
     );
     
-    // Custom font for sidenotes (Garfield Signature)
-    $font_url = KUNAAL_THEME_URI . '/assets/fonts/garfield-signature.otf';
-    $custom_css = "
-        @font-face {
-            font-family: 'Garfield Signature';
-            src: url('{$font_url}') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-    ";
-    wp_add_inline_style('kunaal-theme-style', $custom_css);
+    // Sidenote font (Caveat from Google Fonts - already loaded above)
     
     // Print stylesheet
     wp_enqueue_style(

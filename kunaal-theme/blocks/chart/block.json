@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/chart",
+    "version": "1.0.0",
+    "title": "Chart",
+    "category": "kunaal-data",
+    "icon": "chart-bar",
+    "description": "Create bar, line, or pie charts with customizable data.",
+    "keywords": ["chart", "graph", "bar", "line", "pie", "data", "visualization"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "chartType": {
+            "type": "string",
+            "default": "bar"
+        },
+        "orientation": {
+            "type": "string",
+            "default": "vertical"
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "data": {
+            "type": "string",
+            "default": ""
+        },
+        "labels": {
+            "type": "string",
+            "default": ""
+        },
+        "source": {
+            "type": "string",
+            "default": ""
+        },
+        "caption": {
+            "type": "string",
+            "default": ""
+        },
+        "showLegend": {
+            "type": "boolean",
+            "default": true
+        },
+        "colors": {
+            "type": "string",
+            "default": "theme"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-chart-editor",
+    "viewScript": "kunaal-chart-view",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

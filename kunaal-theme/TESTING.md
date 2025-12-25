@@ -1,8 +1,8 @@
-# Testing Checklist - Version 4.1.0
+# Testing Checklist - Version 4.2.0
 
 **Release Date**: December 25, 2025  
-**Version**: 4.1.0 (Major Release)  
-**Testing Scope**: Epic 5 Complete, Epic 3 Complete (Analysis), Epic 4 Started (Data)
+**Version**: 4.2.0 (Major Release)  
+**Testing Scope**: Bug Fixes, Chart Block, Epic 4 Enhanced, Epic 6 Complete
 
 ---
 
@@ -10,7 +10,37 @@
 
 - [ ] Clear browser cache
 - [ ] Test in incognito/private mode
-- [ ] Ensure theme is updated to v4.1.0
+- [ ] Ensure theme is updated to v4.2.0
+
+---
+
+## 0. CRITICAL FIXES (v4.2.0)
+
+### 0.1 PDF Colors
+- [ ] **PDF Export**: Colors are preserved (not black-and-white)
+- [ ] **PDF Export**: Confidence meters show colored bars
+- [ ] **PDF Export**: Status badges maintain colors
+- [ ] **PDF Export**: Argument map columns show green/red tints
+- [ ] **PDF Export**: Framework matrix cells show color gradients
+
+### 0.2 Sidenote Font
+- [ ] **Sidenote**: Font loads correctly (Caveat from Google Fonts)
+- [ ] **Sidenote**: Font renders properly (not broken/fallback)
+- [ ] **Sidenote**: Appears in margin on desktop
+- [ ] **Sidenote**: Blue bullet marker (•) visible
+
+### 0.3 Article Titles
+- [ ] **Essay/Jotting Pages**: Title uses serif font (not sans-serif)
+- [ ] **Essay/Jotting Pages**: Title color is softer (not pure black)
+- [ ] **Essay/Jotting Pages**: Title size and spacing look good
+
+### 0.4 Regex Bug Fix
+- [ ] **PDF Export**: Accordions with `open` attribute don't duplicate
+- [ ] **PDF Export**: No invalid HTML like `<details open open>`
+
+---
+
+## 1. NEW BLOCK - Chart (Epic 4)
 
 ---
 
@@ -234,4 +264,43 @@
 
 ---
 
-**Last Updated**: Version 4.1.0 - December 25, 2025
+## 4. NEW BLOCK - Chart (Epic 4)
+
+### 4.1 Chart Block
+- [ ] **Editor**: Can add block from inserter
+- [ ] **Editor**: Chart type selector works (bar, line, pie)
+- [ ] **Editor**: Orientation selector works for bar charts (vertical/horizontal)
+- [ ] **Editor**: Data entry field works (comma-separated numbers)
+- [ ] **Editor**: Labels field works (comma-separated text)
+- [ ] **Editor**: Title, source, caption fields work
+- [ ] **Editor**: Color scheme selector works
+- [ ] **Editor**: Show legend toggle works
+- [ ] **Frontend**: Bar chart renders (vertical)
+- [ ] **Frontend**: Bar chart renders (horizontal/sideways)
+- [ ] **Frontend**: Line chart renders with points
+- [ ] **Frontend**: Pie chart renders with percentages
+- [ ] **Frontend**: Labels appear correctly
+- [ ] **Frontend**: Colors match selected scheme
+- [ ] **Frontend**: Source and caption render
+- [ ] **Visual**: SVG scales correctly
+- [ ] **Responsive**: Chart adapts to screen size
+
+---
+
+## 5. EPIC 6 - SHARE & SUBSCRIBE DOCK
+
+### 5.1 Share Dock
+- [ ] **Action Dock**: Share button opens panel
+- [ ] **Share Panel**: PDF download button appears
+- [ ] **Share Panel**: PDF download button works
+- [ ] **Share Panel**: LinkedIn, X, WhatsApp buttons work
+- [ ] **Share Panel**: Closes when clicking outside
+
+### 5.2 Subscribe Dock
+- [ ] **Action Dock**: Subscribe button opens panel
+- [ ] **Subscribe Panel**: Form works correctly
+- [ ] **Subscribe Panel**: Closes when clicking outside
+
+---
+
+**Last Updated**: Version 4.2.0 - December 25, 2025

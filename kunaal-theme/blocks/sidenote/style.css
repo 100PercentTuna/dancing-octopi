@@ -40,11 +40,11 @@
 
 /* The sidenote content - margin positioning on desktop */
 .sidenote {
-    font-family: 'Garfield Signature', cursive;
-    font-size: 1.1rem;
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
     line-height: 1.4;
     color: var(--muted, rgba(11,18,32,0.65));
-    font-weight: normal;
+    font-weight: 500;
 }
 
 /* Desktop: True margin notes on the right */
@@ -131,7 +131,7 @@
 }
 
 .sidenote-content-preview {
-    font-family: 'Garfield Signature', cursive;
+    font-family: 'Caveat', cursive;
     font-size: 1rem;
     line-height: 1.4;
     color: var(--muted, rgba(11,18,32,0.65));

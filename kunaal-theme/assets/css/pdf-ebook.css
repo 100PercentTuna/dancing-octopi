@@ -9,11 +9,33 @@
   margin: 2cm 2cm 2.5cm 2cm;
 }
 
-/* Base */
+/* Base - Preserve all colors in PDF */
 * {
   box-sizing: border-box;
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+/* Ensure all colored elements maintain their colors */
+.confidence-meter .cm-bar,
+.argument-map .supporting,
+.argument-map .opposing,
+.status-badge,
+.confidence-indicator,
+.sc-card::before,
+.de-marker,
+.fm-cell,
+.cl-positive,
+.cl-negative,
+.debate-side,
+.rubric-level-0,
+.rubric-level-1,
+.rubric-level-2,
+.rubric-level-3 {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
 }
 
 body {
