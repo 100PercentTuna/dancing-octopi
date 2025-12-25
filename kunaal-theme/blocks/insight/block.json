@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/insight",
+    "version": "1.0.0",
+    "title": "Key Insight",
+    "category": "kunaal-editorial",
+    "icon": "lightbulb",
+    "description": "A warm-colored callout box for key insights with customizable label.",
+    "keywords": ["insight", "callout", "key", "highlight", "important"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": "Key insight"
+        },
+        "content": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "file:./edit.js",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+
