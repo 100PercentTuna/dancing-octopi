@@ -10,6 +10,80 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Register Custom Block Categories
+ */
+function kunaal_register_block_categories($categories) {
+    return array_merge(
+        array(
+            array(
+                'slug'  => 'kunaal-editorial',
+                'title' => __('Kunaal — Editorial', 'kunaal-theme'),
+                'icon'  => 'edit',
+            ),
+            array(
+                'slug'  => 'kunaal-analysis',
+                'title' => __('Kunaal — Analysis', 'kunaal-theme'),
+                'icon'  => 'chart-bar',
+            ),
+            array(
+                'slug'  => 'kunaal-data',
+                'title' => __('Kunaal — Data', 'kunaal-theme'),
+                'icon'  => 'chart-line',
+            ),
+            array(
+                'slug'  => 'kunaal-interactive',
+                'title' => __('Kunaal — Interactive', 'kunaal-theme'),
+                'icon'  => 'controls-play',
+            ),
+            array(
+                'slug'  => 'kunaal-jottings',
+                'title' => __('Kunaal — Jottings', 'kunaal-theme'),
+                'icon'  => 'edit-page',
+            ),
+        ),
+        $categories
+    );
+}
+add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
+
+/**
+ * Register Custom Gutenberg Blocks
+ */
+function kunaal_register_blocks() {
+    $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
+    
+    // Get all block directories
+    $block_folders = array(
+        'insight',
+        'pullquote',
+        'accordion',
+        'sidenote',
+    );
+    
+    foreach ($block_folders as $block) {
+        $block_path = $blocks_dir . '/' . $block;
+        if (file_exists($block_path . '/block.json')) {
+            register_block_type($block_path);
+        }
+    }
+}
+add_action('init', 'kunaal_register_blocks');
+
+/**
+ * Enqueue block editor assets
+ */
+function kunaal_enqueue_block_editor_assets() {
+    // Enqueue Just Another Hand font for sidenote block preview
+    wp_enqueue_style(
+        'kunaal-just-another-hand-editor',
+        'https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap',
+        array(),
+        null
+    );
+}
+add_action('enqueue_block_editor_assets', 'kunaal_enqueue_block_editor_assets');
+
+/**
  * Register Custom Block Patterns
  */
 function kunaal_register_block_patterns() {

@@ -6,11 +6,11 @@
 /* Page setup for print/PDF */
 @page {
   size: A4;
-  margin: 3cm 2.5cm;
+  margin: 3.5cm 2.5cm 3cm; /* Top margin accounts for header, bottom for footer */
 }
 
 @page :first {
-  margin-top: 4cm;
+  margin-top: 2cm; /* Cover page has no header */
 }
 
 /* Reset and base */
@@ -439,6 +439,79 @@ video,
 audio,
 iframe,
 .rail,
-.tocList {
+.tocList,
+.sidenote-ref,
+.actionDock,
+.sharePanel,
+.subscribePanel {
   display: none !important;
+}
+
+/* Sidenotes inline for PDF */
+.sidenote-inline {
+  font-size: 9pt;
+  color: rgba(11,18,32,0.6);
+  font-style: italic;
+}
+
+/* Colophon */
+.pdf-colophon {
+  margin-top: 2cm;
+  padding-top: 1cm;
+  border-top: 1pt solid rgba(11,18,32,0.15);
+  font-size: 9pt;
+  color: rgba(11,18,32,0.5);
+  text-align: center;
+}
+
+.pdf-colophon a {
+  color: #1E5AFF;
+  text-decoration: none;
+}
+
+/* Type label */
+.pdf-type {
+  font-family: 'Courier New', monospace;
+  font-size: 10pt;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1E5AFF;
+  margin-bottom: 0.5cm;
+}
+
+/* Author/date in cover */
+.pdf-author {
+  font-size: 12pt;
+  font-weight: 500;
+  margin: 0;
+}
+
+.pdf-date {
+  font-size: 10pt;
+  color: rgba(11,18,32,0.6);
+  margin: 0.2cm 0 0;
+}
+
+.pdf-readtime {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  color: rgba(11,18,32,0.5);
+  margin: 0.2cm 0 0;
+}
+
+.pdf-wrapper {
+  max-width: 100%;
+}
+
+/* Hero image adjustments */
+.pdf-hero {
+  margin: 0 0 1.5cm;
+  page-break-inside: avoid;
+}
+
+.pdf-hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4pt;
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Custom PDF Generator for Kunaal Theme
- * Creates eBook-style PDFs with proper formatting
+ * Creates eBook-style PDFs with proper formatting using DOMPDF
  * 
  * @package Kunaal_Theme
  */
@@ -10,6 +10,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Load Composer autoloader if available
+$autoloader = KUNAAL_THEME_DIR . '/vendor/autoload.php';
+if (file_exists($autoloader)) {
+    require_once $autoloader;
+}
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 /**
  * Generate PDF for a post
  */
@@ -17,6 +26,16 @@ function kunaal_generate_pdf() {
     // Security check
     if (!isset($_GET['kunaal_pdf']) || !isset($_GET['post_id'])) {
         return;
+    }
+    
+    // Check if DOMPDF is available
+    if (!class_exists('Dompdf\Dompdf')) {
+        wp_die(
+            '<h1>PDF Generation Not Available</h1>
+            <p>DOMPDF is not installed. Please run <code>composer install</code> in the theme directory.</p>
+            <p><a href="javascript:history.back()">Go back</a></p>',
+            'PDF Generator Error'
+        );
     }
     
     $post_id = absint($_GET['post_id']);
@@ -35,6 +54,7 @@ function kunaal_generate_pdf() {
     $author_name = $author_first . ' ' . $author_last;
     $author_email = get_theme_mod('kunaal_contact_email', '');
     $site_url = home_url('/');
+    $post_url = get_permalink($post_id);
     $date = get_the_date('j F Y', $post_id);
     $read_time = get_post_meta($post_id, 'kunaal_read_time', true);
     $topics = get_the_terms($post_id, 'topic');
@@ -52,45 +72,173 @@ function kunaal_generate_pdf() {
     // Generate table of contents
     $toc = kunaal_generate_toc($content);
     
-    // Load template
-    ob_start();
-    include(get_template_directory() . '/pdf-template.php');
-    $html = ob_get_clean();
+    // Determine post type for filename
+    $post_type_label = $post->post_type === 'essay' ? 'Essay' : 'Jotting';
+    
+    // Build HTML
+    $html = kunaal_build_pdf_html(array(
+        'title'       => $title,
+        'subtitle'    => $subtitle,
+        'author'      => $author_name,
+        'date'        => $date,
+        'post_url'    => $post_url,
+        'content'     => $pdf_content,
+        'toc'         => $toc,
+        'hero_url'    => $hero_url,
+        'avatar_url'  => $avatar_url,
+        'topics'      => $topics,
+        'read_time'   => $read_time,
+        'post_type'   => $post_type_label,
+    ));
+    
+    // Configure DOMPDF
+    $options = new Options();
+    $options->set('isRemoteEnabled', true);
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('defaultFont', 'Helvetica');
+    $options->set('dpi', 150);
+    $options->set('defaultPaperSize', 'A4');
+    
+    // Create DOMPDF instance
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    
+    // Add page numbers
+    $canvas = $dompdf->getCanvas();
+    $font = $dompdf->getFontMetrics()->getFont('Helvetica');
+    $page_count = $canvas->get_page_count();
+    
+    for ($i = 1; $i <= $page_count; $i++) {
+        $canvas->page_script(function($pageNumber, $pageCount, $canvas, $fontMetrics) use ($font, $author_name, $title, $date, $post_url) {
+            $width = $canvas->get_width();
+            $height = $canvas->get_height();
+            
+            // Header: Date (left) | Title (center) | Author (right)
+            $header_y = 25;
+            
+            // Left: Date
+            $canvas->text(40, $header_y, $date, $font, 8, array(0.4, 0.4, 0.4));
+            
+            // Center: Title (truncated if too long)
+            $short_title = mb_strlen($title) > 50 ? mb_substr($title, 0, 47) . '...' : $title;
+            $title_width = $fontMetrics->getTextWidth($short_title, $font, 8);
+            $canvas->text(($width - $title_width) / 2, $header_y, $short_title, $font, 8, array(0.4, 0.4, 0.4));
+            
+            // Right: Author
+            $author_width = $fontMetrics->getTextWidth($author_name, $font, 8);
+            $canvas->text($width - 40 - $author_width, $header_y, $author_name, $font, 8, array(0.4, 0.4, 0.4));
+            
+            // Footer: URL (left) | Page X of Y (right)
+            $footer_y = $height - 25;
+            
+            // Left: URL
+            $canvas->text(40, $footer_y, $post_url, $font, 7, array(0.5, 0.5, 0.5));
+            
+            // Right: Page X of Y
+            $page_text = "Page {$pageNumber} of {$pageCount}";
+            $page_width = $fontMetrics->getTextWidth($page_text, $font, 8);
+            $canvas->text($width - 40 - $page_width, $footer_y, $page_text, $font, 8, array(0.4, 0.4, 0.4));
+        });
+    }
+    
+    // Generate filename: "Kunaal Wadhwa – Essay – Title.pdf"
+    $safe_title = sanitize_file_name($title);
+    $filename = "{$author_name} – {$post_type_label} – {$safe_title}.pdf";
     
     // Output PDF
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: inline; filename="' . sanitize_file_name($title) . '.pdf"');
-    header('Cache-Control: private, max-age=0, must-revalidate');
-    header('Pragma: public');
+    $dompdf->stream($filename, array(
+        'Attachment' => false // Display in browser, set to true for download
+    ));
     
-    // For now, convert HTML to PDF using browser print
-    echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>' . esc_html($title) . '</title>
-    <style>' . kunaal_get_pdf_styles() . '</style>
-</head>
-<body onload="window.print()">
-' . $html . '
-</body>
-</html>';
     exit;
 }
 add_action('template_redirect', 'kunaal_generate_pdf');
+
+/**
+ * Build PDF HTML structure
+ */
+function kunaal_build_pdf_html($data) {
+    $styles = kunaal_get_pdf_styles();
+    
+    $topics_html = '';
+    if (!empty($data['topics']) && !is_wp_error($data['topics'])) {
+        $topic_names = array_map(function($t) { return '#' . $t->name; }, $data['topics']);
+        $topics_html = '<p class="pdf-topics">' . implode(' ', $topic_names) . '</p>';
+    }
+    
+    $toc_html = !empty($data['toc']) ? $data['toc'] : '';
+    
+    $hero_html = '';
+    if (!empty($data['hero_url'])) {
+        $hero_html = '<div class="pdf-hero"><img src="' . esc_url($data['hero_url']) . '" alt="" /></div>';
+    }
+    
+    return '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>' . esc_html($data['title']) . '</title>
+    <style>' . $styles . '</style>
+</head>
+<body>
+    <div class="pdf-wrapper">
+        <!-- Cover Page -->
+        <div class="pdf-cover">
+            <div class="pdf-cover-content">
+                <p class="pdf-type">' . esc_html($data['post_type']) . '</p>
+                <h1 class="pdf-title">' . esc_html($data['title']) . '</h1>
+                ' . ($data['subtitle'] ? '<p class="pdf-subtitle">' . esc_html($data['subtitle']) . '</p>' : '') . '
+                <div class="pdf-byline">
+                    <p class="pdf-author">by ' . esc_html($data['author']) . '</p>
+                    <p class="pdf-date">' . esc_html($data['date']) . '</p>
+                    ' . ($data['read_time'] ? '<p class="pdf-readtime">' . esc_html($data['read_time']) . ' min read</p>' : '') . '
+                </div>
+                ' . $topics_html . '
+            </div>
+        </div>
+        
+        ' . $toc_html . '
+        
+        ' . $hero_html . '
+        
+        <!-- Main Content -->
+        <div class="pdf-content">
+            ' . $data['content'] . '
+        </div>
+        
+        <!-- Colophon -->
+        <div class="pdf-colophon">
+            <p>This document was generated from <a href="' . esc_url($data['post_url']) . '">' . esc_url($data['post_url']) . '</a></p>
+            <p>© ' . date('Y') . ' ' . esc_html($data['author']) . '. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>';
+}
 
 /**
  * Process content for PDF output
  */
 function kunaal_process_content_for_pdf($content) {
     // Expand accordions
-    $content = preg_replace('/<details(.*?)>/', '<details$1 open>', $content);
+    $content = preg_replace('/<details([^>]*)>/', '<details$1 open>', $content);
     
     // Remove interactive elements
     $content = preg_replace('/<button[^>]*>.*?<\/button>/s', '', $content);
     
-    // Simplify charts to static display
-    // (Charts are SVG, they'll render fine in PDF)
+    // Remove share/subscribe elements
+    $content = preg_replace('/<div[^>]*class="[^"]*(?:shareItem|subscribe-form|actionDock)[^"]*"[^>]*>.*?<\/div>/s', '', $content);
+    
+    // Simplify sidenotes for print (make inline)
+    $content = preg_replace('/<span class="sidenote">(.*?)<\/span>/s', '<span class="sidenote-inline">[$1]</span>', $content);
+    
+    // Convert relative URLs to absolute
+    $site_url = home_url();
+    $content = preg_replace('/src="\/(?!\/)/i', 'src="' . $site_url . '/', $content);
+    $content = preg_replace('/href="\/(?!\/)/i', 'href="' . $site_url . '/', $content);
     
     return $content;
 }
@@ -124,5 +272,9 @@ function kunaal_generate_toc($content) {
  * Get PDF-specific CSS styles
  */
 function kunaal_get_pdf_styles() {
-    return file_get_contents(get_template_directory() . '/assets/css/pdf-ebook.css');
+    $css_file = KUNAAL_THEME_DIR . '/assets/css/pdf-ebook.css';
+    if (file_exists($css_file)) {
+        return file_get_contents($css_file);
+    }
+    return '';
 }

@@ -190,8 +190,8 @@ main.container,
   right: 0;
   z-index: 9998; /* Below progress bar (9999), above all content */
   background: rgba(253,252,250,.95);
-  backdrop-filter:
-  -webkit-backdrop-filter:
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--hair2);
   transform: translateZ(0);
   isolation: isolate;
@@ -881,13 +881,11 @@ h2::after {
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
-  backdrop-filter:
-  -webkit-backdrop-filter:
-  }
+}
 .card:hover .overlay, .card:focus-visible .overlay {
-  backdrop-filter:
-  -webkit-backdrop-filter:
-  }
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
 
 /* Title styling */
 .tTitle {
@@ -999,13 +997,10 @@ h2::after {
 @media (hover: none) {
   .details { max-height: 120px; opacity: 1; transform: none; }
   .media img, .media svg { filter: saturate(.85) contrast(1.02) brightness(1.00); }
-  .overlay { backdrop-filter:
- -webkit-backdrop-filter:
-  -webkit-backdrop-filter:
--webkit-backdrop-filter: blur(4px); -webkit-backdrop-filter:
--webkit-backdrop-filter:
-  -webkit-backdrop-filter:
--webkit-backdrop-filter: blur(4px); }
+  .overlay { 
+    backdrop-filter: blur(4px); 
+    -webkit-backdrop-filter: blur(4px); 
+  }
 }
 /* ========================================
    JOTTINGS NOTEBOOK
@@ -2419,10 +2414,7 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
 }
 
 /* Safari backdrop-filter fallback */
-@supports not (backdrop-filter:
--webkit-backdrop-filter:
-  -webkit-backdrop-filter:
--webkit-backdrop-filter: blur(10px)) {
+@supports not (backdrop-filter: blur(10px)) {
   .overlay { background: rgba(11,18,32,0.85); }
   .mast { background: var(--bg); }
 }
