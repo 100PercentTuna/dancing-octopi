@@ -2,7 +2,7 @@
 
 A sophisticated WordPress theme for [kunaalwadhwa.com](https://kunaalwadhwa.com) — featuring magazine-quality editorial design with enterprise-grade Gutenberg authoring.
 
-**Version**: 4.6.0  
+**Version**: 4.3.0  
 **Requires WordPress**: 6.0+  
 **Requires PHP**: 8.0+
 
@@ -20,22 +20,11 @@ A sophisticated WordPress theme for [kunaalwadhwa.com](https://kunaalwadhwa.com)
 - **Essays** — Long-form articles with full editorial blocks
 - **Jottings** — Quick thoughts and observations
 
-### Page Templates
-- **About Page** — Hero image blending, bio paragraphs, interests, scroll animations
-- **Contact Page** — "Say Hi" message form, social links via Customizer
-
 ### 45+ Custom Gutenberg Blocks
 - **Editorial**: Insight Box, Pull Quote, Accordion, Sidenote, Timeline, Glossary, Footnotes...
 - **Analysis**: Assumptions Register, Confidence Meter, Framework Matrix, Decision Log, Debate...
 - **Data**: Chart Block (bar, line, pie, donut, stacked, clustered, waterfall), Publication Table, Flowchart
 - **Interactive**: Parallax Section, Scrollytelling, Reveal Wrapper
-
-### Inline Formats (Rich Text Extensions)
-- **Sidenote** — Blue bullet marker with hover/click tooltip
-- **Highlight** — Yellow background for key passages  
-- **Definition** — Dotted underline with definition popup
-- **Key Term** — Bold blue accent for terminology
-- **Data Reference** — Monospace styled data citation
 
 ### Chart Block v2.0
 Comprehensive data visualization with:

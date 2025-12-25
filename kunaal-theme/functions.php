@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.6.0');
+define('KUNAAL_THEME_VERSION', '4.6.1');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -89,79 +89,6 @@ function kunaal_enqueue_assets() {
     ));
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
-
-/**
- * Add Open Graph Meta Tags for Social Sharing
- */
-function kunaal_add_open_graph_tags() {
-    if (!is_singular(array('essay', 'jotting'))) {
-        return;
-    }
-    
-    global $post;
-    if (!$post) {
-        return;
-    }
-    
-    $author_first = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-    $author_last = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
-    $author_name = $author_first . ' ' . $author_last;
-    $site_name = get_bloginfo('name');
-    $linkedin_url = get_theme_mod('kunaal_linkedin_handle', '');
-    
-    // Title with author attribution
-    $title = get_the_title() . ' — by ' . $author_name;
-    
-    // Description - subtitle or excerpt
-    $subtitle = get_post_meta($post->ID, 'kunaal_subtitle', true);
-    $description = $subtitle ? $subtitle : wp_trim_words(strip_tags($post->post_content), 30, '...');
-    
-    // Image
-    $image = '';
-    if (has_post_thumbnail()) {
-        $image = get_the_post_thumbnail_url($post->ID, 'large');
-    } else {
-        $avatar = get_theme_mod('kunaal_avatar', '');
-        if ($avatar) $image = $avatar;
-    }
-    
-    // Post type
-    $post_type_label = $post->post_type === 'essay' ? 'Essay' : 'Jotting';
-    ?>
-    
-    <!-- Open Graph / LinkedIn / Facebook -->
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="<?php echo esc_attr($title); ?>" />
-    <meta property="og:description" content="<?php echo esc_attr($description); ?>" />
-    <meta property="og:url" content="<?php echo esc_url(get_permalink()); ?>" />
-    <meta property="og:site_name" content="<?php echo esc_attr($site_name); ?>" />
-    <?php if ($image) : ?>
-    <meta property="og:image" content="<?php echo esc_url($image); ?>" />
-    <?php endif; ?>
-    <meta property="article:author" content="<?php echo esc_attr($author_name); ?>" />
-    <meta property="article:published_time" content="<?php echo get_the_date('c'); ?>" />
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="<?php echo esc_attr($title); ?>" />
-    <meta name="twitter:description" content="<?php echo esc_attr($description); ?>" />
-    <?php if ($image) : ?>
-    <meta name="twitter:image" content="<?php echo esc_url($image); ?>" />
-    <?php endif; ?>
-    <?php 
-    $twitter_handle = get_theme_mod('kunaal_twitter_handle', '');
-    if ($twitter_handle) : ?>
-    <meta name="twitter:creator" content="@<?php echo esc_attr($twitter_handle); ?>" />
-    <?php endif; ?>
-    
-    <!-- LinkedIn specific -->
-    <?php if ($linkedin_url) : ?>
-    <meta property="article:author" content="<?php echo esc_url($linkedin_url); ?>" />
-    <?php endif; ?>
-    
-    <?php
-}
-add_action('wp_head', 'kunaal_add_open_graph_tags', 5);
 
 /**
  * Enqueue Gutenberg Editor Sidebar Script
@@ -277,9 +204,8 @@ add_action('init', 'kunaal_register_post_types');
 function kunaal_add_meta_boxes() {
     // Only add meta boxes if NOT using Gutenberg
     if (function_exists('use_block_editor_for_post_type')) {
-        $screen = get_current_screen();
-        $post_type = $screen ? $screen->post_type : '';
-        if ($post_type && use_block_editor_for_post_type($post_type)) {
+        $post_type = get_current_screen()->post_type ?? '';
+        if (use_block_editor_for_post_type($post_type)) {
             return; // Gutenberg is active, use JS sidebar instead
         }
     }
@@ -932,156 +858,6 @@ function kunaal_customize_register($wp_customize) {
         'section' => 'kunaal_subscribe',
         'type' => 'url',
     ));
-    
-    // =============================================
-    // About Page Section
-    // =============================================
-    $wp_customize->add_section('kunaal_about_page', array(
-        'title' => 'About Page',
-        'priority' => 45,
-        'description' => 'Customize your About page content.',
-    ));
-    
-    // About Photo (transparent background recommended)
-    $wp_customize->add_setting('kunaal_about_photo', array(
-        'default' => '',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'kunaal_about_photo', array(
-        'label' => 'About Photo',
-        'description' => 'Upload a photo (transparent background PNG recommended for best effect)',
-        'section' => 'kunaal_about_page',
-    )));
-    
-    // Headline
-    $wp_customize->add_setting('kunaal_about_headline', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_headline', array(
-        'label' => 'Greeting/Headline',
-        'description' => 'e.g., "Hello, I\'m Kunaal"',
-        'section' => 'kunaal_about_page',
-        'type' => 'text',
-    ));
-    
-    // Intro text
-    $wp_customize->add_setting('kunaal_about_intro', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_intro', array(
-        'label' => 'Introduction',
-        'description' => 'A compelling one-liner about yourself',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
-    ));
-    
-    // Bio paragraph 1
-    $wp_customize->add_setting('kunaal_about_bio_1', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_bio_1', array(
-        'label' => 'Bio Paragraph 1',
-        'description' => 'First paragraph about yourself',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
-    ));
-    
-    // Bio paragraph 2
-    $wp_customize->add_setting('kunaal_about_bio_2', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_bio_2', array(
-        'label' => 'Bio Paragraph 2',
-        'description' => 'Second paragraph about yourself',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
-    ));
-    
-    // Interests
-    $wp_customize->add_setting('kunaal_about_interests', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_interests', array(
-        'label' => 'Interests',
-        'description' => 'Things you\'re interested in (can include HTML)',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
-    ));
-    
-    // Currently
-    $wp_customize->add_setting('kunaal_about_currently', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_currently', array(
-        'label' => 'Currently',
-        'description' => 'What you\'re doing now',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
-    ));
-    
-    // =============================================
-    // Contact Page Section
-    // =============================================
-    $wp_customize->add_section('kunaal_contact_page', array(
-        'title' => 'Contact Page',
-        'priority' => 46,
-        'description' => 'Customize your Contact page.',
-    ));
-    
-    // Email
-    $wp_customize->add_setting('kunaal_email', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_email',
-    ));
-    $wp_customize->add_control('kunaal_email', array(
-        'label' => 'Email Address',
-        'section' => 'kunaal_contact_page',
-        'type' => 'email',
-    ));
-    
-    // Instagram
-    $wp_customize->add_setting('kunaal_instagram', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_instagram', array(
-        'label' => 'Instagram Username',
-        'description' => 'Just the username, without @',
-        'section' => 'kunaal_contact_page',
-        'type' => 'text',
-    ));
-    
-    // WhatsApp QR Code
-    $wp_customize->add_setting('kunaal_whatsapp_qr', array(
-        'default' => '',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'kunaal_whatsapp_qr', array(
-        'label' => 'WhatsApp QR Code',
-        'description' => 'Upload a QR code image for WhatsApp (keeps phone private)',
-        'section' => 'kunaal_contact_page',
-    )));
-    
-    // Contact intro text
-    $wp_customize->add_setting('kunaal_contact_intro', array(
-        'default' => 'I'd love to hear from you. Drop a message, share a thought, or just say hi.',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_contact_intro', array(
-        'label' => 'Contact Intro',
-        'section' => 'kunaal_contact_page',
-        'type' => 'textarea',
-    ));
-    
-    // Email for receiving messages (uses kunaal_contact_email from Author section)
-    // Note: kunaal_contact_email is registered in kunaal_author section above
-    // and is shared between footer display and contact form recipient
 }
 add_action('customize_register', 'kunaal_customize_register');
 
@@ -1270,58 +1046,6 @@ function kunaal_filter_content() {
 }
 add_action('wp_ajax_kunaal_filter', 'kunaal_filter_content');
 add_action('wp_ajax_nopriv_kunaal_filter', 'kunaal_filter_content');
-
-/**
- * Handle Contact Form Submission
- */
-function kunaal_handle_contact_form() {
-    // Verify nonce
-    if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
-        wp_send_json_error(array('message' => 'Security check failed'));
-        return;
-    }
-    
-    // Get form data
-    $message = isset($_POST['message']) ? sanitize_textarea_field($_POST['message']) : '';
-    $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : 'Anonymous';
-    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
-    
-    if (empty($message)) {
-        wp_send_json_error(array('message' => 'Message is required'));
-        return;
-    }
-    
-    // Get recipient email
-    $to = get_theme_mod('kunaal_contact_email', get_option('admin_email'));
-    
-    // Build email
-    $site_name = get_bloginfo('name');
-    $subject = "[{$site_name}] New message from " . ($name ?: 'Anonymous');
-    
-    $body = "New message from your website:\n\n";
-    $body .= "---\n\n";
-    $body .= $message . "\n\n";
-    $body .= "---\n\n";
-    $body .= "From: " . ($name ?: 'Not provided') . "\n";
-    $body .= "Email: " . ($email ?: 'Not provided') . "\n";
-    $body .= "Sent: " . date('F j, Y g:i a') . "\n";
-    
-    $headers = array('Content-Type: text/plain; charset=UTF-8');
-    if ($email) {
-        $headers[] = 'Reply-To: ' . $email;
-    }
-    
-    // Send email
-    $sent = wp_mail($to, $subject, $body, $headers);
-    
-    if ($sent) {
-        wp_send_json_success(array('message' => 'Message sent successfully'));
-    } else {
-        wp_send_json_error(array('message' => 'Failed to send message'));
-    }
-}
-add_action('wp_ajax_kunaal_contact_form', 'kunaal_handle_contact_form');
-add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
 
 /**
  * Enqueue media uploader in admin

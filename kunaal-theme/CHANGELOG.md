@@ -4,53 +4,6 @@ All notable changes to the Kunaal Theme.
 
 ---
 
-## [4.6.0] - 2025-12-25
-
-### ✨ New Features
-
-#### Inline Formats (Rich Text Extensions)
-- **Sidenote**: Inline marker that shows note on hover/click (blue bullet indicator)
-- **Highlight**: Yellow highlight for key passages
-- **Definition**: Dotted underline with definition tooltip
-- **Key Term**: Bold blue accent for important terminology
-- **Data Reference**: Monospace styled data citations
-
-#### About Page Template
-- Hero section with blending background image
-- Customizable intro text and two bio paragraphs
-- Interests and current activities sections
-- Scroll reveal animations
-- All content manageable via WordPress Customizer
-
-#### Contact Page Template
-- "Say Hi" message box with optional name/email
-- Social links via Customizer (Email, LinkedIn, Instagram, X/Twitter, WhatsApp QR)
-- AJAX form submission
-- Elegant minimal design
-
-#### PDF Enhancements
-- Book-like margins (narrower, more readable)
-- Custom header: "Author Name • Essay Title"
-- Footer: "Page X of Y"
-- Removed browser-generated date/time headers
-- Filename: "[Essay Title] - by [Author Name].pdf"
-
-#### LinkedIn Sharing
-- Auto-populates with "Title by Author" in share text
-- LinkedIn profile URL configurable in Customizer
-
-### 🔧 Bug Fixes
-- Fixed function redeclaration in chart block (wrapped in function_exists)
-- Fixed PDF generator with fully qualified class names
-- Fixed block unregister check
-- Fixed null post access in Open Graph tags
-
-### 📚 Documentation
-- Added ERROR-HISTORY.md documenting all issues and resolutions
-- Updated TESTING.md with new feature checklists
-
----
-
 ## [4.3.0] - 2025-12-25
 
 ### 🎉 Major Release - All Epics Complete

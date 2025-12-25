@@ -51,13 +51,7 @@ add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
  */
 function kunaal_unregister_core_blocks() {
     // Unregister core pullquote - we have kunaal/pullquote
-    // Check if block registry exists and block is registered before unregistering
-    if (class_exists('WP_Block_Type_Registry')) {
-        $registry = WP_Block_Type_Registry::get_instance();
-        if ($registry->is_registered('core/pullquote')) {
-            unregister_block_type('core/pullquote');
-        }
-    }
+    unregister_block_type('core/pullquote');
 }
 add_action('init', 'kunaal_unregister_core_blocks', 100);
 
@@ -253,11 +247,6 @@ function kunaal_enqueue_block_editor_assets() {
     );
 }
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_block_editor_assets');
-
-/*
- * INLINE FORMATS - TEMPORARILY DISABLED FOR DEBUGGING
- * Re-enable once core theme is stable
- */
 
 /**
  * Register Custom Block Patterns
