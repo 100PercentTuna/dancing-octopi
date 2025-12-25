@@ -1,12 +1,25 @@
 /**
  * Kunaal Theme - PDF Stylesheet
- * Clean, tight journal-paper style
+ * Clean, book-like layout with tight margins
  */
 
-/* Page setup */
+/* Page setup - narrower margins like a book */
 @page {
   size: A4;
-  margin: 2cm 2cm 2.5cm 2cm;
+  margin: 1.5cm 1.8cm 2cm 1.8cm;
+}
+
+/* For browser print - remove automatic headers/footers */
+@media print {
+  @page {
+    margin: 1.5cm 1.8cm 2cm 1.8cm;
+  }
+  
+  /* Hide browser's default header/footer */
+  html {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 /* Base - Preserve all colors in PDF */
@@ -40,100 +53,101 @@
 
 body {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 11pt;
-  line-height: 1.6;
+  font-size: 10.5pt;
+  line-height: 1.55;
   color: #1a1a1a;
   background: #fff;
   margin: 0;
   padding: 0;
 }
 
-/* Running header/footer for browser print */
-@media print {
-  @page {
-    @top-center {
-      content: element(running-header);
-    }
-    @bottom-right {
-      content: "Page " counter(page) " of " counter(pages);
-      font-size: 9pt;
-      color: #888;
-    }
-  }
+/* Wrapper */
+.pdf-wrapper {
+  max-width: 100%;
 }
 
-/* Article Header */
+/* Article Header - compact */
 .pdf-header {
-  margin-bottom: 0.8cm;
-  padding-bottom: 0.5cm;
+  margin-bottom: 0.5cm;
+  padding-bottom: 0.4cm;
   border-bottom: 1px solid #ddd;
 }
 
 .pdf-title {
   font-family: Georgia, serif;
-  font-size: 22pt;
+  font-size: 20pt;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
   color: #1a1a1a;
-  margin: 0 0 0.3cm;
+  margin: 0 0 0.2cm;
 }
 
 .pdf-subtitle {
-  font-size: 12pt;
-  line-height: 1.4;
+  font-size: 11pt;
+  line-height: 1.35;
   color: #555;
-  margin: 0 0 0.4cm;
+  margin: 0 0 0.3cm;
   font-style: italic;
 }
 
 .pdf-meta {
   font-family: -apple-system, sans-serif;
-  font-size: 9pt;
+  font-size: 8.5pt;
   color: #777;
 }
 
 .pdf-meta .sep {
   color: #ccc;
-  margin: 0 0.2cm;
+  margin: 0 0.15cm;
 }
 
 .pdf-topics {
   font-family: monospace;
-  font-size: 8pt;
+  font-size: 7.5pt;
   color: #1E5AFF;
-  margin-top: 0.3cm;
+  margin-top: 0.2cm;
+  margin-bottom: 0;
 }
 
 /* Main Content - tighter spacing */
 .pdf-content {
-  font-size: 11pt;
-  line-height: 1.6;
+  font-size: 10.5pt;
+  line-height: 1.55;
   color: #1a1a1a;
 }
 
 .pdf-content p {
-  margin: 0 0 0.5cm;
+  margin: 0 0 0.4cm;
   text-align: left;
   orphans: 3;
   widows: 3;
 }
 
-/* Headings - reduced spacing */
+/* Headings - compact spacing */
 .pdf-content h2 {
   font-family: Georgia, serif;
-  font-size: 14pt;
+  font-size: 13pt;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0.8cm 0 0.3cm;
+  margin: 0.6cm 0 0.25cm;
   page-break-after: avoid;
 }
 
 .pdf-content h3 {
   font-family: Georgia, serif;
-  font-size: 12pt;
+  font-size: 11pt;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0.6cm 0 0.25cm;
+  margin: 0.5cm 0 0.2cm;
+  page-break-after: avoid;
+}
+
+.pdf-content h4 {
+  font-family: Georgia, serif;
+  font-size: 10pt;
+  font-weight: 700;
+  color: #333;
+  margin: 0.4cm 0 0.15cm;
   page-break-after: avoid;
 }
 
@@ -147,8 +161,8 @@ body {
 .pdf-content blockquote,
 .pdf-content .pullquote,
 .pdf-content .wp-block-kunaal-pullquote {
-  margin: 0.5cm 0;
-  padding: 0 0 0 0.6cm;
+  margin: 0.4cm 0;
+  padding: 0 0 0 0.5cm;
   border-left: 2px solid #1E5AFF;
   font-style: italic;
   color: #333;
@@ -163,9 +177,9 @@ body {
 .pdf-content blockquote cite,
 .pdf-content .pullquote cite {
   display: block;
-  margin-top: 0.2cm;
+  margin-top: 0.15cm;
   font-style: normal;
-  font-size: 9pt;
+  font-size: 8pt;
   color: #777;
 }
 
@@ -173,8 +187,8 @@ body {
 .pdf-content .insightBox,
 .pdf-content .wp-block-kunaal-insight {
   background: #f9f9f9;
-  padding: 0.4cm;
-  margin: 0.5cm 0;
+  padding: 0.35cm;
+  margin: 0.4cm 0;
   border-left: 2px solid #7D6B5D;
   page-break-inside: avoid;
 }
@@ -182,12 +196,12 @@ body {
 .pdf-content .insightBox .label,
 .pdf-content .wp-block-kunaal-insight .label {
   font-family: sans-serif;
-  font-size: 8pt;
+  font-size: 7pt;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #7D6B5D;
-  margin-bottom: 0.2cm;
+  margin-bottom: 0.15cm;
 }
 
 /* Accordions - Expanded, minimal style */
@@ -196,16 +210,16 @@ body {
 .pdf-content .wp-block-kunaal-accordion {
   border: 1px solid #ddd;
   border-left: 2px solid #1E5AFF;
-  padding: 0.4cm;
-  margin: 0.5cm 0;
+  padding: 0.35cm;
+  margin: 0.4cm 0;
   page-break-inside: avoid;
   background: #fafafa;
 }
 
 .pdf-content summary {
   font-weight: 600;
-  font-size: 10pt;
-  margin-bottom: 0.3cm;
+  font-size: 9.5pt;
+  margin-bottom: 0.25cm;
   color: #1a1a1a;
   list-style: none;
 }
@@ -219,43 +233,43 @@ body {
 .pdf-content pre,
 .pdf-content code {
   font-family: 'Courier New', monospace;
-  font-size: 9pt;
+  font-size: 8.5pt;
   background: #f5f5f5;
 }
 
 .pdf-content pre {
-  padding: 0.4cm;
+  padding: 0.35cm;
   white-space: pre-wrap;
   word-wrap: break-word;
   page-break-inside: avoid;
   line-height: 1.4;
-  margin: 0.5cm 0;
+  margin: 0.4cm 0;
 }
 
 .pdf-content code {
-  padding: 0.05cm 0.15cm;
+  padding: 0.04cm 0.12cm;
 }
 
 /* Tables */
 .pdf-content table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0.5cm 0;
-  font-size: 9pt;
+  margin: 0.4cm 0;
+  font-size: 8.5pt;
   page-break-inside: avoid;
 }
 
 .pdf-content th {
   background: #f5f5f5;
   border-bottom: 2px solid #333;
-  padding: 0.2cm 0.3cm;
+  padding: 0.15cm 0.25cm;
   text-align: left;
   font-weight: 600;
 }
 
 .pdf-content td {
   border-bottom: 1px solid #ddd;
-  padding: 0.2cm 0.3cm;
+  padding: 0.15cm 0.25cm;
 }
 
 /* Images */
@@ -264,23 +278,23 @@ body {
   width: auto;
   height: auto;
   display: block;
-  margin: 0.5cm auto;
+  margin: 0.4cm auto;
 }
 
 .pdf-content figure {
-  margin: 0.5cm 0;
+  margin: 0.4cm 0;
   page-break-inside: avoid;
 }
 
 .pdf-content figcaption {
-  font-size: 8pt;
+  font-size: 7.5pt;
   color: #777;
   text-align: center;
-  margin-top: 0.2cm;
+  margin-top: 0.15cm;
 }
 
 .pdf-content .wp-block-image {
-  margin: 0.5cm 0;
+  margin: 0.4cm 0;
   page-break-inside: avoid;
 }
 
@@ -293,12 +307,12 @@ body {
 /* Lists */
 .pdf-content ul,
 .pdf-content ol {
-  margin: 0.4cm 0;
-  padding-left: 1cm;
+  margin: 0.35cm 0;
+  padding-left: 0.8cm;
 }
 
 .pdf-content li {
-  margin-bottom: 0.2cm;
+  margin-bottom: 0.15cm;
 }
 
 /* Page breaks */
@@ -331,7 +345,7 @@ iframe,
 /* Cover blocks - show image only */
 .wp-block-cover {
   page-break-inside: avoid;
-  margin: 0.5cm 0;
+  margin: 0.4cm 0;
 }
 
 .wp-block-cover img {
@@ -342,19 +356,40 @@ iframe,
 
 /* Sidenotes inline */
 .sidenote,
-.sidenote-inline {
+.sidenote-inline,
+.wp-block-kunaal-sidenote {
   font-size: 8pt;
   color: #666;
   font-style: italic;
+  display: inline;
 }
 
-/* Footer */
+.sidenote::before {
+  content: "[";
+}
+
+.sidenote::after {
+  content: "]";
+}
+
+/* Charts - ensure they render properly */
+.wp-block-kunaal-chart {
+  page-break-inside: avoid;
+  margin: 0.4cm 0;
+}
+
+.wp-block-kunaal-chart svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Footer - at end of content */
 .pdf-footer {
-  margin-top: 1.2cm;
-  padding-top: 0.4cm;
+  margin-top: 0.8cm;
+  padding-top: 0.3cm;
   border-top: 1px solid #e0e0e0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 9pt;
+  font-size: 8pt;
   color: #888;
   text-align: center;
   letter-spacing: 0.01em;
@@ -372,8 +407,31 @@ iframe,
 /* Scrolly/Parallax sections - linearize */
 .scrolly-step,
 .parallax-content {
-  margin: 0.5cm 0;
-  padding: 0.3cm;
+  margin: 0.4cm 0;
+  padding: 0.25cm;
   background: #f9f9f9;
   border-left: 2px solid #1E5AFF;
+}
+
+/* Analysis blocks */
+.wp-block-kunaal-assumptions-register,
+.wp-block-kunaal-confidence-meter,
+.wp-block-kunaal-scenario-compare,
+.wp-block-kunaal-decision-log,
+.wp-block-kunaal-framework-matrix,
+.wp-block-kunaal-causal-loop,
+.wp-block-kunaal-rubric,
+.wp-block-kunaal-debate {
+  page-break-inside: avoid;
+  margin: 0.4cm 0;
+}
+
+/* Takeaways */
+.wp-block-kunaal-takeaways {
+  page-break-inside: avoid;
+}
+
+/* Timeline */
+.wp-block-kunaal-timeline {
+  page-break-inside: avoid;
 }

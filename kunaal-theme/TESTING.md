@@ -1,7 +1,53 @@
 # Testing Checklist
 
-**Theme Version**: 4.3.0  
+**Theme Version**: 4.5.0  
 **Last Updated**: December 25, 2025
+
+---
+
+## 🧪 v4.5.0 Testing
+
+### Inline Text Formats
+- [ ] **Sidenote**: Select text → toolbar button → enter note
+- [ ] **Sidenote**: Blue bullet (•) appears inline
+- [ ] **Sidenote**: Hover shows note in margin tooltip
+- [ ] **Sidenote**: Mobile tooltip positioning correct
+- [ ] **Highlight**: Apply to text, yellow underline appears
+- [ ] **Highlight**: Add annotation, shows on hover
+- [ ] **Highlight**: No annotation, just highlight style
+- [ ] **Definition**: Apply to term, dotted underline
+- [ ] **Definition**: Hover shows definition + label
+- [ ] **Key Term**: Subtle blue underline emphasis
+- [ ] **Data Reference**: Blue number styling
+- [ ] **Data Reference**: Hover shows source (and year)
+- [ ] Print/PDF: Inline formats degrade gracefully
+
+### About Page
+- [ ] Photo blends into background
+- [ ] Customizer fields work (headline, intro, bios)
+- [ ] Interests and Currently sections display
+- [ ] Social links render
+- [ ] Scroll-reveal animations work
+- [ ] Responsive on mobile
+
+### Contact Page
+- [ ] Message box submits via AJAX
+- [ ] Success animation displays
+- [ ] Social cards render (Email, LinkedIn, etc.)
+- [ ] WhatsApp QR displays correctly
+- [ ] Form validation (message required)
+
+### PDF Improvements
+- [ ] Narrower margins (book-like)
+- [ ] Custom header: Author left, Title right (italic)
+- [ ] Custom footer: Page X / Y (bottom right)
+- [ ] No browser header/footer text
+- [ ] Filename: `[Title] - by [Author].pdf`
+
+### LinkedIn Sharing
+- [ ] og:title includes "— by Author Name"
+- [ ] article:author set correctly
+- [ ] Share popup opens
 
 ---
 

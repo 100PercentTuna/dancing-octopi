@@ -249,6 +249,52 @@ function kunaal_enqueue_block_editor_assets() {
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_block_editor_assets');
 
 /**
+ * Register Custom Inline Formats
+ * Sidenote, Highlight, Definition, Key Term, Data Reference
+ */
+function kunaal_register_inline_formats() {
+    $formats_dir = KUNAAL_THEME_DIR . '/blocks/inline-formats';
+    $formats_uri = KUNAAL_THEME_URI . '/blocks/inline-formats';
+    
+    // Register editor script for inline formats
+    wp_register_script(
+        'kunaal-inline-formats',
+        $formats_uri . '/index.js',
+        array('wp-rich-text', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n'),
+        KUNAAL_THEME_VERSION,
+        true
+    );
+    
+    // Register styles for inline formats (both editor and frontend)
+    wp_register_style(
+        'kunaal-inline-formats-style',
+        $formats_uri . '/style.css',
+        array(),
+        KUNAAL_THEME_VERSION
+    );
+}
+add_action('init', 'kunaal_register_inline_formats', 5);
+
+/**
+ * Enqueue Inline Formats in Editor
+ */
+function kunaal_enqueue_inline_formats_editor() {
+    wp_enqueue_script('kunaal-inline-formats');
+    wp_enqueue_style('kunaal-inline-formats-style');
+}
+add_action('enqueue_block_editor_assets', 'kunaal_enqueue_inline_formats_editor');
+
+/**
+ * Enqueue Inline Formats Styles on Frontend
+ */
+function kunaal_enqueue_inline_formats_frontend() {
+    if (is_singular(array('essay', 'jotting', 'page'))) {
+        wp_enqueue_style('kunaal-inline-formats-style');
+    }
+}
+add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');
+
+/**
  * Register Custom Block Patterns
  */
 function kunaal_register_block_patterns() {

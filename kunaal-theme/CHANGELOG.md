@@ -4,6 +4,93 @@ All notable changes to the Kunaal Theme.
 
 ---
 
+## [4.5.0] - 2025-12-25
+
+### ✨ New Feature: Inline Text Formats
+
+Five new inline formats for rich essay writing, available in the block editor toolbar:
+
+#### Sidenote (Inline)
+- **Blue bullet marker** (•) appears inline with text
+- **Hover/click** reveals marginal note in elegant tooltip
+- Positioned in margin on desktop, tooltip on mobile
+- Uses Caveat handwriting font for notes
+
+#### Highlight
+- **Warm yellow highlight** for important passages
+- Optional **annotation** appears on hover
+- Great for marking key arguments or evidence
+
+#### Definition
+- **Dotted underline** for technical terms
+- Hover shows **definition tooltip**
+- "DEFINITION" label appears above tooltip
+
+#### Key Term
+- **Subtle blue underline emphasis** for important concepts
+- Lighter touch than highlight
+- Good for repeated key terms
+
+#### Data Reference
+- Style **statistics and data points**
+- Shows **source and year** on hover
+- Professional citation appearance
+
+### 🏠 New Pages
+
+#### About Page
+- Stunning hero section with photo blending effect
+- Customizable via WordPress Customizer:
+  - Photo (transparent PNG recommended)
+  - Headline, intro text
+  - Two bio paragraphs
+  - Interests and Currently sections
+- Social links and contact CTA
+- Scroll-reveal animations
+
+#### Contact Page
+- Casual "Say Hi" message box
+- Optional name/email (less formal feel)
+- AJAX form submission with success animation
+- Social links grid (Email, LinkedIn, X, Instagram, WhatsApp QR)
+- All content customizable via Customizer
+
+### 📄 PDF Improvements
+- **Narrower margins** (book-like: 1.5-1.8cm)
+- **Custom header**: "Author Name" (left) + "Essay Title" (right, italic)
+- **Custom footer**: Page X / Y (bottom right)
+- Removed browser's automatic header/footer text
+- Filename format: `[Title] - by [Author].pdf`
+- Tighter spacing throughout
+
+### 🔗 LinkedIn Sharing
+- Open Graph tags include author attribution
+- og:title format: "Title — by Author Name"
+- article:author links to LinkedIn profile
+- Twitter cards also include author credit
+
+### 🔧 Code Quality
+- Fixed duplicate Customizer setting for contact email
+- Comprehensive security review (all inputs sanitized)
+- Modern JavaScript (ES6+, IIFE scope)
+- 392 escape function instances verified
+
+---
+
+## [4.4.0] - 2025-12-25
+
+### Added
+- About Page template with Customizer controls
+- Contact Page template with AJAX form
+- Open Graph meta tags for social sharing
+- LinkedIn profile sharing optimization
+
+### Fixed
+- PDF margins and spacing
+- Duplicate Customizer setting removed
+
+---
+
 ## [4.3.0] - 2025-12-25
 
 ### 🎉 Major Release - All Epics Complete

@@ -589,11 +589,9 @@
 
         switch (platform) {
           case 'linkedin':
-            const linkedInText = titleWithAttribution;
-            const linkedinUrl = window.kunaalTheme?.linkedinUrl || '';
-            let finalLinkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-            finalLinkedInUrl += `&summary=${encodeURIComponent(linkedInText)}`;
-            shareUrl = finalLinkedInUrl;
+            // LinkedIn uses Open Graph tags from the page for share content
+            // The og:title includes "by Author" and article:author links to LinkedIn profile
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
             break;
           case 'x':
             const handleText = twitterHandle ? ` @${twitterHandle}` : '';
