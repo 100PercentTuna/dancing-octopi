@@ -24,17 +24,17 @@ $unit_position = $attributes['unitPosition'] ?? 'suffix';
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-// Parse data arrays - defined once globally
-if (!function_exists('kunaal_parse_chart_data')) {
-    function kunaal_parse_chart_data($str) {
+// Parse data arrays - wrapped in function_exists to prevent redeclaration
+if (!function_exists('kunaal_chart_parse_data')) {
+    function kunaal_chart_parse_data($str) {
         if (!$str) return array();
         return array_map('floatval', array_map('trim', explode(',', $str)));
     }
 }
 
-// Format value with unit - defined once globally
-if (!function_exists('kunaal_format_chart_value')) {
-    function kunaal_format_chart_value($val, $unit, $unit_position) {
+// Format value with unit - wrapped in function_exists to prevent redeclaration
+if (!function_exists('kunaal_chart_format_value')) {
+    function kunaal_chart_format_value($val, $unit, $unit_position) {
         $formatted = number_format($val, ($val == floor($val)) ? 0 : 1);
         if ($unit) {
             return $unit_position === 'prefix' ? $unit . $formatted : $formatted . $unit;
@@ -43,9 +43,9 @@ if (!function_exists('kunaal_format_chart_value')) {
     }
 }
 
-$data = kunaal_parse_chart_data($data_str);
-$data2 = kunaal_parse_chart_data($data2_str);
-$data3 = kunaal_parse_chart_data($data3_str);
+$data = kunaal_chart_parse_data($data_str);
+$data2 = kunaal_chart_parse_data($data2_str);
+$data3 = kunaal_chart_parse_data($data3_str);
 $labels = $labels_str ? array_map('trim', explode(',', $labels_str)) : array();
 $series_labels = $series_labels_str ? array_map('trim', explode(',', $series_labels_str)) : array('Series 1', 'Series 2', 'Series 3');
 
@@ -121,7 +121,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         
                         // Value
                         if ($show_values) {
-                            echo '<text x="' . ($margin['left'] + $bar_width + 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" font-size="12" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . ($margin['left'] + $bar_width + 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" font-size="12" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_chart_format_value($value, $unit, $unit_position) . '</text>';
                         }
                     }
                 } else {
@@ -152,7 +152,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         
                         // Value on top
                         if ($show_values) {
-                            echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($y - 8) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($y - 8) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_chart_format_value($value, $unit, $unit_position) . '</text>';
                         }
                         
                         // Label below
@@ -355,7 +355,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         
                         // Values
                         if ($show_values && $s_index === 0) {
-                            echo '<text x="' . $x . '" y="' . ($y - 10) . '" text-anchor="middle" font-size="10" fill="#333" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . $x . '" y="' . ($y - 10) . '" text-anchor="middle" font-size="10" fill="#333" font-family="var(--sans)">' . kunaal_chart_format_value($value, $unit, $unit_position) . '</text>';
                         }
                     }
                 }
@@ -426,7 +426,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 
                 // Center text for donut
                 if ($chart_type === 'donut' && $show_values) {
-                    echo '<text x="' . $center_x . '" y="' . ($center_y - 5) . '" text-anchor="middle" font-size="24" font-weight="700" fill="#333" font-family="var(--serif)">' . kunaal_format_chart_value($total, $unit, $unit_position) . '</text>';
+                    echo '<text x="' . $center_x . '" y="' . ($center_y - 5) . '" text-anchor="middle" font-size="24" font-weight="700" fill="#333" font-family="var(--serif)">' . kunaal_chart_format_value($total, $unit, $unit_position) . '</text>';
                     echo '<text x="' . $center_x . '" y="' . ($center_y + 18) . '" text-anchor="middle" font-size="12" fill="#666" font-family="var(--sans)">Total</text>';
                 }
                 
@@ -532,7 +532,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     if ($show_values) {
                         $label_y = $y - 8;
                         $sign = ($item['type'] === 'positive' && $item['value'] > 0) ? '+' : '';
-                        echo '<text x="' . ($x + $bar_width / 2) . '" y="' . $label_y . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . $sign . kunaal_format_chart_value($item['value'], $unit, $unit_position) . '</text>';
+                        echo '<text x="' . ($x + $bar_width / 2) . '" y="' . $label_y . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . $sign . kunaal_chart_format_value($item['value'], $unit, $unit_position) . '</text>';
                     }
                     
                     // X-axis label

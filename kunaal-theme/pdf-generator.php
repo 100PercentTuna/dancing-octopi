@@ -86,29 +86,22 @@ function kunaal_generate_pdf() {
         // Add header and page numbers via canvas
         $canvas = $dompdf->getCanvas();
         $font = $dompdf->getFontMetrics()->getFont('Helvetica');
-        $font_italic = $dompdf->getFontMetrics()->getFont('Helvetica', 'italic');
         
-        $canvas->page_script(function($pageNumber, $pageCount, $canvas, $fontMetrics) use ($font, $font_italic, $author_name, $title) {
+        $canvas->page_script(function($pageNumber, $pageCount, $canvas, $fontMetrics) use ($font, $author_name, $site_url) {
             $width = $canvas->get_width();
             $height = $canvas->get_height();
             
-            // Header: Author name on left, Essay title on right (gray, unobtrusive)
-            $header_y = 28;
-            $margin_x = 51; // ~1.8cm in points
-            
-            // Left: Author name
-            $canvas->text($margin_x, $header_y, $author_name, $font, 8, array(0.55, 0.55, 0.55));
-            
-            // Right: Essay title (italic, truncated if needed)
-            $title_text = mb_strlen($title) > 50 ? mb_substr($title, 0, 47) . '...' : $title;
-            $title_width = $fontMetrics->getTextWidth($title_text, $font_italic, 8);
-            $canvas->text($width - $margin_x - $title_width, $header_y, $title_text, $font_italic, 8, array(0.55, 0.55, 0.55));
+            // Header: Author name | website (gray, unobtrusive)
+            $header_y = 30;
+            $header_text = $author_name . '  •  ' . parse_url($site_url, PHP_URL_HOST);
+            $header_width = $fontMetrics->getTextWidth($header_text, $font, 8);
+            $canvas->text(($width - $header_width) / 2, $header_y, $header_text, $font, 8, array(0.6, 0.6, 0.6));
             
             // Footer: Page X of Y (bottom right)
-            $footer_y = $height - 35;
-            $page_text = "{$pageNumber} / {$pageCount}";
-            $page_width = $fontMetrics->getTextWidth($page_text, $font, 8);
-            $canvas->text($width - $margin_x - $page_width, $footer_y, $page_text, $font, 8, array(0.55, 0.55, 0.55));
+            $footer_y = $height - 30;
+            $page_text = "Page {$pageNumber} of {$pageCount}";
+            $page_width = $fontMetrics->getTextWidth($page_text, $font, 9);
+            $canvas->text($width - 56 - $page_width, $footer_y, $page_text, $font, 9, array(0.5, 0.5, 0.5));
         });
         
         $dompdf->stream($filename, array('Attachment' => false));

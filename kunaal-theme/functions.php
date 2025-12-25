@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.5.3');
+define('KUNAAL_THEME_VERSION', '4.6.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -99,6 +99,10 @@ function kunaal_add_open_graph_tags() {
     }
     
     global $post;
+    if (!$post) {
+        return;
+    }
+    
     $author_first = get_theme_mod('kunaal_author_first_name', 'Kunaal');
     $author_last = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
     $author_name = $author_first . ' ' . $author_last;
@@ -273,8 +277,9 @@ add_action('init', 'kunaal_register_post_types');
 function kunaal_add_meta_boxes() {
     // Only add meta boxes if NOT using Gutenberg
     if (function_exists('use_block_editor_for_post_type')) {
-        $post_type = get_current_screen()->post_type ?? '';
-        if (use_block_editor_for_post_type($post_type)) {
+        $screen = get_current_screen();
+        $post_type = $screen ? $screen->post_type : '';
+        if ($post_type && use_block_editor_for_post_type($post_type)) {
             return; // Gutenberg is active, use JS sidebar instead
         }
     }

@@ -1,6 +1,6 @@
 # Kunaal Theme Guide
 
-**Version**: 4.5.0  
+**Version**: 4.3.0  
 **Last Updated**: December 25, 2025
 
 ---
@@ -76,36 +76,6 @@ The theme includes 45+ custom Gutenberg blocks organized into categories:
 | **Parallax Section** | Parallax background | Full-width, overlay content |
 | **Scrollytelling** | Pinned scene | Steps, dynamic content |
 | **Reveal Wrapper** | Scroll animation | Fade, slide, scale effects |
-
----
-
-## ✏️ Inline Text Formats
-
-Custom rich text formats available in the block editor toolbar when editing any text:
-
-| Format | Icon | Description | Usage |
-|--------|------|-------------|-------|
-| **Sidenote** | Blue bullet | Add marginal notes | Select text → Click Sidenote → Enter note |
-| **Highlight** | Yellow marker | Highlight with optional annotation | Select text → Click Highlight → Optional note |
-| **Definition** | Abc icon | Add term definitions | Select term → Click Definition → Enter definition |
-| **Key Term** | Key icon | Subtle emphasis for concepts | Select term → Click Key Term |
-| **Data Reference** | Chart icon | Cite statistics with source | Select number → Click Data Ref → Enter source |
-
-### How Inline Formats Appear
-
-- **Sidenote**: Blue bullet (•) inline, note appears in margin tooltip on hover
-- **Highlight**: Warm yellow underline, annotation appears above on hover
-- **Definition**: Dotted underline, definition appears in tooltip with label
-- **Key Term**: Subtle blue underline emphasis
-- **Data Reference**: Blue styling with superscript, source appears on hover
-
-### Print/PDF Behavior
-
-All inline formats gracefully degrade in print:
-- Sidenotes render as inline `[note text]`
-- Highlights show underline only
-- Definitions show as `[definition]` after term
-- Data references show source in parentheses
 
 ---
 

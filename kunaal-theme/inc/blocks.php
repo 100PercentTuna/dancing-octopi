@@ -254,85 +254,10 @@ function kunaal_enqueue_block_editor_assets() {
 }
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_block_editor_assets');
 
-/**
- * Register Custom Inline Formats
- * Sidenote, Highlight, Definition, Key Term, Data Reference
+/*
+ * INLINE FORMATS - TEMPORARILY DISABLED FOR DEBUGGING
+ * Re-enable once core theme is stable
  */
-function kunaal_register_inline_formats() {
-    $formats_dir = KUNAAL_THEME_DIR . '/blocks/inline-formats';
-    $formats_uri = KUNAAL_THEME_URI . '/blocks/inline-formats';
-    
-    // Only register if file exists
-    if (!file_exists($formats_dir . '/index.js')) {
-        return;
-    }
-    
-    // Register editor script for inline formats
-    // Note: wp-dom-ready is needed for proper initialization
-    wp_register_script(
-        'kunaal-inline-formats',
-        $formats_uri . '/index.js',
-        array('wp-rich-text', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-dom-ready'),
-        KUNAAL_THEME_VERSION,
-        true
-    );
-    
-    // Register styles for inline formats (both editor and frontend)
-    wp_register_style(
-        'kunaal-inline-formats-style',
-        $formats_uri . '/style.css',
-        array(),
-        KUNAAL_THEME_VERSION
-    );
-}
-add_action('init', 'kunaal_register_inline_formats', 5);
-
-/**
- * Enqueue Inline Formats in Editor
- */
-function kunaal_enqueue_inline_formats_editor() {
-    // Only run in admin
-    if (!is_admin()) {
-        return;
-    }
-    
-    // Only enqueue in block editor context
-    if (!function_exists('get_current_screen')) {
-        return;
-    }
-    
-    $screen = get_current_screen();
-    if (!$screen) {
-        return;
-    }
-    
-    // Check if we're editing a supported post type
-    $supported_types = array('essay', 'jotting', 'page', 'post');
-    if (!isset($screen->post_type) || !in_array($screen->post_type, $supported_types)) {
-        return;
-    }
-    
-    // Only enqueue if script is registered (file exists)
-    if (wp_script_is('kunaal-inline-formats', 'registered')) {
-        wp_enqueue_script('kunaal-inline-formats');
-    }
-    if (wp_style_is('kunaal-inline-formats-style', 'registered')) {
-        wp_enqueue_style('kunaal-inline-formats-style');
-    }
-}
-add_action('enqueue_block_editor_assets', 'kunaal_enqueue_inline_formats_editor');
-
-/**
- * Enqueue Inline Formats Styles on Frontend
- */
-function kunaal_enqueue_inline_formats_frontend() {
-    if (is_singular(array('essay', 'jotting', 'page'))) {
-        if (wp_style_is('kunaal-inline-formats-style', 'registered')) {
-            wp_enqueue_style('kunaal-inline-formats-style');
-        }
-    }
-}
-add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');
 
 /**
  * Register Custom Block Patterns
