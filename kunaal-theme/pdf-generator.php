@@ -29,14 +29,7 @@ function kunaal_generate_pdf() {
     }
     
     // Check if DOMPDF is available
-    if (!class_exists('Dompdf\Dompdf')) {
-        wp_die(
-            '<h1>PDF Generation Not Available</h1>
-            <p>DOMPDF is not installed. Please run <code>composer install</code> in the theme directory.</p>
-            <p><a href="javascript:history.back()">Go back</a></p>',
-            'PDF Generator Error'
-        );
-    }
+    $use_dompdf = class_exists('Dompdf\Dompdf');
     
     $post_id = absint($_GET['post_id']);
     $post = get_post($post_id);
@@ -91,66 +84,92 @@ function kunaal_generate_pdf() {
         'post_type'   => $post_type_label,
     ));
     
-    // Configure DOMPDF
-    $options = new Options();
-    $options->set('isRemoteEnabled', true);
-    $options->set('isHtml5ParserEnabled', true);
-    $options->set('defaultFont', 'Helvetica');
-    $options->set('dpi', 150);
-    $options->set('defaultPaperSize', 'A4');
+    // Generate filename: "Kunaal Wadhwa – Essay – Title.pdf"
+    $safe_title = sanitize_file_name($title);
+    $filename = "{$author_name} - {$post_type_label} - {$safe_title}.pdf";
     
-    // Create DOMPDF instance
-    $dompdf = new Dompdf($options);
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-    
-    // Add page numbers
-    $canvas = $dompdf->getCanvas();
-    $font = $dompdf->getFontMetrics()->getFont('Helvetica');
-    $page_count = $canvas->get_page_count();
-    
-    for ($i = 1; $i <= $page_count; $i++) {
+    if ($use_dompdf) {
+        // Use DOMPDF for proper PDF generation
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('defaultFont', 'Helvetica');
+        $options->set('dpi', 150);
+        $options->set('defaultPaperSize', 'A4');
+        
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        // Add page numbers via canvas
+        $canvas = $dompdf->getCanvas();
+        $font = $dompdf->getFontMetrics()->getFont('Helvetica');
+        
         $canvas->page_script(function($pageNumber, $pageCount, $canvas, $fontMetrics) use ($font, $author_name, $title, $date, $post_url) {
             $width = $canvas->get_width();
             $height = $canvas->get_height();
             
             // Header: Date (left) | Title (center) | Author (right)
             $header_y = 25;
-            
-            // Left: Date
             $canvas->text(40, $header_y, $date, $font, 8, array(0.4, 0.4, 0.4));
             
-            // Center: Title (truncated if too long)
             $short_title = mb_strlen($title) > 50 ? mb_substr($title, 0, 47) . '...' : $title;
             $title_width = $fontMetrics->getTextWidth($short_title, $font, 8);
             $canvas->text(($width - $title_width) / 2, $header_y, $short_title, $font, 8, array(0.4, 0.4, 0.4));
             
-            // Right: Author
             $author_width = $fontMetrics->getTextWidth($author_name, $font, 8);
             $canvas->text($width - 40 - $author_width, $header_y, $author_name, $font, 8, array(0.4, 0.4, 0.4));
             
             // Footer: URL (left) | Page X of Y (right)
             $footer_y = $height - 25;
-            
-            // Left: URL
             $canvas->text(40, $footer_y, $post_url, $font, 7, array(0.5, 0.5, 0.5));
             
-            // Right: Page X of Y
             $page_text = "Page {$pageNumber} of {$pageCount}";
             $page_width = $fontMetrics->getTextWidth($page_text, $font, 8);
             $canvas->text($width - 40 - $page_width, $footer_y, $page_text, $font, 8, array(0.4, 0.4, 0.4));
         });
+        
+        // Output PDF
+        $dompdf->stream($filename, array('Attachment' => false));
+        
+    } else {
+        // Fallback: Browser print dialog
+        // This works but doesn't have server-generated page numbers
+        $styles = kunaal_get_pdf_styles();
+        
+        echo '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>' . esc_html($title) . '</title>
+    <style>
+    ' . $styles . '
+    @media print {
+        @page { margin: 2cm; }
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
-    
-    // Generate filename: "Kunaal Wadhwa – Essay – Title.pdf"
-    $safe_title = sanitize_file_name($title);
-    $filename = "{$author_name} – {$post_type_label} – {$safe_title}.pdf";
-    
-    // Output PDF
-    $dompdf->stream($filename, array(
-        'Attachment' => false // Display in browser, set to true for download
-    ));
+    .print-notice { 
+        background: #fff3cd; 
+        border: 1px solid #ffc107; 
+        padding: 1rem; 
+        margin-bottom: 2rem; 
+        border-radius: 4px;
+        font-family: sans-serif;
+    }
+    @media print { .print-notice { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="print-notice">
+        <strong>Print to PDF:</strong> Use your browser\'s print dialog (Ctrl/Cmd + P) and select "Save as PDF" as the destination.
+        For the best experience, <a href="https://getcomposer.org" target="_blank">install Composer</a> and run <code>composer install</code> in the theme folder.
+    </div>
+    ' . $html . '
+    <script>window.print();</script>
+</body>
+</html>';
+    }
     
     exit;
 }
@@ -223,8 +242,8 @@ function kunaal_build_pdf_html($data) {
  * Process content for PDF output
  */
 function kunaal_process_content_for_pdf($content) {
-    // Expand accordions
-    $content = preg_replace('/<details([^>]*)>/', '<details$1 open>', $content);
+    // Expand accordions (only add 'open' if not already present)
+    $content = preg_replace('/<details(?![^>]*\bopen\b)([^>]*)>/', '<details$1 open>', $content);
     
     // Remove interactive elements
     $content = preg_replace('/<button[^>]*>.*?<\/button>/s', '', $content);

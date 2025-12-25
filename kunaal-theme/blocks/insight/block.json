@@ -24,7 +24,7 @@
         "anchor": true,
         "className": true
     },
-    "editorScript": "file:./edit.js",
+    "editorScript": "kunaal-insight-editor",
     "render": "file:./render.php",
     "style": "file:./style.css"
 }

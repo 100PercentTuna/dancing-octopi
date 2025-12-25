@@ -47,12 +47,64 @@ function kunaal_register_block_categories($categories) {
 add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
 
 /**
+ * Register block editor scripts
+ */
+function kunaal_register_block_scripts() {
+    $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
+    $blocks_uri = KUNAAL_THEME_URI . '/blocks';
+    $version = KUNAAL_THEME_VERSION;
+    
+    // WordPress dependencies for block editor scripts
+    $editor_deps = array(
+        'wp-blocks',
+        'wp-element',
+        'wp-block-editor',
+        'wp-components',
+        'wp-i18n',
+    );
+    
+    // Register editor scripts for each block
+    $blocks = array(
+        'insight'   => 'kunaal-insight-editor',
+        'pullquote' => 'kunaal-pullquote-editor',
+        'accordion' => 'kunaal-accordion-editor',
+        'sidenote'  => 'kunaal-sidenote-editor',
+    );
+    
+    foreach ($blocks as $folder => $handle) {
+        $script_path = $blocks_dir . '/' . $folder . '/edit.js';
+        if (file_exists($script_path)) {
+            wp_register_script(
+                $handle,
+                $blocks_uri . '/' . $folder . '/edit.js',
+                $editor_deps,
+                $version,
+                true
+            );
+        }
+    }
+    
+    // Register sidenote view script (frontend)
+    $sidenote_view = $blocks_dir . '/sidenote/view.js';
+    if (file_exists($sidenote_view)) {
+        wp_register_script(
+            'kunaal-sidenote-view',
+            $blocks_uri . '/sidenote/view.js',
+            array(),
+            $version,
+            true
+        );
+    }
+}
+add_action('init', 'kunaal_register_block_scripts', 5);
+
+/**
  * Register Custom Gutenberg Blocks
  */
 function kunaal_register_blocks() {
     $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
     
-    // Get all block directories
+    // Block directories to register
     $block_folders = array(
         'insight',
         'pullquote',
@@ -67,7 +119,7 @@ function kunaal_register_blocks() {
         }
     }
 }
-add_action('init', 'kunaal_register_blocks');
+add_action('init', 'kunaal_register_blocks', 10);
 
 /**
  * Enqueue block editor assets
@@ -79,6 +131,14 @@ function kunaal_enqueue_block_editor_assets() {
         'https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap',
         array(),
         null
+    );
+    
+    // Enqueue theme's main stylesheet for block previews
+    wp_enqueue_style(
+        'kunaal-blocks-editor',
+        KUNAAL_THEME_URI . '/style.css',
+        array(),
+        KUNAAL_THEME_VERSION
     );
 }
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_block_editor_assets');
