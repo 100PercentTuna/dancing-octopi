@@ -20,6 +20,40 @@ $contact_intro = get_theme_mod('kunaal_contact_intro', "I'd love to hear from yo
 $contact_response = get_theme_mod('kunaal_contact_response_time', '');
 ?>
 
+<!-- Critical inline styles as fallback -->
+<style>
+.contact-premium { min-height: 100vh; background: linear-gradient(180deg, #FDFCFB 0%, #F9F7F4 100%); padding: 80px 24px; display: flex; align-items: center; justify-content: center; }
+.contact-premium .contact-wrapper { width: 100%; max-width: 480px; }
+.contact-premium .contact-card { background: #FFFFFF; border-radius: 12px; padding: 48px 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 12px 24px rgba(0,0,0,0.04); }
+.contact-premium .contact-header { text-align: center; margin-bottom: 40px; }
+.contact-premium .contact-headline { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 36px; font-weight: 400; color: #0b1220; margin: 0 0 12px; }
+.contact-premium .contact-intro { font-size: 16px; color: #6b7280; margin: 0; }
+.contact-premium .contact-form { display: flex; flex-direction: column; gap: 28px; }
+.contact-premium .form-field { position: relative; }
+.contact-premium .form-field input, .contact-premium .form-field textarea { width: 100%; padding: 16px 0; border: none; border-bottom: 1px solid #E5E5E5; background: transparent; font-size: 16px; font-family: inherit; color: #0b1220; box-sizing: border-box; }
+.contact-premium .form-field input:focus, .contact-premium .form-field textarea:focus { outline: none; border-bottom: 2px solid #1E5AFF; }
+.contact-premium .form-field label { position: absolute; left: 0; top: 16px; font-size: 16px; color: #9CA3AF; pointer-events: none; transition: all 0.3s ease; }
+.contact-premium .form-field input:focus ~ label, .contact-premium .form-field input:not(:placeholder-shown) ~ label { transform: translateY(-24px) scale(0.75); color: #1E5AFF; }
+.contact-premium .textarea-field { margin-top: 8px; }
+.contact-premium .textarea-field textarea { min-height: 140px; padding: 16px; border: 1px solid #E5E5E5; border-radius: 8px; resize: vertical; }
+.contact-premium .textarea-field textarea:focus { border-color: #1E5AFF; }
+.contact-premium .textarea-field label { left: 16px; top: 16px; background: white; padding: 0 4px; }
+.contact-premium .textarea-field textarea:focus ~ label, .contact-premium .textarea-field textarea:not(:placeholder-shown) ~ label { transform: translateY(-24px) scale(0.75); color: #1E5AFF; }
+.contact-premium .submit-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px 32px; margin-top: 8px; background: #0b1220; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
+.contact-premium .submit-btn:hover { background: #1E5AFF; transform: translateY(-2px); }
+.contact-premium .submit-btn .btn-loading, .contact-premium .submit-btn .btn-success { display: none; }
+.contact-premium .submit-btn.is-loading .btn-text, .contact-premium .submit-btn.is-loading .btn-arrow { display: none; }
+.contact-premium .submit-btn.is-loading .btn-loading { display: inline; }
+.contact-premium .submit-btn.is-success { background: #059669; }
+.contact-premium .submit-btn.is-success .btn-text, .contact-premium .submit-btn.is-success .btn-arrow, .contact-premium .submit-btn.is-success .btn-loading { display: none; }
+.contact-premium .submit-btn.is-success .btn-success { display: inline; }
+.contact-premium .contact-alternatives { margin-top: 40px; text-align: center; }
+.contact-premium .alt-divider { display: block; font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+.contact-premium .alt-icons { display: flex; justify-content: center; gap: 16px; }
+.contact-premium .alt-icon-link { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid #E5E5E5; color: #6b7280; transition: all 0.3s ease; }
+.contact-premium .alt-icon-link:hover { border-color: #1E5AFF; color: #1E5AFF; transform: scale(1.1); }
+</style>
+
 <main class="contact-premium">
     
     <div class="contact-wrapper">

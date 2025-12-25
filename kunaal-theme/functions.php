@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.9.0');
+define('KUNAAL_THEME_VERSION', '4.9.1');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -89,7 +89,11 @@ function kunaal_enqueue_assets() {
     ));
     
     // About page and Contact page assets
-    if (is_page_template('page-about.php') || is_page_template('page-contact.php')) {
+    // Check by slug as template detection can be unreliable
+    $is_about_page = is_page_template('page-about.php') || is_page('about');
+    $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
+    
+    if ($is_about_page || $is_contact_page) {
         // Cormorant Garamond font
         wp_enqueue_style(
             'kunaal-cormorant-font',
@@ -98,6 +102,10 @@ function kunaal_enqueue_assets() {
             null
         );
         
+    }
+    
+    // About page specific assets (heavier libraries)
+    if ($is_about_page) {
         // Leaflet CSS
         wp_enqueue_style(
             'leaflet-css',
@@ -110,7 +118,7 @@ function kunaal_enqueue_assets() {
         wp_enqueue_style(
             'kunaal-about-page',
             KUNAAL_THEME_URI . '/assets/css/about-page.css',
-            array('kunaal-theme-style', 'leaflet-css'),
+            array('kunaal-theme-style'),
             KUNAAL_THEME_VERSION
         );
         

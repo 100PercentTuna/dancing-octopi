@@ -567,49 +567,43 @@
 
     // Share buttons functionality
     document.querySelectorAll('[data-share]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const platform = btn.dataset.share;
-        const url = encodeURIComponent(window.location.href);
+        const pageUrl = window.location.href;
+        const encodedUrl = encodeURIComponent(pageUrl);
         const rawTitle = document.title;
         
         // Use custom share text if available
-        const shareText = window.kunaalTheme?.shareText || '';
         const twitterHandle = window.kunaalTheme?.twitterHandle || '';
-        const authorName = window.kunaalTheme?.authorName || '';
         
-        // Build share text with "by Author" attribution
-        let titleWithAttribution = rawTitle;
-        if (authorName) {
-          titleWithAttribution = rawTitle + ' by ' + authorName;
-        }
-        const fullShareText = shareText ? shareText + ' ' + titleWithAttribution : titleWithAttribution;
-        const title = encodeURIComponent(fullShareText);
-        
-        let shareUrl;
+        let shareUrl = null;
 
         switch (platform) {
           case 'linkedin':
-            // LinkedIn only reads Open Graph meta tags - URL parameter only
-            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+            // LinkedIn share URL - relies on Open Graph meta tags
+            shareUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl;
             break;
           case 'x':
             // X/Twitter with proper text formatting
-            const tweetText = rawTitle + (twitterHandle ? ` via @${twitterHandle}` : '');
-            shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${encodeURIComponent(tweetText)}`;
+            const tweetText = rawTitle + (twitterHandle ? ' via @' + twitterHandle : '');
+            shareUrl = 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=' + encodeURIComponent(tweetText);
             break;
           case 'whatsapp':
-            shareUrl = `https://wa.me/?text=${title}%20${url}`;
+            shareUrl = 'https://wa.me/?text=' + encodeURIComponent(rawTitle + ' ' + pageUrl);
             break;
           case 'email':
-            shareUrl = `mailto:?subject=${encodeURIComponent(rawTitle)}&body=${title}%20${url}`;
-            break;
+            window.location.href = 'mailto:?subject=' + encodeURIComponent(rawTitle) + '&body=' + encodeURIComponent(rawTitle + '\n\n' + pageUrl);
+            return;
           case 'copy':
-            navigator.clipboard.writeText(window.location.href).then(() => {
-              const label = btn.querySelector('.shareLabel');
-              if (label) {
-                const originalText = label.textContent;
-                label.textContent = 'Copied!';
-                setTimeout(() => { label.textContent = originalText; }, 1500);
+            navigator.clipboard.writeText(pageUrl).then(() => {
+              const tip = btn.querySelector('.tip');
+              if (tip) {
+                const originalText = tip.textContent;
+                tip.textContent = 'Copied!';
+                setTimeout(() => { tip.textContent = originalText; }, 1500);
               }
             });
             return;
@@ -620,7 +614,14 @@
         }
 
         if (shareUrl) {
-          window.open(shareUrl, '_blank', 'noopener,width=600,height=400');
+          // Open in new window - must be synchronous with user action to avoid popup blockers
+          const win = window.open(shareUrl, '_blank', 'width=600,height=500,menubar=no,toolbar=no,resizable=yes,scrollbars=yes');
+          if (win) {
+            win.focus();
+          } else {
+            // Fallback: navigate to the URL directly
+            window.location.href = shareUrl;
+          }
         }
       });
     });

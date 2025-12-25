@@ -15,19 +15,24 @@ if (file_exists(get_template_directory() . '/inc/interest-icons.php')) {
     require_once get_template_directory() . '/inc/interest-icons.php';
 }
 
-// Get basic info
+// Get basic info - with sensible defaults
 $first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
 $last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
-$full_name = $first_name . ' ' . $last_name;
-$tagline = get_theme_mod('kunaal_author_tagline', '');
+$full_name = trim($first_name . ' ' . $last_name);
+if (empty($full_name)) {
+    $full_name = get_bloginfo('name');
+}
+$tagline = get_theme_mod('kunaal_author_tagline', get_bloginfo('description'));
 $avatar = get_theme_mod('kunaal_avatar', '');
 $email = get_theme_mod('kunaal_contact_email', '');
 $linkedin = get_theme_mod('kunaal_linkedin_handle', '');
 $twitter = get_theme_mod('kunaal_twitter_handle', '');
 
-// Hero settings
-$about_greeting = get_theme_mod('kunaal_about_greeting', '');
-$about_photo = get_theme_mod('kunaal_about_photo', $avatar);
+// Hero settings - fall back to avatar if no specific about photo
+$about_photo = get_theme_mod('kunaal_about_photo', '');
+if (empty($about_photo)) {
+    $about_photo = $avatar;
+}
 
 // Section toggles
 $show_bio = get_theme_mod('kunaal_about_show_bio', true);
@@ -91,6 +96,29 @@ if (!empty($interests_list)) {
 $chapter = 0;
 ?>
 
+<!-- Critical inline styles as fallback -->
+<style>
+.about-page-premium { background: #FDFCFB; color: #0b1220; min-height: 100vh; }
+.about-hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.hero-content { text-align: center; padding: 24px; }
+.hero-portrait { width: 200px; height: 200px; border-radius: 50%; margin: 0 auto 40px; overflow: hidden; border: 2px solid #1E5AFF; }
+.hero-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.hero-portrait .initials { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #1E5AFF; color: white; font-size: 56px; }
+.hero-name { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 48px; font-weight: 400; margin: 0 0 16px; }
+.hero-tagline { font-size: 18px; color: #6b7280; max-width: 480px; margin: 0 auto; }
+.about-chapter { padding: 120px 24px; }
+.chapter-container { max-width: 680px; margin: 0 auto; }
+.chapter-container.wide { max-width: 1000px; }
+.chapter-number { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #1E5AFF; }
+.chapter-title { font-size: 14px; letter-spacing: 0.15em; text-transform: uppercase; color: #6b7280; margin: 0 0 48px; }
+.bio-content { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; line-height: 1.8; }
+.about-connect { text-align: center; padding: 120px 24px; }
+.connect-heading { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 32px; margin: 0 0 40px; }
+.connect-icons { display: flex; justify-content: center; gap: 16px; margin-bottom: 32px; }
+.connect-icon-link { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 1px solid #E5E5E5; border-radius: 50%; color: #6b7280; text-decoration: none; transition: all 0.3s ease; }
+.connect-icon-link:hover { border-color: #1E5AFF; color: #1E5AFF; }
+</style>
+
 <main class="about-page-premium">
 
     <!-- ========================================
@@ -116,22 +144,26 @@ $chapter = 0;
     <!-- ========================================
          CHAPTER 1 - Bio / Introduction
          ======================================== -->
-    <?php if ($show_bio) : $chapter++; ?>
+    <?php if ($show_bio) : $chapter++; 
+        // Get page content
+        $bio_content = '';
+        while (have_posts()) : the_post();
+            $bio_content = get_the_content();
+        endwhile;
+        // Only show section if there's content
+        if (!empty(trim(strip_tags($bio_content)))) :
+    ?>
     <section class="about-step about-chapter about-bio-section">
         <div class="chapter-container">
             <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
             <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($bio_title); ?></h2>
             
             <div class="bio-content reveal reveal-stagger-2">
-                <?php 
-                while (have_posts()) : the_post();
-                    the_content();
-                endwhile;
-                ?>
+                <?php echo apply_filters('the_content', $bio_content); ?>
             </div>
         </div>
     </section>
-    <?php endif; ?>
+    <?php endif; endif; ?>
 
     <!-- ========================================
          INTERSTITIAL - Full Bleed Image
