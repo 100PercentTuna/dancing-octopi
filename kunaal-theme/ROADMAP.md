@@ -1,6 +1,6 @@
 # Theme Development Roadmap
 
-**Last Updated**: Version 4.1.0 - December 25, 2025
+**Last Updated**: Version 4.2.0 - December 25, 2025
 
 ---
 
@@ -40,15 +40,19 @@
 
 ## 🚧 IN PROGRESS
 
-### Epic 4 — Data Visualization Blocks (Started)
+### Epic 4 — Data Visualization Blocks (Enhanced)
 **Completed:**
 - ✅ Publication Table - Styled data table with source/caption
 - ✅ Flow Chart + Step - Process diagram with step types
+- ✅ Chart Block - Unified chart system with bar (vertical/horizontal), line, and pie charts
+  - User-friendly data entry interface
+  - Customizable labels, colors, source, caption
+  - Theme color palette integration
 
-**Remaining:**
-- [ ] Unified Chart Block - Chart type selector with data entry
-- [ ] Chart Types: Bar, line, pie, stacked, waterfall, bubble
-- [ ] Advanced: Heatmap, sankey, network graph
+**Remaining (Advanced):**
+- [ ] Stacked/clustered bar charts
+- [ ] Waterfall, bubble charts
+- [ ] Heatmap, sankey, network graph
 - [ ] Map visualizations
 
 ---
@@ -81,30 +85,42 @@
 
 ## 📊 PROGRESS METRICS
 
-**Blocks Completed**: 42
+**Blocks Completed**: 43
 - Editorial: 22 blocks
 - Analysis: 11 blocks
 - Interactive: 3 blocks
-- Data: 4 blocks (started)
+- Data: 5 blocks (Chart block added)
 
 **Epic Completion**:
 - Epic 0: ✅ 100%
 - Epic 1: ✅ 100%
 - Epic 2: ✅ 100%
 - Epic 3: ✅ 100% ⭐ NEW
-- Epic 4: 🟡 25% (4/15+ blocks)
+- Epic 4: 🟡 35% (5/15+ blocks)
 - Epic 5: ✅ 100% ⭐ NEW
-- Epic 6: ⚪ 0%
+- Epic 6: ✅ 100%
 - Epic 7: ✅ 100%
 - Epic 8: 🟡 50%
 - Epic 9: ⚪ 0%
 - Epic 10: 🟡 30%
 
-**Overall Progress**: ~70% of planned features
+**Overall Progress**: ~75% of planned features
 
 ---
 
 ## 📝 CHANGELOG
+
+### v4.2.0 (December 25, 2025) - Bug Fixes + Chart Block
+**Critical Fixes:**
+- PDF colors now preserved (not black-and-white)
+- Sidenote font changed to Caveat (Google Fonts) - loads correctly
+- Essay/Jotting titles now serif and softer color
+- Fixed regex bug: duplicate 'open' attribute in PDF
+
+**New:**
+- Chart Block: Bar (vertical/horizontal), line, pie charts
+- Share dock: PDF download in share panel
+- Documentation: README.md, CHANGELOG.md
 
 ### v4.1.0 (December 25, 2025) - Major Release
 **Epic 5 Complete + Epic 3 Complete + Epic 4 Started**
