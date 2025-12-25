@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.7.1');
+define('KUNAAL_THEME_VERSION', '4.8.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -861,44 +861,23 @@ function kunaal_customize_register($wp_customize) {
     ));
     
     // =====================================================
-    // ABOUT PAGE SECTION
+    // ABOUT PAGE - HERO SECTION
     // =====================================================
-    $wp_customize->add_section('kunaal_about_page', array(
-        'title' => 'About Page',
+    $wp_customize->add_section('kunaal_about_hero', array(
+        'title' => 'About: Hero',
         'priority' => 50,
-        'description' => 'Customize the About page content. Create a page with the "About Page" template.',
+        'description' => 'Hero section at top of About page.',
     ));
     
-    $wp_customize->add_setting('kunaal_about_headline', array(
+    $wp_customize->add_setting('kunaal_about_greeting', array(
         'default' => '',
         'sanitize_callback' => 'sanitize_text_field',
     ));
-    $wp_customize->add_control('kunaal_about_headline', array(
-        'label' => 'Headline',
-        'description' => 'Leave blank for "Hello, I\'m [First Name]"',
-        'section' => 'kunaal_about_page',
+    $wp_customize->add_control('kunaal_about_greeting', array(
+        'label' => 'Greeting',
+        'description' => 'e.g., "Hi, I\'m Kunaal." Leave blank for default.',
+        'section' => 'kunaal_about_hero',
         'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_intro', array(
-        'default' => 'I write essays exploring ideas at the intersection of technology, society, and human behavior.',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_intro', array(
-        'label' => 'Introduction',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_bio', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_bio', array(
-        'label' => 'Biography',
-        'description' => 'Full bio text. HTML allowed.',
-        'section' => 'kunaal_about_page',
-        'type' => 'textarea',
     ));
     
     $wp_customize->add_setting('kunaal_about_photo', array(
@@ -906,20 +885,289 @@ function kunaal_customize_register($wp_customize) {
         'sanitize_callback' => 'esc_url_raw',
     ));
     $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'kunaal_about_photo', array(
-        'label' => 'About Photo',
-        'description' => 'Large photo for the About page (falls back to Avatar)',
-        'section' => 'kunaal_about_page',
+        'label' => 'Hero Photo',
+        'description' => 'Large photo for hero (falls back to Avatar)',
+        'section' => 'kunaal_about_hero',
     )));
     
-    $wp_customize->add_setting('kunaal_about_interests', array(
-        'default' => 'Systems thinking, behavioral economics, data visualization, strategic analysis',
+    // =====================================================
+    // ABOUT PAGE - BIO SECTION
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_bio', array(
+        'title' => 'About: Bio',
+        'priority' => 51,
+        'description' => 'Your personal bio/story. Use the page editor for the main content.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_bio', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_bio', array(
+        'label' => 'Show Bio Section',
+        'section' => 'kunaal_about_bio',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_bio_title', array(
+        'default' => 'About',
         'sanitize_callback' => 'sanitize_text_field',
     ));
-    $wp_customize->add_control('kunaal_about_interests', array(
-        'label' => 'Areas of Interest',
-        'description' => 'Comma-separated list of interests/topics',
-        'section' => 'kunaal_about_page',
+    $wp_customize->add_control('kunaal_about_bio_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_bio',
+        'type' => 'text',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - WORLD MAP
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_map', array(
+        'title' => 'About: World Map',
+        'priority' => 52,
+        'description' => 'Interactive map showing places you\'ve been.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_map', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_map', array(
+        'label' => 'Show World Map',
+        'section' => 'kunaal_about_map',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_map_title', array(
+        'default' => 'Places',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_map_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_map',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_map_visited', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_map_visited', array(
+        'label' => 'Countries Visited',
+        'description' => 'Comma-separated ISO codes: US,UK,FR,JP,DE',
+        'section' => 'kunaal_about_map',
         'type' => 'textarea',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_map_lived', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_map_lived', array(
+        'label' => 'Countries Lived In',
+        'description' => 'Comma-separated ISO codes: US,IN',
+        'section' => 'kunaal_about_map',
+        'type' => 'textarea',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_map_notes', array(
+        'default' => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('kunaal_about_map_notes', array(
+        'label' => 'Country Notes (JSON)',
+        'description' => '{"US": "Where I grew up", "IN": "My roots"}',
+        'section' => 'kunaal_about_map',
+        'type' => 'textarea',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - BOOKSHELF
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_books', array(
+        'title' => 'About: Bookshelf',
+        'priority' => 53,
+        'description' => 'Currently reading / favorite books.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_books', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_books', array(
+        'label' => 'Show Bookshelf',
+        'section' => 'kunaal_about_books',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_books_title', array(
+        'default' => 'Currently Reading',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_books_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_books',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_books_data', array(
+        'default' => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('kunaal_about_books_data', array(
+        'label' => 'Books (JSON)',
+        'description' => '[{"title":"Book","author":"Author","cover":"url","link":"url"}]',
+        'section' => 'kunaal_about_books',
+        'type' => 'textarea',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - INTERESTS CLOUD
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_interests', array(
+        'title' => 'About: Interests',
+        'priority' => 54,
+        'description' => 'Things you love - displayed as a beautiful tag cloud.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_interests', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_interests', array(
+        'label' => 'Show Interests',
+        'section' => 'kunaal_about_interests',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_interests_title', array(
+        'default' => 'Things I Love',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_interests_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_interests',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_interests_list', array(
+        'default' => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('kunaal_about_interests_list', array(
+        'label' => 'Interests (one per line)',
+        'description' => 'Add :2 or :3 for larger size. E.g., "ramen" or "geopolitics:3"',
+        'section' => 'kunaal_about_interests',
+        'type' => 'textarea',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - INSPIRATIONS
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_inspirations', array(
+        'title' => 'About: Inspirations',
+        'priority' => 55,
+        'description' => 'People whose work inspires you.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_inspirations', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_inspirations', array(
+        'label' => 'Show Inspirations',
+        'section' => 'kunaal_about_inspirations',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_inspirations_title', array(
+        'default' => 'People Who Inspire Me',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_inspirations_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_inspirations',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_inspirations_data', array(
+        'default' => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('kunaal_about_inspirations_data', array(
+        'label' => 'Inspirations (JSON)',
+        'description' => '[{"name":"Name","role":"Description","photo":"url","link":"url"}]',
+        'section' => 'kunaal_about_inspirations',
+        'type' => 'textarea',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - FUN STATS
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_stats', array(
+        'title' => 'About: Fun Stats',
+        'priority' => 56,
+        'description' => 'Animated number counters.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_stats', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_stats', array(
+        'label' => 'Show Stats',
+        'section' => 'kunaal_about_stats',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_stats_title', array(
+        'default' => 'By the Numbers',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_stats_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_stats',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_stats_data', array(
+        'default' => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('kunaal_about_stats_data', array(
+        'label' => 'Stats (JSON)',
+        'description' => '[{"number":"30+","label":"Countries visited"},{"number":"500+","label":"Tacos eaten"}]',
+        'section' => 'kunaal_about_stats',
+        'type' => 'textarea',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - CONNECT
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_connect', array(
+        'title' => 'About: Connect',
+        'priority' => 57,
+        'description' => 'Social links section.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_show_connect', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_show_connect', array(
+        'label' => 'Show Connect Section',
+        'section' => 'kunaal_about_connect',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_connect_title', array(
+        'default' => 'Say Hello',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_connect_title', array(
+        'label' => 'Section Title',
+        'section' => 'kunaal_about_connect',
+        'type' => 'text',
     ));
     
     // =====================================================

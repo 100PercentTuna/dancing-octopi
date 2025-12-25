@@ -589,15 +589,13 @@
 
         switch (platform) {
           case 'linkedin':
-            const linkedInText = titleWithAttribution;
-            const linkedinUrl = window.kunaalTheme?.linkedinUrl || '';
-            let finalLinkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-            finalLinkedInUrl += `&summary=${encodeURIComponent(linkedInText)}`;
-            shareUrl = finalLinkedInUrl;
+            // LinkedIn only reads Open Graph meta tags - URL parameter only
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
             break;
           case 'x':
-            const handleText = twitterHandle ? ` @${twitterHandle}` : '';
-            shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${title}${encodeURIComponent(handleText)}`;
+            // X/Twitter with proper text formatting
+            const tweetText = rawTitle + (twitterHandle ? ` via @${twitterHandle}` : '');
+            shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${encodeURIComponent(tweetText)}`;
             break;
           case 'whatsapp':
             shareUrl = `https://wa.me/?text=${title}%20${url}`;
@@ -760,6 +758,142 @@
   }
 
   // ========================================
+  // INLINE FORMAT TOUCH SUPPORT
+  // ========================================
+  function initInlineFormatTouch() {
+    // Touch support for sidenotes, definitions, data-refs
+    const touchElements = document.querySelectorAll('.kunaal-sidenote, .kunaal-definition, .kunaal-data-ref[data-source]');
+    
+    touchElements.forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        // If already active, close it
+        if (this.classList.contains('active')) {
+          this.classList.remove('active');
+          return;
+        }
+        
+        // Close any other active tooltips
+        touchElements.forEach(function(other) {
+          other.classList.remove('active');
+        });
+        
+        // Open this one
+        this.classList.add('active');
+        e.stopPropagation();
+      });
+    });
+    
+    // Close tooltips when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.kunaal-sidenote, .kunaal-definition, .kunaal-data-ref')) {
+        touchElements.forEach(function(el) {
+          el.classList.remove('active');
+        });
+      }
+    });
+  }
+
+  // ========================================
+  // ABOUT PAGE REVEAL ANIMATIONS
+  // ========================================
+  function initAboutReveal() {
+    const revealElements = document.querySelectorAll('.about-page-v2 .reveal-up, .about-journey .reveal-up');
+    if (!revealElements.length) return;
+    
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+    
+    revealElements.forEach(function(el) {
+      observer.observe(el);
+    });
+  }
+
+  // ========================================
+  // WORLD MAP INTERACTIVITY
+  // ========================================
+  function initWorldMap() {
+    var mapWrapper = document.querySelector('.world-map');
+    if (!mapWrapper) return;
+    
+    var visited = (mapWrapper.dataset.visited || '').split(',').filter(Boolean);
+    var lived = (mapWrapper.dataset.lived || '').split(',').filter(Boolean);
+    var notes = {};
+    try {
+      notes = JSON.parse(mapWrapper.dataset.notes || '{}');
+    } catch (e) {}
+    
+    var tooltip = document.querySelector('.map-tooltip');
+    var countries = mapWrapper.querySelectorAll('.country');
+    
+    // Apply classes based on data
+    countries.forEach(function(country) {
+      var id = country.id;
+      if (lived.indexOf(id) !== -1) {
+        country.classList.add('lived');
+      } else if (visited.indexOf(id) !== -1) {
+        country.classList.add('visited');
+      }
+    });
+    
+    // Tooltip on hover
+    countries.forEach(function(country) {
+      var id = country.id;
+      var name = country.dataset.name || id;
+      var isLived = lived.indexOf(id) !== -1;
+      var isVisited = visited.indexOf(id) !== -1;
+      
+      if (!isLived && !isVisited) return; // Only show tooltip for visited/lived
+      
+      country.addEventListener('mouseenter', function(e) {
+        var status = isLived ? 'Lived here' : 'Visited';
+        var note = notes[id] || '';
+        
+        var html = '<div class="tooltip-name">' + name + '</div>';
+        html += '<div class="tooltip-status">' + status + '</div>';
+        if (note) {
+          html += '<div class="tooltip-note">' + note + '</div>';
+        }
+        
+        tooltip.innerHTML = html;
+        tooltip.classList.add('visible');
+        
+        updateTooltipPosition(e);
+      });
+      
+      country.addEventListener('mousemove', function(e) {
+        updateTooltipPosition(e);
+      });
+      
+      country.addEventListener('mouseleave', function() {
+        tooltip.classList.remove('visible');
+      });
+    });
+    
+    function updateTooltipPosition(e) {
+      var rect = mapWrapper.getBoundingClientRect();
+      var x = e.clientX - rect.left + 15;
+      var y = e.clientY - rect.top + 15;
+      
+      // Keep tooltip in bounds
+      if (x + 200 > rect.width) {
+        x = e.clientX - rect.left - 215;
+      }
+      
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    }
+  }
+
+  // ========================================
   // INITIALIZE
   // ========================================
   function init() {
@@ -785,6 +919,9 @@
     initScrolly();
     initCodeBlocks();
     initAccordions();
+    initInlineFormatTouch();
+    initAboutReveal();
+    initWorldMap();
 
     // Initial scroll effect
     lastY = window.scrollY || 0;

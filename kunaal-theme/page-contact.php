@@ -2,7 +2,7 @@
 /**
  * Template Name: Contact Page
  * 
- * Contact page with form and social links
+ * Elegant note card contact form - sophisticated and inviting
  *
  * @package Kunaal_Theme
  */
@@ -11,111 +11,119 @@ get_header();
 
 // Get Customizer values
 $first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-$last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
-$full_name = $first_name . ' ' . $last_name;
 $email = get_theme_mod('kunaal_contact_email', '');
 
 // Contact-specific settings
-$contact_headline = get_theme_mod('kunaal_contact_headline', 'Get in Touch');
-$contact_intro = get_theme_mod('kunaal_contact_intro', 'Have a question, idea, or just want to say hello? I\'d love to hear from you.');
-$contact_response_time = get_theme_mod('kunaal_contact_response_time', 'I typically respond within 2-3 business days.');
+$contact_headline = get_theme_mod('kunaal_contact_headline', 'Say hello');
+$contact_intro = get_theme_mod('kunaal_contact_intro', '');
+$contact_response = get_theme_mod('kunaal_contact_response_time', '');
 
 // Social links
 $linkedin = get_theme_mod('kunaal_linkedin_handle', '');
 $twitter = get_theme_mod('kunaal_twitter_handle', '');
 ?>
 
-<main class="contact-page">
-    <!-- Hero Section -->
-    <section class="contact-hero reveal">
-        <h1 class="contact-headline"><?php echo esc_html($contact_headline); ?></h1>
-        <p class="contact-intro"><?php echo esc_html($contact_intro); ?></p>
-    </section>
+<main class="contact-elegant">
     
-    <!-- Contact Form -->
-    <section class="contact-form-section reveal">
-        <form id="kunaal-contact-form" class="contact-form" method="post">
-            <?php wp_nonce_field('kunaal_contact_form', 'kunaal_contact_nonce'); ?>
-            
-            <div class="form-group">
-                <label for="contact-name">Your Name</label>
-                <input type="text" id="contact-name" name="contact_name" required placeholder="Jane Doe">
-            </div>
-            
-            <div class="form-group">
-                <label for="contact-email">Your Email</label>
-                <input type="email" id="contact-email" name="contact_email" required placeholder="jane@example.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="contact-subject">Subject</label>
-                <input type="text" id="contact-subject" name="contact_subject" required placeholder="What's this about?">
-            </div>
-            
-            <div class="form-group">
-                <label for="contact-message">Message</label>
-                <textarea id="contact-message" name="contact_message" rows="6" required placeholder="Your message..."></textarea>
-            </div>
-            
-            <button type="submit" class="submit-btn">
-                <span class="btn-text">Send Message</span>
-                <span class="btn-sending" style="display:none;">Sending...</span>
-            </button>
-            
-            <div class="form-status" style="display:none;"></div>
-        </form>
+    <div class="contact-wrapper">
         
-        <?php if ($contact_response_time) : ?>
-            <p class="response-note"><?php echo esc_html($contact_response_time); ?></p>
-        <?php endif; ?>
-    </section>
-    
-    <!-- Alternative Contact Methods -->
-    <section class="contact-alternatives reveal">
-        <h2 class="section-label">Other Ways to Connect</h2>
-        
-        <div class="contact-methods">
-            <?php if ($email) : ?>
-                <a href="mailto:<?php echo esc_attr($email); ?>" class="contact-method">
-                    <div class="method-icon">✉️</div>
-                    <div class="method-info">
-                        <span class="method-label">Email directly</span>
-                        <span class="method-value"><?php echo esc_html($email); ?></span>
+        <!-- Main Card -->
+        <div class="contact-card">
+            
+            <header class="contact-header">
+                <h1><?php echo esc_html($contact_headline); ?></h1>
+                <?php if ($contact_intro) : ?>
+                <p class="contact-intro"><?php echo esc_html($contact_intro); ?></p>
+                <?php endif; ?>
+            </header>
+            
+            <form id="kunaal-contact-form" class="elegant-form" method="post">
+                <?php wp_nonce_field('kunaal_contact_form', 'kunaal_contact_nonce'); ?>
+                
+                <div class="form-row">
+                    <div class="form-field">
+                        <input type="text" id="contact-name" name="contact_name" required placeholder=" ">
+                        <label for="contact-name">Your name</label>
+                        <span class="field-line"></span>
                     </div>
-                </a>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-field">
+                        <input type="email" id="contact-email" name="contact_email" required placeholder=" ">
+                        <label for="contact-email">Email address</label>
+                        <span class="field-line"></span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-field">
+                        <input type="text" id="contact-subject" name="contact_subject" required placeholder=" ">
+                        <label for="contact-subject">Subject</label>
+                        <span class="field-line"></span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-field textarea-field">
+                        <textarea id="contact-message" name="contact_message" rows="5" required placeholder=" "></textarea>
+                        <label for="contact-message">What's on your mind?</label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="send-btn">
+                        <span class="btn-text">Send message</span>
+                        <span class="btn-sending">Sending...</span>
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="form-status"></div>
+                
+            </form>
+            
+            <?php if ($contact_response) : ?>
+            <p class="response-note"><?php echo esc_html($contact_response); ?></p>
             <?php endif; ?>
             
-            <?php if ($linkedin) : ?>
-                <a href="<?php echo esc_url($linkedin); ?>" class="contact-method" target="_blank" rel="noopener">
-                    <div class="method-icon">💼</div>
-                    <div class="method-info">
-                        <span class="method-label">LinkedIn</span>
-                        <span class="method-value">Connect professionally</span>
-                    </div>
-                </a>
-            <?php endif; ?>
-            
-            <?php if ($twitter) : ?>
-                <a href="https://x.com/<?php echo esc_attr($twitter); ?>" class="contact-method" target="_blank" rel="noopener">
-                    <div class="method-icon">𝕏</div>
-                    <div class="method-info">
-                        <span class="method-label">X / Twitter</span>
-                        <span class="method-value">@<?php echo esc_html($twitter); ?></span>
-                    </div>
-                </a>
-            <?php endif; ?>
         </div>
-    </section>
+        
+        <!-- Alternative Contact -->
+        <?php if ($email || $linkedin || $twitter) : ?>
+        <div class="contact-alternatives">
+            <span class="alt-divider">or reach out directly</span>
+            <div class="alt-links">
+                <?php if ($email) : ?>
+                <a href="mailto:<?php echo esc_attr($email); ?>" class="alt-link" title="Email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="M22 6l-10 7L2 6"/>
+                    </svg>
+                </a>
+                <?php endif; ?>
+                <?php if ($linkedin) : ?>
+                <a href="<?php echo esc_url($linkedin); ?>" class="alt-link" target="_blank" rel="noopener" title="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+                <?php endif; ?>
+                <?php if ($twitter) : ?>
+                <a href="https://x.com/<?php echo esc_attr($twitter); ?>" class="alt-link" target="_blank" rel="noopener" title="X / Twitter">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+    </div>
     
-    <!-- Page content if any -->
-    <?php while (have_posts()) : the_post(); 
-        $content = get_the_content();
-        if (!empty($content)) :
-    ?>
-    <section class="contact-additional reveal">
-        <?php the_content(); ?>
-    </section>
-    <?php endif; endwhile; ?>
 </main>
 
 <script>
@@ -126,14 +134,13 @@ $twitter = get_theme_mod('kunaal_twitter_handle', '');
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        var btn = form.querySelector('.submit-btn');
-        var btnText = btn.querySelector('.btn-text');
-        var btnSending = btn.querySelector('.btn-sending');
+        var btn = form.querySelector('.send-btn');
         var status = form.querySelector('.form-status');
         
-        btnText.style.display = 'none';
-        btnSending.style.display = 'inline';
+        btn.classList.add('sending');
         btn.disabled = true;
+        status.className = 'form-status';
+        status.textContent = '';
         
         var formData = new FormData(form);
         formData.append('action', 'kunaal_contact_form');
@@ -144,24 +151,21 @@ $twitter = get_theme_mod('kunaal_twitter_handle', '');
         })
         .then(function(response) { return response.json(); })
         .then(function(data) {
-            status.style.display = 'block';
             if (data.success) {
                 status.className = 'form-status success';
-                status.textContent = data.data.message || 'Message sent successfully!';
+                status.textContent = data.data.message || 'Message sent! Thank you.';
                 form.reset();
             } else {
                 status.className = 'form-status error';
                 status.textContent = data.data.message || 'Something went wrong. Please try again.';
             }
         })
-        .catch(function(error) {
-            status.style.display = 'block';
+        .catch(function() {
             status.className = 'form-status error';
             status.textContent = 'Network error. Please try again.';
         })
         .finally(function() {
-            btnText.style.display = 'inline';
-            btnSending.style.display = 'none';
+            btn.classList.remove('sending');
             btn.disabled = false;
         });
     });
@@ -169,4 +173,3 @@ $twitter = get_theme_mod('kunaal_twitter_handle', '');
 </script>
 
 <?php get_footer(); ?>
-
