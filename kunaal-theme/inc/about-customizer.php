@@ -512,11 +512,11 @@ function kunaal_about_customizer_v2($wp_customize) {
         'title' => 'Atmospheric Images',
         'panel' => 'kunaal_about_panel',
         'priority' => 80,
-        'description' => 'Full-bleed images that create visual breaks between sections.',
+        'description' => 'Full-bleed images that create visual breaks between sections. Per spec: 12 slots for maximum richness.',
     ));
     
-    // Atmospheric Images 1-6 (reduced from 12 to keep it manageable)
-    for ($i = 1; $i <= 6; $i++) {
+    // Atmospheric Images 1-12 (full spec compliance)
+    for ($i = 1; $i <= 12; $i++) {
         // Image
         $wp_customize->add_setting("kunaal_atmo_{$i}_image", array(
             'sanitize_callback' => 'absint',
@@ -784,7 +784,7 @@ function kunaal_get_hero_photos_v2() {
  */
 function kunaal_get_atmo_images_v2($position = 'all') {
     $images = array();
-    for ($i = 1; $i <= 6; $i++) {
+    for ($i = 1; $i <= 12; $i++) {
         $image_id = get_theme_mod("kunaal_atmo_{$i}_image", 0);
         $type = get_theme_mod("kunaal_atmo_{$i}_type", 'hidden');
         $pos = get_theme_mod("kunaal_atmo_{$i}_position", 'auto');

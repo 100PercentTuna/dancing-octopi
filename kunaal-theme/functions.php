@@ -1064,16 +1064,8 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'textarea',
     ));
     
-    $wp_customize->add_setting('kunaal_about_map_notes', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_map_notes', array(
-        'label' => 'Country Notes (JSON)',
-        'description' => '{"US": "Where I grew up", "IN": "My roots"}',
-        'section' => 'kunaal_about_map',
-        'type' => 'textarea',
-    ));
+    // NOTE: Country notes now use individual story fields in the About Page panel
+    // See "World Map" section with Story 1-10 slots for NO-JSON input
     
     // =====================================================
     // ABOUT PAGE - BOOKSHELF
@@ -1104,16 +1096,8 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('kunaal_about_books_data', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_books_data', array(
-        'label' => 'Books (JSON)',
-        'description' => '[{"title":"Book","author":"Author","cover":"url","link":"url"}]',
-        'section' => 'kunaal_about_books',
-        'type' => 'textarea',
-    ));
+    // NOTE: Books now use individual fields in the About Page panel
+    // See "Bookshelf" section with Book 1-8 slots (cover, title, author, URL each)
     
     // =====================================================
     // ABOUT PAGE - INTERESTS CLOUD
@@ -1144,16 +1128,8 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('kunaal_about_interests_list', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_interests_list', array(
-        'label' => 'Interests (one per line)',
-        'description' => 'Add :2 or :3 for larger size. E.g., "ramen" or "geopolitics:3"',
-        'section' => 'kunaal_about_interests',
-        'type' => 'textarea',
-    ));
+    // NOTE: Interests now use individual fields in the About Page panel
+    // See "Interests" section with Interest 1-20 slots (name + image each)
     
     // =====================================================
     // ABOUT PAGE - INSPIRATIONS
@@ -1184,16 +1160,8 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('kunaal_about_inspirations_data', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_inspirations_data', array(
-        'label' => 'Inspirations (JSON)',
-        'description' => '[{"name":"Name","role":"Description","photo":"url","link":"url"}]',
-        'section' => 'kunaal_about_inspirations',
-        'type' => 'textarea',
-    ));
+    // NOTE: Inspirations now use individual fields in the About Page panel
+    // See "Inspirations" section with Person 1-8 slots (photo, name, role, note, URL each)
     
     // =====================================================
     // ABOUT PAGE - FUN STATS
@@ -1224,16 +1192,8 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('kunaal_about_stats_data', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_stats_data', array(
-        'label' => 'Stats (JSON)',
-        'description' => '[{"number":"30+","label":"Countries visited"},{"number":"500+","label":"Tacos eaten"}]',
-        'section' => 'kunaal_about_stats',
-        'type' => 'textarea',
-    ));
+    // NOTE: Stats now use individual fields in the About Page panel
+    // See "Stats Counters" section with Stat 1-4 slots (value + label each)
     
     // =====================================================
     // ABOUT PAGE - CONNECT
@@ -1306,16 +1266,8 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'textarea',
     ));
     
-    $wp_customize->add_setting('kunaal_about_map_places', array(
-        'default' => '',
-        'sanitize_callback' => 'wp_kses_post',
-    ));
-    $wp_customize->add_control('kunaal_about_map_places', array(
-        'label' => 'Places (JSON)',
-        'description' => '[{"name":"City, Country","lat":0.00,"lng":0.00,"type":"lived|visited","years":"2015-2020","note":"Your story"}]',
-        'section' => 'kunaal_about_map',
-        'type' => 'textarea',
-    ));
+    // NOTE: Map places now use individual story fields in the About Page panel
+    // See "World Map" section with Story 1-10 slots (country code, years, text)
     
     // =====================================================
     // CONTACT PAGE SECTION

@@ -181,8 +181,10 @@ $contact_response = get_theme_mod('kunaal_contact_response_time', '');
     var form = document.getElementById('contact-form');
     if (!form) return;
     
-    var btn = form.querySelector('.submit-btn');
+    var btn = form.querySelector('.ledgerSend');
     var status = form.querySelector('.form-status');
+    
+    if (!btn) return;
     
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -190,8 +192,10 @@ $contact_response = get_theme_mod('kunaal_contact_response_time', '');
         // Set loading state
         btn.classList.add('is-loading');
         btn.disabled = true;
-        status.className = 'form-status';
-        status.textContent = '';
+        if (status) {
+            status.className = 'form-status';
+            status.textContent = '';
+        }
         
         var formData = new FormData(form);
         formData.append('action', 'kunaal_contact_form');
@@ -214,15 +218,19 @@ $contact_response = get_theme_mod('kunaal_contact_response_time', '');
                     btn.disabled = false;
                 }, 3000);
             } else {
-                status.className = 'form-status is-error';
-                status.textContent = data.data.message || 'Something went wrong. Please try again.';
+                if (status) {
+                    status.className = 'form-status is-error';
+                    status.textContent = data.data && data.data.message ? data.data.message : 'Something went wrong. Please try again.';
+                }
                 btn.disabled = false;
             }
         })
         .catch(function() {
             btn.classList.remove('is-loading');
-            status.className = 'form-status is-error';
-            status.textContent = 'Network error. Please try again.';
+            if (status) {
+                status.className = 'form-status is-error';
+                status.textContent = 'Network error. Please try again.';
+            }
             btn.disabled = false;
         });
     });
