@@ -3,7 +3,7 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 4.7.0
+Version: 4.7.1
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
@@ -3365,4 +3365,383 @@ a[href*="dkpdfg"],
     transform: none;
     transition: none;
   }
+}
+
+/* ========================================
+   ABOUT PAGE
+   ======================================== */
+
+.about-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+.about-hero {
+  text-align: center;
+  padding: var(--space-8) 0;
+  border-bottom: 1px solid var(--hair);
+  margin-bottom: var(--space-8);
+}
+
+.about-photo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  margin: 0 auto var(--space-6);
+  overflow: hidden;
+  border: 3px solid var(--blue);
+}
+
+.about-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-photo.about-initials {
+  background: var(--blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 600;
+  font-family: var(--serif);
+}
+
+.about-headline {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  margin: 0 0 var(--space-3);
+  color: var(--ink);
+}
+
+.about-tagline {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 auto;
+  font-style: italic;
+}
+
+.about-intro {
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--hair);
+  margin-bottom: var(--space-6);
+}
+
+.intro-text {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: var(--ink);
+  text-align: center;
+}
+
+.about-bio {
+  padding: var(--space-4) 0;
+}
+
+.bio-content {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.bio-content p {
+  margin-bottom: var(--space-4);
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--warm);
+  margin-bottom: var(--space-4);
+}
+
+.about-interests {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--hair);
+}
+
+.interests-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.interest-tag {
+  background: var(--blueTint);
+  color: var(--blue);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.about-connect {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--hair);
+}
+
+.connect-links {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.connect-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: var(--bgWarm);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.connect-link:hover {
+  background: var(--blue);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.connect-icon {
+  font-size: 1.2rem;
+}
+
+.about-recent {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--hair);
+}
+
+.recent-essays {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.recent-essay-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--hair);
+  text-decoration: none;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+
+.recent-essay-link:hover {
+  color: var(--blue);
+}
+
+.essay-title {
+  font-family: var(--serif);
+  font-weight: 500;
+}
+
+.essay-arrow {
+  color: var(--blue);
+}
+
+.view-all-link {
+  display: inline-block;
+  margin-top: var(--space-4);
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   CONTACT PAGE
+   ======================================== */
+
+.contact-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+.contact-hero {
+  text-align: center;
+  padding: var(--space-6) 0;
+  margin-bottom: var(--space-6);
+}
+
+.contact-headline {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 600;
+  margin: 0 0 var(--space-3);
+  color: var(--ink);
+}
+
+.contact-intro {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.contact-form-section {
+  background: var(--bgWarm);
+  padding: var(--space-6);
+  border-radius: 12px;
+  margin-bottom: var(--space-6);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 14px 16px;
+  border: 1px solid var(--hair);
+  border-radius: 6px;
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blueTint);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submit-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: var(--ink);
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.form-status {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: var(--space-3);
+}
+
+.form-status.success {
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.form-status.error {
+  background: rgba(198, 40, 40, 0.1);
+  color: #c62828;
+  border: 1px solid rgba(198, 40, 40, 0.3);
+}
+
+.response-note {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: var(--space-4);
+}
+
+.contact-alternatives {
+  padding: var(--space-6) 0;
+}
+
+.contact-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: all 0.2s ease;
+}
+
+.contact-method:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.method-icon {
+  font-size: 1.5rem;
+}
+
+.method-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.method-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.method-value {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.contact-additional {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--hair);
 }

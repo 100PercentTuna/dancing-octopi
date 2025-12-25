@@ -4,19 +4,54 @@ All notable changes to the Kunaal Theme.
 
 ---
 
+## [4.7.1] - 2025-12-25
+
+### ✨ New Features
+
+#### Inline Text Formats (Gutenberg)
+Five new inline formatting options in the editor toolbar:
+- **Sidenote**: Add marginal notes that show on hover (desktop: in margin)
+- **Highlight**: Yellow highlighter effect
+- **Definition**: Define terms with hover tooltips
+- **Key Term**: Emphasize important terms with blue styling
+- **Data Reference**: Cite data points with source attribution
+
+#### About Page Template
+- Full About page template with Customizer integration
+- Hero section with photo/initials
+- Bio section, interests grid, connect links
+- Recent essays showcase
+- Create a page and select "About Page" template
+
+#### Contact Page Template
+- Complete contact form with AJAX submission
+- Email validation and spam protection
+- Alternative contact methods display
+- Customizer settings for headline, intro, response time
+
+#### Social Sharing (Open Graph)
+- Full Open Graph meta tags for LinkedIn, X/Twitter, Facebook
+- Automatic title, description, image extraction
+- Twitter Card support with large image
+- Proper author attribution
+
+### 🔧 Bug Fixes (from v4.7.0)
+- **functions.php**: Fixed `get_current_screen()->post_type ?? ''` null crash
+- **pdf-generator.php**: Fixed Dompdf class loading fatal error
+- **inc/blocks.php**: Fixed block unregister fatal error
+
+### 📄 PDF Improvements
+- Added inline format support in PDF output
+- Enhanced color preservation for charts
+- Better formatting for definitions and sidenotes
+
+---
+
 ## [4.7.0] - 2025-12-25
 
 ### 🔧 Critical Bug Fixes
 
-Fixed three fatal error bugs that were causing "There has been a critical error on this website" on WordPress:
-
-#### Fixed
-- **functions.php**: Fixed `get_current_screen()->post_type ?? ''` crash when `get_current_screen()` returns null (AJAX, REST API, cron contexts)
-- **pdf-generator.php**: Fixed top-level `use Dompdf\Dompdf;` statement causing fatal error when Composer dependencies aren't installed. Moved to fully qualified class names inside function.
-- **inc/blocks.php**: Fixed `unregister_block_type('core/pullquote')` fatal error when block isn't registered. Added safety check with `WP_Block_Type_Registry`.
-
-### Documentation
-- Updated ERROR-HISTORY.md with detailed bug analysis and resolutions
+Fixed three fatal error bugs that were causing "There has been a critical error on this website" on WordPress.
 
 ---
 

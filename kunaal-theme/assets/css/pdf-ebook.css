@@ -377,3 +377,101 @@ iframe,
   background: #f9f9f9;
   border-left: 2px solid #1E5AFF;
 }
+
+/* ========================================
+   INLINE FORMATS
+   ======================================== */
+
+/* Sidenote - show as inline footnote in PDF */
+.kunaal-sidenote {
+  color: #1E5AFF;
+  border-bottom: 1px dotted #1E5AFF;
+}
+
+.kunaal-sidenote::after {
+  content: " [" attr(data-note) "]";
+  font-size: 8pt;
+  color: #666;
+  font-style: italic;
+}
+
+/* Highlight - yellow background preserved */
+.kunaal-highlight {
+  background-color: rgba(255, 236, 61, 0.5) !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Definition - show definition inline */
+.kunaal-definition {
+  font-weight: 500;
+  color: #7D6B5D;
+  border-bottom: 1px solid #7D6B5D;
+}
+
+.kunaal-definition::after {
+  content: " (" attr(data-definition) ")";
+  font-size: 9pt;
+  font-weight: 400;
+  color: #666;
+  font-style: italic;
+}
+
+/* Key Term */
+.kunaal-key-term {
+  font-weight: 600;
+  color: #1E5AFF;
+  background-color: rgba(30, 90, 255, 0.08) !important;
+  padding: 0 3px;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Data Reference */
+.kunaal-data-ref {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #1a1a1a;
+  background-color: rgba(30, 90, 255, 0.06) !important;
+  padding: 0 4px;
+  border-bottom: 2px solid #1E5AFF;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.kunaal-data-ref[data-source]::after {
+  content: " (Source: " attr(data-source) ")";
+  font-size: 8pt;
+  font-weight: 400;
+  color: #777;
+}
+
+/* ========================================
+   CHART COLORS - Ensure vivid in PDF
+   ======================================== */
+
+.pdf-content .chartWrap {
+  page-break-inside: avoid;
+  margin: 0.6cm 0;
+}
+
+.pdf-content svg rect[fill],
+.pdf-content svg circle[fill],
+.pdf-content svg path[fill] {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Chart accent colors */
+:root {
+  --chart-blue: #1E5AFF;
+  --chart-warm: #7D6B5D;
+  --chart-green: #2e7d32;
+  --chart-accent: #c62828;
+}
+
+/* Force SVG colors in print */
+svg {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
