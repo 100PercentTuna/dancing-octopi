@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.9.1');
+define('KUNAAL_THEME_VERSION', '4.9.2');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -89,8 +89,9 @@ function kunaal_enqueue_assets() {
     ));
     
     // About page and Contact page assets
-    // Check by slug as template detection can be unreliable
-    $is_about_page = is_page_template('page-about.php') || is_page('about');
+    // Template detection + explicit page selection to avoid slug brittleness
+    $about_page_id = (int) get_theme_mod('kunaal_about_page_id', 0);
+    $is_about_page = is_page_template('page-about.php') || ($about_page_id && is_page($about_page_id)) || is_page('about');
     $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
     
     if ($is_about_page || $is_contact_page) {
@@ -151,6 +152,15 @@ function kunaal_enqueue_assets() {
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
+
+/**
+ * Add a `js` class to <html> early for progressive enhancement.
+ * This ensures About page content is visible even if JS fails.
+ */
+function kunaal_add_js_class() {
+    echo "<script>(function(d){d.documentElement.classList.add('js');})(document);</script>\n";
+}
+add_action('wp_head', 'kunaal_add_js_class', 0);
 
 /**
  * Enqueue Gutenberg Editor Sidebar Script
@@ -923,6 +933,25 @@ function kunaal_customize_register($wp_customize) {
     ));
     
     // =====================================================
+    // ABOUT PAGE - PAGE SELECTION (Reliable Enqueue)
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_page', array(
+        'title' => 'About: Page Selection',
+        'priority' => 49,
+        'description' => 'Select which page is your About page so enhancements load reliably even if the slug changes.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_page_id', array(
+        'default' => 0,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('kunaal_about_page_id', array(
+        'label' => 'About Page',
+        'section' => 'kunaal_about_page',
+        'type' => 'dropdown-pages',
+    ));
+
+    // =====================================================
     // ABOUT PAGE - HERO SECTION
     // =====================================================
     $wp_customize->add_section('kunaal_about_hero', array(
@@ -1293,6 +1322,18 @@ function kunaal_customize_register($wp_customize) {
         'priority' => 51,
         'description' => 'Customize the Contact page. Create a page with the "Contact Page" template.',
     ));
+
+    // Recipient email (where messages are delivered)
+    $wp_customize->add_setting('kunaal_contact_recipient_email', array(
+        'default' => get_option('admin_email'),
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    $wp_customize->add_control('kunaal_contact_recipient_email', array(
+        'label' => 'Recipient Email (for Contact form delivery)',
+        'description' => 'Messages submitted on the Contact page will be sent to this address.',
+        'section' => 'kunaal_contact_page',
+        'type' => 'email',
+    ));
     
     $wp_customize->add_setting('kunaal_contact_headline', array(
         'default' => 'Get in Touch',
@@ -1323,8 +1364,257 @@ function kunaal_customize_register($wp_customize) {
         'section' => 'kunaal_contact_page',
         'type' => 'text',
     ));
+
+    // =====================================================
+    // CONTACT PAGE - MESSENGER QR TILES
+    // =====================================================
+    $wp_customize->add_setting('kunaal_contact_messenger_telegram_enabled', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_telegram_enabled', array(
+        'label' => 'Enable Telegram QR',
+        'section' => 'kunaal_contact_page',
+        'type' => 'checkbox',
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_telegram_mode', array(
+        'default' => 'redirect',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_telegram_mode', array(
+        'label' => 'Telegram QR Mode',
+        'description' => 'Redirect mode encodes a site URL (privacy). Direct mode encodes your link/handle.',
+        'section' => 'kunaal_contact_page',
+        'type' => 'select',
+        'choices' => array(
+            'redirect' => 'Site redirect (recommended)',
+            'direct' => 'Direct link/handle',
+        ),
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_telegram_target', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_telegram_target', array(
+        'label' => 'Telegram Target (URL or @handle)',
+        'description' => 'Examples: https://t.me/yourname OR @yourname (needed for redirect and for direct mode).',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_telegram_redirect_slug', array(
+        'default' => 'telegram',
+        'sanitize_callback' => 'sanitize_title',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_telegram_redirect_slug', array(
+        'label' => 'Telegram Redirect Slug',
+        'description' => 'Used for site redirect URLs like /connect/telegram',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_contact_messenger_line_enabled', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_line_enabled', array(
+        'label' => 'Enable LINE QR',
+        'section' => 'kunaal_contact_page',
+        'type' => 'checkbox',
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_line_mode', array(
+        'default' => 'redirect',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_line_mode', array(
+        'label' => 'LINE QR Mode',
+        'description' => 'Redirect mode encodes a site URL (privacy). Direct mode encodes your link.',
+        'section' => 'kunaal_contact_page',
+        'type' => 'select',
+        'choices' => array(
+            'redirect' => 'Site redirect (recommended)',
+            'direct' => 'Direct link',
+        ),
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_line_target', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_line_target', array(
+        'label' => 'LINE Target (URL)',
+        'description' => 'Example: https://line.me/R/ti/p/@yourname (needed for redirect and direct mode).',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_line_redirect_slug', array(
+        'default' => 'line',
+        'sanitize_callback' => 'sanitize_title',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_line_redirect_slug', array(
+        'label' => 'LINE Redirect Slug',
+        'description' => 'Used for site redirect URLs like /connect/line',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_contact_messenger_viber_enabled', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_viber_enabled', array(
+        'label' => 'Enable Viber QR',
+        'section' => 'kunaal_contact_page',
+        'type' => 'checkbox',
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_viber_mode', array(
+        'default' => 'redirect',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_viber_mode', array(
+        'label' => 'Viber QR Mode',
+        'description' => 'Redirect mode encodes a site URL (privacy). Direct mode encodes your link.',
+        'section' => 'kunaal_contact_page',
+        'type' => 'select',
+        'choices' => array(
+            'redirect' => 'Site redirect (recommended)',
+            'direct' => 'Direct link',
+        ),
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_viber_target', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_viber_target', array(
+        'label' => 'Viber Target (URL)',
+        'description' => 'Provide a public Viber link (avoid phone numbers). Used for redirect and direct mode.',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
+    $wp_customize->add_setting('kunaal_contact_messenger_viber_redirect_slug', array(
+        'default' => 'viber',
+        'sanitize_callback' => 'sanitize_title',
+    ));
+    $wp_customize->add_control('kunaal_contact_messenger_viber_redirect_slug', array(
+        'label' => 'Viber Redirect Slug',
+        'description' => 'Used for site redirect URLs like /connect/viber',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
 }
 add_action('customize_register', 'kunaal_customize_register');
+
+/**
+ * Build a messenger URL from a platform + target (URL or handle).
+ */
+function kunaal_build_messenger_target_url($platform, $raw_target) {
+    $raw_target = is_string($raw_target) ? trim($raw_target) : '';
+    if ($raw_target === '') return '';
+
+    // If looks like a URL/protocol, trust it (we'll validate protocol later when redirecting)
+    if (preg_match('#^[a-zA-Z][a-zA-Z0-9+.-]*://#', $raw_target)) {
+        return $raw_target;
+    }
+
+    // Handle-based convenience (Telegram only)
+    if ($platform === 'telegram') {
+        $handle = ltrim($raw_target, '@');
+        return $handle ? ('https://t.me/' . $handle) : '';
+    }
+
+    // For LINE/Viber, require an explicit URL for safety/clarity
+    return '';
+}
+
+/**
+ * QR image URL (Google Chart fallback).
+ */
+function kunaal_qr_img_src($text, $size = 220) {
+    $size = max(120, min(512, (int) $size));
+    return 'https://chart.googleapis.com/chart?cht=qr&chs=' . $size . 'x' . $size . '&chld=M|0&chl=' . rawurlencode($text);
+}
+
+/**
+ * /connect/<slug> redirects (privacy-friendly QR codes)
+ */
+function kunaal_register_connect_rewrite() {
+    add_rewrite_rule('^connect/([^/]+)/?$', 'index.php?kunaal_connect=$matches[1]', 'top');
+}
+add_action('init', 'kunaal_register_connect_rewrite');
+
+function kunaal_connect_query_vars($vars) {
+    $vars[] = 'kunaal_connect';
+    return $vars;
+}
+add_filter('query_vars', 'kunaal_connect_query_vars');
+
+function kunaal_connect_template_redirect() {
+    $slug = get_query_var('kunaal_connect');
+    if (!$slug) return;
+
+    $slug = sanitize_title($slug);
+
+    $platforms = array(
+        'telegram' => array(
+            'enabled' => (bool) get_theme_mod('kunaal_contact_messenger_telegram_enabled', false),
+            'mode' => get_theme_mod('kunaal_contact_messenger_telegram_mode', 'redirect'),
+            'target' => get_theme_mod('kunaal_contact_messenger_telegram_target', ''),
+            'slug' => sanitize_title(get_theme_mod('kunaal_contact_messenger_telegram_redirect_slug', 'telegram')),
+        ),
+        'line' => array(
+            'enabled' => (bool) get_theme_mod('kunaal_contact_messenger_line_enabled', false),
+            'mode' => get_theme_mod('kunaal_contact_messenger_line_mode', 'redirect'),
+            'target' => get_theme_mod('kunaal_contact_messenger_line_target', ''),
+            'slug' => sanitize_title(get_theme_mod('kunaal_contact_messenger_line_redirect_slug', 'line')),
+        ),
+        'viber' => array(
+            'enabled' => (bool) get_theme_mod('kunaal_contact_messenger_viber_enabled', false),
+            'mode' => get_theme_mod('kunaal_contact_messenger_viber_mode', 'redirect'),
+            'target' => get_theme_mod('kunaal_contact_messenger_viber_target', ''),
+            'slug' => sanitize_title(get_theme_mod('kunaal_contact_messenger_viber_redirect_slug', 'viber')),
+        ),
+    );
+
+    $platform_key = '';
+    foreach ($platforms as $key => $cfg) {
+        if ($cfg['slug'] === $slug) {
+            $platform_key = $key;
+            break;
+        }
+    }
+    if (!$platform_key) {
+        status_header(404);
+        exit;
+    }
+
+    $cfg = $platforms[$platform_key];
+    if (empty($cfg['enabled'])) {
+        status_header(404);
+        exit;
+    }
+
+    $target = kunaal_build_messenger_target_url($platform_key, $cfg['target']);
+    if (!$target) {
+        status_header(404);
+        exit;
+    }
+
+    // Only allow safe protocols for redirect
+    $allowed = array('https', 'http', 'tg', 'line', 'viber');
+    $scheme = wp_parse_url($target, PHP_URL_SCHEME);
+    if (!$scheme || !in_array($scheme, $allowed, true)) {
+        status_header(404);
+        exit;
+    }
+
+    wp_redirect($target, 302);
+    exit;
+}
+add_action('template_redirect', 'kunaal_connect_template_redirect');
+
+function kunaal_flush_rewrite_on_switch() {
+    kunaal_register_connect_rewrite();
+    flush_rewrite_rules();
+}
+add_action('after_switch_theme', 'kunaal_flush_rewrite_on_switch');
 
 /**
  * Helper: Get initials
@@ -1812,11 +2102,25 @@ function kunaal_handle_contact_form() {
     // Sanitize inputs
     $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
     $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
-    $subject = isset($_POST['contact_subject']) ? sanitize_text_field($_POST['contact_subject']) : '';
     $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
+    $honeypot = isset($_POST['contact_company']) ? sanitize_text_field($_POST['contact_company']) : '';
+
+    // Honeypot check (bots)
+    if (!empty($honeypot)) {
+        wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
+    }
+
+    // Basic rate limiting by IP
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field($_SERVER['REMOTE_ADDR']) : '';
+    $rate_key = 'kunaal_contact_rl_' . md5($ip);
+    $count = (int) get_transient($rate_key);
+    if ($count >= 5) {
+        wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
+    }
+    set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
     
     // Validate
-    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+    if (empty($name) || empty($email) || empty($message)) {
         wp_send_json_error(array('message' => 'Please fill in all fields.'));
     }
     
@@ -1825,18 +2129,24 @@ function kunaal_handle_contact_form() {
     }
     
     // Get recipient email
-    $to_email = get_theme_mod('kunaal_contact_email', get_option('admin_email'));
+    $to_email = get_theme_mod('kunaal_contact_recipient_email', get_option('admin_email'));
+    if (!is_email($to_email)) {
+        $to_email = get_option('admin_email');
+    }
     
     // Build email
-    $email_subject = '[Contact Form] ' . $subject;
-    $email_body = "Name: {$name}\n";
+    $site_name = get_bloginfo('name');
+    $email_subject = '[' . $site_name . '] New note from ' . $name;
+    $email_body = "You received a new message from your site contact form.\n\n";
+    $email_body .= "Name: {$name}\n";
     $email_body .= "Email: {$email}\n";
-    $email_body .= "Subject: {$subject}\n\n";
-    $email_body .= "Message:\n{$message}";
+    $email_body .= "Page: " . esc_url_raw(wp_get_referer()) . "\n";
+    $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
+    $email_body .= "Message:\n{$message}\n";
     
     $headers = array(
-        'From: ' . $name . ' <' . $email . '>',
-        'Reply-To: ' . $email,
+        'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
+        'Reply-To: ' . $name . ' <' . $email . '>',
     );
     
     // Send email

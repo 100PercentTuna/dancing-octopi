@@ -62,11 +62,25 @@ $interstitial_caption = get_theme_mod('kunaal_about_interstitial_caption', '');
 // Map places data
 $map_places_data = get_theme_mod('kunaal_about_map_places', '');
 
-// Parse JSON data
-$books = !empty($books_data) ? json_decode($books_data, true) : array();
-$inspirations = !empty($inspirations_data) ? json_decode($inspirations_data, true) : array();
-$stats = !empty($stats_data) ? json_decode($stats_data, true) : array();
-$map_places = !empty($map_places_data) ? json_decode($map_places_data, true) : array();
+// JSON parsing robustness (fail safe; admin-only warnings)
+$kunaal_about_json_warnings = array();
+function kunaal_safe_json_decode_array($raw, $label, &$warnings) {
+    $raw = is_string($raw) ? trim($raw) : '';
+    if ($raw === '') {
+        return array();
+    }
+    $decoded = json_decode($raw, true);
+    if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+        $warnings[] = $label . ': invalid JSON (section hidden until fixed).';
+        return array();
+    }
+    return $decoded;
+}
+
+$books = kunaal_safe_json_decode_array($books_data, 'About → Books (JSON)', $kunaal_about_json_warnings);
+$inspirations = kunaal_safe_json_decode_array($inspirations_data, 'About → Inspirations (JSON)', $kunaal_about_json_warnings);
+$stats = kunaal_safe_json_decode_array($stats_data, 'About → Stats (JSON)', $kunaal_about_json_warnings);
+$map_places = kunaal_safe_json_decode_array($map_places_data, 'About → Places (JSON)', $kunaal_about_json_warnings);
 
 // Parse interests
 $interests = array();
@@ -120,6 +134,17 @@ $chapter = 0;
 </style>
 
 <main class="about-page-premium">
+
+    <?php if (!empty($kunaal_about_json_warnings) && is_user_logged_in() && current_user_can('edit_theme_options')) : ?>
+    <div class="kunaal-admin-notice" style="max-width: 1000px; margin: 24px auto; padding: 12px 16px; border: 1px solid #f3c6c6; background: #fff7f7; color: #7a1f1f; border-radius: 8px;">
+        <strong>About page settings need attention:</strong>
+        <ul style="margin: 8px 0 0 18px;">
+            <?php foreach ($kunaal_about_json_warnings as $warning) : ?>
+            <li><?php echo esc_html($warning); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <?php endif; ?>
 
     <!-- ========================================
          HERO - The Portrait

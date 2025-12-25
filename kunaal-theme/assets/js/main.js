@@ -591,6 +591,16 @@
             const tweetText = rawTitle + (twitterHandle ? ' via @' + twitterHandle : '');
             shareUrl = 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=' + encodeURIComponent(tweetText);
             break;
+          case 'facebook':
+            shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl;
+            break;
+          case 'reddit':
+            shareUrl = 'https://www.reddit.com/submit?url=' + encodedUrl + '&title=' + encodeURIComponent(rawTitle);
+            break;
+          case 'viber':
+            // Viber share (mobile app deep-link)
+            shareUrl = 'viber://forward?text=' + encodeURIComponent(rawTitle + ' ' + pageUrl);
+            break;
           case 'whatsapp':
             shareUrl = 'https://wa.me/?text=' + encodeURIComponent(rawTitle + ' ' + pageUrl);
             break;
@@ -606,10 +616,6 @@
                 setTimeout(() => { tip.textContent = originalText; }, 1500);
               }
             });
-            return;
-          case 'pdf':
-            generatePDF();
-            closeAllPanels();
             return;
         }
 
