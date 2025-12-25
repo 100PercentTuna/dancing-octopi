@@ -1,0 +1,50 @@
+/**
+ * Pullquote Block Styles
+ * Single clean blue left border
+ */
+.wp-block-kunaal-pullquote {
+    margin: 2rem 0;
+    padding: 0 0 0 1.5rem;
+    border: none;
+    border-left: 3px solid var(--blue, #1E5AFF);
+    font-family: var(--serif, Georgia, serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--ink, #0b1220);
+    background: none;
+}
+
+.wp-block-kunaal-pullquote p {
+    margin: 0;
+}
+
+.wp-block-kunaal-pullquote cite {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-weight: 400;
+    font-style: normal;
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.wp-block-kunaal-pullquote.pullquote--large {
+    font-size: 1.5rem;
+    padding-left: 2rem;
+}
+
+/* Override any theme pullquote styles */
+.pullquote.wp-block-kunaal-pullquote,
+blockquote.wp-block-kunaal-pullquote {
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    background: transparent;
+}
+
+/* Editor styles */
+.block-editor-block-list__block .wp-block-kunaal-pullquote {
+    margin: 1.5rem 0;
+}

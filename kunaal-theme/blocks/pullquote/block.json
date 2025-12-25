@@ -1,0 +1,37 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/pullquote",
+    "version": "1.0.0",
+    "title": "Pull Quote",
+    "category": "kunaal-editorial",
+    "icon": "format-quote",
+    "description": "A highlighted pull quote with blue accent and optional citation.",
+    "keywords": ["quote", "pullquote", "citation", "highlight"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "quote": {
+            "type": "string",
+            "default": ""
+        },
+        "citation": {
+            "type": "string",
+            "default": ""
+        },
+        "size": {
+            "type": "string",
+            "default": "normal",
+            "enum": ["normal", "large"]
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true,
+        "align": ["wide"]
+    },
+    "editorScript": "kunaal-pullquote-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

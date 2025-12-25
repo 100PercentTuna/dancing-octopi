@@ -1,0 +1,90 @@
+/**
+ * Accordion Block Styles
+ */
+.wp-block-kunaal-accordion {
+    margin: 1.5rem 0;
+    border: 1px solid var(--hair, rgba(11,18,32,0.14));
+    border-radius: 6px;
+    background: var(--bg, #FDFCFA);
+    overflow: hidden;
+}
+
+.wp-block-kunaal-accordion summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-weight: 500;
+    font-size: 1rem;
+    list-style: none;
+    user-select: none;
+    background: var(--bgAlt, #F5F3EF);
+    transition: background 180ms ease;
+}
+
+.wp-block-kunaal-accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.wp-block-kunaal-accordion summary:hover {
+    background: var(--hair2, rgba(11,18,32,0.07));
+}
+
+.wp-block-kunaal-accordion .accordion-title {
+    flex: 1;
+}
+
+.wp-block-kunaal-accordion .accordion-icon {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.wp-block-kunaal-accordion .accordion-icon::before,
+.wp-block-kunaal-accordion .accordion-icon::after {
+    content: '';
+    position: absolute;
+    background: var(--muted, rgba(11,18,32,0.66));
+    transition: transform 200ms ease;
+}
+
+.wp-block-kunaal-accordion .accordion-icon::before {
+    width: 12px;
+    height: 2px;
+    top: 9px;
+    left: 4px;
+}
+
+.wp-block-kunaal-accordion .accordion-icon::after {
+    width: 2px;
+    height: 12px;
+    top: 4px;
+    left: 9px;
+}
+
+.wp-block-kunaal-accordion[open] .accordion-icon::after {
+    transform: rotate(90deg);
+    opacity: 0;
+}
+
+.wp-block-kunaal-accordion .accordion-body {
+    padding: 1.25rem;
+    font-family: var(--serif, Georgia, serif);
+    line-height: 1.7;
+}
+
+.wp-block-kunaal-accordion .accordion-body > *:first-child {
+    margin-top: 0;
+}
+
+.wp-block-kunaal-accordion .accordion-body > *:last-child {
+    margin-bottom: 0;
+}
+
+/* Editor styles */
+.block-editor-block-list__block .wp-block-kunaal-accordion {
+    margin: 1rem 0;
+}

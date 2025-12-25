@@ -1,0 +1,118 @@
+/**
+ * Sidenote Block Styles
+ * Uses "Just Another Hand" font for handwritten aesthetic
+ */
+
+/* Wrapper - inline element */
+.wp-block-kunaal-sidenote {
+    position: relative;
+    display: inline;
+}
+
+/* Reference marker in the text */
+.sidenote-ref {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25em;
+    height: 1.25em;
+    margin: 0 0.1em;
+    padding: 0;
+    font-size: 0.7em;
+    font-weight: 600;
+    color: var(--blue);
+    background: var(--blueTint);
+    border: 1px solid var(--blueStroke);
+    border-radius: 50%;
+    cursor: pointer;
+    vertical-align: super;
+    transition: background 180ms ease, transform 180ms ease;
+}
+
+.sidenote-ref:hover,
+.sidenote-ref:focus {
+    background: var(--blueHover);
+    transform: scale(1.1);
+}
+
+.sidenote-ref:focus {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+
+/* The sidenote itself */
+.sidenote {
+    font-family: 'Just Another Hand', cursive;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    color: var(--muted);
+}
+
+/* Desktop: positioned in margin */
+@media (min-width: 1200px) {
+    .sidenote {
+        position: absolute;
+        left: calc(100% + 40px);
+        top: -0.5em;
+        width: 180px;
+        padding: var(--space-2);
+        background: var(--bgWarm);
+        border-left: 2px solid var(--warmLight);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(10px);
+        transition: opacity 200ms ease, transform 200ms ease, visibility 200ms;
+    }
+    
+    .sidenote-ref[aria-expanded="true"] + .sidenote,
+    .sidenote-ref:hover + .sidenote,
+    .sidenote-ref:focus + .sidenote,
+    .sidenote:hover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+    }
+}
+
+/* Tablet/Mobile: inline expand */
+@media (max-width: 1199px) {
+    .sidenote {
+        display: none;
+        margin: var(--space-2) 0;
+        padding: var(--space-2) var(--space-3);
+        background: var(--bgWarm);
+        border-left: 2px solid var(--warmLight);
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .sidenote-ref[aria-expanded="true"] + .sidenote {
+        display: block;
+    }
+}
+
+/* Ensure proper prose column context */
+.prose .wp-block-kunaal-sidenote {
+    position: relative;
+}
+
+/* Editor preview styles */
+.block-editor-block-list__block .sidenote {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    margin-top: var(--space-2);
+    transform: none;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .sidenote-ref,
+    .sidenote {
+        transition: none;
+    }
+}
+

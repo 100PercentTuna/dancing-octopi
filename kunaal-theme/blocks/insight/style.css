@@ -1,0 +1,13 @@
+/**
+ * Insight Block Styles
+ * Inherits most styles from theme's style.css .insightBox
+ */
+.wp-block-kunaal-insight {
+    /* Block-specific overrides if needed */
+}
+
+/* Editor-specific styles */
+.block-editor-block-list__block .wp-block-kunaal-insight {
+    margin: 1.5rem 0;
+}
+

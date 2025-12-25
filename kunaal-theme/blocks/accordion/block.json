@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/accordion",
+    "version": "1.0.0",
+    "title": "Accordion",
+    "category": "kunaal-interactive",
+    "icon": "arrow-down-alt2",
+    "description": "An expandable content section. Add any blocks inside.",
+    "keywords": ["accordion", "expand", "collapse", "toggle", "details", "faq"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "summary": {
+            "type": "string",
+            "default": "Click to expand"
+        },
+        "startOpen": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-accordion-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
