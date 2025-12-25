@@ -3181,3 +3181,18 @@ main {
   max-width: 100%;
   overflow: hidden;
 }
+
+/* ========================================
+   HIDE DK PDF AUTO-ADDED BUTTONS
+   (We use our own PDF system via the dock)
+   ======================================== */
+.dkpdf-button,
+.dkpdf-button-link,
+.dkpdf-link,
+#dkpdf-button,
+a[href*="dkpdfg"],
+.entry-content > .dkpdf-button-container,
+.post-content > .dkpdf-button-container,
+.article-content > .dkpdf-button-container {
+  display: none !important;
+}

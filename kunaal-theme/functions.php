@@ -1231,24 +1231,32 @@ function kunaal_customize_dkpdf() {
 }
 add_action('dkpdf_head_content', 'kunaal_customize_dkpdf');
 
-// Set PDF button text and styling
+/**
+ * Disable DK PDF auto-button insertion
+ * We use our own PDF system via the action dock
+ */
+function kunaal_disable_dkpdf_button() {
+    // Remove DK PDF button from content
+    if (class_exists('DKPDF_Admin')) {
+        remove_filter('the_content', array('DKPDF_Admin', 'button_position'));
+    }
+    // Also try alternative hook names
+    remove_all_filters('dkpdf_button_position');
+}
+add_action('init', 'kunaal_disable_dkpdf_button', 99);
+
+// Disable DK PDF button via settings filter
+function kunaal_dkpdf_button_position($position) {
+    return 'none'; // Don't show button
+}
+add_filter('dkpdf_button_position', 'kunaal_dkpdf_button_position');
+
+// Hide button via attributes
 function kunaal_dkpdf_button_attributes() {
     return array(
-        'text' => '', // Empty text - we'll use icon only
-        'class' => 'dkpdf-button-custom'
+        'text' => '',
+        'class' => 'dkpdf-hidden',
+        'style' => 'display:none !important;'
     );
 }
 add_filter('dkpdf_button_attributes', 'kunaal_dkpdf_button_attributes');
-
-
-/**
- * DK PDF - Custom Template
- */
-function kunaal_dkpdf_template($template) {
-    $custom = get_template_directory() . '/dkpdf/dkpdf-index.php';
-    if (file_exists($custom)) {
-        return $custom;
-    }
-    return $template;
-}
-add_filter('dkpdf_pdf_template', 'kunaal_dkpdf_template', 99);
