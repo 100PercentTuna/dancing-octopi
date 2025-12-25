@@ -1,13 +1,48 @@
 /**
  * Insight Block Styles
- * Inherits most styles from theme's style.css .insightBox
+ * Warm callout box for key insights
  */
 .wp-block-kunaal-insight {
-    /* Block-specific overrides if needed */
+    margin: var(--space-4, 32px) 0;
+    padding: var(--space-3, 24px) var(--space-4, 32px);
+    background: var(--warmTint, rgba(125,107,93,0.06));
+    border-left: 3px solid var(--warm, #7D6B5D);
 }
 
-/* Editor-specific styles */
+.wp-block-kunaal-insight .label {
+    display: block;
+    font-family: var(--mono, 'SF Mono', monospace);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warm, #7D6B5D);
+    margin-bottom: var(--space-2, 16px);
+}
+
+.wp-block-kunaal-insight .insightContent {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink, #0b1220);
+}
+
+.wp-block-kunaal-insight .insightContent p {
+    margin: 0;
+}
+
+.wp-block-kunaal-insight .insightContent strong {
+    color: var(--ink, #0b1220);
+    font-weight: 600;
+}
+
+/* Editor styles */
 .block-editor-block-list__block .wp-block-kunaal-insight {
-    margin: 1.5rem 0;
+    margin: var(--space-3, 24px) 0;
 }
 
+/* Editor placeholder */
+.block-editor-block-list__block .wp-block-kunaal-insight .insightContent[data-empty="true"]::before {
+    content: attr(data-placeholder);
+    color: var(--muted2, rgba(11,18,32,0.4));
+}

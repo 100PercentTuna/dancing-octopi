@@ -69,9 +69,9 @@ function kunaal_generate_pdf() {
         'post_type'   => $post_type_label,
     ));
     
-    // Generate filename
+    // Generate filename: "Title - by Author.pdf"
     $safe_title = sanitize_file_name($title);
-    $filename = "{$author_name} - {$post_type_label} - {$safe_title}.pdf";
+    $filename = "{$safe_title} - by {$author_name}.pdf";
     
     if ($use_dompdf) {
         $options = new Options();

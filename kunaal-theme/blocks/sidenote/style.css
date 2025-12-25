@@ -1,10 +1,11 @@
 /**
  * Sidenote Block Styles
- * Uses "Just Another Hand" font for handwritten aesthetic
+ * Elegant handwritten marginalia using Caveat font
  */
 
 /* Wrapper - inline element */
-.wp-block-kunaal-sidenote {
+.wp-block-kunaal-sidenote,
+.sidenote-wrapper {
     position: relative;
     display: inline;
 }
@@ -14,75 +15,82 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.25em;
-    height: 1.25em;
-    margin: 0 0.1em;
+    min-width: 1.1em;
+    height: 1.1em;
+    margin: 0 0.15em;
     padding: 0;
-    font-size: 0.7em;
+    font-size: 0.65em;
     font-weight: 600;
-    color: var(--blue);
-    background: var(--blueTint);
-    border: 1px solid var(--blueStroke);
+    font-family: var(--sans, system-ui, sans-serif);
+    color: var(--blue, #1E5AFF);
+    background: transparent;
+    border: 1.5px solid var(--blue, #1E5AFF);
     border-radius: 50%;
     cursor: pointer;
     vertical-align: super;
-    transition: background 180ms ease, transform 180ms ease;
+    line-height: 1;
+    transition: background 150ms ease, color 150ms ease;
 }
 
 .sidenote-ref:hover,
 .sidenote-ref:focus {
-    background: var(--blueHover);
-    transform: scale(1.1);
+    background: var(--blue, #1E5AFF);
+    color: #fff;
 }
 
 .sidenote-ref:focus {
-    outline: 2px solid var(--blue);
+    outline: 2px solid var(--blueRing, rgba(30,90,255,0.3));
     outline-offset: 2px;
 }
 
-/* The sidenote itself */
+/* The sidenote content */
 .sidenote {
-    font-family: 'Just Another Hand', cursive;
-    font-size: 1.35rem;
-    line-height: 1.3;
-    color: var(--muted);
+    font-family: 'Caveat', cursive;
+    font-size: 1.15rem;
+    line-height: 1.35;
+    color: var(--muted, rgba(11,18,32,0.7));
+    font-weight: 500;
 }
 
-/* Desktop: positioned in margin */
-@media (min-width: 1200px) {
-    .sidenote {
-        position: absolute;
-        left: calc(100% + 40px);
-        top: -0.5em;
-        width: 180px;
-        padding: var(--space-2);
-        background: var(--bgWarm);
-        border-left: 2px solid var(--warmLight);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateX(10px);
-        transition: opacity 200ms ease, transform 200ms ease, visibility 200ms;
+/* Desktop: positioned in right margin */
+@media (min-width: 1100px) {
+    .prose .sidenote-wrapper,
+    .prose .wp-block-kunaal-sidenote {
+        position: static;
     }
     
-    .sidenote-ref[aria-expanded="true"] + .sidenote,
-    .sidenote-ref:hover + .sidenote,
-    .sidenote-ref:focus + .sidenote,
-    .sidenote:hover {
+    .prose .sidenote {
+        position: absolute;
+        right: -220px;
+        width: 180px;
+        margin-top: -0.2em;
+        padding: 0.5rem 0 0.5rem 0.75rem;
+        border-left: 2px solid var(--warmLight, #d4c4b5);
+        background: transparent;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(8px);
+        transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+    }
+    
+    .prose .sidenote-ref:hover + .sidenote,
+    .prose .sidenote-ref:focus + .sidenote,
+    .prose .sidenote-ref[aria-expanded="true"] + .sidenote,
+    .prose .sidenote:hover {
         opacity: 1;
         visibility: visible;
         transform: translateX(0);
     }
 }
 
-/* Tablet/Mobile: inline expand */
-@media (max-width: 1199px) {
+/* Tablet/Mobile: expandable inline */
+@media (max-width: 1099px) {
     .sidenote {
         display: none;
-        margin: var(--space-2) 0;
-        padding: var(--space-2) var(--space-3);
-        background: var(--bgWarm);
-        border-left: 2px solid var(--warmLight);
-        border-radius: 0 4px 4px 0;
+        margin: 0.5rem 0;
+        padding: 0.5rem 0.75rem;
+        background: var(--bgWarm, #FAF8F5);
+        border-left: 2px solid var(--warmLight, #d4c4b5);
     }
     
     .sidenote-ref[aria-expanded="true"] + .sidenote {
@@ -90,22 +98,19 @@
     }
 }
 
-/* Ensure proper prose column context */
-.prose .wp-block-kunaal-sidenote {
-    position: relative;
-}
-
-/* Editor preview styles */
+/* Editor preview */
 .block-editor-block-list__block .sidenote {
     display: block;
     opacity: 1;
     visibility: visible;
     position: relative;
-    left: auto;
-    top: auto;
+    right: auto;
     width: auto;
-    margin-top: var(--space-2);
+    margin-top: 0.5rem;
     transform: none;
+    background: var(--bgWarm, #FAF8F5);
+    padding: 0.5rem 0.75rem;
+    border-left: 2px solid var(--warmLight, #d4c4b5);
 }
 
 /* Reduced motion */
@@ -115,4 +120,3 @@
         transition: none;
     }
 }
-

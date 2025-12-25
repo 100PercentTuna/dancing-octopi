@@ -1,15 +1,15 @@
 /**
  * Kunaal Theme - PDF Stylesheet
- * Clean journal-paper style for PDF exports
+ * Clean, tight journal-paper style
  */
 
 /* Page setup */
 @page {
   size: A4;
-  margin: 2.5cm 2cm 2.5cm 2cm;
+  margin: 2cm 2cm 2.5cm 2cm;
 }
 
-/* Base reset */
+/* Base */
 * {
   box-sizing: border-box;
   -webkit-print-color-adjust: exact !important;
@@ -17,99 +17,105 @@
 }
 
 body {
-  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-family: Georgia, 'Times New Roman', serif;
   font-size: 11pt;
-  line-height: 1.75;
-  color: #0b1220;
+  line-height: 1.6;
+  color: #1a1a1a;
   background: #fff;
   margin: 0;
   padding: 0;
 }
 
-/* Article Header (journal paper style) */
+/* Running header/footer for browser print */
+@media print {
+  @page {
+    @top-center {
+      content: element(running-header);
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 9pt;
+      color: #888;
+    }
+  }
+}
+
+/* Article Header */
 .pdf-header {
-  margin-bottom: 1.5cm;
-  padding-bottom: 0.8cm;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 0.8cm;
+  padding-bottom: 0.5cm;
+  border-bottom: 1px solid #ddd;
 }
 
 .pdf-title {
-  font-family: 'Newsreader', Georgia, serif;
-  font-size: 24pt;
-  font-weight: 600;
-  line-height: 1.2;
-  color: #0b1220;
-  margin: 0 0 0.4cm;
-  letter-spacing: -0.02em;
+  font-family: Georgia, serif;
+  font-size: 22pt;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #1a1a1a;
+  margin: 0 0 0.3cm;
 }
 
 .pdf-subtitle {
-  font-size: 13pt;
-  line-height: 1.5;
-  color: #444;
-  margin: 0 0 0.6cm;
+  font-size: 12pt;
+  line-height: 1.4;
+  color: #555;
+  margin: 0 0 0.4cm;
   font-style: italic;
 }
 
 .pdf-meta {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 10pt;
-  color: #666;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3cm;
-  align-items: center;
-}
-
-.pdf-meta span {
-  display: inline;
+  font-family: -apple-system, sans-serif;
+  font-size: 9pt;
+  color: #777;
 }
 
 .pdf-meta .sep {
   color: #ccc;
+  margin: 0 0.2cm;
 }
 
 .pdf-topics {
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
-  font-size: 9pt;
+  font-family: monospace;
+  font-size: 8pt;
   color: #1E5AFF;
-  margin-top: 0.4cm;
+  margin-top: 0.3cm;
 }
 
-/* Main Content */
+/* Main Content - tighter spacing */
 .pdf-content {
   font-size: 11pt;
-  line-height: 1.8;
-  color: #0b1220;
+  line-height: 1.6;
+  color: #1a1a1a;
 }
 
 .pdf-content p {
-  margin: 0 0 0.7cm;
+  margin: 0 0 0.5cm;
   text-align: left;
   orphans: 3;
   widows: 3;
 }
 
-/* Headings */
+/* Headings - reduced spacing */
 .pdf-content h2 {
-  font-family: 'Newsreader', Georgia, serif;
-  font-size: 16pt;
-  font-weight: 600;
-  color: #0b1220;
-  margin: 1.2cm 0 0.5cm;
+  font-family: Georgia, serif;
+  font-size: 14pt;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0.8cm 0 0.3cm;
   page-break-after: avoid;
 }
 
 .pdf-content h3 {
-  font-family: 'Newsreader', Georgia, serif;
-  font-size: 13pt;
-  font-weight: 600;
-  color: #0b1220;
-  margin: 1cm 0 0.4cm;
+  font-family: Georgia, serif;
+  font-size: 12pt;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0.6cm 0 0.25cm;
   page-break-after: avoid;
 }
 
-/* Links - blue, no decoration */
+/* Links */
 .pdf-content a {
   color: #1E5AFF;
   text-decoration: none;
@@ -119,9 +125,9 @@ body {
 .pdf-content blockquote,
 .pdf-content .pullquote,
 .pdf-content .wp-block-kunaal-pullquote {
-  margin: 1cm 0;
-  padding: 0 0 0 1cm;
-  border-left: 3px solid #1E5AFF;
+  margin: 0.5cm 0;
+  padding: 0 0 0 0.6cm;
+  border-left: 2px solid #1E5AFF;
   font-style: italic;
   color: #333;
   page-break-inside: avoid;
@@ -135,126 +141,124 @@ body {
 .pdf-content blockquote cite,
 .pdf-content .pullquote cite {
   display: block;
-  margin-top: 0.4cm;
+  margin-top: 0.2cm;
   font-style: normal;
-  font-size: 10pt;
-  color: #666;
+  font-size: 9pt;
+  color: #777;
 }
 
 /* Insight Boxes */
 .pdf-content .insightBox,
 .pdf-content .wp-block-kunaal-insight {
-  background: #f8f8f8;
-  padding: 0.6cm;
-  margin: 1cm 0;
-  border-left: 3px solid #7D6B5D;
+  background: #f9f9f9;
+  padding: 0.4cm;
+  margin: 0.5cm 0;
+  border-left: 2px solid #7D6B5D;
   page-break-inside: avoid;
 }
 
 .pdf-content .insightBox .label,
 .pdf-content .wp-block-kunaal-insight .label {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 9pt;
+  font-family: sans-serif;
+  font-size: 8pt;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #7D6B5D;
-  margin-bottom: 0.3cm;
+  margin-bottom: 0.2cm;
 }
 
-/* Accordions - Expanded for PDF */
+/* Accordions - Expanded, minimal style */
 .pdf-content details,
 .pdf-content .accordion,
 .pdf-content .wp-block-kunaal-accordion {
-  border: 1px solid #e0e0e0;
-  padding: 0.5cm;
-  margin: 0.8cm 0;
-  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-left: 2px solid #1E5AFF;
+  padding: 0.4cm;
+  margin: 0.5cm 0;
   page-break-inside: avoid;
+  background: #fafafa;
 }
 
 .pdf-content summary {
   font-weight: 600;
-  margin-bottom: 0.4cm;
-  color: #0b1220;
+  font-size: 10pt;
+  margin-bottom: 0.3cm;
+  color: #1a1a1a;
   list-style: none;
 }
 
-.pdf-content summary .marker {
+.pdf-content summary .marker,
+.pdf-content summary .accordion-icon {
   display: none;
 }
 
 /* Code */
 .pdf-content pre,
 .pdf-content code {
-  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-family: 'Courier New', monospace;
   font-size: 9pt;
   background: #f5f5f5;
 }
 
 .pdf-content pre {
-  padding: 0.5cm;
-  overflow-x: visible;
+  padding: 0.4cm;
   white-space: pre-wrap;
   word-wrap: break-word;
   page-break-inside: avoid;
-  line-height: 1.5;
-  border-radius: 4px;
-  margin: 0.8cm 0;
+  line-height: 1.4;
+  margin: 0.5cm 0;
 }
 
 .pdf-content code {
-  padding: 0.1cm 0.2cm;
-  border-radius: 3px;
+  padding: 0.05cm 0.15cm;
 }
 
 /* Tables */
 .pdf-content table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1cm 0;
-  font-size: 10pt;
+  margin: 0.5cm 0;
+  font-size: 9pt;
   page-break-inside: avoid;
 }
 
 .pdf-content th {
   background: #f5f5f5;
-  border-bottom: 2px solid #0b1220;
-  padding: 0.3cm 0.4cm;
+  border-bottom: 2px solid #333;
+  padding: 0.2cm 0.3cm;
   text-align: left;
   font-weight: 600;
 }
 
 .pdf-content td {
-  border-bottom: 1px solid #e0e0e0;
-  padding: 0.3cm 0.4cm;
+  border-bottom: 1px solid #ddd;
+  padding: 0.2cm 0.3cm;
 }
 
-/* Images - proper sizing */
+/* Images */
 .pdf-content img {
   max-width: 100%;
   width: auto;
   height: auto;
   display: block;
-  margin: 1cm auto;
+  margin: 0.5cm auto;
 }
 
 .pdf-content figure {
-  margin: 1cm 0;
+  margin: 0.5cm 0;
   page-break-inside: avoid;
 }
 
 .pdf-content figcaption {
-  font-size: 9pt;
-  color: #666;
+  font-size: 8pt;
+  color: #777;
   text-align: center;
-  margin-top: 0.3cm;
-  font-style: italic;
+  margin-top: 0.2cm;
 }
 
-/* WordPress images */
 .pdf-content .wp-block-image {
-  margin: 1cm 0;
+  margin: 0.5cm 0;
   page-break-inside: avoid;
 }
 
@@ -264,26 +268,15 @@ body {
   height: auto;
 }
 
-.pdf-content .wp-block-image.alignwide img,
-.pdf-content .wp-block-image.alignfull img {
-  width: 100%;
-}
-
 /* Lists */
 .pdf-content ul,
 .pdf-content ol {
-  margin: 0.6cm 0;
-  padding-left: 1.2cm;
+  margin: 0.4cm 0;
+  padding-left: 1cm;
 }
 
 .pdf-content li {
-  margin-bottom: 0.3cm;
-}
-
-/* SVG/Charts */
-.pdf-content svg {
-  max-width: 100%;
-  height: auto;
+  margin-bottom: 0.2cm;
 }
 
 /* Page breaks */
@@ -305,29 +298,54 @@ iframe,
 .sharePanel,
 .subscribePanel,
 .marker,
-.pdf-link-notice {
+.accordion-icon,
+.pdf-link-notice,
+.wp-block-cover__inner-container,
+.scrolly-section,
+.parallax-section {
   display: none !important;
+}
+
+/* Cover blocks - show image only */
+.wp-block-cover {
+  page-break-inside: avoid;
+  margin: 0.5cm 0;
+}
+
+.wp-block-cover img {
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
 /* Sidenotes inline */
 .sidenote,
 .sidenote-inline {
-  font-size: 9pt;
+  font-size: 8pt;
   color: #666;
   font-style: italic;
 }
 
 /* Footer */
 .pdf-footer {
-  margin-top: 2cm;
-  padding-top: 0.5cm;
-  border-top: 1px solid #e0e0e0;
-  font-size: 9pt;
-  color: #888;
+  margin-top: 1cm;
+  padding-top: 0.3cm;
+  border-top: 1px solid #ddd;
+  font-size: 8pt;
+  color: #999;
   text-align: center;
 }
 
 .pdf-footer a {
   color: #1E5AFF;
   text-decoration: none;
+}
+
+/* Scrolly/Parallax sections - linearize */
+.scrolly-step,
+.parallax-content {
+  margin: 0.5cm 0;
+  padding: 0.3cm;
+  background: #f9f9f9;
+  border-left: 2px solid #1E5AFF;
 }

@@ -47,6 +47,15 @@ function kunaal_register_block_categories($categories) {
 add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
 
 /**
+ * Unregister duplicate core blocks (we have our own versions)
+ */
+function kunaal_unregister_core_blocks() {
+    // Unregister core pullquote - we have kunaal/pullquote
+    unregister_block_type('core/pullquote');
+}
+add_action('init', 'kunaal_unregister_core_blocks', 100);
+
+/**
  * Register block editor scripts
  */
 function kunaal_register_block_scripts() {
@@ -125,10 +134,10 @@ add_action('init', 'kunaal_register_blocks', 10);
  * Enqueue block editor assets
  */
 function kunaal_enqueue_block_editor_assets() {
-    // Enqueue Just Another Hand font for sidenote block preview
+    // Enqueue Caveat font for sidenote block preview
     wp_enqueue_style(
-        'kunaal-just-another-hand-editor',
-        'https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap',
+        'kunaal-caveat-editor',
+        'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap',
         array(),
         null
     );

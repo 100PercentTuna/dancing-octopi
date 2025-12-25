@@ -16,8 +16,8 @@ if (empty($content)) {
 
 // Enqueue the sidenote font only when this block is present
 wp_enqueue_style(
-    'kunaal-just-another-hand',
-    'https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap',
+    'kunaal-caveat-font',
+    'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap',
     array(),
     null
 );

@@ -1,17 +1,17 @@
 /**
  * Pullquote Block Styles
- * Single clean blue left border
+ * Elegant editorial pullquote with single blue accent
  */
 .wp-block-kunaal-pullquote {
-    margin: 2rem 0;
-    padding: 0 0 0 1.5rem;
+    margin: var(--space-5, 40px) 0;
+    padding: 0 0 0 var(--space-4, 32px);
     border: none;
     border-left: 3px solid var(--blue, #1E5AFF);
     font-family: var(--serif, Georgia, serif);
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 400;
     font-style: italic;
-    line-height: 1.6;
+    line-height: 1.5;
     color: var(--ink, #0b1220);
     background: none;
 }
@@ -22,29 +22,48 @@
 
 .wp-block-kunaal-pullquote cite {
     display: block;
-    margin-top: 0.75rem;
-    font-size: 0.9rem;
-    font-family: var(--sans, system-ui, sans-serif);
-    font-weight: 400;
+    margin-top: var(--space-2, 16px);
+    font-size: 0.85rem;
+    font-family: var(--sans, -apple-system, sans-serif);
+    font-weight: 500;
     font-style: normal;
-    color: var(--muted, rgba(11,18,32,0.66));
+    color: var(--muted, rgba(11,18,32,0.6));
 }
 
+.wp-block-kunaal-pullquote cite::before {
+    content: "— ";
+}
+
+/* Large variant */
 .wp-block-kunaal-pullquote.pullquote--large {
-    font-size: 1.5rem;
-    padding-left: 2rem;
+    font-size: 1.6rem;
+    padding-left: var(--space-5, 40px);
 }
 
-/* Override any theme pullquote styles */
-.pullquote.wp-block-kunaal-pullquote,
-blockquote.wp-block-kunaal-pullquote {
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    background: transparent;
+/* Wide alignment */
+.wp-block-kunaal-pullquote.alignwide {
+    margin-left: calc(-1 * var(--space-4, 32px));
+    margin-right: calc(-1 * var(--space-4, 32px));
+}
+
+/* Ensure no double borders from other styles */
+blockquote.wp-block-kunaal-pullquote,
+.pullquote.wp-block-kunaal-pullquote {
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* Editor styles */
 .block-editor-block-list__block .wp-block-kunaal-pullquote {
-    margin: 1.5rem 0;
+    margin: var(--space-4, 32px) 0;
+}
+
+/* Editor placeholder */
+.block-editor-block-list__block .wp-block-kunaal-pullquote p[data-empty="true"]::before {
+    content: attr(data-placeholder);
+    color: var(--muted2, rgba(11,18,32,0.4));
+    font-style: italic;
 }
