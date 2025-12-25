@@ -1,0 +1,8 @@
+/**
+ * Takeaway Item Block Styles
+ * Inherits from .takeList li in main theme CSS
+ */
+.wp-block-kunaal-takeaway-item {
+    /* Inherits all styles from .takeList li */
+}
+

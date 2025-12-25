@@ -1,0 +1,13 @@
+/**
+ * Section Header Block Styles
+ * Inherits theme styles from style.css
+ */
+.wp-block-kunaal-section-header {
+    /* Inherits all styles from .sectionHead in main theme CSS */
+}
+
+/* Editor preview */
+.block-editor-block-list__block .wp-block-kunaal-section-header {
+    margin: var(--space-4, 32px) 0;
+}
+

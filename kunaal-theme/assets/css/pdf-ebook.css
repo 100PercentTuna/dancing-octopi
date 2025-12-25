@@ -328,12 +328,18 @@ iframe,
 
 /* Footer */
 .pdf-footer {
-  margin-top: 1cm;
-  padding-top: 0.3cm;
-  border-top: 1px solid #ddd;
-  font-size: 8pt;
-  color: #999;
+  margin-top: 1.2cm;
+  padding-top: 0.4cm;
+  border-top: 1px solid #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 9pt;
+  color: #888;
   text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.pdf-footer p {
+  margin: 0;
 }
 
 .pdf-footer a {

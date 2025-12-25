@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/takeaway-item",
+    "version": "1.0.0",
+    "title": "Takeaway Item",
+    "category": "kunaal-editorial",
+    "icon": "editor-ul",
+    "description": "A single takeaway with heading and description.",
+    "keywords": ["takeaway", "point", "item"],
+    "textdomain": "kunaal-theme",
+    "parent": ["kunaal/takeaways"],
+    "attributes": {
+        "heading": {
+            "type": "string",
+            "default": ""
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-takeaway-item-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

@@ -16,10 +16,10 @@ if (empty($summary)) {
 ?>
 <details<?php echo $anchor; ?> class="wp-block-kunaal-accordion accordion reveal<?php echo $class_name; ?>"<?php echo $start_open; ?>>
     <summary>
-        <span class="accordion-title"><?php echo esc_html($summary); ?></span>
-        <span class="accordion-icon"></span>
+        <span><?php echo esc_html($summary); ?></span>
+        <span class="marker">+</span>
     </summary>
-    <div class="accordion-body">
+    <div class="accBody">
         <?php echo $content; ?>
     </div>
 </details>

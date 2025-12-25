@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/takeaways",
+    "version": "1.0.0",
+    "title": "Takeaways",
+    "category": "kunaal-editorial",
+    "icon": "list-view",
+    "description": "A numbered list of key takeaways with headings and descriptions.",
+    "keywords": ["takeaways", "summary", "key points", "conclusions"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Takeaways"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-takeaways-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

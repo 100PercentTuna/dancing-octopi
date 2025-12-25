@@ -74,10 +74,15 @@ function kunaal_register_block_scripts() {
     
     // Register editor scripts for each block
     $blocks = array(
-        'insight'   => 'kunaal-insight-editor',
-        'pullquote' => 'kunaal-pullquote-editor',
-        'accordion' => 'kunaal-accordion-editor',
-        'sidenote'  => 'kunaal-sidenote-editor',
+        'insight'         => 'kunaal-insight-editor',
+        'pullquote'       => 'kunaal-pullquote-editor',
+        'accordion'       => 'kunaal-accordion-editor',
+        'sidenote'        => 'kunaal-sidenote-editor',
+        'section-header'  => 'kunaal-section-header-editor',
+        'takeaways'       => 'kunaal-takeaways-editor',
+        'takeaway-item'   => 'kunaal-takeaway-item-editor',
+        'citation'        => 'kunaal-citation-editor',
+        'aside'           => 'kunaal-aside-editor',
     );
     
     foreach ($blocks as $folder => $handle) {
@@ -119,6 +124,11 @@ function kunaal_register_blocks() {
         'pullquote',
         'accordion',
         'sidenote',
+        'section-header',
+        'takeaways',
+        'takeaway-item',
+        'citation',
+        'aside',
     );
     
     foreach ($block_folders as $block) {

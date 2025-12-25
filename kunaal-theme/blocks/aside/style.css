@@ -1,0 +1,13 @@
+/**
+ * Aside Block Styles
+ * Inherits theme styles from style.css
+ */
+.wp-block-kunaal-aside {
+    /* Inherits all styles from .aside in main theme CSS */
+}
+
+/* Editor preview */
+.block-editor-block-list__block .wp-block-kunaal-aside {
+    margin: var(--space-5, 40px) 0;
+}
+

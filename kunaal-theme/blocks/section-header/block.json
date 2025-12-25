@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/section-header",
+    "version": "1.0.0",
+    "title": "Section Header",
+    "category": "kunaal-editorial",
+    "icon": "heading",
+    "description": "A numbered section heading with elegant styling.",
+    "keywords": ["section", "header", "heading", "number", "chapter"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "number": {
+            "type": "string",
+            "default": "01"
+        },
+        "level": {
+            "type": "number",
+            "default": 2
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-section-header-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

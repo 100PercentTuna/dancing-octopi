@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/aside",
+    "version": "1.0.0",
+    "title": "Aside / Case Study",
+    "category": "kunaal-editorial",
+    "icon": "editor-alignleft",
+    "description": "A warm background callout box for asides, case studies, or side notes.",
+    "keywords": ["aside", "case study", "callout", "sidebar"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "outcome": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-aside-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

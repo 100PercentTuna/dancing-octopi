@@ -1,0 +1,13 @@
+/**
+ * Citation Block Styles
+ * Inherits theme styles from style.css
+ */
+.wp-block-kunaal-citation {
+    /* Inherits all styles from .citation in main theme CSS */
+}
+
+/* Editor preview */
+.block-editor-block-list__block .wp-block-kunaal-citation {
+    margin: var(--space-5, 40px) 0;
+}
+

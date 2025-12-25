@@ -1,100 +1,25 @@
 /**
  * Accordion Block Styles
- * Elegant, minimal design matching theme
+ * Inherits elegant theme styles from style.css
+ * Only adds minimal bridging and editor-specific styles
  */
+
+/* Bridge to theme accordion styles */
 .wp-block-kunaal-accordion {
-    margin: var(--space-4, 32px) 0;
-    border: 1px solid var(--hair, rgba(11,18,32,0.12));
-    background: var(--bg, #FDFCFA);
+    /* Inherit all styles from .accordion in main theme CSS */
 }
 
-.wp-block-kunaal-accordion summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-3, 24px) var(--space-4, 32px);
-    cursor: pointer;
-    font-family: var(--sans, -apple-system, BlinkMacSystemFont, sans-serif);
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--ink, #0b1220);
-    list-style: none;
-    user-select: none;
-    transition: background 150ms ease;
+/* Ensure theme styles apply */
+.wp-block-kunaal-accordion.accordion {
+    /* Theme styles handle everything */
 }
 
-.wp-block-kunaal-accordion summary::-webkit-details-marker {
-    display: none;
-}
-
-.wp-block-kunaal-accordion summary:hover {
-    background: var(--hair2, rgba(11,18,32,0.04));
-}
-
-.wp-block-kunaal-accordion .accordion-title {
-    flex: 1;
-}
-
-.wp-block-kunaal-accordion .accordion-icon {
-    width: 16px;
-    height: 16px;
-    position: relative;
-    flex-shrink: 0;
-    color: var(--muted, rgba(11,18,32,0.5));
-}
-
-.wp-block-kunaal-accordion .accordion-icon::before,
-.wp-block-kunaal-accordion .accordion-icon::after {
-    content: '';
-    position: absolute;
-    background: currentColor;
-    transition: transform 200ms ease, opacity 200ms ease;
-}
-
-.wp-block-kunaal-accordion .accordion-icon::before {
-    width: 12px;
-    height: 1.5px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.wp-block-kunaal-accordion .accordion-icon::after {
-    width: 1.5px;
-    height: 12px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.wp-block-kunaal-accordion[open] .accordion-icon::after {
-    transform: translate(-50%, -50%) rotate(90deg);
-    opacity: 0;
-}
-
-.wp-block-kunaal-accordion .accordion-body {
-    padding: 0 var(--space-4, 32px) var(--space-4, 32px);
-    border-top: 1px solid var(--hair, rgba(11,18,32,0.08));
-}
-
-.wp-block-kunaal-accordion .accordion-body > *:first-child {
-    margin-top: var(--space-3, 24px);
-}
-
-.wp-block-kunaal-accordion .accordion-body > *:last-child {
-    margin-bottom: 0;
-}
-
-/* Expanded state - blue accent line */
-.wp-block-kunaal-accordion[open] {
-    border-left: 2px solid var(--blue, #1E5AFF);
-}
-
-/* Editor styles */
+/* Editor-specific preview styles */
 .block-editor-block-list__block .wp-block-kunaal-accordion {
-    margin: 1.5rem 0;
+    margin: var(--space-3, 24px) 0;
 }
 
-.block-editor-block-list__block .wp-block-kunaal-accordion .accordion-body {
-    padding-top: var(--space-3, 24px);
+/* Editor: ensure proper spacing in preview */
+.block-editor-block-list__block .wp-block-kunaal-accordion .accBody {
+    padding-top: var(--space-2, 16px);
 }

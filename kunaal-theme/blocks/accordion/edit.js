@@ -17,7 +17,7 @@
             const [isOpen, setIsOpen] = useState(true); // Always open in editor for editing
             
             const blockProps = useBlockProps({
-                className: 'accordion'
+                className: 'accordion wp-block-kunaal-accordion'
             });
 
             return el(
@@ -44,25 +44,23 @@
                     )
                 ),
                 el(
-                    'div',
-                    blockProps,
+                    'details',
+                    Object.assign({}, blockProps, { open: isOpen }),
                     el(
-                        'div',
-                        { className: 'accordion-header', style: { 
-                            display: 'flex', 
-                            justifyContent: 'space-between', 
-                            alignItems: 'center',
-                            padding: '12px 16px',
-                            background: '#f8f8f8',
-                            borderBottom: '1px solid #e0e0e0',
-                            cursor: 'pointer'
-                        }},
-                        el('span', { style: { fontWeight: 600 } }, summary || 'Click to expand'),
-                        el('span', { style: { color: '#999' } }, isOpen ? '−' : '+')
+                        'summary',
+                        { 
+                            onClick: function(e) { 
+                                e.preventDefault(); 
+                                setIsOpen(!isOpen); 
+                            },
+                            style: { cursor: 'pointer' }
+                        },
+                        el('span', null, summary || 'Click to expand'),
+                        el('span', { className: 'marker' }, '+')
                     ),
                     el(
                         'div',
-                        { className: 'accordion-content', style: { padding: '16px' } },
+                        { className: 'accBody' },
                         el(InnerBlocks, {
                             template: [['core/paragraph', { placeholder: 'Add content here...' }]],
                             templateLock: false

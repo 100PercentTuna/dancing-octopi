@@ -192,7 +192,7 @@ function kunaal_build_pdf_html($data) {
         </div>
         
         <footer class="pdf-footer">
-            <p>Originally published at <a href="' . esc_url($data['post_url']) . '">' . esc_html(parse_url($data['post_url'], PHP_URL_HOST)) . '</a></p>
+            <p>' . esc_html($data['author']) . ' · ' . esc_html(parse_url($data['site_url'], PHP_URL_HOST)) . '</p>
         </footer>
     </div>
 </body>

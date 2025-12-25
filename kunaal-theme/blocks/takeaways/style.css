@@ -1,0 +1,13 @@
+/**
+ * Takeaways Block Styles
+ * Inherits theme styles
+ */
+.wp-block-kunaal-takeaways {
+    /* Inherits from .takeaways in main theme CSS */
+}
+
+/* Editor preview */
+.block-editor-block-list__block .wp-block-kunaal-takeaways {
+    margin: var(--space-5, 40px) 0;
+}
+

@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/citation",
+    "version": "1.0.0",
+    "title": "Citation",
+    "category": "kunaal-editorial",
+    "icon": "format-quote",
+    "description": "A centered quote with author attribution.",
+    "keywords": ["citation", "quote", "attribution", "reference"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "quote": {
+            "type": "string",
+            "default": ""
+        },
+        "author": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-citation-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+
