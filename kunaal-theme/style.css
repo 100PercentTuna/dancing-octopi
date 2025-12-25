@@ -3,7 +3,7 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 4.8.0
+Version: 4.9.0
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
@@ -3992,77 +3992,68 @@ a[href*="dkpdfg"],
 }
 
 /* ========================================
-   CONTACT PAGE - Elegant Note Card
+   CONTACT PAGE - Premium Design
    ======================================== */
 
-.contact-elegant {
+.contact-premium {
   min-height: 100vh;
-  background: 
-    radial-gradient(ellipse at 30% 20%, rgba(30, 90, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(125, 107, 93, 0.04) 0%, transparent 50%),
-    var(--bgWarm);
-  padding: var(--space-12) var(--space-4);
+  background: linear-gradient(180deg, #FDFCFB 0%, #F9F7F4 100%);
+  padding: 80px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.contact-wrapper {
+.contact-premium .contact-wrapper {
   width: 100%;
-  max-width: 560px;
+  max-width: 480px;
 }
 
-.contact-card {
-  background: var(--bg);
-  border-radius: 16px;
-  padding: var(--space-8) var(--space-6);
+.contact-premium .contact-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 48px 40px;
   box-shadow: 
     0 4px 6px rgba(0, 0, 0, 0.02),
-    0 12px 24px rgba(0, 0, 0, 0.04),
-    0 24px 48px rgba(0, 0, 0, 0.04);
+    0 12px 24px rgba(0, 0, 0, 0.04);
 }
 
-.contact-header {
+.contact-premium .contact-header {
   text-align: center;
-  margin-bottom: var(--space-8);
+  margin-bottom: 40px;
 }
 
-.contact-header h1 {
-  font-family: var(--serif);
-  font-size: 2.25rem;
-  font-weight: 500;
+.contact-premium .contact-headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 36px;
+  font-weight: 400;
   color: var(--ink);
-  margin: 0 0 var(--space-3);
+  margin: 0 0 12px;
 }
 
-.contact-header .contact-intro {
-  font-size: 1rem;
+.contact-premium .contact-intro {
+  font-size: 16px;
   color: var(--muted);
   line-height: 1.6;
   margin: 0;
 }
 
-/* Elegant Form Fields */
-.elegant-form {
+/* Form */
+.contact-premium .contact-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: 28px;
 }
 
-.form-row {
+.contact-premium .form-field {
   position: relative;
 }
 
-.form-field {
-  position: relative;
-}
-
-.form-field input,
-.form-field textarea {
+.contact-premium .form-field input {
   width: 100%;
-  padding: 16px 0 12px;
+  padding: 16px 0;
   border: none;
-  border-bottom: 1px solid var(--hair);
+  border-bottom: 1px solid #E5E5E5;
   background: transparent;
   font-size: 16px;
   font-family: inherit;
@@ -4070,85 +4061,81 @@ a[href*="dkpdfg"],
   transition: border-color 0.3s ease;
 }
 
-.form-field input:focus,
-.form-field textarea:focus {
+.contact-premium .form-field input:focus {
   outline: none;
+  border-bottom-width: 2px;
   border-bottom-color: var(--blue);
 }
 
-.form-field label {
+.contact-premium .form-field label {
   position: absolute;
   left: 0;
   top: 16px;
-  font-size: 15px;
-  color: var(--muted);
+  font-size: 16px;
+  color: #9CA3AF;
   pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.form-field input:focus ~ label,
-.form-field input:not(:placeholder-shown) ~ label,
-.form-field textarea:focus ~ label,
-.form-field textarea:not(:placeholder-shown) ~ label {
-  top: -8px;
-  font-size: 12px;
+.contact-premium .form-field input:focus ~ label,
+.contact-premium .form-field input:not(:placeholder-shown) ~ label {
+  transform: translateY(-24px) scale(0.75);
   color: var(--blue);
-  font-weight: 500;
 }
 
-.field-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--blue);
-  transition: width 0.3s ease;
+/* Textarea Field */
+.contact-premium .textarea-field {
+  margin-top: 8px;
 }
 
-.form-field input:focus ~ .field-line {
+.contact-premium .textarea-field textarea {
   width: 100%;
-}
-
-/* Textarea styling */
-.textarea-field textarea {
   min-height: 140px;
-  resize: vertical;
-  border: 1px solid var(--hair);
+  padding: 16px;
+  border: 1px solid #E5E5E5;
   border-radius: 8px;
-  padding: var(--space-4);
-  margin-top: 24px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: transparent;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--ink);
+  resize: vertical;
+  transition: border-color 0.3s ease;
 }
 
-.textarea-field textarea:focus {
+.contact-premium .textarea-field textarea:focus {
+  outline: none;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(30, 90, 255, 0.08);
 }
 
-.textarea-field label {
-  top: 0;
-  background: var(--bg);
+.contact-premium .textarea-field label {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  font-size: 16px;
+  color: #9CA3AF;
+  pointer-events: none;
+  background: white;
   padding: 0 4px;
+  transform-origin: left;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.textarea-field textarea:focus ~ label,
-.textarea-field textarea:not(:placeholder-shown) ~ label {
-  top: 0;
+.contact-premium .textarea-field textarea:focus ~ label,
+.contact-premium .textarea-field textarea:not(:placeholder-shown) ~ label {
+  transform: translateY(-24px) scale(0.75);
+  color: var(--blue);
 }
 
-/* Send Button */
-.form-actions {
-  margin-top: var(--space-4);
-}
-
-.send-btn {
-  display: inline-flex;
+/* Submit Button */
+.contact-premium .submit-btn {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
   padding: 16px 32px;
+  margin-top: 8px;
   background: var(--ink);
   color: white;
   border: none;
@@ -4156,156 +4143,162 @@ a[href*="dkpdfg"],
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.send-btn:hover:not(:disabled) {
+.contact-premium .submit-btn:hover:not(:disabled) {
   background: var(--blue);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(30, 90, 255, 0.25);
+  box-shadow: 0 8px 20px rgba(30, 90, 255, 0.3);
 }
 
-.send-btn:disabled {
+.contact-premium .submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-.send-btn .btn-arrow {
-  width: 18px;
-  height: 18px;
+.contact-premium .submit-btn .btn-arrow {
   transition: transform 0.3s ease;
 }
 
-.send-btn:hover .btn-arrow {
+.contact-premium .submit-btn:hover .btn-arrow {
   transform: translateX(4px);
 }
 
-.send-btn .btn-sending {
+/* Button States */
+.contact-premium .submit-btn .btn-loading,
+.contact-premium .submit-btn .btn-success {
   display: none;
 }
 
-.send-btn.sending .btn-text,
-.send-btn.sending .btn-arrow {
+.contact-premium .submit-btn.is-loading .btn-text,
+.contact-premium .submit-btn.is-loading .btn-arrow {
   display: none;
 }
 
-.send-btn.sending .btn-sending {
+.contact-premium .submit-btn.is-loading .btn-loading {
+  display: inline;
+}
+
+.contact-premium .submit-btn.is-success {
+  background: #059669;
+}
+
+.contact-premium .submit-btn.is-success .btn-text,
+.contact-premium .submit-btn.is-success .btn-arrow,
+.contact-premium .submit-btn.is-success .btn-loading {
+  display: none;
+}
+
+.contact-premium .submit-btn.is-success .btn-success {
   display: inline;
 }
 
 /* Status Messages */
-.elegant-form .form-status {
+.contact-premium .form-status {
   text-align: center;
-  padding: var(--space-3);
+  padding: 12px;
   border-radius: 6px;
   font-size: 14px;
-  margin-top: var(--space-3);
+  margin-top: 16px;
 }
 
-.elegant-form .form-status:empty {
+.contact-premium .form-status:empty {
   display: none;
 }
 
-.elegant-form .form-status.success {
-  background: rgba(46, 125, 50, 0.08);
-  color: #2e7d32;
-}
-
-.elegant-form .form-status.error {
+.contact-premium .form-status.is-error {
   background: rgba(198, 40, 40, 0.08);
   color: #c62828;
 }
 
-.response-note {
+.contact-premium .response-note {
   text-align: center;
   font-size: 13px;
   color: var(--muted);
-  margin-top: var(--space-5);
+  margin-top: 24px;
 }
 
-/* Alternative Contact Links */
-.contact-alternatives {
-  margin-top: var(--space-8);
+/* Alternative Contact */
+.contact-premium .contact-alternatives {
+  margin-top: 40px;
   text-align: center;
 }
 
-.alt-divider {
+.contact-premium .alt-divider {
   display: block;
   font-size: 13px;
   color: var(--muted);
-  margin-bottom: var(--space-4);
+  margin-bottom: 20px;
   position: relative;
 }
 
-.alt-divider::before,
-.alt-divider::after {
+.contact-premium .alt-divider::before,
+.contact-premium .alt-divider::after {
   content: '';
   position: absolute;
   top: 50%;
-  width: 60px;
+  width: 50px;
   height: 1px;
-  background: var(--hair);
+  background: #E5E5E5;
 }
 
-.alt-divider::before {
-  right: calc(50% + 80px);
+.contact-premium .alt-divider::before {
+  right: calc(50% + 70px);
 }
 
-.alt-divider::after {
-  left: calc(50% + 80px);
+.contact-premium .alt-divider::after {
+  left: calc(50% + 70px);
 }
 
-.alt-links {
+.contact-premium .alt-icons {
   display: flex;
   justify-content: center;
-  gap: var(--space-4);
+  gap: 16px;
 }
 
-.alt-link {
+.contact-premium .alt-icon-link {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--bg);
-  border: 1px solid var(--hair);
-  color: var(--muted);
+  border: 1px solid #E5E5E5;
+  color: #6b7280;
   transition: all 0.3s ease;
 }
 
-.alt-link:hover {
+.contact-premium .alt-icon-link:hover {
   border-color: var(--blue);
   color: var(--blue);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.alt-link svg {
-  width: 22px;
-  height: 22px;
+  transform: scale(1.1);
 }
 
 /* Responsive */
 @media (max-width: 600px) {
-  .contact-card {
-    padding: var(--space-6) var(--space-4);
+  .contact-premium {
+    padding: 60px 20px;
   }
   
-  .contact-header h1 {
-    font-size: 1.75rem;
+  .contact-premium .contact-card {
+    padding: 36px 24px;
   }
   
-  .alt-divider::before,
-  .alt-divider::after {
-    width: 40px;
+  .contact-premium .contact-headline {
+    font-size: 28px;
   }
   
-  .alt-divider::before {
-    right: calc(50% + 60px);
+  .contact-premium .alt-divider::before,
+  .contact-premium .alt-divider::after {
+    width: 30px;
   }
   
-  .alt-divider::after {
-    left: calc(50% + 60px);
+  .contact-premium .alt-divider::before {
+    right: calc(50% + 55px);
+  }
+  
+  .contact-premium .alt-divider::after {
+    left: calc(50% + 55px);
   }
 }

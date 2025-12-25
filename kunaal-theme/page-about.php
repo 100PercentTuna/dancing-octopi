@@ -2,7 +2,8 @@
 /**
  * Template Name: About Page
  * 
- * Modular About page with toggle-able sections
+ * Premium scrollytelling About page
+ * Sotheby's meets The Atlantic longform
  *
  * @package Kunaal_Theme
  */
@@ -10,7 +11,9 @@
 get_header();
 
 // Include interest icons mapping
-require_once get_template_directory() . '/inc/interest-icons.php';
+if (file_exists(get_template_directory() . '/inc/interest-icons.php')) {
+    require_once get_template_directory() . '/inc/interest-icons.php';
+}
 
 // Get basic info
 $first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
@@ -23,7 +26,7 @@ $linkedin = get_theme_mod('kunaal_linkedin_handle', '');
 $twitter = get_theme_mod('kunaal_twitter_handle', '');
 
 // Hero settings
-$about_greeting = get_theme_mod('kunaal_about_greeting', 'Hi, I\'m ' . $first_name . '.');
+$about_greeting = get_theme_mod('kunaal_about_greeting', '');
 $about_photo = get_theme_mod('kunaal_about_photo', $avatar);
 
 // Section toggles
@@ -38,24 +41,27 @@ $show_connect = get_theme_mod('kunaal_about_show_connect', true);
 // Section content
 $bio_title = get_theme_mod('kunaal_about_bio_title', 'About');
 $map_title = get_theme_mod('kunaal_about_map_title', 'Places');
-$map_visited = get_theme_mod('kunaal_about_map_visited', '');
-$map_lived = get_theme_mod('kunaal_about_map_lived', '');
-$map_notes = get_theme_mod('kunaal_about_map_notes', '');
+$map_intro = get_theme_mod('kunaal_about_map_intro', 'The places that have shaped who I am.');
 $books_title = get_theme_mod('kunaal_about_books_title', 'Currently Reading');
 $books_data = get_theme_mod('kunaal_about_books_data', '');
-$interests_title = get_theme_mod('kunaal_about_interests_title', 'Things I Love');
+$interests_title = get_theme_mod('kunaal_about_interests_title', 'Things That Fascinate Me');
 $interests_list = get_theme_mod('kunaal_about_interests_list', '');
 $inspirations_title = get_theme_mod('kunaal_about_inspirations_title', 'People Who Inspire Me');
 $inspirations_data = get_theme_mod('kunaal_about_inspirations_data', '');
-$stats_title = get_theme_mod('kunaal_about_stats_title', 'By the Numbers');
+$stats_title = get_theme_mod('kunaal_about_stats_title', '');
 $stats_data = get_theme_mod('kunaal_about_stats_data', '');
-$connect_title = get_theme_mod('kunaal_about_connect_title', 'Say Hello');
+$connect_title = get_theme_mod('kunaal_about_connect_title', 'Want to connect?');
+$interstitial_image = get_theme_mod('kunaal_about_interstitial_image', '');
+$interstitial_caption = get_theme_mod('kunaal_about_interstitial_caption', '');
+
+// Map places data
+$map_places_data = get_theme_mod('kunaal_about_map_places', '');
 
 // Parse JSON data
 $books = !empty($books_data) ? json_decode($books_data, true) : array();
 $inspirations = !empty($inspirations_data) ? json_decode($inspirations_data, true) : array();
 $stats = !empty($stats_data) ? json_decode($stats_data, true) : array();
-$notes = !empty($map_notes) ? json_decode($map_notes, true) : array();
+$map_places = !empty($map_places_data) ? json_decode($map_places_data, true) : array();
 
 // Parse interests
 $interests = array();
@@ -71,50 +77,52 @@ if (!empty($interests_list)) {
             $size = (int)$matches[2];
         }
         
+        $icon = function_exists('kunaal_get_interest_icon') ? kunaal_get_interest_icon($line) : '✨';
+        
         $interests[] = array(
             'name' => $line,
             'size' => $size,
-            'icon' => kunaal_get_interest_icon($line)
+            'icon' => $icon
         );
     }
 }
 
-// Parse country lists
-$visited_countries = array_filter(array_map('trim', explode(',', strtoupper($map_visited))));
-$lived_countries = array_filter(array_map('trim', explode(',', strtoupper($map_lived))));
+// Chapter counter
+$chapter = 0;
 ?>
 
-<main class="about-page-v2">
+<main class="about-page-premium">
 
     <!-- ========================================
-         HERO SECTION (Always visible)
+         HERO - The Portrait
          ======================================== -->
-    <section class="about-hero">
-        <div class="about-hero-bg" <?php if ($about_photo) : ?>style="background-image: url('<?php echo esc_url($about_photo); ?>');"<?php endif; ?>></div>
-        <div class="about-hero-overlay"></div>
-        <div class="about-hero-content">
-            <div class="about-avatar">
+    <section class="about-step about-hero">
+        <div class="hero-content" data-parallax="slow">
+            <div class="hero-portrait reveal">
                 <?php if ($about_photo) : ?>
                     <img src="<?php echo esc_url($about_photo); ?>" alt="<?php echo esc_attr($full_name); ?>">
                 <?php else : ?>
                     <span class="initials"><?php echo esc_html(kunaal_get_initials()); ?></span>
                 <?php endif; ?>
             </div>
-            <h1 class="about-greeting"><?php echo esc_html($about_greeting); ?></h1>
+            <h1 class="hero-name"><?php echo esc_html($full_name); ?></h1>
             <?php if ($tagline) : ?>
-            <p class="about-tagline"><?php echo esc_html($tagline); ?></p>
+            <p class="hero-tagline"><?php echo esc_html($tagline); ?></p>
             <?php endif; ?>
         </div>
+        <div class="scroll-indicator"></div>
     </section>
 
     <!-- ========================================
-         BIO SECTION
+         CHAPTER 1 - Bio / Introduction
          ======================================== -->
-    <?php if ($show_bio) : ?>
-    <section class="about-section about-bio-section">
-        <div class="section-container">
-            <h2 class="section-title reveal-up"><?php echo esc_html($bio_title); ?></h2>
-            <div class="bio-content reveal-up">
+    <?php if ($show_bio) : $chapter++; ?>
+    <section class="about-step about-chapter about-bio-section">
+        <div class="chapter-container">
+            <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
+            <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($bio_title); ?></h2>
+            
+            <div class="bio-content reveal reveal-stagger-2">
                 <?php 
                 while (have_posts()) : the_post();
                     the_content();
@@ -126,44 +134,58 @@ $lived_countries = array_filter(array_map('trim', explode(',', strtoupper($map_l
     <?php endif; ?>
 
     <!-- ========================================
-         WORLD MAP SECTION
+         INTERSTITIAL - Full Bleed Image
          ======================================== -->
-    <?php if ($show_map && (!empty($visited_countries) || !empty($lived_countries))) : ?>
-    <section class="about-section about-map-section">
-        <div class="section-container wide">
-            <h2 class="section-title reveal-up"><?php echo esc_html($map_title); ?></h2>
-            <div class="map-wrapper reveal-up">
-                <div class="world-map" 
-                     data-visited="<?php echo esc_attr(implode(',', $visited_countries)); ?>"
-                     data-lived="<?php echo esc_attr(implode(',', $lived_countries)); ?>"
-                     data-notes="<?php echo esc_attr(json_encode($notes)); ?>">
-                    <?php echo file_get_contents(get_template_directory() . '/assets/svg/world-map.svg'); ?>
-                </div>
-                <div class="map-tooltip"></div>
-                <div class="map-legend">
-                    <span class="legend-item"><span class="legend-dot visited"></span> Visited</span>
-                    <span class="legend-item"><span class="legend-dot lived"></span> Lived</span>
-                </div>
-            </div>
+    <?php if ($interstitial_image) : ?>
+    <section class="about-step about-interstitial" style="background-image: url('<?php echo esc_url($interstitial_image); ?>');">
+        <?php if ($interstitial_caption) : ?>
+        <div class="interstitial-caption">
+            <p class="reveal"><?php echo esc_html($interstitial_caption); ?></p>
         </div>
+        <?php endif; ?>
     </section>
     <?php endif; ?>
 
     <!-- ========================================
-         BOOKSHELF SECTION
+         CHAPTER 2 - Map (Places)
          ======================================== -->
-    <?php if ($show_books && !empty($books)) : ?>
-    <section class="about-section about-books-section">
-        <div class="section-container">
-            <h2 class="section-title reveal-up"><?php echo esc_html($books_title); ?></h2>
-            <div class="bookshelf reveal-up">
-                <div class="shelf-books">
-                    <?php foreach ($books as $index => $book) : ?>
-                    <a href="<?php echo esc_url($book['link'] ?? '#'); ?>" 
-                       class="book" 
-                       target="_blank" 
-                       rel="noopener"
-                       style="--delay: <?php echo $index * 0.1; ?>s">
+    <?php if ($show_map && !empty($map_places)) : $chapter++; ?>
+    <section class="about-step about-chapter about-map-section">
+        <div class="chapter-container wide">
+            <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
+            <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($map_title); ?></h2>
+            
+            <?php if ($map_intro) : ?>
+            <p class="bio-content reveal reveal-stagger-2" style="text-align: center; margin-bottom: 32px;">
+                <?php echo esc_html($map_intro); ?>
+            </p>
+            <?php endif; ?>
+            
+            <div class="map-container reveal reveal-stagger-3">
+                <div id="places-map" data-places="<?php echo esc_attr(wp_json_encode($map_places)); ?>"></div>
+                <div class="map-legend">
+                    <span class="legend-item"><span class="legend-dot lived"></span> Lived</span>
+                    <span class="legend-item"><span class="legend-dot"></span> Visited</span>
+                </div>
+            </div>
+        </div>
+        <div id="map-sidebar"></div>
+    </section>
+    <?php endif; ?>
+
+    <!-- ========================================
+         CHAPTER 3 - Bookshelf
+         ======================================== -->
+    <?php if ($show_books && !empty($books)) : $chapter++; ?>
+    <section class="about-step about-chapter about-books-section">
+        <div class="chapter-container wide">
+            <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
+            <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($books_title); ?></h2>
+            
+            <div class="bookshelf">
+                <div class="books-row">
+                    <?php foreach ($books as $book) : ?>
+                    <a href="<?php echo esc_url($book['link'] ?? '#'); ?>" class="book" target="_blank" rel="noopener">
                         <?php if (!empty($book['cover'])) : ?>
                         <div class="book-cover">
                             <img src="<?php echo esc_url($book['cover']); ?>" alt="<?php echo esc_attr($book['title'] ?? ''); ?>">
@@ -180,25 +202,26 @@ $lived_countries = array_filter(array_map('trim', explode(',', strtoupper($map_l
                     </a>
                     <?php endforeach; ?>
                 </div>
-                <div class="shelf-wood"></div>
+                <div class="shelf-line"></div>
             </div>
         </div>
     </section>
     <?php endif; ?>
 
     <!-- ========================================
-         INTERESTS CLOUD SECTION
+         CHAPTER 4 - Interests
          ======================================== -->
-    <?php if ($show_interests && !empty($interests)) : ?>
-    <section class="about-section about-interests-section">
-        <div class="section-container wide">
-            <h2 class="section-title reveal-up"><?php echo esc_html($interests_title); ?></h2>
-            <div class="interests-cloud reveal-up">
-                <?php foreach ($interests as $index => $interest) : ?>
-                <span class="interest-tag size-<?php echo esc_attr($interest['size']); ?>" 
-                      style="--delay: <?php echo $index * 0.03; ?>s; --float-offset: <?php echo rand(-10, 10); ?>px;">
+    <?php if ($show_interests && !empty($interests)) : $chapter++; ?>
+    <section class="about-step about-chapter about-interests-section">
+        <div class="chapter-container wide">
+            <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
+            <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($interests_title); ?></h2>
+            
+            <div class="interests-cloud reveal reveal-stagger-2">
+                <?php foreach ($interests as $interest) : ?>
+                <span class="interest-tag size-<?php echo esc_attr($interest['size']); ?>">
                     <span class="interest-icon"><?php echo $interest['icon']; ?></span>
-                    <span class="interest-name"><?php echo esc_html($interest['name']); ?></span>
+                    <span><?php echo esc_html($interest['name']); ?></span>
                 </span>
                 <?php endforeach; ?>
             </div>
@@ -207,19 +230,51 @@ $lived_countries = array_filter(array_map('trim', explode(',', strtoupper($map_l
     <?php endif; ?>
 
     <!-- ========================================
-         STATS SECTION
+         CHAPTER 5 - Inspirations
          ======================================== -->
-    <?php if ($show_stats && !empty($stats)) : ?>
-    <section class="about-section about-stats-section">
-        <div class="section-container">
-            <h2 class="section-title reveal-up"><?php echo esc_html($stats_title); ?></h2>
-            <div class="stats-grid reveal-up">
-                <?php foreach ($stats as $index => $stat) : ?>
-                <div class="stat-card" style="--delay: <?php echo $index * 0.1; ?>s">
-                    <span class="stat-number" data-value="<?php echo esc_attr($stat['number'] ?? ''); ?>">
-                        <?php echo esc_html($stat['number'] ?? ''); ?>
-                    </span>
-                    <span class="stat-label"><?php echo esc_html($stat['label'] ?? ''); ?></span>
+    <?php if ($show_inspirations && !empty($inspirations)) : $chapter++; ?>
+    <section class="about-step about-chapter about-inspirations-section">
+        <div class="chapter-container wide">
+            <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
+            <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($inspirations_title); ?></h2>
+            
+            <div class="inspirations-grid reveal reveal-stagger-2">
+                <?php foreach ($inspirations as $person) : ?>
+                <a href="<?php echo esc_url($person['link'] ?? '#'); ?>" class="inspiration-card" target="_blank" rel="noopener">
+                    <?php if (!empty($person['photo'])) : ?>
+                    <div class="inspiration-photo">
+                        <img src="<?php echo esc_url($person['photo']); ?>" alt="<?php echo esc_attr($person['name'] ?? ''); ?>">
+                    </div>
+                    <?php else : ?>
+                    <div class="inspiration-photo placeholder">
+                        <?php echo esc_html(substr($person['name'] ?? 'X', 0, 1)); ?>
+                    </div>
+                    <?php endif; ?>
+                    <span class="inspiration-name"><?php echo esc_html($person['name'] ?? ''); ?></span>
+                    <span class="inspiration-role"><?php echo esc_html($person['role'] ?? ''); ?></span>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- ========================================
+         CHAPTER 6 - Stats
+         ======================================== -->
+    <?php if ($show_stats && !empty($stats)) : $chapter++; ?>
+    <section class="about-step about-chapter about-stats-section">
+        <div class="chapter-container">
+            <?php if ($stats_title) : ?>
+            <span class="chapter-number reveal"><?php echo sprintf('%02d', $chapter); ?></span>
+            <h2 class="chapter-title reveal reveal-stagger-1"><?php echo esc_html($stats_title); ?></h2>
+            <?php endif; ?>
+            
+            <div class="stats-row reveal reveal-stagger-2">
+                <?php foreach ($stats as $stat) : ?>
+                <div class="stat-item">
+                    <div class="stat-number" data-value="<?php echo esc_attr($stat['number'] ?? ''); ?>">0</div>
+                    <div class="stat-label"><?php echo esc_html($stat['label'] ?? ''); ?></div>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -228,73 +283,43 @@ $lived_countries = array_filter(array_map('trim', explode(',', strtoupper($map_l
     <?php endif; ?>
 
     <!-- ========================================
-         INSPIRATIONS SECTION
-         ======================================== -->
-    <?php if ($show_inspirations && !empty($inspirations)) : ?>
-    <section class="about-section about-inspirations-section">
-        <div class="section-container">
-            <h2 class="section-title reveal-up"><?php echo esc_html($inspirations_title); ?></h2>
-            <div class="inspirations-grid reveal-up">
-                <?php foreach ($inspirations as $index => $person) : ?>
-                <a href="<?php echo esc_url($person['link'] ?? '#'); ?>" 
-                   class="inspiration-card" 
-                   target="_blank" 
-                   rel="noopener"
-                   style="--delay: <?php echo $index * 0.1; ?>s">
-                    <?php if (!empty($person['photo'])) : ?>
-                    <div class="inspiration-photo">
-                        <img src="<?php echo esc_url($person['photo']); ?>" alt="<?php echo esc_attr($person['name'] ?? ''); ?>">
-                    </div>
-                    <?php else : ?>
-                    <div class="inspiration-photo placeholder">
-                        <span><?php echo esc_html(substr($person['name'] ?? 'X', 0, 1)); ?></span>
-                    </div>
-                    <?php endif; ?>
-                    <div class="inspiration-info">
-                        <span class="inspiration-name"><?php echo esc_html($person['name'] ?? ''); ?></span>
-                        <span class="inspiration-role"><?php echo esc_html($person['role'] ?? ''); ?></span>
-                    </div>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
-
-    <!-- ========================================
-         CONNECT SECTION
+         CONNECT
          ======================================== -->
     <?php if ($show_connect && ($email || $linkedin || $twitter)) : ?>
-    <section class="about-section about-connect-section">
-        <div class="section-container">
-            <h2 class="section-title reveal-up"><?php echo esc_html($connect_title); ?></h2>
-            <div class="connect-links reveal-up">
+    <section class="about-step about-connect">
+        <div class="chapter-container">
+            <h2 class="connect-heading reveal"><?php echo esc_html($connect_title); ?></h2>
+            
+            <div class="connect-icons reveal reveal-stagger-1">
                 <?php if ($email) : ?>
-                <a href="mailto:<?php echo esc_attr($email); ?>" class="connect-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <a href="mailto:<?php echo esc_attr($email); ?>" class="connect-icon-link" aria-label="Email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24">
                         <rect x="2" y="4" width="20" height="16" rx="2"/>
                         <path d="M22 6l-10 7L2 6"/>
                     </svg>
-                    <span>Email</span>
                 </a>
                 <?php endif; ?>
+                
                 <?php if ($linkedin) : ?>
-                <a href="<?php echo esc_url($linkedin); ?>" class="connect-link" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
+                <a href="<?php echo esc_url($linkedin); ?>" class="connect-icon-link" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
-                    <span>LinkedIn</span>
                 </a>
                 <?php endif; ?>
+                
                 <?php if ($twitter) : ?>
-                <a href="https://x.com/<?php echo esc_attr($twitter); ?>" class="connect-link" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
+                <a href="https://x.com/<?php echo esc_attr($twitter); ?>" class="connect-icon-link" target="_blank" rel="noopener" aria-label="X / Twitter">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
-                    <span>@<?php echo esc_html($twitter); ?></span>
                 </a>
                 <?php endif; ?>
             </div>
+            
+            <p class="connect-cta reveal reveal-stagger-2">
+                or <a href="<?php echo esc_url(home_url('/contact/')); ?>">drop me a note →</a>
+            </p>
         </div>
     </section>
     <?php endif; ?>

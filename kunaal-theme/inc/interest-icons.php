@@ -1,9 +1,8 @@
 <?php
 /**
  * Interest Icons Mapping
- * 
- * Maps common interests to emojis for the About page interests cloud.
- * 
+ * Maps interest keywords to emojis
+ *
  * @package Kunaal_Theme
  */
 
@@ -12,281 +11,266 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Get emoji for an interest
+ * Get emoji icon for an interest
+ * 
+ * @param string $interest The interest name
+ * @return string The emoji icon
  */
 function kunaal_get_interest_icon($interest) {
     $interest_lower = strtolower(trim($interest));
     
     $icons = array(
-        // Food & Drink
+        // Food & Drinks
         'ramen' => '🍜',
         'noodles' => '🍜',
         'tacos' => '🌮',
+        'mexican food' => '🌮',
         'pizza' => '🍕',
         'sushi' => '🍣',
         'coffee' => '☕',
         'tea' => '🍵',
         'wine' => '🍷',
         'beer' => '🍺',
-        'whiskey' => '🥃',
         'cocktails' => '🍸',
         'cooking' => '👨‍🍳',
         'baking' => '🥐',
-        'barbecue' => '🍖',
+        'food' => '🍽️',
+        'restaurants' => '🍽️',
         'bbq' => '🍖',
-        'burgers' => '🍔',
-        'ice cream' => '🍦',
+        'barbecue' => '🍖',
         'chocolate' => '🍫',
-        'cheese' => '🧀',
-        'pasta' => '🍝',
-        'steak' => '🥩',
+        'ice cream' => '🍦',
         'seafood' => '🦐',
+        'vegetarian' => '🥗',
+        'vegan' => '🌱',
         'dim sum' => '🥟',
         'dumplings' => '🥟',
         'curry' => '🍛',
-        'pho' => '🍲',
+        'indian food' => '🍛',
+        'thai food' => '🍜',
+        'chinese food' => '🥡',
+        'korean food' => '🍲',
+        'japanese food' => '🍱',
         'brunch' => '🥞',
         'breakfast' => '🍳',
         
         // Sports
-        'football' => '🏈',
-        'american football' => '🏈',
-        'college football' => '🏈',
         'soccer' => '⚽',
+        'football' => '🏈',
+        'college football' => '🏈',
+        'nfl' => '🏈',
         'basketball' => '🏀',
-        'baseball' => '⚾',
+        'nba' => '🏀',
         'tennis' => '🎾',
         'golf' => '⛳',
+        'baseball' => '⚾',
         'hockey' => '🏒',
-        'skiing' => '⛷️',
-        'snowboarding' => '🏂',
-        'surfing' => '🏄',
         'swimming' => '🏊',
         'running' => '🏃',
         'cycling' => '🚴',
         'biking' => '🚴',
+        'skiing' => '⛷️',
+        'snowboarding' => '🏂',
+        'surfing' => '🏄',
         'hiking' => '🥾',
         'climbing' => '🧗',
-        'yoga' => '🧘',
-        'gym' => '💪',
-        'fitness' => '💪',
         'boxing' => '🥊',
         'martial arts' => '🥋',
+        'yoga' => '🧘',
         'cricket' => '🏏',
         'rugby' => '🏉',
         'volleyball' => '🏐',
-        'table tennis' => '🏓',
-        'badminton' => '🏸',
         'f1' => '🏎️',
         'formula 1' => '🏎️',
         'racing' => '🏎️',
-        'motorsport' => '🏎️',
+        'motorsports' => '🏎️',
         
-        // History & Politics
-        'history' => '📜',
-        'ww2' => '⚔️',
-        'world war 2' => '⚔️',
-        'wwii' => '⚔️',
-        'world war ii' => '⚔️',
-        'ww1' => '⚔️',
-        'ancient history' => '🏛️',
-        'medieval' => '🏰',
-        'geopolitics' => '🌍',
-        'politics' => '🏛️',
-        'elections' => '🗳️',
-        'democracy' => '🗽',
-        'diplomacy' => '🤝',
-        'international relations' => '🌐',
-        'cold war' => '❄️',
-        'military history' => '🎖️',
-        
-        // Technology
+        // Technology & Work
+        'data visualization' => '📊',
+        'data viz' => '📊',
+        'dataviz' => '📊',
+        'data' => '📊',
+        'analytics' => '📈',
         'coding' => '💻',
         'programming' => '💻',
         'software' => '💻',
         'ai' => '🤖',
         'artificial intelligence' => '🤖',
-        'machine learning' => '🧠',
-        'data science' => '📊',
+        'machine learning' => '🤖',
+        'tech' => '🔧',
+        'technology' => '🔧',
         'startups' => '🚀',
         'entrepreneurship' => '🚀',
+        'business' => '💼',
+        'finance' => '💰',
+        'economics' => '📉',
+        'investing' => '📈',
         'crypto' => '₿',
         'blockchain' => '⛓️',
-        'cybersecurity' => '🔐',
-        'gaming' => '🎮',
-        'video games' => '🎮',
-        'vr' => '🥽',
-        'virtual reality' => '🥽',
-        'robotics' => '🤖',
-        'space' => '🚀',
-        'spacex' => '🚀',
-        'nasa' => '🛸',
-        'tech' => '💻',
-        'gadgets' => '📱',
-        'apple' => '🍎',
-        'android' => '🤖',
+        'design' => '🎨',
+        'ux' => '✏️',
+        'ui' => '🖥️',
+        'product' => '📦',
+        'strategy' => '🎯',
+        'consulting' => '📋',
+        
+        // History & Politics
+        'history' => '📜',
+        'ww2' => '⚔️',
+        'ww2 history' => '⚔️',
+        'world war 2' => '⚔️',
+        'world war ii' => '⚔️',
+        'ww1' => '⚔️',
+        'military history' => '⚔️',
+        'ancient history' => '🏛️',
+        'roman history' => '🏛️',
+        'medieval' => '🏰',
+        'geopolitics' => '🌍',
+        'politics' => '🏛️',
+        'political science' => '🏛️',
+        'international relations' => '🌐',
+        'diplomacy' => '🤝',
+        'elections' => '🗳️',
+        'democracy' => '🗳️',
         
         // Arts & Culture
         'music' => '🎵',
         'jazz' => '🎷',
         'rock' => '🎸',
         'classical music' => '🎻',
-        'hip hop' => '🎤',
-        'rap' => '🎤',
-        'edm' => '🎧',
-        'electronic music' => '🎧',
-        'concerts' => '🎤',
+        'piano' => '🎹',
+        'guitar' => '🎸',
+        'movies' => '🎬',
+        'film' => '🎬',
+        'cinema' => '🎬',
+        'documentaries' => '🎥',
+        'photography' => '📷',
         'art' => '🎨',
         'painting' => '🖼️',
-        'photography' => '📷',
-        'film' => '🎬',
-        'movies' => '🎬',
-        'cinema' => '🎬',
+        'sculpture' => '🗿',
+        'museums' => '🏛️',
+        'architecture' => '🏗️',
         'theater' => '🎭',
         'theatre' => '🎭',
-        'design' => '🎨',
-        'architecture' => '🏗️',
-        'fashion' => '👗',
         'dance' => '💃',
         'ballet' => '🩰',
+        'opera' => '🎭',
         'poetry' => '📝',
-        'literature' => '📚',
-        'writing' => '✍️',
-        'reading' => '📖',
+        
+        // Reading & Writing
+        'reading' => '📚',
         'books' => '📚',
-        'anime' => '🎌',
-        'manga' => '📔',
-        'comics' => '📰',
-        'museums' => '🏛️',
+        'literature' => '📖',
+        'writing' => '✍️',
+        'fiction' => '📖',
+        'non-fiction' => '📘',
+        'novels' => '📕',
+        'essays' => '📝',
+        'journalism' => '📰',
+        'newsletters' => '📧',
+        
+        // Travel & Places
+        'travel' => '✈️',
+        'traveling' => '✈️',
+        'travelling' => '✈️',
+        'backpacking' => '🎒',
+        'adventure' => '🧭',
+        'exploration' => '🗺️',
+        'cities' => '🌆',
+        'nature' => '🌿',
+        'beach' => '🏖️',
+        'mountains' => '🏔️',
+        'camping' => '⛺',
+        'road trips' => '🚗',
         
         // Science & Learning
         'science' => '🔬',
         'physics' => '⚛️',
-        'chemistry' => '🧪',
-        'biology' => '🧬',
         'astronomy' => '🔭',
-        'mathematics' => '🔢',
-        'math' => '🔢',
-        'economics' => '📈',
+        'space' => '🚀',
+        'biology' => '🧬',
+        'chemistry' => '🧪',
         'psychology' => '🧠',
-        'philosophy' => '🤔',
-        'neuroscience' => '🧠',
-        'medicine' => '⚕️',
-        'health' => '❤️',
-        'climate' => '🌡️',
-        'environment' => '🌱',
-        'sustainability' => '♻️',
-        'renewable energy' => '☀️',
+        'philosophy' => '💭',
+        'mathematics' => '➗',
+        'math' => '➗',
+        'statistics' => '📊',
+        'research' => '🔍',
+        'education' => '🎓',
+        'learning' => '📚',
         
-        // Travel & Places
-        'travel' => '✈️',
-        'adventure' => '🏔️',
-        'backpacking' => '🎒',
-        'road trips' => '🚗',
-        'camping' => '🏕️',
-        'beaches' => '🏖️',
-        'mountains' => '🏔️',
-        'cities' => '🌆',
-        'nature' => '🌲',
-        'wildlife' => '🦁',
-        'safari' => '🦒',
-        'scuba diving' => '🤿',
-        'snorkeling' => '🤿',
-        
-        // Business & Work
-        'business' => '💼',
-        'strategy' => '♟️',
-        'consulting' => '📊',
-        'finance' => '💰',
-        'investing' => '📈',
-        'stocks' => '📈',
-        'real estate' => '🏠',
-        'marketing' => '📢',
-        'leadership' => '👔',
-        'management' => '📋',
-        'productivity' => '⚡',
-        'public speaking' => '🎤',
-        
-        // Lifestyle
-        'meditation' => '🧘',
-        'mindfulness' => '🧘',
-        'wellness' => '🌿',
-        'self improvement' => '📈',
-        'minimalism' => '◻️',
-        'organization' => '📂',
-        'journaling' => '📓',
-        'podcasts' => '🎙️',
-        'documentaries' => '🎥',
-        'news' => '📰',
-        
-        // Hobbies
-        'gardening' => '🌻',
-        'plants' => '🌱',
+        // Hobbies & Lifestyle
+        'gaming' => '🎮',
+        'video games' => '🎮',
+        'board games' => '🎲',
+        'chess' => '♟️',
+        'poker' => '🃏',
+        'puzzles' => '🧩',
+        'gardening' => '🌱',
+        'plants' => '🪴',
         'pets' => '🐕',
         'dogs' => '🐕',
         'cats' => '🐈',
-        'chess' => '♟️',
-        'board games' => '🎲',
-        'puzzles' => '🧩',
-        'crafts' => '🎨',
-        'woodworking' => '🪵',
-        'diy' => '🔧',
-        'cars' => '🚗',
-        'motorcycles' => '🏍️',
-        'watches' => '⌚',
-        'sneakers' => '👟',
-        'vintage' => '📻',
-        'collecting' => '🏆',
-        'lego' => '🧱',
+        'fitness' => '💪',
+        'gym' => '🏋️',
+        'meditation' => '🧘',
+        'mindfulness' => '🧘',
+        'wellness' => '🌸',
+        'self-improvement' => '📈',
+        'productivity' => '⚡',
         
-        // Social
-        'family' => '👨‍👩‍👧‍👦',
-        'friends' => '👫',
-        'community' => '🤝',
-        'volunteering' => '🤲',
+        // Entertainment
+        'podcasts' => '🎙️',
+        'comedy' => '😄',
+        'stand-up' => '🎤',
+        'tv shows' => '📺',
+        'streaming' => '📺',
+        'anime' => '🇯🇵',
+        'manga' => '📚',
+        'comics' => '💬',
+        
+        // Other
+        'sustainability' => '♻️',
+        'environment' => '🌍',
+        'climate' => '🌡️',
+        'social impact' => '💚',
+        'charity' => '❤️',
+        'volunteering' => '🤝',
+        'community' => '👥',
+        'networking' => '🔗',
+        'leadership' => '👑',
         'mentoring' => '🎓',
-        'teaching' => '👨‍🏫',
-        'learning' => '📚',
-        'languages' => '🗣️',
-        
-        // Abstract
-        'innovation' => '💡',
-        'creativity' => '✨',
-        'ideas' => '💡',
-        'thinking' => '🤔',
-        'systems thinking' => '🔄',
-        'behavioral economics' => '🧠',
-        'data visualization' => '📊',
-        'storytelling' => '📖',
-        'communication' => '💬',
-        'debate' => '⚖️',
-        'analysis' => '🔍',
-        'research' => '🔬',
-        'problem solving' => '🧩',
-        
-        // Misc
-        'coffee shops' => '☕',
-        'libraries' => '📚',
-        'cozy' => '🛋️',
-        'rain' => '🌧️',
-        'sunsets' => '🌅',
-        'night owl' => '🦉',
-        'early bird' => '🌅',
+        'parenting' => '👨‍👩‍👧',
+        'family' => '👨‍👩‍👧',
+        'fashion' => '👗',
+        'style' => '👔',
+        'minimalism' => '◻️',
+        'interior design' => '🛋️',
+        'home' => '🏠',
+        'real estate' => '🏘️',
     );
     
-    // Check for exact match
+    // Try exact match first
     if (isset($icons[$interest_lower])) {
         return $icons[$interest_lower];
     }
     
-    // Check for partial match
-    foreach ($icons as $key => $emoji) {
-        if (strpos($interest_lower, $key) !== false || strpos($key, $interest_lower) !== false) {
-            return $emoji;
+    // Try partial match
+    foreach ($icons as $keyword => $icon) {
+        if (strpos($interest_lower, $keyword) !== false || strpos($keyword, $interest_lower) !== false) {
+            return $icon;
         }
     }
     
-    // Default fallback
+    // Default icon
     return '✨';
 }
 
+/**
+ * Get initials from name
+ */
+function kunaal_get_initials() {
+    $first = get_theme_mod('kunaal_author_first_name', 'K');
+    $last = get_theme_mod('kunaal_author_last_name', 'W');
+    return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
+}

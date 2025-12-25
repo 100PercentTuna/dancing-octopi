@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.8.0');
+define('KUNAAL_THEME_VERSION', '4.9.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -87,6 +87,60 @@ function kunaal_enqueue_assets() {
         'linkedinUrl' => get_theme_mod('kunaal_linkedin_handle', ''),
         'authorName' => get_theme_mod('kunaal_author_first_name', 'Kunaal') . ' ' . get_theme_mod('kunaal_author_last_name', 'Wadhwa'),
     ));
+    
+    // About page and Contact page assets
+    if (is_page_template('page-about.php') || is_page_template('page-contact.php')) {
+        // Cormorant Garamond font
+        wp_enqueue_style(
+            'kunaal-cormorant-font',
+            'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&display=swap',
+            array(),
+            null
+        );
+        
+        // Leaflet CSS
+        wp_enqueue_style(
+            'leaflet-css',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+            array(),
+            '1.9.4'
+        );
+        
+        // About page CSS
+        wp_enqueue_style(
+            'kunaal-about-page',
+            KUNAAL_THEME_URI . '/assets/css/about-page.css',
+            array('kunaal-theme-style', 'leaflet-css'),
+            KUNAAL_THEME_VERSION
+        );
+        
+        // Scrollama (from CDN)
+        wp_enqueue_script(
+            'scrollama',
+            'https://unpkg.com/scrollama@3.2.0/build/scrollama.min.js',
+            array(),
+            '3.2.0',
+            true
+        );
+        
+        // Leaflet JS
+        wp_enqueue_script(
+            'leaflet-js',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+            array(),
+            '1.9.4',
+            true
+        );
+        
+        // About page JS
+        wp_enqueue_script(
+            'kunaal-about-page',
+            KUNAAL_THEME_URI . '/assets/js/about-page.js',
+            array('scrollama', 'leaflet-js'),
+            KUNAAL_THEME_VERSION,
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
 
@@ -1161,13 +1215,66 @@ function kunaal_customize_register($wp_customize) {
     ));
     
     $wp_customize->add_setting('kunaal_about_connect_title', array(
-        'default' => 'Say Hello',
+        'default' => 'Want to connect?',
         'sanitize_callback' => 'sanitize_text_field',
     ));
     $wp_customize->add_control('kunaal_about_connect_title', array(
         'label' => 'Section Title',
         'section' => 'kunaal_about_connect',
         'type' => 'text',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - INTERSTITIAL IMAGE
+    // =====================================================
+    $wp_customize->add_section('kunaal_about_interstitial', array(
+        'title' => 'About: Interstitial Image',
+        'priority' => 58,
+        'description' => 'Full-bleed parallax image break.',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_interstitial_image', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'kunaal_about_interstitial_image', array(
+        'label' => 'Interstitial Image',
+        'description' => 'Full-bleed image for visual break. Leave empty to skip.',
+        'section' => 'kunaal_about_interstitial',
+    )));
+    
+    $wp_customize->add_setting('kunaal_about_interstitial_caption', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_interstitial_caption', array(
+        'label' => 'Caption',
+        'section' => 'kunaal_about_interstitial',
+        'type' => 'text',
+    ));
+    
+    // =====================================================
+    // ABOUT PAGE - MAP PLACES (NEW FORMAT)
+    // =====================================================
+    $wp_customize->add_setting('kunaal_about_map_intro', array(
+        'default' => 'The places that have shaped who I am.',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_map_intro', array(
+        'label' => 'Map Introduction',
+        'section' => 'kunaal_about_map',
+        'type' => 'textarea',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_map_places', array(
+        'default' => '',
+        'sanitize_callback' => 'wp_kses_post',
+    ));
+    $wp_customize->add_control('kunaal_about_map_places', array(
+        'label' => 'Places (JSON)',
+        'description' => '[{"name":"City, Country","lat":0.00,"lng":0.00,"type":"lived|visited","years":"2015-2020","note":"Your story"}]',
+        'section' => 'kunaal_about_map',
+        'type' => 'textarea',
     ));
     
     // =====================================================
