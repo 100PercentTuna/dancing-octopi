@@ -1,0 +1,38 @@
+  <!-- Footer -->
+  <footer>
+    <div class="container footerInner">
+      <div class="footerLeft">
+        <?php echo esc_html(get_theme_mod('kunaal_footer_disclaimer', 'Personal writing. Independent of my day job.')); ?>
+      </div>
+      
+      <?php
+      $contact_email = get_theme_mod('kunaal_contact_email', '');
+      if (!empty($contact_email)) :
+      ?>
+        <a class="mailWrap uBlue" href="mailto:<?php echo esc_attr($contact_email); ?>" aria-label="Email <?php echo esc_attr(get_theme_mod('kunaal_author_first_name', 'Kunaal') . ' ' . get_theme_mod('kunaal_author_last_name', 'Wadhwa')); ?>">
+          <svg class="env" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16v12H4z"/>
+            <path d="M4 7l8 6 8-6"/>
+          </svg>
+          <span><?php echo esc_html($contact_email); ?></span>
+        </a>
+      <?php else : ?>
+        <span></span>
+      <?php endif; ?>
+      
+      <div class="footerRight">
+        &copy; <span id="footerYear"><?php echo esc_html(date('Y')); ?></span>
+        <?php 
+        $first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
+        $last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+        echo esc_html($first_name . ' ' . $last_name);
+        ?>
+      </div>
+    </div>
+  </footer>
+
+  <div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+
+  <?php wp_footer(); ?>
+</body>
+</html>

@@ -1,0 +1,244 @@
+/**
+ * Editor Styles for Gutenberg
+ * Matches the frontend styling
+ */
+
+/* Root variables */
+:root {
+  --bg: #FDFCFA;
+  --ink: #0b1220;
+  --muted: rgba(11,18,32,.66);
+  --warm: #7D6B5D;
+  --warmLight: #B8A99A;
+  --warmTint: rgba(125,107,93,0.08);
+  --blue: #1E5AFF;
+  --blueTint: rgba(30,90,255,0.04);
+  --hair2: rgba(11,18,32,.07);
+  --bgWarm: #F9F7F4;
+  --bgAlt: #F5F3EF;
+  --prose: 620px;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --serif: "Newsreader", ui-serif, Georgia, serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+}
+
+/* Editor body */
+.editor-styles-wrapper {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* Headings */
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.editor-styles-wrapper h2 {
+  font-size: 20px;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hair2);
+}
+
+.editor-styles-wrapper h3 {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  
+  color: var(--warm);
+}
+
+/* Paragraphs */
+.editor-styles-wrapper p {
+  margin-bottom: var(--space-4);
+  color: rgba(11,18,32,.78);
+}
+
+/* Links */
+.editor-styles-wrapper a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--blue);
+}
+
+/* Quotes */
+.editor-styles-wrapper blockquote {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--blue);
+  background: linear-gradient(90deg, var(--warmTint) 0%, transparent 100%);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Pull Quote */
+.editor-styles-wrapper .pullquote {
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--blue);
+  background: linear-gradient(90deg, var(--warmTint) 0%, transparent 100%);
+}
+
+.editor-styles-wrapper .pullquote blockquote {
+  border: none;
+  padding: 0;
+  background: none;
+  margin: 0;
+}
+
+/* Insight Box */
+.editor-styles-wrapper .insightBox {
+  padding: var(--space-4);
+  background: var(--bgWarm);
+  border-left: 2px solid var(--warm);
+}
+
+.editor-styles-wrapper .insightBox .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  
+  color: var(--warm);
+  margin-bottom: var(--space-1);
+}
+
+/* Section Head */
+.editor-styles-wrapper .sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--hair2);
+  margin: var(--space-10) 0 var(--space-4);
+}
+
+.editor-styles-wrapper .sectionNum {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--warmLight);
+}
+
+/* Accordion */
+.editor-styles-wrapper .accordion {
+  border-top: 1px solid var(--hair2);
+  margin: var(--space-2) 0;
+}
+
+.editor-styles-wrapper .accordion summary {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Split */
+.editor-styles-wrapper .split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin: var(--space-8) 0;
+}
+
+.editor-styles-wrapper .splitText .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  
+  color: var(--warm);
+}
+
+/* Code Block */
+.editor-styles-wrapper .codeBlock {
+  background: var(--bgAlt);
+  border: 1px solid var(--hair2);
+}
+
+.editor-styles-wrapper .codeBlock pre {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: var(--space-3);
+}
+
+/* Aside */
+.editor-styles-wrapper .aside {
+  padding: var(--space-4) var(--space-5);
+  background: var(--bgWarm);
+  border-radius: 2px;
+}
+
+/* Takeaways */
+.editor-styles-wrapper .takeaways {
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--hair2);
+}
+
+.editor-styles-wrapper .takeList {
+  list-style: none;
+  padding: 0;
+  counter-reset: take;
+}
+
+.editor-styles-wrapper .takeList li {
+  counter-increment: take;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--hair2);
+}
+
+.editor-styles-wrapper .takeList li::before {
+  content: counter(take);
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--warmLight);
+}
+
+/* Chart */
+.editor-styles-wrapper .chartCaption {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  
+  color: var(--warm);
+}
+
+.editor-styles-wrapper .chartBody {
+  border: 1px solid var(--hair2);
+  padding: var(--space-3);
+}
+
+/* Citation */
+.editor-styles-wrapper .citation {
+  text-align: center;
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--hair2);
+  border-bottom: 1px solid var(--hair2);
+}
+
+/* Images */
+.editor-styles-wrapper img {
+  filter: grayscale(1) contrast(1.02);
+}
+
+.editor-styles-wrapper img:hover {
+  filter: grayscale(0);
+}

@@ -1,0 +1,444 @@
+/**
+ * Kunaal Theme - PDF/eBook Stylesheet
+ * Designed for readable, book-like PDF exports
+ */
+
+/* Page setup for print/PDF */
+@page {
+  size: A4;
+  margin: 3cm 2.5cm;
+}
+
+@page :first {
+  margin-top: 4cm;
+}
+
+/* Reset and base */
+* {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+body {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 11pt;
+  line-height: 1.7;
+  color: #0b1220;
+  background: #FDFCFA;
+  margin: 0;
+  padding: 0;
+}
+
+.pdf-document {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Cover Page */
+.pdf-cover {
+  text-align: center;
+  padding: 2cm 0 3cm;
+  page-break-after: always;
+}
+
+.pdf-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 1.5cm;
+  border: 1pt solid rgba(11,18,32,0.15);
+  display: block;
+}
+
+.pdf-title {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 28pt;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #0b1220;
+  margin: 0 0 0.5cm;
+  letter-spacing: -0.02em;
+}
+
+.pdf-subtitle {
+  font-size: 14pt;
+  line-height: 1.6;
+  color: rgba(11,18,32,0.7);
+  margin: 0 0 1cm;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pdf-byline {
+  font-size: 12pt;
+  color: #7D6B5D;
+  margin: 1cm 0 0.5cm;
+}
+
+.pdf-meta {
+  font-size: 10pt;
+  color: rgba(11,18,32,0.6);
+  margin-top: 1cm;
+}
+
+.pdf-meta p {
+  margin: 0.2cm 0;
+}
+
+.pdf-topics {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  color: #1E5AFF;
+}
+
+/* Table of Contents */
+.pdf-toc {
+  page-break-after: always;
+  padding: 1cm 0;
+}
+
+.pdf-toc h3 {
+  font-size: 16pt;
+  margin: 0 0 1cm;
+  color: #0b1220;
+  border-bottom: 1pt solid rgba(11,18,32,0.15);
+  padding-bottom: 0.3cm;
+}
+
+.pdf-toc ol {
+  list-style: none;
+  counter-reset: toc-counter;
+  padding: 0;
+}
+
+.pdf-toc li {
+  counter-increment: toc-counter;
+  margin-bottom: 0.4cm;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5cm;
+}
+
+.pdf-toc li::before {
+  content: counter(toc-counter) ".";
+  font-weight: 600;
+  color: #1E5AFF;
+  min-width: 1.5cm;
+}
+
+.pdf-toc a {
+  color: #0b1220;
+  text-decoration: none;
+  flex: 1;
+}
+
+/* Hero Image */
+.pdf-hero {
+  page-break-inside: avoid;
+  margin: 0 -1cm 1.5cm;
+}
+
+.pdf-hero img {
+  width: calc(100% + 2cm);
+  height: auto;
+  display: block;
+}
+
+/* Main Content */
+.pdf-content {
+  font-size: 11pt;
+  line-height: 1.8;
+  color: rgba(11,18,32,0.85);
+}
+
+.pdf-content p {
+  margin: 0 0 0.6cm;
+  text-align: justify;
+  orphans: 3;
+  widows: 3;
+}
+
+/* First paragraph drop cap */
+.pdf-content > p:first-of-type::first-letter {
+  font-size: 3.5em;
+  line-height: 0.9;
+  float: left;
+  margin: 0.05em 0.1em 0 0;
+  font-weight: 600;
+  color: #1E5AFF;
+}
+
+/* Headings */
+.pdf-content h2 {
+  font-size: 16pt;
+  font-weight: 600;
+  color: #0b1220;
+  margin: 1.2cm 0 0.5cm;
+  padding-bottom: 0.2cm;
+  border-bottom: 1pt solid rgba(11,18,32,0.15);
+  page-break-after: avoid;
+  letter-spacing: -0.01em;
+}
+
+.pdf-content h3 {
+  font-size: 13pt;
+  font-weight: 600;
+  color: #0b1220;
+  margin: 1cm 0 0.4cm;
+  page-break-after: avoid;
+}
+
+/* Links */
+.pdf-content a {
+  color: #1E5AFF;
+  text-decoration: none;
+  border-bottom: 1pt solid rgba(30,90,255,0.3);
+}
+
+/* Show URLs for external links */
+.pdf-content a[href^="http"]::after {
+  content: " (" attr(href) ")";
+  font-size: 8pt;
+  color: rgba(11,18,32,0.5);
+  font-family: 'Courier New', monospace;
+}
+
+/* Don't show URLs for internal anchors */
+.pdf-content a[href^="#"]::after {
+  content: "";
+}
+
+/* Blockquotes */
+.pdf-content blockquote,
+.pdf-content .pullquote {
+  margin: 0.8cm 0;
+  padding: 0.4cm 0.6cm;
+  border-left: 3pt solid #1E5AFF;
+  background: rgba(125,107,93,0.05);
+  font-style: italic;
+  page-break-inside: avoid;
+}
+
+.pdf-content blockquote cite {
+  display: block;
+  margin-top: 0.3cm;
+  font-style: normal;
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  color: #7D6B5D;
+}
+
+/* Insight Boxes */
+.pdf-content .insightBox {
+  background: #F9F7F4;
+  padding: 0.5cm;
+  margin: 0.8cm 0;
+  border-left: 2pt solid #7D6B5D;
+  page-break-inside: avoid;
+}
+
+.pdf-content .insightBox .label {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  font-weight: 600;
+  color: #7D6B5D;
+  margin-bottom: 0.2cm;
+}
+
+/* Accordions - Always Expanded */
+.pdf-content details {
+  border: 1pt solid rgba(11,18,32,0.1);
+  padding: 0.4cm;
+  margin: 0.6cm 0;
+  border-radius: 3pt;
+  page-break-inside: avoid;
+}
+
+.pdf-content summary {
+  font-weight: 600;
+  margin-bottom: 0.3cm;
+  color: #0b1220;
+  list-style: none;
+}
+
+.pdf-content summary::before {
+  content: "▼ ";
+  color: #1E5AFF;
+  margin-right: 0.2cm;
+}
+
+/* Code Blocks */
+.pdf-content pre,
+.pdf-content code {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  background: #F5F3EF;
+  border: 0.5pt solid rgba(11,18,32,0.1);
+}
+
+.pdf-content pre {
+  padding: 0.4cm;
+  overflow-x: visible;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  page-break-inside: avoid;
+  line-height: 1.5;
+}
+
+.pdf-content code {
+  padding: 0.05cm 0.15cm;
+  border-radius: 2pt;
+}
+
+/* Tables */
+.pdf-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8cm 0;
+  font-size: 10pt;
+  page-break-inside: avoid;
+}
+
+.pdf-content th {
+  background: #F9F7F4;
+  border-bottom: 2pt solid #1E5AFF;
+  padding: 0.3cm 0.4cm;
+  text-align: left;
+  font-weight: 600;
+  color: #0b1220;
+}
+
+.pdf-content td {
+  border-bottom: 0.5pt solid rgba(11,18,32,0.1);
+  padding: 0.3cm 0.4cm;
+  color: rgba(11,18,32,0.8);
+}
+
+.pdf-content tbody tr:nth-child(even) {
+  background: rgba(249,247,244,0.5);
+}
+
+/* Images */
+.pdf-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0.8cm auto;
+  border-radius: 2pt;
+}
+
+.pdf-content figure {
+  margin: 1cm 0;
+  page-break-inside: avoid;
+}
+
+.pdf-content figcaption {
+  font-size: 9pt;
+  color: rgba(11,18,32,0.6);
+  text-align: center;
+  margin-top: 0.3cm;
+  font-style: italic;
+}
+
+/* Charts */
+.pdf-content .chartWrap {
+  page-break-inside: avoid;
+  margin: 1cm 0;
+}
+
+.pdf-content .chartCaption {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  color: #7D6B5D;
+  margin-bottom: 0.3cm;
+  font-weight: 600;
+}
+
+.pdf-content .chartSource {
+  font-family: 'Courier New', monospace;
+  font-size: 8pt;
+  color: rgba(11,18,32,0.5);
+  font-style: italic;
+  margin-top: 0.3cm;
+}
+
+/* SVG Charts render properly */
+.pdf-content svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lists */
+.pdf-content ul,
+.pdf-content ol {
+  margin: 0.5cm 0;
+  padding-left: 1cm;
+}
+
+.pdf-content li {
+  margin-bottom: 0.3cm;
+}
+
+/* Takeaways */
+.pdf-content .takeaways {
+  background: rgba(30,90,255,0.04);
+  padding: 0.6cm;
+  margin: 1cm 0;
+  border-radius: 4pt;
+  border: 1pt solid rgba(30,90,255,0.2);
+  page-break-inside: avoid;
+}
+
+.pdf-content .takeList li {
+  font-weight: 500;
+  color: #0b1220;
+}
+
+/* Page breaks */
+.pdf-page-break {
+  page-break-after: always;
+}
+
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+/* Footer Author Info */
+.pdf-footer-info {
+  margin-top: 2cm;
+  padding-top: 1cm;
+  border-top: 1pt solid rgba(11,18,32,0.15);
+}
+
+.pdf-author-box {
+  background: #F9F7F4;
+  padding: 0.6cm;
+  border-radius: 4pt;
+  text-align: center;
+}
+
+.pdf-author-box h4 {
+  font-size: 12pt;
+  margin: 0 0 0.4cm;
+  color: #0b1220;
+}
+
+.pdf-author-box p {
+  margin: 0.2cm 0;
+  font-size: 10pt;
+  color: rgba(11,18,32,0.7);
+}
+
+/* Hide interactive elements */
+button,
+.shareItem,
+.subscribe-form,
+video,
+audio,
+iframe,
+.rail,
+.tocList {
+  display: none !important;
+}
