@@ -1,13 +1,41 @@
 /**
  * Takeaways Block Styles
- * Inherits theme styles
+ * Numbered list with large accent numbers - visually distinct from accordion
  */
+
 .wp-block-kunaal-takeaways {
-    /* Inherits from .takeaways in main theme CSS */
+    margin: var(--space-10, 80px) 0;
+    padding: var(--space-6, 48px) 0;
+    border-top: 1px solid var(--hair2, rgba(11,18,32,0.07));
 }
 
-/* Editor preview */
+.wp-block-kunaal-takeaways > h2 {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 var(--space-5, 40px);
+    position: relative;
+    display: inline-block;
+}
+
+.wp-block-kunaal-takeaways > h2::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--blue, #1E5AFF);
+}
+
+.takeaways-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: takeaway;
+}
+
+/* Editor styles */
 .block-editor-block-list__block .wp-block-kunaal-takeaways {
     margin: var(--space-5, 40px) 0;
 }
-

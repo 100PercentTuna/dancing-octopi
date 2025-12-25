@@ -1,0 +1,60 @@
+/**
+ * Scrolly Step Block Styles
+ */
+
+.scrolly-step {
+    padding: var(--space-4, 32px);
+    background: var(--bg, #FDFCFA);
+    border: 1px solid var(--hair2, rgba(11,18,32,0.07));
+    border-radius: 4px;
+    transition: border-color 300ms ease, box-shadow 300ms ease, transform 300ms ease;
+}
+
+.scrolly-step.active {
+    border-color: var(--blueHover, rgba(30,90,255,0.18));
+    box-shadow: 0 4px 20px var(--blueShadow, rgba(30,90,255,0.10));
+    transform: translateX(4px);
+}
+
+.scrolly-step h4 {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 var(--space-2, 16px);
+    color: var(--ink, #0b1220);
+}
+
+.scrolly-step p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0;
+}
+
+.scrolly-step p + p {
+    margin-top: var(--space-2, 16px);
+}
+
+/* Editor indicator */
+.step-indicator {
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted2, rgba(11,18,32,0.46));
+    margin-bottom: var(--space-2, 16px);
+    padding-bottom: var(--space-1, 8px);
+    border-bottom: 1px solid var(--hair2, rgba(11,18,32,0.07));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .scrolly-step {
+        transition: none;
+    }
+    
+    .scrolly-step.active {
+        transform: none;
+    }
+}
+

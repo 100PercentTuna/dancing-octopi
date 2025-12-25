@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/parallax-section",
+    "version": "1.0.0",
+    "title": "Parallax Section",
+    "category": "kunaal-interactive",
+    "icon": "cover-image",
+    "description": "Full-width section with parallax background effect and customizable overlay.",
+    "keywords": ["parallax", "hero", "banner", "background", "immersive"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "mediaId": {
+            "type": "number",
+            "default": 0
+        },
+        "mediaUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "minHeight": {
+            "type": "string",
+            "default": "60vh"
+        },
+        "overlayColor": {
+            "type": "string",
+            "default": "rgba(11,18,32,0.5)"
+        },
+        "overlayOpacity": {
+            "type": "number",
+            "default": 50
+        },
+        "parallaxIntensity": {
+            "type": "number",
+            "default": 30
+        },
+        "contentAlignment": {
+            "type": "string",
+            "default": "center"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true,
+        "align": ["wide", "full"]
+    },
+    "editorScript": "kunaal-parallax-section-editor",
+    "viewScript": "kunaal-parallax-section-view",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

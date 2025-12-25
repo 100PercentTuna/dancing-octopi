@@ -2,18 +2,14 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "kunaal/sidenote",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "title": "Sidenote",
     "category": "kunaal-editorial",
-    "icon": "sticky",
-    "description": "A marginal note in handwritten style for asides and annotations.",
-    "keywords": ["sidenote", "margin", "note", "aside", "annotation", "handwritten"],
+    "icon": "editor-textcolor",
+    "description": "A margin note that appears to the right of the text, like a handwritten annotation.",
+    "keywords": ["sidenote", "margin", "note", "annotation", "tufte"],
     "textdomain": "kunaal-theme",
     "attributes": {
-        "marker": {
-            "type": "string",
-            "default": "*"
-        },
         "content": {
             "type": "string",
             "default": ""
@@ -29,4 +25,3 @@
     "render": "file:./render.php",
     "style": "file:./style.css"
 }
-

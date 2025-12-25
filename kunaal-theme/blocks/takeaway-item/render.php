@@ -9,8 +9,8 @@ $heading = isset($attributes['heading']) ? $attributes['heading'] : '';
 $description = isset($attributes['description']) ? $attributes['description'] : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 ?>
-<li class="wp-block-kunaal-takeaway-item reveal<?php echo $class_name; ?>">
-    <div>
+<li class="wp-block-kunaal-takeaway-item<?php echo $class_name; ?>">
+    <div class="takeaway-content">
         <?php if (!empty($heading)) : ?>
             <h4><?php echo esc_html($heading); ?></h4>
         <?php endif; ?>
@@ -19,4 +19,3 @@ $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['clas
         <?php endif; ?>
     </div>
 </li>
-

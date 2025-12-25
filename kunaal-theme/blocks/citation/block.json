@@ -6,8 +6,8 @@
     "title": "Citation",
     "category": "kunaal-editorial",
     "icon": "format-quote",
-    "description": "A centered quote with author attribution.",
-    "keywords": ["citation", "quote", "attribution", "reference"],
+    "description": "A centered quote with author attribution and optional source link.",
+    "keywords": ["citation", "quote", "attribution", "reference", "blockquote"],
     "textdomain": "kunaal-theme",
     "attributes": {
         "quote": {
@@ -15,6 +15,14 @@
             "default": ""
         },
         "author": {
+            "type": "string",
+            "default": ""
+        },
+        "sourceText": {
+            "type": "string",
+            "default": ""
+        },
+        "sourceUrl": {
             "type": "string",
             "default": ""
         }

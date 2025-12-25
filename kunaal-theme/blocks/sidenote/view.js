@@ -1,43 +1,41 @@
 /**
- * Sidenote Block - Frontend Interactivity
- * Handles tap-to-expand on mobile/tablet
+ * Sidenote Block - Frontend Script
+ * Handles mobile toggle behavior
  */
 (function() {
     'use strict';
     
-    function initSidenotes() {
-        const refs = document.querySelectorAll('.sidenote-ref');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add keyboard support for sidenote toggles
+        const sidenoteNumbers = document.querySelectorAll('.sidenote-number');
         
-        refs.forEach(function(ref) {
-            ref.addEventListener('click', function(e) {
-                e.preventDefault();
-                const isExpanded = this.getAttribute('aria-expanded') === 'true';
-                
-                // Close all other sidenotes
-                refs.forEach(function(r) {
-                    r.setAttribute('aria-expanded', 'false');
-                });
-                
-                // Toggle current
-                this.setAttribute('aria-expanded', String(!isExpanded));
+        sidenoteNumbers.forEach(function(label) {
+            // Make label focusable
+            label.setAttribute('tabindex', '0');
+            label.setAttribute('role', 'button');
+            
+            // Handle Enter/Space key
+            label.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const checkbox = label.nextElementSibling;
+                    if (checkbox && checkbox.classList.contains('sidenote-toggle')) {
+                        checkbox.checked = !checkbox.checked;
+                    }
+                }
             });
         });
         
-        // Close sidenotes when clicking outside
+        // Close sidenotes when clicking outside on mobile
         document.addEventListener('click', function(e) {
+            if (window.innerWidth >= 1000) return; // Only on mobile/tablet
+            
             if (!e.target.closest('.sidenote-wrapper')) {
-                refs.forEach(function(r) {
-                    r.setAttribute('aria-expanded', 'false');
+                const openToggles = document.querySelectorAll('.sidenote-toggle:checked');
+                openToggles.forEach(function(toggle) {
+                    toggle.checked = false;
                 });
             }
         });
-    }
-    
-    // Initialize on DOM ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSidenotes);
-    } else {
-        initSidenotes();
-    }
+    });
 })();
-

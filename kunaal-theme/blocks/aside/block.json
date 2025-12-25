@@ -6,10 +6,18 @@
     "title": "Aside / Case Study",
     "category": "kunaal-editorial",
     "icon": "editor-alignleft",
-    "description": "A warm background callout box for asides, case studies, or side notes.",
-    "keywords": ["aside", "case study", "callout", "sidebar"],
+    "description": "A callout box for asides, case studies, examples, or notes with optional label and outcome.",
+    "keywords": ["aside", "case study", "callout", "sidebar", "example", "note"],
     "textdomain": "kunaal-theme",
     "attributes": {
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "labelType": {
+            "type": "string",
+            "default": "none"
+        },
         "outcome": {
             "type": "string",
             "default": ""
@@ -24,4 +32,3 @@
     "render": "file:./render.php",
     "style": "file:./style.css"
 }
-

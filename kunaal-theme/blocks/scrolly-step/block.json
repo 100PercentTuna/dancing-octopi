@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/scrolly-step",
+    "version": "1.0.0",
+    "title": "Scrolly Step",
+    "category": "kunaal-interactive",
+    "icon": "marker",
+    "description": "A single step in a scrollytelling section.",
+    "keywords": ["step", "scrolly", "section"],
+    "textdomain": "kunaal-theme",
+    "parent": ["kunaal/scrollytelling"],
+    "attributes": {
+        "stepNumber": {
+            "type": "number",
+            "default": 1
+        },
+        "stickyTitle": {
+            "type": "string",
+            "default": ""
+        },
+        "stickyDescription": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-scrolly-step-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

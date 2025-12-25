@@ -1,121 +1,148 @@
 /**
  * Sidenote Block Styles
- * Elegant handwritten marginalia using Caveat font
+ * True Tufte-style margin notes positioned to the right
+ * Uses CSS counter for auto-numbering
+ * Font: Garfield Signature (loaded in main style.css)
  */
 
-/* Wrapper - inline element */
-.wp-block-kunaal-sidenote,
+/* Sidenote wrapper - inline element */
 .sidenote-wrapper {
-    position: relative;
     display: inline;
 }
 
-/* Reference marker in the text */
-.sidenote-ref {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.1em;
-    height: 1.1em;
-    margin: 0 0.15em;
-    padding: 0;
+/* Hidden checkbox for mobile toggle */
+.sidenote-toggle {
+    display: none;
+}
+
+/* Auto-numbered reference marker */
+.sidenote-number {
+    counter-increment: sidenote;
+    display: inline;
+    cursor: pointer;
+}
+
+.sidenote-number::after {
+    content: counter(sidenote);
     font-size: 0.65em;
     font-weight: 600;
     font-family: var(--sans, system-ui, sans-serif);
     color: var(--blue, #1E5AFF);
-    background: transparent;
-    border: 1.5px solid var(--blue, #1E5AFF);
-    border-radius: 50%;
-    cursor: pointer;
     vertical-align: super;
-    line-height: 1;
+    line-height: 0;
+    margin: 0 0.1em;
+    padding: 0.1em 0.25em;
+    border-radius: 2px;
     transition: background 150ms ease, color 150ms ease;
 }
 
-.sidenote-ref:hover,
-.sidenote-ref:focus {
+.sidenote-number:hover::after {
     background: var(--blue, #1E5AFF);
     color: #fff;
 }
 
-.sidenote-ref:focus {
-    outline: 2px solid var(--blueRing, rgba(30,90,255,0.3));
-    outline-offset: 2px;
-}
-
-/* The sidenote content */
+/* The sidenote content - margin positioning on desktop */
 .sidenote {
-    font-family: 'Caveat', cursive;
-    font-size: 1.15rem;
-    line-height: 1.35;
-    color: var(--muted, rgba(11,18,32,0.7));
-    font-weight: 500;
+    font-family: 'Garfield Signature', cursive;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: var(--muted, rgba(11,18,32,0.65));
+    font-weight: normal;
 }
 
-/* Desktop: positioned in right margin */
-@media (min-width: 1100px) {
-    .prose .sidenote-wrapper,
-    .prose .wp-block-kunaal-sidenote {
-        position: static;
-    }
-    
-    .prose .sidenote {
-        position: absolute;
-        right: -220px;
-        width: 180px;
-        margin-top: -0.2em;
-        padding: 0.5rem 0 0.5rem 0.75rem;
+/* Desktop: True margin notes on the right */
+@media (min-width: 1200px) {
+    .sidenote {
+        float: right;
+        clear: right;
+        width: 200px;
+        margin-right: -240px;
+        margin-bottom: 0.5rem;
+        padding-left: 1rem;
         border-left: 2px solid var(--warmLight, #d4c4b5);
-        background: transparent;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateX(8px);
-        transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+        position: relative;
+        vertical-align: baseline;
     }
     
-    .prose .sidenote-ref:hover + .sidenote,
-    .prose .sidenote-ref:focus + .sidenote,
-    .prose .sidenote-ref[aria-expanded="true"] + .sidenote,
-    .prose .sidenote:hover {
+    /* Subtle reveal animation */
+    .sidenote {
+        opacity: 0.7;
+        transition: opacity 200ms ease;
+    }
+    
+    .sidenote-wrapper:hover .sidenote,
+    .sidenote:hover {
         opacity: 1;
-        visibility: visible;
-        transform: translateX(0);
     }
 }
 
-/* Tablet/Mobile: expandable inline */
-@media (max-width: 1099px) {
+/* Medium screens: narrower margin */
+@media (min-width: 1000px) and (max-width: 1199px) {
+    .sidenote {
+        float: right;
+        clear: right;
+        width: 160px;
+        margin-right: -180px;
+        margin-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        border-left: 2px solid var(--warmLight, #d4c4b5);
+        font-size: 1rem;
+    }
+}
+
+/* Tablet/Mobile: Expandable inline notes */
+@media (max-width: 999px) {
     .sidenote {
         display: none;
-        margin: 0.5rem 0;
-        padding: 0.5rem 0.75rem;
+        margin: 0.75rem 0;
+        padding: 0.75rem 1rem;
         background: var(--bgWarm, #FAF8F5);
-        border-left: 2px solid var(--warmLight, #d4c4b5);
+        border-left: 3px solid var(--warmLight, #d4c4b5);
+        border-radius: 0 4px 4px 0;
+        font-size: 1rem;
     }
     
-    .sidenote-ref[aria-expanded="true"] + .sidenote {
+    /* Show sidenote when checkbox is checked */
+    .sidenote-toggle:checked + .sidenote {
         display: block;
+    }
+    
+    /* Visual indicator that it's tappable */
+    .sidenote-number::after {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-underline-offset: 2px;
     }
 }
 
-/* Editor preview */
-.block-editor-block-list__block .sidenote {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    position: relative;
-    right: auto;
-    width: auto;
-    margin-top: 0.5rem;
-    transform: none;
+/* Editor preview styles */
+.sidenote-editor-wrapper {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.5rem;
     background: var(--bgWarm, #FAF8F5);
-    padding: 0.5rem 0.75rem;
-    border-left: 2px solid var(--warmLight, #d4c4b5);
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.25rem 0;
+}
+
+.sidenote-ref-preview {
+    color: var(--blue, #1E5AFF);
+    font-weight: 600;
+    font-size: 0.8em;
+    flex-shrink: 0;
+}
+
+.sidenote-content-preview {
+    font-family: 'Garfield Signature', cursive;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--muted, rgba(11,18,32,0.65));
+    min-width: 150px;
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-    .sidenote-ref,
     .sidenote {
         transition: none;
     }

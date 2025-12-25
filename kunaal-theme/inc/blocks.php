@@ -74,15 +74,21 @@ function kunaal_register_block_scripts() {
     
     // Register editor scripts for each block
     $blocks = array(
-        'insight'         => 'kunaal-insight-editor',
-        'pullquote'       => 'kunaal-pullquote-editor',
-        'accordion'       => 'kunaal-accordion-editor',
-        'sidenote'        => 'kunaal-sidenote-editor',
-        'section-header'  => 'kunaal-section-header-editor',
-        'takeaways'       => 'kunaal-takeaways-editor',
-        'takeaway-item'   => 'kunaal-takeaway-item-editor',
-        'citation'        => 'kunaal-citation-editor',
-        'aside'           => 'kunaal-aside-editor',
+        'insight'           => 'kunaal-insight-editor',
+        'pullquote'         => 'kunaal-pullquote-editor',
+        'accordion'         => 'kunaal-accordion-editor',
+        'sidenote'          => 'kunaal-sidenote-editor',
+        'section-header'    => 'kunaal-section-header-editor',
+        'takeaways'         => 'kunaal-takeaways-editor',
+        'takeaway-item'     => 'kunaal-takeaway-item-editor',
+        'citation'          => 'kunaal-citation-editor',
+        'aside'             => 'kunaal-aside-editor',
+        'footnote'          => 'kunaal-footnote-editor',
+        'footnotes-section' => 'kunaal-footnotes-section-editor',
+        'parallax-section'  => 'kunaal-parallax-section-editor',
+        'scrollytelling'    => 'kunaal-scrollytelling-editor',
+        'scrolly-step'      => 'kunaal-scrolly-step-editor',
+        'reveal-wrapper'    => 'kunaal-reveal-wrapper-editor',
     );
     
     foreach ($blocks as $folder => $handle) {
@@ -129,6 +135,12 @@ function kunaal_register_blocks() {
         'takeaway-item',
         'citation',
         'aside',
+        'footnote',
+        'footnotes-section',
+        'parallax-section',
+        'scrollytelling',
+        'scrolly-step',
+        'reveal-wrapper',
     );
     
     foreach ($block_folders as $block) {
@@ -2687,6 +2699,36 @@ console.log(example);</code></pre>
     );
 }
 add_action('init', 'kunaal_register_block_patterns');
+
+/**
+ * Unregister patterns that now have proper Gutenberg block equivalents
+ * These blocks are in /blocks/ directory with full editor controls
+ */
+function kunaal_unregister_deprecated_patterns() {
+    // Patterns that now have proper block equivalents
+    $deprecated_patterns = array(
+        'kunaal/pullquote',      // Use kunaal/pullquote block
+        'kunaal/insight',        // Use kunaal/insight block
+        'kunaal/section-header', // Use kunaal/section-header block
+        'kunaal/accordion',      // Use kunaal/accordion block
+        'kunaal/aside',          // Use kunaal/aside block
+        'kunaal/citation',       // Use kunaal/citation block
+        'kunaal/takeaways',      // Use kunaal/takeaways block
+        'kunaal/sidenote',       // Use kunaal/sidenote block
+        'kunaal/scrolly',        // Use kunaal/scrollytelling block
+        'kunaal/parallax-hero',  // Use kunaal/parallax-section block
+        'kunaal/parallax-split', // Use kunaal/parallax-section block
+        'kunaal/footnote',       // Use kunaal/footnote block
+        'kunaal/footnote-ref',   // Use kunaal/footnote block
+        'kunaal/footnotes-section', // Use kunaal/footnotes-section block
+        'core/pullquote',        // Use kunaal/pullquote block instead
+    );
+    
+    foreach ($deprecated_patterns as $pattern) {
+        unregister_block_pattern($pattern);
+    }
+}
+add_action('init', 'kunaal_unregister_deprecated_patterns', 20); // Run after patterns are registered
 
 /**
  * Register Block Pattern Category

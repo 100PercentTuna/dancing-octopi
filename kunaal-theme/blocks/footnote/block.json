@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/footnote",
+    "version": "1.0.0",
+    "title": "Footnote",
+    "category": "kunaal-editorial",
+    "icon": "editor-ol",
+    "description": "A numbered footnote reference with content that appears at the bottom of the article.",
+    "keywords": ["footnote", "reference", "citation", "note", "endnote"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "content": {
+            "type": "string",
+            "default": ""
+        },
+        "footnoteId": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-footnote-editor",
+    "viewScript": "kunaal-footnote-view",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

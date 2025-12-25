@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/reveal-wrapper",
+    "version": "1.0.0",
+    "title": "Reveal Animation",
+    "category": "kunaal-interactive",
+    "icon": "visibility",
+    "description": "Wrap content to add scroll-reveal animations.",
+    "keywords": ["reveal", "animation", "scroll", "fade", "slide"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "animationType": {
+            "type": "string",
+            "default": "fade-up"
+        },
+        "delay": {
+            "type": "number",
+            "default": 0
+        },
+        "duration": {
+            "type": "number",
+            "default": 600
+        },
+        "threshold": {
+            "type": "number",
+            "default": 20
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-reveal-wrapper-editor",
+    "viewScript": "kunaal-reveal-wrapper-view",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

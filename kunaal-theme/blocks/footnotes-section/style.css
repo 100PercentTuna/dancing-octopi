@@ -1,0 +1,31 @@
+/**
+ * Footnotes Section Block Styles
+ * Editor-specific styles (main styles in footnote/style.css)
+ */
+
+/* Editor placeholder */
+.footnotes-section-editor {
+    margin-top: var(--space-6, 48px);
+    padding: var(--space-4, 32px);
+    border: 2px dashed var(--hair, rgba(11,18,32,0.14));
+    border-radius: 4px;
+    background: var(--bgWarm, #F9F7F4);
+}
+
+.footnotes-section-editor h4 {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted2, rgba(11,18,32,0.46));
+    margin: 0 0 var(--space-2, 16px);
+}
+
+.footnotes-placeholder {
+    font-size: 14px;
+    color: var(--muted, rgba(11,18,32,0.66));
+    font-style: italic;
+    margin: 0;
+}
+

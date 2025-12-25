@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/scrollytelling",
+    "version": "1.0.0",
+    "title": "Scrollytelling",
+    "category": "kunaal-interactive",
+    "icon": "slides",
+    "description": "Pinned content with scrolling steps - like NYT interactive stories.",
+    "keywords": ["scrollytelling", "story", "steps", "interactive", "pinned", "sticky"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "stickyLabel": {
+            "type": "string",
+            "default": "SECTION"
+        },
+        "stickyTitle": {
+            "type": "string",
+            "default": ""
+        },
+        "stickyDescription": {
+            "type": "string",
+            "default": ""
+        },
+        "stickyPosition": {
+            "type": "string",
+            "default": "left"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-scrollytelling-editor",
+    "viewScript": "kunaal-scrollytelling-view",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

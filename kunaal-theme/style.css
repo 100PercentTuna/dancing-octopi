@@ -3,13 +3,24 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 3.8.0
+Version: 3.9.0
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
 License: GPL-2.0-or-later
 Text Domain: kunaal-theme
 */
+
+/* ========================================
+   CUSTOM FONTS
+   ======================================== */
+@font-face {
+    font-family: 'Garfield Signature';
+    src: url('assets/fonts/garfield-signature.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 /* ========================================
    ROOT VARIABLES & DESIGN SYSTEM
@@ -195,6 +206,12 @@ main.container,
   border-bottom: 1px solid var(--hair2);
   transform: translateZ(0);
   isolation: isolate;
+}
+
+/* Ensure main content stays below header */
+main {
+  position: relative;
+  z-index: 1;
 }
 
 .mastInner {
@@ -1144,7 +1161,7 @@ footer {
 @media (max-width: 960px) {
   .footerInner {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.25rem;
     text-align: center;
   }
   .footerLeft,
@@ -1325,6 +1342,8 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   font-size: 16px;
   line-height: 1.8;
   color: rgba(11,18,32,.78);
+  /* Sidenote counter */
+  counter-reset: sidenote;
 }
 .prose p { margin: 0 0 var(--space-4); }
 .prose strong { font-weight: 600; color: var(--ink); }

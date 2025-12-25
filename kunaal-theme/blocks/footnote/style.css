@@ -1,0 +1,143 @@
+/**
+ * Footnote Block Styles
+ * Inline references and bottom footnotes with bidirectional linking
+ */
+
+/* Inline footnote reference */
+.footnote-ref {
+    line-height: 0;
+}
+
+.footnote-ref a {
+    font-size: 0.7em;
+    font-weight: 600;
+    font-family: var(--sans, system-ui, sans-serif);
+    color: var(--blue, #1E5AFF);
+    text-decoration: none;
+    padding: 0.1em 0.25em;
+    border-radius: 2px;
+    transition: background 150ms ease, color 150ms ease;
+}
+
+.footnote-ref a:hover {
+    background: var(--blue, #1E5AFF);
+    color: #fff;
+}
+
+/* Highlight when returning from footnote */
+.footnote-ref a:target {
+    background: var(--blueTint, rgba(30,90,255,0.1));
+    animation: footnote-highlight 2s ease-out;
+}
+
+@keyframes footnote-highlight {
+    0% { background: var(--blue, #1E5AFF); color: #fff; }
+    100% { background: transparent; }
+}
+
+/* Footnotes section at bottom */
+.footnotes-section {
+    margin-top: var(--space-10, 80px);
+    padding-top: var(--space-6, 48px);
+    border-top: 1px solid var(--hair2, rgba(11,18,32,0.07));
+}
+
+.footnotes-section h4 {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted2, rgba(11,18,32,0.46));
+    margin: 0 0 var(--space-4, 32px);
+}
+
+.footnotes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footnote-item {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: var(--space-2, 16px);
+    padding: var(--space-2, 16px) 0;
+    border-bottom: 1px solid var(--hair2, rgba(11,18,32,0.07));
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.footnote-item:last-child {
+    border-bottom: none;
+}
+
+.footnote-number {
+    font-family: var(--mono, monospace);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue, #1E5AFF);
+}
+
+.footnote-number a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.footnote-number a:hover {
+    text-decoration: underline;
+}
+
+.footnote-content {
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.footnote-content a {
+    color: var(--blue, #1E5AFF);
+}
+
+/* Highlight when jumping to footnote */
+.footnote-item:target {
+    background: var(--blueTint, rgba(30,90,255,0.04));
+    margin: 0 calc(-1 * var(--space-2, 16px));
+    padding-left: var(--space-2, 16px);
+    padding-right: var(--space-2, 16px);
+    border-radius: 4px;
+    animation: footnote-highlight 2s ease-out;
+}
+
+/* Editor preview */
+.footnote-editor-wrapper {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    background: var(--blueTint, rgba(30,90,255,0.04));
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.25rem 0;
+    border: 1px dashed var(--blueStroke, rgba(30,90,255,0.28));
+}
+
+.footnote-ref-preview {
+    color: var(--blue, #1E5AFF);
+    font-weight: 600;
+    font-size: 0.8em;
+    flex-shrink: 0;
+}
+
+.footnote-content-preview {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--muted, rgba(11,18,32,0.66));
+    min-width: 150px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .footnote-ref a:target,
+    .footnote-item:target {
+        animation: none;
+    }
+}
+

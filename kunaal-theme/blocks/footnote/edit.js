@@ -1,36 +1,42 @@
 /**
- * Sidenote Block - Editor Component
- * True margin note - no marker configuration, auto-numbered
+ * Footnote Block - Editor Component
+ * Inline footnote reference with content
  */
 (function(wp) {
     const { registerBlockType } = wp.blocks;
     const { useBlockProps, RichText } = wp.blockEditor;
     const { __ } = wp.i18n;
+    const { useEffect } = wp.element;
     const el = wp.element.createElement;
 
-    registerBlockType('kunaal/sidenote', {
+    registerBlockType('kunaal/footnote', {
         edit: function(props) {
-            const { attributes, setAttributes } = props;
-            const { content } = attributes;
+            const { attributes, setAttributes, clientId } = props;
+            const { content, footnoteId } = attributes;
+            
+            // Generate unique ID if not set
+            useEffect(function() {
+                if (!footnoteId) {
+                    setAttributes({ footnoteId: 'fn-' + clientId.substring(0, 8) });
+                }
+            }, []);
             
             const blockProps = useBlockProps({
-                className: 'sidenote-editor-wrapper'
+                className: 'footnote-editor-wrapper'
             });
 
             return el(
                 'span',
                 blockProps,
-                // Reference marker preview
-                el('sup', { className: 'sidenote-ref-preview' }, '•'),
-                // Sidenote content in margin preview
+                el('sup', { className: 'footnote-ref-preview' }, '[n]'),
                 el(
                     'span',
-                    { className: 'sidenote-content-preview' },
+                    { className: 'footnote-content-preview' },
                     el(RichText, {
                         tagName: 'span',
                         value: content,
                         onChange: function(value) { setAttributes({ content: value }); },
-                        placeholder: __('Margin note...', 'kunaal-theme'),
+                        placeholder: __('Footnote content...', 'kunaal-theme'),
                         allowedFormats: ['core/bold', 'core/italic', 'core/link']
                     })
                 )
@@ -41,3 +47,4 @@
         }
     });
 })(window.wp);
+

@@ -1,8 +1,72 @@
 /**
  * Takeaway Item Block Styles
- * Inherits from .takeList li in main theme CSS
+ * Large accent numbers with card-like layout
  */
+
 .wp-block-kunaal-takeaway-item {
-    /* Inherits all styles from .takeList li */
+    counter-increment: takeaway;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: var(--space-3, 24px);
+    padding: var(--space-4, 32px) 0;
+    border-bottom: 1px solid var(--hair2, rgba(11,18,32,0.07));
+    align-items: start;
 }
 
+.wp-block-kunaal-takeaway-item:last-child {
+    border-bottom: none;
+}
+
+/* Large accent number */
+.wp-block-kunaal-takeaway-item::before {
+    content: counter(takeaway, decimal-leading-zero);
+    font-family: var(--serif, Georgia, serif);
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--blueMuted, #5B7BA8);
+    line-height: 1;
+    opacity: 0.6;
+}
+
+/* Content wrapper */
+.takeaway-content {
+    min-width: 0;
+}
+
+.takeaway-content h4 {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 var(--space-1, 8px);
+    color: var(--ink, #0b1220);
+}
+
+.takeaway-content p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0;
+}
+
+/* Hover state */
+.wp-block-kunaal-takeaway-item:hover::before {
+    color: var(--blue, #1E5AFF);
+    opacity: 1;
+}
+
+/* Mobile: Stack the number */
+@media (max-width: 480px) {
+    .wp-block-kunaal-takeaway-item {
+        grid-template-columns: 1fr;
+        gap: var(--space-2, 16px);
+    }
+    
+    .wp-block-kunaal-takeaway-item::before {
+        font-size: 24px;
+    }
+}
+
+/* Editor preview */
+.block-editor-block-list__block .wp-block-kunaal-takeaway-item {
+    list-style: none;
+}
