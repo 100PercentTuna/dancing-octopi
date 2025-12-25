@@ -9,12 +9,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.10.0');
+define('KUNAAL_THEME_VERSION', '4.11.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
 // Include custom PDF generator
 require_once KUNAAL_THEME_DIR . '/pdf-generator.php';
+
+// Include About Page Customizer (NO JSON version)
+require_once KUNAAL_THEME_DIR . '/inc/about-customizer.php';
 
 /**
  * Theme Setup
