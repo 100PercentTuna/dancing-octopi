@@ -4,13 +4,14 @@ All notable changes to the Kunaal Theme.
 
 ---
 
-## [4.5.1] - 2025-12-25
+## [4.5.2] - 2025-12-25
 
 ### Fixed
-- **Critical Error Fix**: Inline formats script now properly waits for WordPress dependencies
-- Added safety checks to prevent script errors if wp globals aren't available
-- Only enqueue inline formats in block editor context
-- Improved error handling in format registration
+- **Critical Error Fix**: Completely rewrote inline formats script initialization
+- Script now properly waits for DOM and WordPress to be ready
+- All format registrations moved inside init function
+- Added wp-dom-ready dependency for proper loading
+- Improved error handling - silently fails if dependencies unavailable
 
 ---
 

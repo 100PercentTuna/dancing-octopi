@@ -262,10 +262,11 @@ function kunaal_register_inline_formats() {
     }
     
     // Register editor script for inline formats
+    // Note: wp-dom-ready is needed for proper initialization
     wp_register_script(
         'kunaal-inline-formats',
         $formats_uri . '/index.js',
-        array('wp-rich-text', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n'),
+        array('wp-rich-text', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-i18n', 'wp-dom-ready'),
         KUNAAL_THEME_VERSION,
         true
     );
