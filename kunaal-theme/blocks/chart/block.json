@@ -2,12 +2,12 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "kunaal/chart",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "title": "Chart",
     "category": "kunaal-data",
     "icon": "chart-bar",
-    "description": "Create bar, line, or pie charts with customizable data.",
-    "keywords": ["chart", "graph", "bar", "line", "pie", "data", "visualization"],
+    "description": "Create professional data visualizations with multiple chart types.",
+    "keywords": ["chart", "graph", "bar", "line", "pie", "data", "visualization", "stacked", "waterfall", "donut"],
     "textdomain": "kunaal-theme",
     "attributes": {
         "chartType": {
@@ -18,6 +18,10 @@
             "type": "string",
             "default": "vertical"
         },
+        "barMode": {
+            "type": "string",
+            "default": "simple"
+        },
         "title": {
             "type": "string",
             "default": ""
@@ -26,7 +30,19 @@
             "type": "string",
             "default": ""
         },
+        "data2": {
+            "type": "string",
+            "default": ""
+        },
+        "data3": {
+            "type": "string",
+            "default": ""
+        },
         "labels": {
+            "type": "string",
+            "default": ""
+        },
+        "seriesLabels": {
             "type": "string",
             "default": ""
         },
@@ -42,9 +58,29 @@
             "type": "boolean",
             "default": true
         },
+        "showValues": {
+            "type": "boolean",
+            "default": true
+        },
+        "showGrid": {
+            "type": "boolean",
+            "default": true
+        },
         "colors": {
             "type": "string",
             "default": "theme"
+        },
+        "startValue": {
+            "type": "number",
+            "default": 0
+        },
+        "unit": {
+            "type": "string",
+            "default": ""
+        },
+        "unitPosition": {
+            "type": "string",
+            "default": "suffix"
         }
     },
     "supports": {
@@ -53,8 +89,6 @@
         "className": true
     },
     "editorScript": "kunaal-chart-editor",
-    "viewScript": "kunaal-chart-view",
     "render": "file:./render.php",
     "style": "file:./style.css"
 }
-

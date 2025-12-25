@@ -1,306 +1,235 @@
-# Testing Checklist - Version 4.2.0
+# Testing Checklist
 
-**Release Date**: December 25, 2025  
-**Version**: 4.2.0 (Major Release)  
-**Testing Scope**: Bug Fixes, Chart Block, Epic 4 Enhanced, Epic 6 Complete
-
----
-
-## Pre-Testing Setup
-
-- [ ] Clear browser cache
-- [ ] Test in incognito/private mode
-- [ ] Ensure theme is updated to v4.2.0
+**Theme Version**: 4.3.0  
+**Last Updated**: December 25, 2025
 
 ---
 
-## 0. CRITICAL FIXES (v4.2.0)
+## 🧪 v4.3.0 Testing
 
-### 0.1 PDF Colors
-- [ ] **PDF Export**: Colors are preserved (not black-and-white)
-- [ ] **PDF Export**: Confidence meters show colored bars
-- [ ] **PDF Export**: Status badges maintain colors
-- [ ] **PDF Export**: Argument map columns show green/red tints
-- [ ] **PDF Export**: Framework matrix cells show color gradients
+### Chart Block v2.0
+- [ ] Bar chart (vertical) renders correctly
+- [ ] Bar chart (horizontal) renders correctly
+- [ ] Stacked bar chart works with multiple series
+- [ ] Clustered bar chart displays series side-by-side
+- [ ] Line chart with single series
+- [ ] Line chart with multiple series
+- [ ] Pie chart renders with percentages
+- [ ] Donut chart with center total
+- [ ] Waterfall chart shows positive (green) and negative (red) changes
+- [ ] Waterfall connectors display correctly
+- [ ] Color schemes apply correctly (theme, blue, warm, green, mono, rainbow)
+- [ ] Value units display correctly (prefix: $10, suffix: 10%)
+- [ ] Legend shows/hides based on setting
+- [ ] Grid lines show/hide based on setting
+- [ ] Source and caption display
+- [ ] Responsive on mobile (horizontal scroll if needed)
+- [ ] SVG renders in PDF export
 
-### 0.2 Sidenote Font
-- [ ] **Sidenote**: Font loads correctly (Caveat from Google Fonts)
-- [ ] **Sidenote**: Font renders properly (not broken/fallback)
-- [ ] **Sidenote**: Appears in margin on desktop
-- [ ] **Sidenote**: Blue bullet marker (•) visible
+### Cross-Browser (Smoke Test)
+- [ ] Chrome: Homepage loads
+- [ ] Chrome: Essay page loads
+- [ ] Chrome: Charts render
+- [ ] Firefox: Homepage loads
+- [ ] Firefox: Essay page loads
+- [ ] Safari: Homepage loads
+- [ ] Safari: Essay page loads
+- [ ] Mobile Safari: Touch interactions work
+- [ ] Android Chrome: Layouts correct
 
-### 0.3 Article Titles
-- [ ] **Essay/Jotting Pages**: Title uses serif font (not sans-serif)
-- [ ] **Essay/Jotting Pages**: Title color is softer (not pure black)
-- [ ] **Essay/Jotting Pages**: Title size and spacing look good
-
-### 0.4 Regex Bug Fix
-- [ ] **PDF Export**: Accordions with `open` attribute don't duplicate
-- [ ] **PDF Export**: No invalid HTML like `<details open open>`
-
----
-
-## 1. NEW BLOCK - Chart (Epic 4)
-
----
-
-## 1. EPIC 5 - MOTION PRIMITIVES (New CSS Utilities)
-
-### 1.1 Animation Classes
-- [ ] `.motion-fade-in` - Element fades in
-- [ ] `.motion-fade-up` - Element fades up from below
-- [ ] `.motion-fade-down` - Element fades down from above
-- [ ] `.motion-fade-left` - Element fades in from right
-- [ ] `.motion-fade-right` - Element fades in from left
-- [ ] `.motion-scale-in` - Element scales in
-- [ ] `.motion-scale-up` - Element scales up with translate
-
-### 1.2 Stagger Classes
-- [ ] `.stagger-1` through `.stagger-8` work with delays
-
-### 1.3 Scroll Reveal Classes
-- [ ] `.scroll-reveal` - Element reveals on scroll
-- [ ] `.scroll-reveal-left` - Element reveals from left
-- [ ] `.scroll-reveal-right` - Element reveals from right
-- [ ] `.scroll-reveal-scale` - Element scales in on scroll
-- [ ] JavaScript adds `.is-visible` on scroll
-
-### 1.4 Reduced Motion
-- [ ] All animations disabled when `prefers-reduced-motion` is set
+### Documentation
+- [ ] THEME-GUIDE.md is accurate
+- [ ] CHANGELOG.md reflects all changes
+- [ ] BROWSER-QA.md matrix is complete
 
 ---
 
-## 2. EPIC 3 - ANALYSIS BLOCKS
+## ✅ v4.2.0 Testing (Completed)
 
-### 2.1 Assumptions Register
-- [ ] **Editor**: Can add assumptions with text, confidence, status
-- [ ] **Editor**: Can remove assumptions
-- [ ] **Frontend**: Table renders correctly
-- [ ] **Frontend**: Confidence indicators (green/yellow/red dots)
-- [ ] **Frontend**: Status badges (Untested/Validated/Invalidated/Partial)
-- [ ] **Frontend**: Row highlighting for validated/invalidated
-- [ ] **Visual**: Clean table styling
+### Bug Fixes
+- [x] PDF preserves colors (not black-and-white)
+- [x] Sidenote font (Caveat) loads correctly
+- [x] Essay/Jotting titles are serif and softer color
+- [x] Regex bug fixed: no duplicate 'open' attributes in PDF
 
-### 2.2 Confidence Meter
-- [ ] **Editor**: Label field is editable
-- [ ] **Editor**: Confidence slider (0-100) works
-- [ ] **Editor**: Description field works
-- [ ] **Editor**: Toggle for showing percentage
-- [ ] **Frontend**: Progress bar renders
-- [ ] **Frontend**: Color changes based on level (green/yellow/red)
-- [ ] **Frontend**: Percentage displays if enabled
-- [ ] **Visual**: Smooth bar animation
+### Basic Chart Block
+- [x] Bar chart renders
+- [x] Line chart renders
+- [x] Pie chart renders
+- [x] Color schemes work
+- [x] Source/caption display
 
-### 2.3 Scenario Comparison
-- [ ] **Editor**: Can add multiple scenarios
-- [ ] **Editor**: Scenario name, probability, description, outcome fields
-- [ ] **Editor**: Probability selector (High/Medium/Low)
-- [ ] **Frontend**: Grid layout for scenarios
-- [ ] **Frontend**: Color-coded top borders
-- [ ] **Frontend**: Probability badges
-- [ ] **Frontend**: Stacks on mobile
-- [ ] **Visual**: Clean card styling
-
-### 2.4 Decision Log + Entry
-- [ ] **Editor**: Title editable
-- [ ] **Editor**: Can add decision-entry child blocks
-- [ ] **Editor**: Decision, date, rationale, status, outcome fields
-- [ ] **Frontend**: Timeline-like layout with markers
-- [ ] **Frontend**: Status indicator (Active/Superseded/Reversed)
-- [ ] **Frontend**: Strikethrough for superseded/reversed
-- [ ] **Frontend**: Outcome section renders
-- [ ] **Visual**: Color-coded status badges
-
-### 2.5 Framework Matrix (2x2/3x3)
-- [ ] **Editor**: Can select 2x2 or 3x3 size
-- [ ] **Editor**: X and Y axis labels editable
-- [ ] **Editor**: Each cell has label and content
-- [ ] **Frontend**: Grid renders correctly
-- [ ] **Frontend**: Axis labels positioned correctly
-- [ ] **Frontend**: Color gradient across cells
-- [ ] **Visual**: Clean matrix styling
-- [ ] **Responsive**: Works on mobile
-
-### 2.6 Causal Loop Diagram
-- [ ] **Editor**: Can add variable nodes
-- [ ] **Editor**: Effect selector (positive/negative)
-- [ ] **Editor**: Description field
-- [ ] **Frontend**: Nodes render with arrows
-- [ ] **Frontend**: Loop type indicator (R/B)
-- [ ] **Frontend**: Color-coded effects (+/−)
-- [ ] **Frontend**: Loop-back visualization
-- [ ] **Visual**: Clean systems diagram
-
-### 2.7 Evaluation Rubric + Row
-- [ ] **Editor**: Title and column headers editable
-- [ ] **Editor**: Can add rubric-row child blocks
-- [ ] **Editor**: Each row has criteria and levels
-- [ ] **Frontend**: Table renders correctly
-- [ ] **Frontend**: Column header colors (red→green)
-- [ ] **Frontend**: Zebra striping
-- [ ] **Visual**: Publication-quality table
-- [ ] **Responsive**: Scrolls on mobile
-
-### 2.8 Debate (Steelman)
-- [ ] **Editor**: Question field editable
-- [ ] **Editor**: Two debate-side blocks (locked)
-- [ ] **Editor**: Each side has label, argument, points
-- [ ] **Frontend**: Two-column layout
-- [ ] **Frontend**: Color-coded sides (green for, red against)
-- [ ] **Frontend**: Points list with arrows
-- [ ] **Frontend**: Stacks on mobile
-- [ ] **Visual**: Clear debate presentation
+### Share Dock
+- [x] PDF download button works
+- [x] Correct filename format
 
 ---
 
-## 3. EPIC 4 - DATA BLOCKS
+## ✅ v4.1.0 Testing (Completed)
 
-### 3.1 Publication Table
-- [ ] **Editor**: Title, source, caption fields
-- [ ] **Editor**: Can add columns and rows
-- [ ] **Editor**: Toggle for first column highlight
-- [ ] **Frontend**: Table with dark header
-- [ ] **Frontend**: Zebra striping
-- [ ] **Frontend**: Source and caption footer
-- [ ] **Frontend**: First column highlight if enabled
-- [ ] **Visual**: Professional table styling
-- [ ] **Responsive**: Scrolls on mobile
+### Analysis Blocks
+- [x] Assumptions Register: Table renders, confidence colors
+- [x] Confidence Meter: Progress bar, percentage display
+- [x] Scenario Comparison: Multi-column cards
+- [x] Decision Log: Timeline display
+- [x] Framework Matrix: 2x2 grid renders
+- [x] Causal Loop: Variables and connections
+- [x] Rubric: Scoring table
+- [x] Debate: Two-side layout
 
-### 3.2 Flow Chart + Step
-- [ ] **Editor**: Title editable
-- [ ] **Editor**: Orientation selector (horizontal/vertical)
-- [ ] **Editor**: Can add flowchart-step child blocks
-- [ ] **Editor**: Step type selector (process/decision/terminal/io)
-- [ ] **Frontend**: Steps connected with arrows
-- [ ] **Frontend**: Different shapes for step types
-- [ ] **Frontend**: Terminal steps have rounded/dark styling
-- [ ] **Frontend**: Arrow hidden on last step
-- [ ] **Visual**: Clean process diagram
-- [ ] **Responsive**: Stacks vertically on mobile
+### Motion Primitives
+- [x] `.motion-fade-in` animation works
+- [x] Stagger classes delay correctly
+- [x] `prefers-reduced-motion` disables animations
+
+### Data Blocks
+- [x] Publication Table: Headers, rows, source
+- [x] Flow Chart: Steps connect properly
 
 ---
 
-## 4. EXISTING BLOCKS VERIFICATION
+## ✅ v4.0.0 Testing (Completed)
 
-- [ ] Sidenote: Blue bullet marker (not numbers)
-- [ ] Sidenote: Garfield Signature font loads
-- [ ] All Epic 2 blocks still work
-- [ ] All previous blocks render correctly
+### Editorial Blocks
+- [x] Magazine Figure: Image sizes, captions
+- [x] Lede Package: Hero layout
+- [x] Timeline: Markers, connectors
+- [x] Glossary: Term organization
+- [x] Annotation: Highlights, tooltips
+- [x] Argument Map: Structure displays
+- [x] Know/Don't Know: Two columns
+- [x] Source Excerpt: Citation styling
+- [x] Context Panel: Collapsible
+- [x] Related Reading: Link cards
 
----
-
-## 5. BLOCK CATEGORIES
-
-- [ ] "Kunaal — Analysis" category exists with all analysis blocks
-- [ ] "Kunaal — Data" category exists with data blocks
-- [ ] Block icons are appropriate
-- [ ] Search finds blocks by keywords
-
----
-
-## 6. RESPONSIVE DESIGN
-
-- [ ] All new blocks stack on mobile
-- [ ] Tables scroll horizontally when needed
-- [ ] Grid layouts adapt to screen size
-- [ ] Text remains readable
+### Sidenote Block
+- [x] Caveat font renders
+- [x] Blue bullet marker displays
+- [x] Desktop: In margin
+- [x] Mobile: Inline display
 
 ---
 
-## 7. ACCESSIBILITY
+## ✅ v3.9.0 Testing (Completed)
 
-- [ ] Animation respects `prefers-reduced-motion`
-- [ ] Tables have proper structure
-- [ ] Color is not the only indicator
+### Footnotes
+- [x] Footnote marker inserts
+- [x] Footnotes Section renders at end
+- [x] Bidirectional links work
 
----
+### Parallax
+- [x] Background image parallax effect
+- [x] Content overlay readable
+- [x] Mobile fallback (no parallax)
 
-## Quick Smoke Test (5 minutes)
+### Scrollytelling
+- [x] Steps trigger correctly
+- [x] Sticky content updates
+- [x] Mobile behavior
 
-1. ✅ Motion classes work (add `.motion-fade-up` to any element)
-2. ✅ Assumptions Register shows table with indicators
-3. ✅ Confidence Meter shows colored progress bar
-4. ✅ Framework Matrix shows 2x2 grid with colors
-5. ✅ Debate shows two-column layout
-6. ✅ Publication Table has dark header
-7. ✅ Flow Chart shows connected steps
-8. ✅ All blocks appear in correct categories
-9. ✅ Mobile view works
-10. ✅ No console errors
-
----
-
-## New Blocks Summary (v4.1.0)
-
-### Epic 5 - Motion (CSS Utilities)
-- Animation classes
-- Stagger utilities
-- Scroll reveal classes
-
-### Epic 3 - Analysis (11 blocks)
-| Block | Purpose |
-|-------|---------|
-| Assumptions Register | Track assumptions with confidence |
-| Confidence Meter | Visual confidence indicator |
-| Scenario Comparison | Compare multiple scenarios |
-| Decision Log | Container for decisions |
-| Decision Entry | Single decision with status |
-| Framework Matrix | 2x2 or 3x3 analysis grid |
-| Causal Loop Diagram | Systems thinking visual |
-| Evaluation Rubric | Criteria table |
-| Rubric Row | Single criterion row |
-| Debate | Two-sided argument |
-| Debate Side | One side of debate |
-
-### Epic 4 - Data (4 blocks)
-| Block | Purpose |
-|-------|---------|
-| Publication Table | Styled data table |
-| Flow Chart | Process diagram |
-| Flow Chart Step | Single step in flow |
-
-**Total New Blocks**: 14  
-**Total Blocks in Theme**: 42
+### Bug Fixes
+- [x] Header z-index correct
+- [x] Footer spacing on mobile
 
 ---
 
-## 4. NEW BLOCK - Chart (Epic 4)
+## ✅ v3.8.0 Testing (Completed)
 
-### 4.1 Chart Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Chart type selector works (bar, line, pie)
-- [ ] **Editor**: Orientation selector works for bar charts (vertical/horizontal)
-- [ ] **Editor**: Data entry field works (comma-separated numbers)
-- [ ] **Editor**: Labels field works (comma-separated text)
-- [ ] **Editor**: Title, source, caption fields work
-- [ ] **Editor**: Color scheme selector works
-- [ ] **Editor**: Show legend toggle works
-- [ ] **Frontend**: Bar chart renders (vertical)
-- [ ] **Frontend**: Bar chart renders (horizontal/sideways)
-- [ ] **Frontend**: Line chart renders with points
-- [ ] **Frontend**: Pie chart renders with percentages
-- [ ] **Frontend**: Labels appear correctly
-- [ ] **Frontend**: Colors match selected scheme
-- [ ] **Frontend**: Source and caption render
-- [ ] **Visual**: SVG scales correctly
-- [ ] **Responsive**: Chart adapts to screen size
+### Block Conversions
+- [x] Insight Box: Warm background, label editable
+- [x] Pull Quote: Single blue border, citation
+- [x] Accordion: Smooth animation, elegant marker
+- [x] Sidenote: Margin positioning
+- [x] Section Header: Number editable
+- [x] Takeaways: Large accent numbers
+- [x] Citation: Centered, elegant
+- [x] Aside: Label, outcome highlight
+
+### Block Editor
+- [x] All blocks appear in inserter
+- [x] Inspector Controls work
+- [x] Preview matches frontend
 
 ---
 
-## 5. EPIC 6 - SHARE & SUBSCRIBE DOCK
+## 📋 General QA Checklist
 
-### 5.1 Share Dock
-- [ ] **Action Dock**: Share button opens panel
-- [ ] **Share Panel**: PDF download button appears
-- [ ] **Share Panel**: PDF download button works
-- [ ] **Share Panel**: LinkedIn, X, WhatsApp buttons work
-- [ ] **Share Panel**: Closes when clicking outside
+### Visual
+- [ ] Typography: Fonts load (Inter, Newsreader, Caveat)
+- [ ] Colors: CSS variables resolve
+- [ ] Spacing: Consistent margins/padding
+- [ ] Images: Aspect ratios correct
+- [ ] Icons: SVGs render
 
-### 5.2 Subscribe Dock
-- [ ] **Action Dock**: Subscribe button opens panel
-- [ ] **Subscribe Panel**: Form works correctly
-- [ ] **Subscribe Panel**: Closes when clicking outside
+### Interactive
+- [ ] Accordions: Expand/collapse smoothly
+- [ ] Sidenotes: Show on hover/click
+- [ ] Footnotes: Jump to/from work
+- [ ] Share menu: Opens/closes
+- [ ] Scroll animations: Trigger at correct position
+
+### Responsive
+- [ ] Desktop (1440px+): Full layout
+- [ ] Desktop (1024px): Narrower margins
+- [ ] Tablet (768px): Stacked elements
+- [ ] Mobile (480px): Single column
+
+### Accessibility
+- [ ] Keyboard: Tab through all interactive elements
+- [ ] Screen reader: Content announced correctly
+- [ ] Focus: Indicators visible
+- [ ] Motion: Respects user preference
+
+### Performance
+- [ ] Page load: Under 3 seconds
+- [ ] No console errors
+- [ ] Images: Lazy loaded
+- [ ] Fonts: Not blocking render
+
+### PDF Export
+- [ ] Download triggers
+- [ ] Filename correct
+- [ ] Colors preserved
+- [ ] Layout clean
+- [ ] Images render
+- [ ] Accordions expanded
 
 ---
 
-**Last Updated**: Version 4.2.0 - December 25, 2025
+## 🐛 Known Issues
+
+### Safari/iOS
+- Parallax: Falls back to static background
+- Print: Some CSS variables may not resolve
+
+### Edge (Legacy)
+- Not supported (pre-Chromium)
+
+### Workarounds
+- Use DOMPDF for reliable PDF (not browser print)
+- Test on actual devices, not just emulators
+
+---
+
+## 📝 Test Report Template
+
+```
+## Test Report - v[VERSION]
+
+**Tester**: [Name]
+**Date**: [Date]
+**Browser**: [Browser/Version]
+**Device**: [Device/OS]
+
+### Pass/Fail Summary
+- Total Tests: X
+- Passed: X
+- Failed: X
+- Blocked: X
+
+### Failed Tests
+1. [Test name] - [Brief description of issue]
+
+### Notes
+[Any observations or recommendations]
+```

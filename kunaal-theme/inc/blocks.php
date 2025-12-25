@@ -2781,6 +2781,7 @@ add_action('init', 'kunaal_register_block_patterns');
 function kunaal_unregister_deprecated_patterns() {
     // Patterns that now have proper block equivalents
     $deprecated_patterns = array(
+        // Editorial blocks
         'kunaal/pullquote',      // Use kunaal/pullquote block
         'kunaal/insight',        // Use kunaal/insight block
         'kunaal/section-header', // Use kunaal/section-header block
@@ -2789,12 +2790,37 @@ function kunaal_unregister_deprecated_patterns() {
         'kunaal/citation',       // Use kunaal/citation block
         'kunaal/takeaways',      // Use kunaal/takeaways block
         'kunaal/sidenote',       // Use kunaal/sidenote block
+        'kunaal/timeline',       // Use kunaal/timeline block
+        
+        // Parallax & scrollytelling
         'kunaal/scrolly',        // Use kunaal/scrollytelling block
         'kunaal/parallax-hero',  // Use kunaal/parallax-section block
         'kunaal/parallax-split', // Use kunaal/parallax-section block
+        
+        // Footnotes
         'kunaal/footnote',       // Use kunaal/footnote block
         'kunaal/footnote-ref',   // Use kunaal/footnote block
         'kunaal/footnotes-section', // Use kunaal/footnotes-section block
+        
+        // Data/charts - use kunaal/chart block
+        'kunaal/chart',          // Use kunaal/chart block
+        'kunaal/chart-bar',      // Use kunaal/chart block
+        'kunaal/chart-bar-vertical', // Use kunaal/chart block
+        'kunaal/chart-line',     // Use kunaal/chart block
+        'kunaal/chart-donut',    // Use kunaal/chart block
+        'kunaal/chart-waterfall', // Use kunaal/chart block
+        'kunaal/chart-waterfall-down', // Use kunaal/chart block
+        'kunaal/chart-clustered-bar', // Use kunaal/chart block
+        'kunaal/chart-stacked-bar', // Use kunaal/chart block
+        'kunaal/chart-combination', // Use kunaal/chart block
+        'kunaal/chart-bubble',   // Use kunaal/chart block
+        'kunaal/chart-variwide', // Use kunaal/chart block
+        'kunaal/chart-chevron',  // Use kunaal/flowchart block
+        'kunaal/flowchart',      // Use kunaal/flowchart block
+        'kunaal/data-table',     // Use kunaal/pub-table block
+        'kunaal/comparison-table', // Use kunaal/pub-table block
+        
+        // Core overrides
         'core/pullquote',        // Use kunaal/pullquote block instead
     );
     

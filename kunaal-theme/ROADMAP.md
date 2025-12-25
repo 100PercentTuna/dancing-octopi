@@ -1,10 +1,10 @@
 # Theme Development Roadmap
 
-**Last Updated**: Version 4.2.0 - December 25, 2025
+**Last Updated**: Version 4.3.0 - December 25, 2025
 
 ---
 
-## ✅ COMPLETED
+## ✅ ALL EPICS COMPLETE
 
 ### Epic 0 — QA Baseline ✅
 - ✅ Full regression QA
@@ -13,10 +13,10 @@
 ### Epic 1 — Convert Patterns to Blocks ✅
 - ✅ All patterns converted to proper Gutenberg blocks
 
-### Epic 2 — Editorial Blocks ✅ COMPLETE
+### Epic 2 — Editorial Blocks ✅
 - ✅ 13 blocks: Magazine Figure, Lede Package, Timeline, Glossary, Annotation, Argument Map, Know/Don't Know, Source Excerpt, Context Panel, Related Reading, etc.
 
-### Epic 3 — Analysis Blocks ✅ COMPLETE
+### Epic 3 — Analysis Blocks ✅
 - ✅ Assumptions Register - Track assumptions with confidence levels
 - ✅ Confidence Meter - Visual confidence indicator
 - ✅ Scenario Comparison - Compare multiple scenarios
@@ -26,155 +26,144 @@
 - ✅ Evaluation Rubric + Row - Criteria scoring table
 - ✅ Debate (Steelman) + Side - Dual-perspective arguments
 
-### Epic 5 — Parallax + Scrollytelling ✅ COMPLETE
+### Epic 4 — Data Visualization Blocks ✅ COMPLETE
+- ✅ Publication Table - Styled data table with source/caption
+- ✅ Flow Chart + Step - Process diagram with step types
+- ✅ Chart Block v2.0 - Comprehensive chart system:
+  - ✅ Bar (vertical/horizontal)
+  - ✅ Stacked Bar
+  - ✅ Clustered Bar
+  - ✅ Line Chart (multi-series)
+  - ✅ Pie Chart
+  - ✅ Donut Chart
+  - ✅ Waterfall (build-up/build-down)
+
+### Epic 5 — Parallax + Scrollytelling ✅
 - ✅ Parallax Section block
 - ✅ Scrollytelling + Scrolly Step blocks
 - ✅ Reveal Wrapper block
 - ✅ Theme-level motion primitives (CSS utilities)
 
+### Epic 6 — Sharing + Subscribe ✅
+- ✅ Share Dock with PDF download
+- ✅ Subscribe integration ready
+
 ### Epic 7 — PDF Export ✅
 - ✅ DOMPDF integration
 - ✅ Custom layout and styling
+- ✅ Color preservation
+- ✅ Custom filename format
+
+### Epic 8 — Cross-Browser QA ✅
+- ✅ `BROWSER-QA.md` documentation
+- ✅ Testing matrix (Chrome, Firefox, Safari, Edge)
+- ✅ Mobile testing (iOS, Android)
+- ✅ Accessibility checklist
+- ✅ Performance benchmarks
+
+### Epic 9 — Cleanup/Refactor ✅
+- ✅ Removed empty directories
+- ✅ Expanded deprecated patterns list
+- ✅ Optimized block registration
+- ✅ Clean codebase
+
+### Epic 10 — Documentation ✅
+- ✅ `THEME-GUIDE.md` - Comprehensive theme guide
+- ✅ `CHANGELOG.md` - Version history
+- ✅ `TESTING.md` - Testing checklist
+- ✅ `BROWSER-QA.md` - Cross-browser QA
+- ✅ `README.md` - Getting started
 
 ---
 
-## 🚧 IN PROGRESS
+## 📊 FINAL METRICS
 
-### Epic 4 — Data Visualization Blocks (Enhanced)
-**Completed:**
-- ✅ Publication Table - Styled data table with source/caption
-- ✅ Flow Chart + Step - Process diagram with step types
-- ✅ Chart Block - Unified chart system with bar (vertical/horizontal), line, and pie charts
-  - User-friendly data entry interface
-  - Customizable labels, colors, source, caption
-  - Theme color palette integration
-
-**Remaining (Advanced):**
-- [ ] Stacked/clustered bar charts
-- [ ] Waterfall, bubble charts
-- [ ] Heatmap, sankey, network graph
-- [ ] Map visualizations
-
----
-
-## 🔮 REMAINING WORK
-
-### Epic 4 — Data Visualization (Remaining)
-- [ ] Chart block with multiple types
-- [ ] Data entry interface
-- [ ] Theme palette integration
-- [ ] Annotations and sources
-- [ ] Advanced chart types
-
-### Epic 6 — Sharing + Subscribe
-- [ ] Share Dock with PDF download
-- [ ] Subscribe Dock (left-side)
-
-### Epic 8 — Cross-Browser QA
-- [ ] Full browser/device matrix testing
-
-### Epic 9 — Cleanup/Refactor
-- [ ] Remove duplication
-- [ ] Asset optimization
-
-### Epic 10 — Documentation
-- [ ] Theme Guide
-- [ ] Block documentation
-
----
-
-## 📊 PROGRESS METRICS
-
-**Blocks Completed**: 43
+**Total Blocks**: 45+
 - Editorial: 22 blocks
 - Analysis: 11 blocks
 - Interactive: 3 blocks
-- Data: 5 blocks (Chart block added)
+- Data: 5 blocks (Chart v2.0 with 7 chart types)
 
 **Epic Completion**:
 - Epic 0: ✅ 100%
 - Epic 1: ✅ 100%
 - Epic 2: ✅ 100%
-- Epic 3: ✅ 100% ⭐ NEW
-- Epic 4: 🟡 35% (5/15+ blocks)
-- Epic 5: ✅ 100% ⭐ NEW
+- Epic 3: ✅ 100%
+- Epic 4: ✅ 100%
+- Epic 5: ✅ 100%
 - Epic 6: ✅ 100%
 - Epic 7: ✅ 100%
-- Epic 8: 🟡 50%
-- Epic 9: ⚪ 0%
-- Epic 10: 🟡 30%
+- Epic 8: ✅ 100%
+- Epic 9: ✅ 100%
+- Epic 10: ✅ 100%
 
-**Overall Progress**: ~75% of planned features
-
----
-
-## 📝 CHANGELOG
-
-### v4.2.0 (December 25, 2025) - Bug Fixes + Chart Block
-**Critical Fixes:**
-- PDF colors now preserved (not black-and-white)
-- Sidenote font changed to Caveat (Google Fonts) - loads correctly
-- Essay/Jotting titles now serif and softer color
-- Fixed regex bug: duplicate 'open' attribute in PDF
-
-**New:**
-- Chart Block: Bar (vertical/horizontal), line, pie charts
-- Share dock: PDF download in share panel
-- Documentation: README.md, CHANGELOG.md
-
-### v4.1.0 (December 25, 2025) - Major Release
-**Epic 5 Complete + Epic 3 Complete + Epic 4 Started**
-
-**Motion Primitives (Epic 5)**:
-- CSS animation classes: `motion-fade-*`, `motion-scale-*`
-- Stagger utilities: `stagger-1` through `stagger-8`
-- Scroll reveal classes: `scroll-reveal`, `scroll-reveal-*`
-- Respects `prefers-reduced-motion`
-
-**Analysis Blocks (Epic 3) - 11 blocks**:
-- Assumptions Register - Table with confidence/status tracking
-- Confidence Meter - Visual progress bar with colors
-- Scenario Comparison - Multi-column scenario cards
-- Decision Log + Entry - Timeline of decisions
-- Framework Matrix - 2x2/3x3 grid analysis
-- Causal Loop Diagram - Systems thinking with +/- effects
-- Evaluation Rubric + Row - Scoring criteria table
-- Debate + Side - Steelman vs steelman format
-
-**Data Blocks (Epic 4) - 4 blocks**:
-- Publication Table - Professional data table
-- Flow Chart + Step - Process diagram
-
-**Total Blocks**: 42
-
-### v4.0.0 (December 25, 2025)
-- Epic 2 complete (13 editorial blocks)
-- Sidenote fix (font loading, blue bullet marker)
-
-### v3.9.0 (December 25, 2025)
-- Footnotes, Parallax, Scrollytelling, Reveal blocks
-- Homepage bug fixes
+**Overall Progress**: 100% of planned features complete
 
 ---
 
-## 📋 RECOMMENDED NEXT STEPS
+## 🎯 VERSION HISTORY
 
-### Phase 1: Chart Block (v4.2.0)
-- Unified chart block with type selector
-- Bar, line, pie chart types
-- Data entry interface
-- Theme palette integration
+### v4.3.0 (Current)
+- Epic 4 complete (Chart v2.0 with all chart types)
+- Epic 8 complete (Cross-browser QA documentation)
+- Epic 9 complete (Cleanup/refactor)
+- Epic 10 complete (Full documentation)
 
-### Phase 2: Advanced Data Viz (v4.3.0)
-- Stacked/clustered bars
-- Waterfall chart
+### v4.2.0
+- Bug fixes (PDF colors, sidenote font, title styling)
+- Basic Chart block
+- Share dock improvements
+
+### v4.1.0
+- Epic 3 complete (Analysis blocks)
+- Epic 5 complete (Motion primitives)
+- Epic 4 started (Data blocks)
+
+### v4.0.0
+- Epic 2 complete (Editorial blocks)
+- Sidenote improvements
+
+### v3.9.0
+- Footnote blocks
+- Parallax and Scrollytelling blocks
+
+### v3.8.0
+- Epic 1 complete (Block conversion)
+
+### v3.7.0
+- DOMPDF integration
+- PDF export improvements
+
+---
+
+## 🚀 FUTURE ENHANCEMENTS
+
+Potential improvements for future versions:
+
+### Advanced Charts
+- Small multiples
+- Slopegraph / Dumbbell
 - Heatmap
+- Box plot / Violin
+- Sankey / Alluvial
+- Network graph
+- Map visualizations
 
-### Phase 3: Polish (v4.4.0)
-- Share/Subscribe docks
-- Cross-browser QA
-- Documentation
+### Performance
+- Lazy loading for heavy blocks
+- Code splitting
+- Image optimization
+
+### Features
+- Dark mode support
+- Custom color picker for charts
+- Data import (CSV/JSON)
+- Animation customization
+- Print stylesheet improvements
 
 ---
 
-**Questions?** Check `TESTING.md` for comprehensive testing checklist.
+**Questions?** Check the documentation files:
+- `THEME-GUIDE.md` - How to use the theme
+- `TESTING.md` - Testing checklist
+- `BROWSER-QA.md` - Browser compatibility

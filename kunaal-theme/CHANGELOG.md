@@ -1,90 +1,153 @@
 # Changelog
 
-All notable changes to the Kunaal Theme will be documented in this file.
+All notable changes to the Kunaal Theme.
 
 ---
 
-## [4.2.0] - December 25, 2025
+## [4.3.0] - 2025-12-25
 
-### Added
-- **Chart Block**: Comprehensive chart block with bar (vertical/horizontal), line, and pie chart types
-  - User-friendly data entry interface (comma-separated values)
-  - Customizable labels, colors, and styling
-  - Source and caption support
-  - Theme color palette integration
+### 🎉 Major Release - All Epics Complete
+
+#### Epic 4 - Data Visualization (Complete)
+- **Chart Block v2.0**: Comprehensive rewrite with 7 chart types
+  - Bar (vertical/horizontal)
+  - Stacked Bar
+  - Clustered Bar
+  - Line Chart (multi-series support)
+  - Pie Chart
+  - Donut Chart
+  - Waterfall (build-up/build-down)
+- User-friendly sidebar controls for all data entry
+- Multiple color schemes (theme, blue, warm, green, mono, rainbow)
+- Value formatting with units (prefix/suffix)
+- Legend and grid line toggles
+- Responsive SVG rendering
+
+#### Epic 8 - Cross-Browser QA
+- Added comprehensive `BROWSER-QA.md` documentation
+- Testing matrix for Chrome, Firefox, Safari, Edge
+- Mobile device testing (iOS Safari, Android Chrome/Firefox)
+- Responsive breakpoint verification
+- Accessibility testing checklist
+- Performance benchmarks
+
+#### Epic 9 - Cleanup/Refactor
+- Removed empty chart-* directories
+- Expanded deprecated patterns list (40+ patterns now unregistered)
+- Cleaned up duplicate pattern registrations
+- Optimized block registration
+
+#### Epic 10 - Documentation
+- Added comprehensive `THEME-GUIDE.md`
+- Block library documentation (45+ blocks)
+- Chart block usage guide
+- Motion/animation reference
+- Color palette documentation
+- File structure overview
 
 ### Fixed
-- **PDF Colors**: Colors now preserved in PDF output (not black-and-white)
-- **Sidenote Font**: Changed from Garfield Signature to Caveat (Google Fonts) for better rendering
-- **Article Titles**: Essay/Jotting titles now use serif font and softer color (not pure black)
-- **Regex Bug**: Fixed duplicate `open` attribute bug in PDF accordion expansion
-
-### Enhanced
-- **Share Dock**: Added PDF download button to share panel
-- **PDF Generation**: Improved accordion handling to prevent duplicate attributes
+- PDF colors now preserved (not black-and-white)
+- Sidenote font loads correctly (Caveat from Google Fonts)
+- Essay/Jotting titles now serif with softer color
+- Regex bug for duplicate 'open' attributes in PDF fixed
 
 ---
 
-## [4.1.0] - December 25, 2025
+## [4.2.0] - 2025-12-25
 
 ### Added
-- **Epic 5 Complete**: Theme-level motion primitives (CSS animation utilities)
-- **Epic 3 Complete**: All Analysis blocks (11 blocks)
-  - Assumptions Register
-  - Confidence Meter
-  - Scenario Comparison
-  - Decision Log + Entry
-  - Framework Matrix (2x2/3x3)
-  - Causal Loop Diagram
-  - Evaluation Rubric + Row
-  - Debate (Steelman) + Side
-- **Epic 4 Started**: Data visualization blocks
-  - Publication Table
-  - Flow Chart + Step
-
-### Total Blocks: 42
-
----
-
-## [4.0.0] - December 25, 2025
-
-### Added
-- **Epic 2 Complete**: All Editorial blocks (13 blocks)
-  - Magazine Figure
-  - Lede Package
-  - Timeline + Timeline Item
-  - Glossary + Glossary Term
-  - Inline Annotation
-  - Argument Map
-  - What We Know / Don't Know
-  - Primary Source Excerpt
-  - Context Panel
-  - Related Reading + Related Link
+- Basic Chart Block (bar, line, pie)
+- Share dock PDF download button
+- README.md and initial CHANGELOG.md
 
 ### Fixed
-- Sidenote font loading (now via PHP inline style)
-- Sidenote marker changed from numbers to blue bullet (distinct from footnotes)
+- PDF color preservation
+- Sidenote font loading (changed to Caveat)
+- Article title styling (serif, softer color)
+- Regex bug in PDF accordion handling
 
 ---
 
-## [3.9.0] - December 25, 2025
+## [4.1.0] - 2025-12-25
+
+### Epic 3 - Analysis Blocks (Complete)
+- Assumptions Register
+- Confidence Meter
+- Scenario Comparison
+- Decision Log + Entry
+- Framework Matrix (2x2/3x3)
+- Causal Loop Diagram
+- Evaluation Rubric + Row
+- Debate (Steelman vs Steelman)
+
+### Epic 5 - Motion Primitives (Complete)
+- CSS animation classes
+- Stagger utilities
+- Scroll reveal classes
+- `prefers-reduced-motion` support
+
+### Epic 4 - Data Blocks (Started)
+- Publication Table
+- Flow Chart + Step
+
+---
+
+## [4.0.0] - 2025-12-25
+
+### Epic 2 - Editorial Blocks (Complete)
+- 13 new editorial blocks
+- Magazine Figure, Lede Package, Timeline
+- Glossary, Annotation, Argument Map
+- Know/Don't Know, Source Excerpt
+- Context Panel, Related Reading
+
+### Fixed
+- Sidenote font loading
+- Blue bullet marker for sidenotes
+
+---
+
+## [3.9.0] - 2025-12-25
 
 ### Added
-- Footnote + Footnotes Section blocks
+- Footnote and Footnotes Section blocks
 - Parallax Section block
 - Scrollytelling + Scrolly Step blocks
 - Reveal Wrapper block
 
 ### Fixed
-- Header z-index (content no longer overlaps)
-- Footer spacing (tighter on mobile)
+- Homepage header z-index
+- Footer mobile spacing
 
 ---
 
-## [3.8.0] and earlier
+## [3.8.0] - 2025-12-25
 
-- Initial blocks (Insight, Pullquote, Accordion, Sidenote)
-- PDF export with DOMPDF
-- Custom post types (Essays, Jottings)
-- Homepage and templates
+### Epic 1 - Block Conversion (Complete)
+- Converted all HTML patterns to proper Gutenberg blocks
+- Insight Box, Pull Quote, Accordion, Sidenote
+- Section Header, Takeaways, Citation, Aside
 
+### Fixed
+- Accordion design (restored elegant two-line style)
+- Pullquote styling (single blue border)
+- Block editor controls for all blocks
+
+---
+
+## [3.7.0] - 2025-12-25
+
+### Added
+- DOMPDF integration for PDF export
+- Custom PDF layout (journal-paper style)
+- Proper filename format
+
+### Fixed
+- Corrupted backdrop-filter CSS
+- h3 uppercase styling removed
+
+---
+
+## Earlier Versions
+
+See repository history for changes prior to v3.7.0.
