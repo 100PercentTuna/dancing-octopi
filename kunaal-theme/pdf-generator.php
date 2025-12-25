@@ -10,14 +10,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Load Composer autoloader if available
-$autoloader = KUNAAL_THEME_DIR . '/vendor/autoload.php';
-if (file_exists($autoloader)) {
-    require_once $autoloader;
-}
-
-use Dompdf\Dompdf;
-use Dompdf\Options;
+// Note: Dompdf is loaded inside the function only when needed
+// This prevents fatal errors if Composer dependencies aren't installed
 
 /**
  * Generate PDF for a post
@@ -27,7 +21,13 @@ function kunaal_generate_pdf() {
         return;
     }
     
-    $use_dompdf = class_exists('Dompdf\Dompdf');
+    // Load Dompdf if available
+    $autoloader = KUNAAL_THEME_DIR . '/vendor/autoload.php';
+    if (file_exists($autoloader)) {
+        require_once $autoloader;
+    }
+    
+    $use_dompdf = class_exists('Dompdf\\Dompdf');
     
     $post_id = absint($_GET['post_id']);
     $post = get_post($post_id);
@@ -74,14 +74,14 @@ function kunaal_generate_pdf() {
     $filename = "{$safe_title} - by {$author_name}.pdf";
     
     if ($use_dompdf) {
-        $options = new Options();
+        $options = new \Dompdf\Options();
         $options->set('isRemoteEnabled', true);
         $options->set('isHtml5ParserEnabled', true);
         $options->set('defaultFont', 'Helvetica');
         $options->set('dpi', 150);
         $options->set('defaultPaperSize', 'A4');
         
-        $dompdf = new Dompdf($options);
+        $dompdf = new \Dompdf\Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();

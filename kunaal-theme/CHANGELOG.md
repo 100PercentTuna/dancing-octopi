@@ -4,6 +4,22 @@ All notable changes to the Kunaal Theme.
 
 ---
 
+## [4.7.0] - 2025-12-25
+
+### 🔧 Critical Bug Fixes
+
+Fixed three fatal error bugs that were causing "There has been a critical error on this website" on WordPress:
+
+#### Fixed
+- **functions.php**: Fixed `get_current_screen()->post_type ?? ''` crash when `get_current_screen()` returns null (AJAX, REST API, cron contexts)
+- **pdf-generator.php**: Fixed top-level `use Dompdf\Dompdf;` statement causing fatal error when Composer dependencies aren't installed. Moved to fully qualified class names inside function.
+- **inc/blocks.php**: Fixed `unregister_block_type('core/pullquote')` fatal error when block isn't registered. Added safety check with `WP_Block_Type_Registry`.
+
+### Documentation
+- Updated ERROR-HISTORY.md with detailed bug analysis and resolutions
+
+---
+
 ## [4.3.0] - 2025-12-25
 
 ### 🎉 Major Release - All Epics Complete

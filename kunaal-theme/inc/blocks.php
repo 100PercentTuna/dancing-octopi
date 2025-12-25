@@ -51,7 +51,13 @@ add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
  */
 function kunaal_unregister_core_blocks() {
     // Unregister core pullquote - we have kunaal/pullquote
-    unregister_block_type('core/pullquote');
+    // Only unregister if the block type registry exists and block is registered
+    if (class_exists('WP_Block_Type_Registry')) {
+        $registry = WP_Block_Type_Registry::get_instance();
+        if ($registry->is_registered('core/pullquote')) {
+            unregister_block_type('core/pullquote');
+        }
+    }
 }
 add_action('init', 'kunaal_unregister_core_blocks', 100);
 

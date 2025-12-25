@@ -23,22 +23,67 @@ User manually creates zip via Windows Explorer (right-click → "Compress to ZIP
 
 ---
 
-## Issue #2: New Features Causing Conflicts
+## Issue #2: get_current_screen() Fatal Error
 
 **Date:** 2025-12-25  
-**Features attempted:**
-- Inline formats (blocks/inline-formats/)
-- About page template (page-about.php)
-- Contact page template (page-contact.php)
-- PDF generator improvements
+**Versions affected:** v4.3.0+  
+**File:** `functions.php` line 207
 
-### Status:
-These features have been rolled back until proper debugging can be done with PHP error logs. The base v4.3.0 theme is confirmed working.
+### Root Cause:
+```php
+$post_type = get_current_screen()->post_type ?? '';
+```
+This causes a fatal error when `get_current_screen()` returns `null` (which happens in many contexts like AJAX requests, REST API, cron, etc.). The null coalescing operator `??` only handles null values from the property, not null from the function call itself.
 
-### Next Steps:
-1. Get proper PHP error logging working on the server
-2. Add features one at a time and test
-3. Ensure each feature works before adding the next
+### Resolution (v4.7.0):
+```php
+$screen = get_current_screen();
+$post_type = ($screen && isset($screen->post_type)) ? $screen->post_type : '';
+```
+
+---
+
+## Issue #3: Dompdf use Statement Fatal Error
+
+**Date:** 2025-12-25  
+**Versions affected:** v4.3.0+  
+**File:** `pdf-generator.php` lines 19-20
+
+### Root Cause:
+```php
+use Dompdf\Dompdf;
+use Dompdf\Options;
+```
+These `use` statements at file level cause fatal errors if Composer's autoloader isn't loaded (i.e., if `/vendor/autoload.php` doesn't exist).
+
+### Resolution (v4.7.0):
+- Removed top-level `use` statements
+- Moved autoloader loading inside the function
+- Use fully qualified class names: `\Dompdf\Dompdf` and `\Dompdf\Options`
+
+---
+
+## Issue #4: unregister_block_type Fatal Error
+
+**Date:** 2025-12-25  
+**Versions affected:** v4.3.0+  
+**File:** `inc/blocks.php` line 54
+
+### Root Cause:
+```php
+unregister_block_type('core/pullquote');
+```
+Calling this on a block that isn't registered causes a fatal error.
+
+### Resolution (v4.7.0):
+```php
+if (class_exists('WP_Block_Type_Registry')) {
+    $registry = WP_Block_Type_Registry::get_instance();
+    if ($registry->is_registered('core/pullquote')) {
+        unregister_block_type('core/pullquote');
+    }
+}
+```
 
 ---
 
@@ -55,6 +100,7 @@ These features have been rolled back until proper debugging can be done with PHP
 
 | Version | Status | Notes |
 |---------|--------|-------|
-| v4.3.0 | ✅ Working | Baseline stable version |
+| v4.3.0 | ⚠️ Had bugs | Hidden fatal error bugs in functions.php, pdf-generator.php, blocks.php |
 | v4.5.0 - v4.6.0 | ❌ Broken | Too many new features + zip issues |
-| v4.6.1 | ✅ Testing | Clean slate (v4.3.0 code, new version number) |
+| v4.6.1 | ❌ Broken | Had same bugs as v4.3.0 (just version number change) |
+| v4.7.0 | ✅ Testing | Fixed 3 fatal error bugs found via code review |
