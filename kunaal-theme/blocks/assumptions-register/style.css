@@ -1,0 +1,142 @@
+/**
+ * Assumptions Register Block Styles
+ */
+.wp-block-kunaal-assumptions-register {
+    margin: var(--space-8, 64px) 0;
+}
+
+.ar-title {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0 0 var(--space-3, 24px);
+}
+
+.ar-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.ar-table th {
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted, rgba(11,18,32,0.66));
+    text-align: left;
+    padding: var(--space-2, 16px);
+    border-bottom: 2px solid var(--hair, rgba(11,18,32,0.14));
+}
+
+.ar-table td {
+    padding: var(--space-2, 16px);
+    border-bottom: 1px solid var(--hair2, rgba(11,18,32,0.07));
+    vertical-align: top;
+}
+
+.ar-assumption {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink, #0b1220);
+}
+
+.ar-confidence {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.confidence-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.confidence-high .confidence-indicator {
+    background: #16a34a;
+}
+
+.confidence-medium .confidence-indicator {
+    background: #eab308;
+}
+
+.confidence-low .confidence-indicator {
+    background: #dc2626;
+}
+
+.status-badge {
+    display: inline-block;
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.status-badge.status-untested {
+    background: rgba(0,0,0,0.06);
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.status-badge.status-validated {
+    background: rgba(22, 163, 74, 0.12);
+    color: #16a34a;
+}
+
+.status-badge.status-invalidated {
+    background: rgba(220, 38, 38, 0.12);
+    color: #dc2626;
+}
+
+.status-badge.status-partial {
+    background: rgba(234, 179, 8, 0.12);
+    color: #ca8a04;
+}
+
+/* Highlight invalidated rows */
+.ar-row.status-invalidated {
+    background: rgba(220, 38, 38, 0.03);
+}
+
+.ar-row.status-validated {
+    background: rgba(22, 163, 74, 0.03);
+}
+
+/* Editor styles */
+.ar-header {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px 40px;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted, rgba(11,18,32,0.66));
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--hair, rgba(11,18,32,0.14));
+    margin-bottom: 8px;
+}
+
+.ar-row {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px 40px;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--hair2, rgba(11,18,32,0.07));
+}
+
+@media (max-width: 640px) {
+    .ar-table th:nth-child(3),
+    .ar-table td:nth-child(3) {
+        display: none;
+    }
+}
+

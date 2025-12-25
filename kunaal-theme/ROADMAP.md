@@ -1,210 +1,163 @@
 # Theme Development Roadmap
 
-**Last Updated**: Version 4.0.0 - December 25, 2025
+**Last Updated**: Version 4.1.0 - December 25, 2025
 
 ---
 
 ## ✅ COMPLETED
 
-### Epic 0 — QA Baseline
-- ✅ Full regression QA of existing features
-- ✅ Testing checklist created (`TESTING.md`)
+### Epic 0 — QA Baseline ✅
+- ✅ Full regression QA
+- ✅ Testing checklist (`TESTING.md`)
 
-### Epic 1 — Convert Patterns to Blocks
-- ✅ Insight Box → `kunaal/insight` block
-- ✅ Pull Quote → `kunaal/pullquote` block  
-- ✅ Accordion → `kunaal/accordion` block
-- ✅ Sidenote → `kunaal/sidenote` block (redesigned)
-- ✅ Section Header → `kunaal/section-header` block
-- ✅ Takeaways → `kunaal/takeaways` block (redesigned)
-- ✅ Citation → `kunaal/citation` block (redesigned)
-- ✅ Aside → `kunaal/aside` block (redesigned)
-- ✅ Pattern cleanup (unregistered deprecated patterns)
+### Epic 1 — Convert Patterns to Blocks ✅
+- ✅ All patterns converted to proper Gutenberg blocks
 
 ### Epic 2 — Editorial Blocks ✅ COMPLETE
-- ✅ Footnotes/Endnotes → `kunaal/footnote` + `kunaal/footnotes-section`
-- ✅ Sidenotes/Marginalia → `kunaal/sidenote` (blue bullet, margin position)
-- ✅ Magazine Figure System → `kunaal/magazine-figure`
-- ✅ Lede Package → `kunaal/lede-package`
-- ✅ Argument Map → `kunaal/argument-map`
-- ✅ Inline Annotation → `kunaal/annotation`
-- ✅ Timeline/Chronology → `kunaal/timeline` + `kunaal/timeline-item`
-- ✅ Glossary/Concepts → `kunaal/glossary` + `kunaal/glossary-term`
-- ✅ "What We Know / What We Don't" → `kunaal/know-dont-know`
-- ✅ Primary Source Excerpt → `kunaal/source-excerpt`
-- ✅ Context Panel → `kunaal/context-panel`
-- ✅ Related Reading → `kunaal/related-reading` + `kunaal/related-link`
+- ✅ 13 blocks: Magazine Figure, Lede Package, Timeline, Glossary, Annotation, Argument Map, Know/Don't Know, Source Excerpt, Context Panel, Related Reading, etc.
 
-### Epic 5 — Parallax + Scrollytelling (Partial)
-- ✅ Parallax Section → `kunaal/parallax-section`
-- ✅ Scrollytelling/Stepper → `kunaal/scrollytelling` + `kunaal/scrolly-step`
-- ✅ Reveal Animation Wrapper → `kunaal/reveal-wrapper`
+### Epic 3 — Analysis Blocks ✅ COMPLETE
+- ✅ Assumptions Register - Track assumptions with confidence levels
+- ✅ Confidence Meter - Visual confidence indicator
+- ✅ Scenario Comparison - Compare multiple scenarios
+- ✅ Decision Log + Entry - Track decisions with rationale
+- ✅ Framework Matrix - 2x2/3x3 strategic analysis
+- ✅ Causal Loop Diagram - Systems thinking visualization
+- ✅ Evaluation Rubric + Row - Criteria scoring table
+- ✅ Debate (Steelman) + Side - Dual-perspective arguments
 
-### Epic 7 — PDF Export
-- ✅ Reader-native PDF layout
-- ✅ Custom filename format
-- ✅ Header/footer requirements
-- ✅ PDF reliability
+### Epic 5 — Parallax + Scrollytelling ✅ COMPLETE
+- ✅ Parallax Section block
+- ✅ Scrollytelling + Scrolly Step blocks
+- ✅ Reveal Wrapper block
+- ✅ Theme-level motion primitives (CSS utilities)
 
-### Bug Fixes (v3.9.0 - v4.0.0)
-- ✅ Header z-index (content no longer overlaps)
-- ✅ Footer spacing (tighter on mobile)
-- ✅ Sidenote font loading (now via PHP inline style)
-- ✅ Sidenote marker (blue bullet instead of number)
+### Epic 7 — PDF Export ✅
+- ✅ DOMPDF integration
+- ✅ Custom layout and styling
 
 ---
 
-## 🚧 REMAINING WORK
+## 🚧 IN PROGRESS
 
-### Epic 3 — Analysis Blocks
-- [ ] **Assumptions Register** - List of assumptions with confidence levels
-- [ ] **Uncertainty/Confidence** - Visual confidence indicators
-- [ ] **Scenario/Sensitivity** - Multiple scenario comparison
-- [ ] **Decision Log** - Decision tracking with rationale
-- [ ] **Framework (2x2/3x3)** - Matrix visualization blocks
-- [ ] **Causal Loop/Systems Map** - Systems thinking diagrams
-- [ ] **Rubric** - Evaluation criteria table
-- [ ] **Debate (Steelman vs Steelman)** - Dual-perspective argument structure
+### Epic 4 — Data Visualization Blocks (Started)
+**Completed:**
+- ✅ Publication Table - Styled data table with source/caption
+- ✅ Flow Chart + Step - Process diagram with step types
 
-### Epic 4 — Data Visualization Blocks
-- [ ] **Unified Chart Block** - Single block with chart type selector
-  - Type selector (bar, line, pie, etc.)
-  - Data entry interface
-  - Theme palette integration
-  - Annotations support
-  - Sources/citations
-  - Responsive behavior
-- [ ] **Chart Types**:
-  - Stacked bars, Clustered bars
-  - Build-up/down waterfall, Variwide
-  - Bubble chart, Small multiples
-  - Slopegraph, Dumbbell, Heatmap
-  - Box/violin, Ridgeline
-  - Sankey/alluvial, Chord, Network graph
-  - Map visualizations
-- [ ] **Publication Table** - Styled data table
-- [ ] **Flow Chart + Chevrons** - Process diagrams
+**Remaining:**
+- [ ] Unified Chart Block - Chart type selector with data entry
+- [ ] Chart Types: Bar, line, pie, stacked, waterfall, bubble
+- [ ] Advanced: Heatmap, sankey, network graph
+- [ ] Map visualizations
 
-### Epic 5 — Parallax + Scrollytelling (Remaining)
-- [ ] Theme-level motion primitives - Reusable animation utilities
+---
 
-### Epic 6 — Sharing + Subscribe Polish
-- [ ] Share Dock - Enhanced share panel with PDF download icon
-- [ ] Subscribe Dock - Left-side subscription element
+## 🔮 REMAINING WORK
 
-### Epic 8 — Cross-Browser & Responsive Quality
-- [ ] Full QA across browser/device matrix
-- [ ] Fix any discovered issues
+### Epic 4 — Data Visualization (Remaining)
+- [ ] Chart block with multiple types
+- [ ] Data entry interface
+- [ ] Theme palette integration
+- [ ] Annotations and sources
+- [ ] Advanced chart types
+
+### Epic 6 — Sharing + Subscribe
+- [ ] Share Dock with PDF download
+- [ ] Subscribe Dock (left-side)
+
+### Epic 8 — Cross-Browser QA
+- [ ] Full browser/device matrix testing
 
 ### Epic 9 — Cleanup/Refactor
 - [ ] Remove duplication
-- [ ] Tighten architecture
-- [ ] Load assets only when used
-- [ ] Optimize performance
+- [ ] Asset optimization
 
-### Epic 10 — Documentation Discipline
-- [ ] Theme Guide - Comprehensive block documentation
-- [ ] README - Updated with all blocks
-- [ ] Changelog - Maintained for each version
+### Epic 10 — Documentation
+- [ ] Theme Guide
+- [ ] Block documentation
 
 ---
 
 ## 📊 PROGRESS METRICS
 
-**Blocks Completed**: 28
-- Editorial: 22 blocks ✅
+**Blocks Completed**: 42
+- Editorial: 22 blocks
+- Analysis: 11 blocks
 - Interactive: 3 blocks
-- Data: 0 blocks (not started)
-- Analysis: 0 blocks (not started)
+- Data: 4 blocks (started)
 
 **Epic Completion**:
 - Epic 0: ✅ 100%
 - Epic 1: ✅ 100%
-- Epic 2: ✅ 100% (Complete!)
-- Epic 3: ⚪ 0% (0/8 blocks)
-- Epic 4: ⚪ 0% (0/15+ blocks)
-- Epic 5: 🟡 75% (4/5 features)
-- Epic 6: ⚪ 0% (0/2 features)
+- Epic 2: ✅ 100%
+- Epic 3: ✅ 100% ⭐ NEW
+- Epic 4: 🟡 25% (4/15+ blocks)
+- Epic 5: ✅ 100% ⭐ NEW
+- Epic 6: ⚪ 0%
 - Epic 7: ✅ 100%
 - Epic 8: 🟡 50%
 - Epic 9: ⚪ 0%
 - Epic 10: 🟡 30%
 
-**Overall Progress**: ~55% of planned features
-
----
-
-## 📋 RECOMMENDED NEXT STEPS
-
-### Phase 1: Analysis Blocks (v4.1.0)
-**Priority**: Medium - For analytical essays
-
-1. **Framework (2x2 Matrix)** - Most common analysis tool
-2. **Assumptions Register** - Useful for critical thinking
-3. **Decision Log** - For process documentation
-4. **Debate (Steelman)** - For balanced arguments
-
-**Estimated Time**: 1-2 weeks
-
-### Phase 2: Data Visualization (v4.2.0+)
-**Priority**: High - Complex but powerful
-
-1. **Unified Chart Block** - Foundation for all charts
-2. **Publication Table** - Simpler than charts
-3. **Flow Chart + Chevrons** - Process diagrams
-
-**Estimated Time**: 2-3 weeks
-
-### Phase 3: Polish & Documentation (v4.3.0)
-**Priority**: High - Professional finish
-
-1. **Share/Subscribe Docks** - User experience
-2. **Cross-Browser QA** - Quality assurance
-3. **Theme Guide** - Documentation
-4. **Performance Optimization** - Cleanup/refactor
-
-**Estimated Time**: 1-2 weeks
+**Overall Progress**: ~70% of planned features
 
 ---
 
 ## 📝 CHANGELOG
 
-### v4.0.0 (December 25, 2025) - Major Release
-**Epic 2 Complete: All Editorial Blocks**
+### v4.1.0 (December 25, 2025) - Major Release
+**Epic 5 Complete + Epic 3 Complete + Epic 4 Started**
 
-**New Blocks (13)**:
-- Magazine Figure - Image + caption + credit
-- Lede Package - Hero opening with multiple layouts
-- Timeline + Timeline Item - Chronological events
-- Glossary + Glossary Term - Term definitions
-- Inline Annotation - Highlighted text with tooltip
-- Argument Map - Claims + evidence + counter-arguments
-- What We Know / Don't Know - Two-column certainty
-- Primary Source Excerpt - Document styling
-- Context Panel - Contextual information box
-- Related Reading + Related Link - Further reading section
+**Motion Primitives (Epic 5)**:
+- CSS animation classes: `motion-fade-*`, `motion-scale-*`
+- Stagger utilities: `stagger-1` through `stagger-8`
+- Scroll reveal classes: `scroll-reveal`, `scroll-reveal-*`
+- Respects `prefers-reduced-motion`
 
-**Fixes**:
-- Sidenote font now loads via PHP inline style (was broken)
-- Sidenote marker changed from numbers to blue bullet (•)
-- Distinct from footnotes for clarity
+**Analysis Blocks (Epic 3) - 11 blocks**:
+- Assumptions Register - Table with confidence/status tracking
+- Confidence Meter - Visual progress bar with colors
+- Scenario Comparison - Multi-column scenario cards
+- Decision Log + Entry - Timeline of decisions
+- Framework Matrix - 2x2/3x3 grid analysis
+- Causal Loop Diagram - Systems thinking with +/- effects
+- Evaluation Rubric + Row - Scoring criteria table
+- Debate + Side - Steelman vs steelman format
 
-**Total Blocks**: 28
+**Data Blocks (Epic 4) - 4 blocks**:
+- Publication Table - Professional data table
+- Flow Chart + Step - Process diagram
+
+**Total Blocks**: 42
+
+### v4.0.0 (December 25, 2025)
+- Epic 2 complete (13 editorial blocks)
+- Sidenote fix (font loading, blue bullet marker)
 
 ### v3.9.0 (December 25, 2025)
-- Footnote + Footnotes Section blocks
-- Parallax Section block
-- Scrollytelling + Scrolly Step blocks
-- Reveal Wrapper block
-- Redesigned: Sidenote, Takeaways, Citation, Aside
-- Header z-index fix
-- Footer spacing fix on mobile
+- Footnotes, Parallax, Scrollytelling, Reveal blocks
+- Homepage bug fixes
 
-### v3.8.0 and earlier
-- Initial blocks (Insight, Pullquote, Accordion, Sidenote)
-- PDF export with DOMPDF
-- Custom post types (Essays, Jottings)
-- Homepage and templates
+---
+
+## 📋 RECOMMENDED NEXT STEPS
+
+### Phase 1: Chart Block (v4.2.0)
+- Unified chart block with type selector
+- Bar, line, pie chart types
+- Data entry interface
+- Theme palette integration
+
+### Phase 2: Advanced Data Viz (v4.3.0)
+- Stacked/clustered bars
+- Waterfall chart
+- Heatmap
+
+### Phase 3: Polish (v4.4.0)
+- Share/Subscribe docks
+- Cross-browser QA
+- Documentation
 
 ---
 

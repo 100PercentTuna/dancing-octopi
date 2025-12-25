@@ -103,6 +103,22 @@ function kunaal_register_block_scripts() {
         'related-reading'   => 'kunaal-related-reading-editor',
         'related-link'      => 'kunaal-related-link-editor',
         'lede-package'      => 'kunaal-lede-package-editor',
+        // Epic 3 - Analysis blocks
+        'assumptions-register' => 'kunaal-assumptions-register-editor',
+        'confidence-meter'  => 'kunaal-confidence-meter-editor',
+        'scenario-compare'  => 'kunaal-scenario-compare-editor',
+        'decision-log'      => 'kunaal-decision-log-editor',
+        'decision-entry'    => 'kunaal-decision-entry-editor',
+        'framework-matrix'  => 'kunaal-framework-matrix-editor',
+        'causal-loop'       => 'kunaal-causal-loop-editor',
+        'rubric'            => 'kunaal-rubric-editor',
+        'rubric-row'        => 'kunaal-rubric-row-editor',
+        'debate'            => 'kunaal-debate-editor',
+        'debate-side'       => 'kunaal-debate-side-editor',
+        // Epic 4 - Data blocks
+        'pub-table'         => 'kunaal-pub-table-editor',
+        'flowchart'         => 'kunaal-flowchart-editor',
+        'flowchart-step'    => 'kunaal-flowchart-step-editor',
     );
     
     foreach ($blocks as $folder => $handle) {
@@ -181,6 +197,22 @@ function kunaal_register_blocks() {
         'related-reading',
         'related-link',
         'lede-package',
+        // Epic 3 - Analysis blocks
+        'assumptions-register',
+        'confidence-meter',
+        'scenario-compare',
+        'decision-log',
+        'decision-entry',
+        'framework-matrix',
+        'causal-loop',
+        'rubric',
+        'rubric-row',
+        'debate',
+        'debate-side',
+        // Epic 4 - Data blocks
+        'pub-table',
+        'flowchart',
+        'flowchart-step',
     );
     
     foreach ($block_folders as $block) {

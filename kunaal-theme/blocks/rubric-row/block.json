@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/rubric-row",
+    "version": "1.0.0",
+    "title": "Rubric Row",
+    "category": "kunaal-analysis",
+    "icon": "minus",
+    "description": "A single rubric criterion row.",
+    "parent": ["kunaal/rubric"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "criteria": {
+            "type": "string",
+            "default": ""
+        },
+        "levels": {
+            "type": "array",
+            "default": ["", "", "", ""]
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-rubric-row-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/flowchart",
+    "version": "1.0.0",
+    "title": "Flow Chart",
+    "category": "kunaal-data",
+    "icon": "randomize",
+    "description": "Process flow diagram with connected steps.",
+    "keywords": ["flowchart", "process", "steps", "diagram", "workflow"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "orientation": {
+            "type": "string",
+            "default": "horizontal"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-flowchart-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

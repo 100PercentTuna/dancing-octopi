@@ -1,0 +1,125 @@
+/**
+ * Scenario Comparison Block Styles
+ */
+.wp-block-kunaal-scenario-compare {
+    margin: var(--space-8, 64px) 0;
+}
+
+.sc-title {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0 0 var(--space-4, 32px);
+}
+
+.sc-grid {
+    display: grid;
+    gap: var(--space-3, 24px);
+}
+
+@media (max-width: 768px) {
+    .sc-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+.sc-card {
+    border: 1px solid var(--hair, rgba(11,18,32,0.14));
+    padding: var(--space-4, 32px);
+    position: relative;
+}
+
+.sc-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.sc-card.sc-high::before {
+    background: #16a34a;
+}
+
+.sc-card.sc-medium::before {
+    background: #eab308;
+}
+
+.sc-card.sc-low::before {
+    background: #dc2626;
+}
+
+.sc-card-header {
+    margin-bottom: var(--space-3, 24px);
+}
+
+.sc-name {
+    display: block;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink, #0b1220);
+    margin-bottom: 8px;
+}
+
+.sc-probability-badge {
+    display: inline-block;
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.sc-high .sc-probability-badge {
+    background: rgba(22, 163, 74, 0.12);
+    color: #16a34a;
+}
+
+.sc-medium .sc-probability-badge {
+    background: rgba(234, 179, 8, 0.12);
+    color: #ca8a04;
+}
+
+.sc-low .sc-probability-badge {
+    background: rgba(220, 38, 38, 0.12);
+    color: #dc2626;
+}
+
+.sc-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0 0 var(--space-3, 24px);
+}
+
+.sc-outcome-section {
+    border-top: 1px solid var(--hair, rgba(11,18,32,0.14));
+    padding-top: var(--space-2, 16px);
+    margin-top: auto;
+}
+
+.sc-outcome-label {
+    display: block;
+    font-family: var(--mono, monospace);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted2, rgba(11,18,32,0.46));
+    margin-bottom: 4px;
+}
+
+.sc-outcome {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink, #0b1220);
+    margin: 0;
+}
+

@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/confidence-meter",
+    "version": "1.0.0",
+    "title": "Confidence Meter",
+    "category": "kunaal-analysis",
+    "icon": "dashboard",
+    "description": "Visual indicator showing confidence or certainty level.",
+    "keywords": ["confidence", "meter", "uncertainty", "probability", "gauge"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "level": {
+            "type": "number",
+            "default": 50
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        },
+        "showPercentage": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-confidence-meter-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

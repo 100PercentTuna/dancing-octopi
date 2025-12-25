@@ -1,0 +1,101 @@
+/**
+ * Publication Table Block Styles
+ */
+.wp-block-kunaal-pub-table {
+    margin: var(--space-8, 64px) 0;
+}
+
+.pt-title {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink, #0b1220);
+    margin: 0 0 var(--space-3, 24px);
+}
+
+.pt-wrapper {
+    overflow-x: auto;
+}
+
+.pt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.pt-table th {
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: var(--space-2, 16px);
+    background: var(--ink, #0b1220);
+    color: #fff;
+    border: none;
+}
+
+.pt-table td {
+    padding: var(--space-2, 16px);
+    border-bottom: 1px solid var(--hair, rgba(11,18,32,0.14));
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+.pt-table tbody tr:hover {
+    background: rgba(0,0,0,0.02);
+}
+
+/* Highlight first column */
+.highlight-first .pt-table td:first-child {
+    font-weight: 500;
+    color: var(--ink, #0b1220);
+}
+
+/* Zebra striping */
+.pt-table tbody tr:nth-child(even) {
+    background: rgba(0,0,0,0.015);
+}
+
+.pt-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3, 24px);
+    margin-top: var(--space-2, 16px);
+    padding-top: var(--space-2, 16px);
+    border-top: 1px solid var(--hair2, rgba(11,18,32,0.07));
+    flex-wrap: wrap;
+}
+
+.pt-caption-text {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.pt-source {
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    color: var(--muted2, rgba(11,18,32,0.46));
+}
+
+/* Editor */
+.pt-actions {
+    width: 40px;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .pt-table {
+        font-size: 12px;
+    }
+    
+    .pt-table th,
+    .pt-table td {
+        padding: 12px 8px;
+    }
+}
+

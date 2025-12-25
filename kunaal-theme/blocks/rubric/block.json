@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/rubric",
+    "version": "1.0.0",
+    "title": "Evaluation Rubric",
+    "category": "kunaal-analysis",
+    "icon": "editor-table",
+    "description": "Evaluation criteria table with scoring.",
+    "keywords": ["rubric", "evaluation", "criteria", "scoring", "assessment"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Evaluation Criteria"
+        },
+        "columns": {
+            "type": "array",
+            "default": ["Poor", "Fair", "Good", "Excellent"]
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-rubric-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

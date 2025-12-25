@@ -1,0 +1,47 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/pub-table",
+    "version": "1.0.0",
+    "title": "Publication Table",
+    "category": "kunaal-data",
+    "icon": "editor-table",
+    "description": "Styled data table for publications and reports.",
+    "keywords": ["table", "data", "publication", "report", "grid"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "source": {
+            "type": "string",
+            "default": ""
+        },
+        "caption": {
+            "type": "string",
+            "default": ""
+        },
+        "headers": {
+            "type": "array",
+            "default": ["Column 1", "Column 2", "Column 3"]
+        },
+        "rows": {
+            "type": "array",
+            "default": []
+        },
+        "highlightFirst": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-pub-table-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/assumptions-register",
+    "version": "1.0.0",
+    "title": "Assumptions Register",
+    "category": "kunaal-analysis",
+    "icon": "list-view",
+    "description": "Track assumptions with confidence levels and validation status.",
+    "keywords": ["assumptions", "register", "confidence", "analysis", "validation"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Key Assumptions"
+        },
+        "assumptions": {
+            "type": "array",
+            "default": []
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-assumptions-register-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

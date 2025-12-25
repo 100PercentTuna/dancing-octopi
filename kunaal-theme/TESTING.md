@@ -1,8 +1,8 @@
-# Testing Checklist - Version 4.0.0
+# Testing Checklist - Version 4.1.0
 
 **Release Date**: December 25, 2025  
-**Version**: 4.0.0 (Major Release)  
-**Testing Scope**: Epic 2 Complete (All Editorial Blocks), Sidenote Fix
+**Version**: 4.1.0 (Major Release)  
+**Testing Scope**: Epic 5 Complete, Epic 3 Complete (Analysis), Epic 4 Started (Data)
 
 ---
 
@@ -10,418 +10,228 @@
 
 - [ ] Clear browser cache
 - [ ] Test in incognito/private mode
-- [ ] Test on multiple browsers (Chrome, Safari, Firefox, Edge)
-- [ ] Test on multiple devices (Desktop, Tablet, Mobile)
-- [ ] Check WordPress admin for any errors/warnings
-- [ ] Ensure theme is updated to v4.0.0
+- [ ] Ensure theme is updated to v4.1.0
 
 ---
 
-## 1. SIDENOTE FIX (Critical)
+## 1. EPIC 5 - MOTION PRIMITIVES (New CSS Utilities)
 
-### 1.1 Font Loading
-- [ ] Garfield Signature font loads correctly
-- [ ] Font appears on desktop view
-- [ ] Font appears after page refresh
-- [ ] No console errors about font loading
+### 1.1 Animation Classes
+- [ ] `.motion-fade-in` - Element fades in
+- [ ] `.motion-fade-up` - Element fades up from below
+- [ ] `.motion-fade-down` - Element fades down from above
+- [ ] `.motion-fade-left` - Element fades in from right
+- [ ] `.motion-fade-right` - Element fades in from left
+- [ ] `.motion-scale-in` - Element scales in
+- [ ] `.motion-scale-up` - Element scales up with translate
 
-### 1.2 Marker Change (Number → Blue Bullet)
-- [ ] Sidenote marker is now a blue bullet (•) NOT a number
-- [ ] Bullet is visually distinct from footnote numbers
-- [ ] Bullet color is theme blue (#1E5AFF)
-- [ ] Hover effect works (slight scale/color change)
+### 1.2 Stagger Classes
+- [ ] `.stagger-1` through `.stagger-8` work with delays
 
-### 1.3 Position & Behavior
-- [ ] Sidenote appears in right margin on desktop
-- [ ] Sidenote expands inline on mobile/tablet
-- [ ] Click/tap to show sidenote works on mobile
-- [ ] Multiple sidenotes on same page work correctly
+### 1.3 Scroll Reveal Classes
+- [ ] `.scroll-reveal` - Element reveals on scroll
+- [ ] `.scroll-reveal-left` - Element reveals from left
+- [ ] `.scroll-reveal-right` - Element reveals from right
+- [ ] `.scroll-reveal-scale` - Element scales in on scroll
+- [ ] JavaScript adds `.is-visible` on scroll
 
----
-
-## 2. NEW EPIC 2 BLOCKS - Magazine Figure
-
-### 2.1 Magazine Figure Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Can select/upload image
-- [ ] **Editor**: Can change image
-- [ ] **Editor**: Caption field is editable (RichText)
-- [ ] **Editor**: Photo credit field works
-- [ ] **Editor**: Size selector works (default, wide, full)
-- [ ] **Frontend**: Image renders correctly
-- [ ] **Frontend**: Caption appears below image
-- [ ] **Frontend**: Credit appears right-aligned
-- [ ] **Frontend**: Wide/full alignments work
-- [ ] **Visual**: Border-top separator on caption
-- [ ] **Visual**: Italic caption, mono credit styling
+### 1.4 Reduced Motion
+- [ ] All animations disabled when `prefers-reduced-motion` is set
 
 ---
 
-## 3. NEW EPIC 2 BLOCKS - Lede Package
+## 2. EPIC 3 - ANALYSIS BLOCKS
 
-### 3.1 Lede Package Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Can select background image
-- [ ] **Editor**: Headline field is editable
-- [ ] **Editor**: Dek/subheadline field is editable
-- [ ] **Editor**: Layout selector works (overlay, below, split)
-- [ ] **Editor**: Photo credit field works
-- [ ] **Frontend**: Overlay layout - text over image with gradient
-- [ ] **Frontend**: Below layout - image above, centered text below
-- [ ] **Frontend**: Split layout - image left, text right
-- [ ] **Frontend**: Credit appears in correct position per layout
-- [ ] **Visual**: Responsive behavior on mobile
-- [ ] **Visual**: Typography scales correctly (clamp)
+### 2.1 Assumptions Register
+- [ ] **Editor**: Can add assumptions with text, confidence, status
+- [ ] **Editor**: Can remove assumptions
+- [ ] **Frontend**: Table renders correctly
+- [ ] **Frontend**: Confidence indicators (green/yellow/red dots)
+- [ ] **Frontend**: Status badges (Untested/Validated/Invalidated/Partial)
+- [ ] **Frontend**: Row highlighting for validated/invalidated
+- [ ] **Visual**: Clean table styling
 
----
+### 2.2 Confidence Meter
+- [ ] **Editor**: Label field is editable
+- [ ] **Editor**: Confidence slider (0-100) works
+- [ ] **Editor**: Description field works
+- [ ] **Editor**: Toggle for showing percentage
+- [ ] **Frontend**: Progress bar renders
+- [ ] **Frontend**: Color changes based on level (green/yellow/red)
+- [ ] **Frontend**: Percentage displays if enabled
+- [ ] **Visual**: Smooth bar animation
 
-## 4. NEW EPIC 2 BLOCKS - Timeline
-
-### 4.1 Timeline Block (Parent)
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Title field is optional and works
-- [ ] **Editor**: Orientation selector (vertical/horizontal) works
-- [ ] **Editor**: Can add timeline-item child blocks
-- [ ] **Frontend**: Title renders if set
-- [ ] **Frontend**: Timeline line appears (vertical or horizontal)
-- [ ] **Visual**: Proper spacing and alignment
-
-### 4.2 Timeline Item Block (Child)
-- [ ] **Editor**: Can only add inside timeline block
-- [ ] **Editor**: Date field is editable
-- [ ] **Editor**: Title field is editable
-- [ ] **Editor**: Description field is editable
-- [ ] **Frontend**: Marker (blue dot) appears on timeline
-- [ ] **Frontend**: Date appears as accent label
-- [ ] **Frontend**: Title and description render correctly
-- [ ] **Visual**: Hover state on markers
-- [ ] **Visual**: Mobile stacking works
-
----
-
-## 5. NEW EPIC 2 BLOCKS - Glossary
-
-### 5.1 Glossary Block (Parent)
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Title field works (default: "Key Terms")
-- [ ] **Editor**: Can add glossary-term child blocks
-- [ ] **Frontend**: Title renders correctly
-- [ ] **Frontend**: Warm background with blue left border
-- [ ] **Visual**: Proper styling and spacing
-
-### 5.2 Glossary Term Block (Child)
-- [ ] **Editor**: Can only add inside glossary block
-- [ ] **Editor**: Term field is editable
-- [ ] **Editor**: Definition field is editable
-- [ ] **Frontend**: Term appears as heading
-- [ ] **Frontend**: Definition appears below
-- [ ] **Frontend**: Separator between terms
-- [ ] **Visual**: Serif term, muted definition
-
----
-
-## 6. NEW EPIC 2 BLOCKS - Inline Annotation
-
-### 6.1 Annotation Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Highlighted text field is editable
-- [ ] **Editor**: Annotation note field works
-- [ ] **Editor**: Highlight color selector works (yellow, blue, green, pink)
-- [ ] **Frontend**: Text appears highlighted with correct color
-- [ ] **Frontend**: Tooltip appears on hover
-- [ ] **Frontend**: Tooltip appears on focus (keyboard)
-- [ ] **Frontend**: Mobile tap to show/hide works
-- [ ] **Visual**: Smooth tooltip animation
-- [ ] **Visual**: Arrow pointing to highlighted text
-- [ ] **Accessibility**: Proper aria attributes
-
----
-
-## 7. NEW EPIC 2 BLOCKS - Argument Map
-
-### 7.1 Argument Map Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Claim field is editable (RichText)
-- [ ] **Editor**: Can add supporting points
-- [ ] **Editor**: Can add counter-arguments
-- [ ] **Editor**: Can remove points/arguments
-- [ ] **Frontend**: Claim appears at top with dark background
-- [ ] **Frontend**: Supporting column (green tint) renders
-- [ ] **Frontend**: Opposing column (red tint) renders
-- [ ] **Frontend**: Two-column layout on desktop
+### 2.3 Scenario Comparison
+- [ ] **Editor**: Can add multiple scenarios
+- [ ] **Editor**: Scenario name, probability, description, outcome fields
+- [ ] **Editor**: Probability selector (High/Medium/Low)
+- [ ] **Frontend**: Grid layout for scenarios
+- [ ] **Frontend**: Color-coded top borders
+- [ ] **Frontend**: Probability badges
 - [ ] **Frontend**: Stacks on mobile
-- [ ] **Visual**: Green/red markers for each column
-- [ ] **Visual**: Proper typography and spacing
+- [ ] **Visual**: Clean card styling
 
----
+### 2.4 Decision Log + Entry
+- [ ] **Editor**: Title editable
+- [ ] **Editor**: Can add decision-entry child blocks
+- [ ] **Editor**: Decision, date, rationale, status, outcome fields
+- [ ] **Frontend**: Timeline-like layout with markers
+- [ ] **Frontend**: Status indicator (Active/Superseded/Reversed)
+- [ ] **Frontend**: Strikethrough for superseded/reversed
+- [ ] **Frontend**: Outcome section renders
+- [ ] **Visual**: Color-coded status badges
 
-## 8. NEW EPIC 2 BLOCKS - What We Know / Don't Know
+### 2.5 Framework Matrix (2x2/3x3)
+- [ ] **Editor**: Can select 2x2 or 3x3 size
+- [ ] **Editor**: X and Y axis labels editable
+- [ ] **Editor**: Each cell has label and content
+- [ ] **Frontend**: Grid renders correctly
+- [ ] **Frontend**: Axis labels positioned correctly
+- [ ] **Frontend**: Color gradient across cells
+- [ ] **Visual**: Clean matrix styling
+- [ ] **Responsive**: Works on mobile
 
-### 8.1 Know/Don't Know Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Can add "What We Know" items
-- [ ] **Editor**: Can add "What We Don't Know" items
-- [ ] **Editor**: Can remove items
-- [ ] **Frontend**: Two columns with distinct styling
-- [ ] **Frontend**: Green "Know" column with checkmarks
-- [ ] **Frontend**: Orange "Don't Know" column with question marks
+### 2.6 Causal Loop Diagram
+- [ ] **Editor**: Can add variable nodes
+- [ ] **Editor**: Effect selector (positive/negative)
+- [ ] **Editor**: Description field
+- [ ] **Frontend**: Nodes render with arrows
+- [ ] **Frontend**: Loop type indicator (R/B)
+- [ ] **Frontend**: Color-coded effects (+/−)
+- [ ] **Frontend**: Loop-back visualization
+- [ ] **Visual**: Clean systems diagram
+
+### 2.7 Evaluation Rubric + Row
+- [ ] **Editor**: Title and column headers editable
+- [ ] **Editor**: Can add rubric-row child blocks
+- [ ] **Editor**: Each row has criteria and levels
+- [ ] **Frontend**: Table renders correctly
+- [ ] **Frontend**: Column header colors (red→green)
+- [ ] **Frontend**: Zebra striping
+- [ ] **Visual**: Publication-quality table
+- [ ] **Responsive**: Scrolls on mobile
+
+### 2.8 Debate (Steelman)
+- [ ] **Editor**: Question field editable
+- [ ] **Editor**: Two debate-side blocks (locked)
+- [ ] **Editor**: Each side has label, argument, points
+- [ ] **Frontend**: Two-column layout
+- [ ] **Frontend**: Color-coded sides (green for, red against)
+- [ ] **Frontend**: Points list with arrows
 - [ ] **Frontend**: Stacks on mobile
-- [ ] **Visual**: Border colors match column themes
-- [ ] **Visual**: Icons in list items
+- [ ] **Visual**: Clear debate presentation
 
 ---
 
-## 9. NEW EPIC 2 BLOCKS - Primary Source Excerpt
+## 3. EPIC 4 - DATA BLOCKS
 
-### 9.1 Source Excerpt Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Content field is editable (RichText)
-- [ ] **Editor**: Source type selector works (document, letter, transcript, report, legal)
-- [ ] **Editor**: Source name field works
-- [ ] **Editor**: Date field works
-- [ ] **Editor**: Source URL field works
-- [ ] **Frontend**: Type label appears at top
-- [ ] **Frontend**: Content renders with document styling
-- [ ] **Frontend**: Attribution footer with source and date
-- [ ] **Frontend**: Source links correctly if URL provided
-- [ ] **Visual**: Parchment-like background (yellow tint)
-- [ ] **Visual**: Decorative corner borders
-- [ ] **Visual**: Serif typography
+### 3.1 Publication Table
+- [ ] **Editor**: Title, source, caption fields
+- [ ] **Editor**: Can add columns and rows
+- [ ] **Editor**: Toggle for first column highlight
+- [ ] **Frontend**: Table with dark header
+- [ ] **Frontend**: Zebra striping
+- [ ] **Frontend**: Source and caption footer
+- [ ] **Frontend**: First column highlight if enabled
+- [ ] **Visual**: Professional table styling
+- [ ] **Responsive**: Scrolls on mobile
 
----
-
-## 10. NEW EPIC 2 BLOCKS - Context Panel
-
-### 10.1 Context Panel Block
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Label selector works (Context, Background, Why It Matters, etc.)
-- [ ] **Editor**: Custom label appears when "Custom" selected
-- [ ] **Editor**: InnerBlocks allow adding content
-- [ ] **Frontend**: Label appears at top (blue, uppercase)
-- [ ] **Frontend**: Content renders correctly
-- [ ] **Frontend**: Blue left border
-- [ ] **Visual**: Gradient background (subtle blue tint)
-- [ ] **Visual**: Proper spacing for nested paragraphs/lists
+### 3.2 Flow Chart + Step
+- [ ] **Editor**: Title editable
+- [ ] **Editor**: Orientation selector (horizontal/vertical)
+- [ ] **Editor**: Can add flowchart-step child blocks
+- [ ] **Editor**: Step type selector (process/decision/terminal/io)
+- [ ] **Frontend**: Steps connected with arrows
+- [ ] **Frontend**: Different shapes for step types
+- [ ] **Frontend**: Terminal steps have rounded/dark styling
+- [ ] **Frontend**: Arrow hidden on last step
+- [ ] **Visual**: Clean process diagram
+- [ ] **Responsive**: Stacks vertically on mobile
 
 ---
 
-## 11. NEW EPIC 2 BLOCKS - Related Reading
+## 4. EXISTING BLOCKS VERIFICATION
 
-### 11.1 Related Reading Block (Parent)
-- [ ] **Editor**: Can add block from inserter
-- [ ] **Editor**: Title field works (default: "Further Reading")
-- [ ] **Editor**: Can add related-link child blocks
-- [ ] **Frontend**: Title renders as section header
-- [ ] **Frontend**: Warm background with top/bottom borders
-- [ ] **Visual**: Proper spacing between items
-
-### 11.2 Related Link Block (Child)
-- [ ] **Editor**: Can only add inside related-reading block
-- [ ] **Editor**: URL field works
-- [ ] **Editor**: Title field is editable
-- [ ] **Editor**: Source field is editable
-- [ ] **Editor**: Description field is editable (optional)
-- [ ] **Frontend**: Arrow icon appears
-- [ ] **Frontend**: Title links correctly (if URL provided)
-- [ ] **Frontend**: Source and description render
-- [ ] **Frontend**: Hover state with arrow animation
-- [ ] **Visual**: Mono source styling
+- [ ] Sidenote: Blue bullet marker (not numbers)
+- [ ] Sidenote: Garfield Signature font loads
+- [ ] All Epic 2 blocks still work
+- [ ] All previous blocks render correctly
 
 ---
 
-## 12. EXISTING BLOCKS VERIFICATION
+## 5. BLOCK CATEGORIES
 
-### 12.1 Previous v3.9.0 Blocks Still Work
-- [ ] Insight block renders correctly
-- [ ] Pullquote block renders correctly
-- [ ] Accordion block opens/closes with animation
-- [ ] Footnote block links work bidirectionally
-- [ ] Footnotes Section collects all footnotes
-- [ ] Parallax Section has parallax effect
-- [ ] Scrollytelling sticky panel works
-- [ ] Reveal Wrapper animations trigger on scroll
-- [ ] Takeaways block shows numbered items
-- [ ] Citation block renders centered
-- [ ] Aside block shows label and outcome
-- [ ] Section Header block renders correctly
-
----
-
-## 13. RESPONSIVE DESIGN
-
-### Desktop (1280px+)
-- [ ] All blocks render correctly
-- [ ] Sidenotes appear in margin
-- [ ] Two-column blocks display columns
-- [ ] Full-width alignments work
-
-### Tablet (768px - 1279px)
-- [ ] Blocks adapt to narrower width
-- [ ] Sidenotes become expandable inline
-- [ ] Two-column blocks may stack or shrink
-
-### Mobile (< 768px)
-- [ ] All blocks stack vertically
-- [ ] Text is readable
-- [ ] Touch interactions work
-- [ ] No horizontal scrolling
-- [ ] Timeline stacks correctly
-- [ ] Argument Map stacks correctly
-
----
-
-## 14. ACCESSIBILITY
-
-- [ ] **Keyboard**: All interactive elements are focusable
-- [ ] **Keyboard**: Tab order is logical
-- [ ] **Screen Reader**: Proper heading hierarchy
-- [ ] **Screen Reader**: Annotation tooltips have aria attributes
-- [ ] **Motion**: prefers-reduced-motion honored for animations
-- [ ] **Contrast**: Text is readable on all backgrounds
-- [ ] **Focus**: Visible focus indicators
-
----
-
-## 15. PERFORMANCE
-
-- [ ] **No console errors**: Check browser console
-- [ ] **No PHP errors**: Check WordPress debug log
-- [ ] **Fast load**: Page loads within 3 seconds
-- [ ] **Font loading**: Garfield Signature loads via PHP inline style
-- [ ] **Asset loading**: Block styles only load when block is used
-
----
-
-## 16. CROSS-BROWSER
-
-### Chrome (latest)
-- [ ] All blocks render correctly
-- [ ] Animations work
-- [ ] Fonts load
-
-### Safari (latest)
-- [ ] All blocks render correctly
-- [ ] Animations work (webkit prefixes)
-- [ ] Fonts load
-
-### Firefox (latest)
-- [ ] All blocks render correctly
-- [ ] Animations work
-- [ ] Fonts load
-
-### Edge (latest)
-- [ ] All blocks render correctly
-- [ ] Animations work
-- [ ] Fonts load
-
----
-
-## 17. PDF EXPORT
-
-- [ ] New blocks render in PDF correctly
-- [ ] Argument Map columns visible
-- [ ] Timeline renders (vertical only recommended)
-- [ ] Glossary terms display
-- [ ] Source Excerpt styling preserved
-- [ ] Sidenotes simplified for print
-
----
-
-## 18. BLOCK CATEGORIES
-
-- [ ] All new blocks appear under "Kunaal — Editorial"
+- [ ] "Kunaal — Analysis" category exists with all analysis blocks
+- [ ] "Kunaal — Data" category exists with data blocks
 - [ ] Block icons are appropriate
-- [ ] Block descriptions are helpful
 - [ ] Search finds blocks by keywords
 
 ---
 
-## 19. EDGE CASES
+## 6. RESPONSIVE DESIGN
 
-- [ ] **Empty States**: Blocks handle empty content gracefully
-- [ ] **Long Content**: Blocks handle long text without breaking
-- [ ] **Special Characters**: HTML entities render correctly
-- [ ] **Multiple Instances**: Multiple of same block on page work
-- [ ] **Nested Blocks**: InnerBlocks work correctly
-- [ ] **Old Content**: Existing posts still render correctly
+- [ ] All new blocks stack on mobile
+- [ ] Tables scroll horizontally when needed
+- [ ] Grid layouts adapt to screen size
+- [ ] Text remains readable
 
 ---
 
-## Testing Notes Template
+## 7. ACCESSIBILITY
 
-**Tester**: _______________  
-**Date**: _______________  
-**Browser**: _______________  
-**Device**: _______________  
-
-**Issues Found**:
-1. 
-2. 
-3. 
-
-**Pass/Fail Summary**:
-- Sidenote Fix: ___ / 12 tests
-- Magazine Figure: ___ / 12 tests
-- Lede Package: ___ / 12 tests
-- Timeline: ___ / 18 tests
-- Glossary: ___ / 14 tests
-- Annotation: ___ / 12 tests
-- Argument Map: ___ / 12 tests
-- Know/Don't Know: ___ / 10 tests
-- Source Excerpt: ___ / 12 tests
-- Context Panel: ___ / 9 tests
-- Related Reading: ___ / 16 tests
-- Existing Blocks: ___ / 12 tests
-- Responsive: ___ / 16 tests
-- Accessibility: ___ / 7 tests
-- Performance: ___ / 5 tests
-- Cross-Browser: ___ / 12 tests
-- PDF Export: ___ / 6 tests
-- Block Categories: ___ / 4 tests
-- Edge Cases: ___ / 6 tests
-
-**Total**: ___ / 181 tests
+- [ ] Animation respects `prefers-reduced-motion`
+- [ ] Tables have proper structure
+- [ ] Color is not the only indicator
 
 ---
 
-## Quick Smoke Test (10 minutes)
+## Quick Smoke Test (5 minutes)
 
-If time is limited, test these critical items:
-
-1. ✅ Sidenote appears with blue bullet marker (not number)
-2. ✅ Sidenote font (Garfield Signature) loads
-3. ✅ Timeline block renders with blue markers
-4. ✅ Argument Map shows two columns
-5. ✅ Annotation tooltip appears on hover
-6. ✅ Source Excerpt has parchment styling
-7. ✅ Related Reading links work
-8. ✅ All blocks appear in inserter under "Kunaal — Editorial"
-9. ✅ Mobile view stacks correctly
+1. ✅ Motion classes work (add `.motion-fade-up` to any element)
+2. ✅ Assumptions Register shows table with indicators
+3. ✅ Confidence Meter shows colored progress bar
+4. ✅ Framework Matrix shows 2x2 grid with colors
+5. ✅ Debate shows two-column layout
+6. ✅ Publication Table has dark header
+7. ✅ Flow Chart shows connected steps
+8. ✅ All blocks appear in correct categories
+9. ✅ Mobile view works
 10. ✅ No console errors
 
 ---
 
-## New Blocks Summary (v4.0.0)
+## New Blocks Summary (v4.1.0)
 
-| Block | Category | Purpose |
-|-------|----------|---------|
-| Magazine Figure | Editorial | Image + caption + credit |
-| Lede Package | Editorial | Hero image + headline + dek |
-| Timeline | Editorial | Chronological events |
-| Timeline Item | Editorial | Single timeline event |
-| Glossary | Editorial | Term definitions |
-| Glossary Term | Editorial | Single term + definition |
-| Annotation | Editorial | Inline highlight + tooltip |
-| Argument Map | Editorial | Claims + evidence + counter |
-| Know/Don't Know | Editorial | Two-column certainty |
-| Source Excerpt | Editorial | Primary source styling |
-| Context Panel | Editorial | Contextual information |
-| Related Reading | Editorial | Further reading section |
-| Related Link | Editorial | Single reading link |
+### Epic 5 - Motion (CSS Utilities)
+- Animation classes
+- Stagger utilities
+- Scroll reveal classes
 
-**Total New Blocks in v4.0.0**: 13  
-**Total Blocks in Theme**: 28
+### Epic 3 - Analysis (11 blocks)
+| Block | Purpose |
+|-------|---------|
+| Assumptions Register | Track assumptions with confidence |
+| Confidence Meter | Visual confidence indicator |
+| Scenario Comparison | Compare multiple scenarios |
+| Decision Log | Container for decisions |
+| Decision Entry | Single decision with status |
+| Framework Matrix | 2x2 or 3x3 analysis grid |
+| Causal Loop Diagram | Systems thinking visual |
+| Evaluation Rubric | Criteria table |
+| Rubric Row | Single criterion row |
+| Debate | Two-sided argument |
+| Debate Side | One side of debate |
+
+### Epic 4 - Data (4 blocks)
+| Block | Purpose |
+|-------|---------|
+| Publication Table | Styled data table |
+| Flow Chart | Process diagram |
+| Flow Chart Step | Single step in flow |
+
+**Total New Blocks**: 14  
+**Total Blocks in Theme**: 42
 
 ---
 
-**Last Updated**: Version 4.0.0 - December 25, 2025
+**Last Updated**: Version 4.1.0 - December 25, 2025

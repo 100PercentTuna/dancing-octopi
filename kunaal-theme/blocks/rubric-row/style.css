@@ -1,0 +1,15 @@
+/**
+ * Rubric Row Block Styles
+ */
+.wp-block-kunaal-rubric-row .rubric-criteria {
+    font-weight: 500;
+    color: var(--ink, #0b1220);
+}
+
+.wp-block-kunaal-rubric-row .rubric-level-cell {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--muted, rgba(11,18,32,0.66));
+    text-align: center;
+}
+

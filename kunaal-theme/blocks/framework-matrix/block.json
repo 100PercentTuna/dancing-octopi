@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/framework-matrix",
+    "version": "1.0.0",
+    "title": "Framework Matrix",
+    "category": "kunaal-analysis",
+    "icon": "grid-view",
+    "description": "2x2 or 3x3 matrix for strategic analysis.",
+    "keywords": ["matrix", "2x2", "framework", "quadrant", "strategy"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "size": {
+            "type": "string",
+            "default": "2x2"
+        },
+        "xAxisLabel": {
+            "type": "string",
+            "default": "X Axis"
+        },
+        "yAxisLabel": {
+            "type": "string",
+            "default": "Y Axis"
+        },
+        "cells": {
+            "type": "array",
+            "default": []
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-framework-matrix-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

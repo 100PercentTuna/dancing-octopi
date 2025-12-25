@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/causal-loop",
+    "version": "1.0.0",
+    "title": "Causal Loop Diagram",
+    "category": "kunaal-analysis",
+    "icon": "update",
+    "description": "Systems thinking diagram showing cause and effect relationships.",
+    "keywords": ["causal", "loop", "systems", "diagram", "feedback"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "nodes": {
+            "type": "array",
+            "default": []
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-causal-loop-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

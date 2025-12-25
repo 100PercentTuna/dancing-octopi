@@ -1,0 +1,77 @@
+/**
+ * Debate Side Block Styles
+ */
+.wp-block-kunaal-debate-side {
+    padding: var(--space-5, 40px);
+    background: var(--bg, #FDFCFA);
+}
+
+.side-for {
+    border-top: 4px solid #16a34a;
+}
+
+.side-against {
+    border-top: 4px solid #dc2626;
+}
+
+.ds-label {
+    display: inline-block;
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-bottom: var(--space-3, 24px);
+}
+
+.side-for .ds-label {
+    background: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+}
+
+.side-against .ds-label {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+.ds-argument {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--ink, #0b1220);
+    margin: 0 0 var(--space-3, 24px);
+}
+
+.ds-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ds-points li {
+    position: relative;
+    padding-left: var(--space-3, 24px);
+    margin-bottom: var(--space-2, 16px);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.ds-points li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    font-weight: 600;
+}
+
+.side-for .ds-points li::before {
+    color: #16a34a;
+}
+
+.side-against .ds-points li::before {
+    color: #dc2626;
+}
+

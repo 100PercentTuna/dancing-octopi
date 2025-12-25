@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/flowchart-step",
+    "version": "1.0.0",
+    "title": "Flow Chart Step",
+    "category": "kunaal-data",
+    "icon": "arrow-right-alt",
+    "description": "A single step in a flow chart.",
+    "parent": ["kunaal/flowchart"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": ""
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        },
+        "stepType": {
+            "type": "string",
+            "default": "process"
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-flowchart-step-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

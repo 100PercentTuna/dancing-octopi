@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/debate",
+    "version": "1.0.0",
+    "title": "Debate (Steelman)",
+    "category": "kunaal-analysis",
+    "icon": "megaphone",
+    "description": "Present two sides of an argument at their strongest (steelman vs steelman).",
+    "keywords": ["debate", "steelman", "argument", "sides", "perspective"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "question": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-debate-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

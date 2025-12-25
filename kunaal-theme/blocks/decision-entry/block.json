@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/decision-entry",
+    "version": "1.0.0",
+    "title": "Decision Entry",
+    "category": "kunaal-analysis",
+    "icon": "yes-alt",
+    "description": "A single decision entry.",
+    "parent": ["kunaal/decision-log"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "decision": {
+            "type": "string",
+            "default": ""
+        },
+        "date": {
+            "type": "string",
+            "default": ""
+        },
+        "rationale": {
+            "type": "string",
+            "default": ""
+        },
+        "status": {
+            "type": "string",
+            "default": "active"
+        },
+        "outcome": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-decision-entry-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

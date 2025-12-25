@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/debate-side",
+    "version": "1.0.0",
+    "title": "Debate Side",
+    "category": "kunaal-analysis",
+    "icon": "format-quote",
+    "description": "One side of the debate.",
+    "parent": ["kunaal/debate"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "position": {
+            "type": "string",
+            "default": "for"
+        },
+        "label": {
+            "type": "string",
+            "default": "For"
+        },
+        "argument": {
+            "type": "string",
+            "default": ""
+        },
+        "points": {
+            "type": "array",
+            "default": []
+        }
+    },
+    "supports": {
+        "html": false,
+        "className": true
+    },
+    "editorScript": "kunaal-debate-side-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+
