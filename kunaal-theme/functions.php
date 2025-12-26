@@ -298,8 +298,7 @@ function kunaal_enqueue_assets() {
             true // Load in footer
         );
         
-        // Register GSAP for use
-        wp_add_inline_script('gsap-scrolltrigger', 'gsap.registerPlugin(ScrollTrigger);', 'after');
+        // GSAP registration moved to after about-page-v22 loads to ensure proper order
         
         // D3.js for world map
         wp_enqueue_script(
@@ -333,6 +332,13 @@ function kunaal_enqueue_assets() {
         wp_localize_script('kunaal-about-page-v22', 'kunaalAboutV22', array(
             'places' => $places,
         ));
+        
+        // Ensure GSAP registration happens after GSAP is loaded
+        // Move registration to after the script loads, not as inline
+        wp_add_inline_script('kunaal-about-page-v22', 
+            '(function() { if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") { try { gsap.registerPlugin(ScrollTrigger); } catch(e) { console.warn("GSAP registration failed:", e); } } })();',
+            'after'
+        );
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');

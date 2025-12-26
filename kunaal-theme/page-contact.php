@@ -195,7 +195,7 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
         // Get AJAX URL - try kunaalTheme first, fallback to WordPress default
         var ajaxUrl = (typeof kunaalTheme !== 'undefined' && kunaalTheme.ajaxUrl) 
             ? kunaalTheme.ajaxUrl 
-            : '<?php echo esc_js(admin_url('admin-ajax.php')); ?>';
+            : <?php echo json_encode(admin_url('admin-ajax.php')); ?>;
         
         if (!ajaxUrl) {
             console.error('Contact form: AJAX URL is not defined');

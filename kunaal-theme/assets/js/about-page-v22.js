@@ -497,25 +497,39 @@
       });
     }
 
-    // Wait for D3 and TopoJSON to be ready
-    if (window.d3 && window.topojson) {
+    // Wait for D3, TopoJSON, and places data to be ready
+    function tryDraw(attempts) {
+      attempts = attempts || 0;
+      
+      // Check for D3 and TopoJSON
+      if (!window.d3 || !window.topojson) {
+        if (attempts < 50) { // Wait up to 5 seconds
+          setTimeout(function() { tryDraw(attempts + 1); }, 100);
+          return;
+        }
+        console.warn('World map: D3.js or TopoJSON not loaded after waiting.');
+        return;
+      }
+      
+      // Check for places data (wp_localize_script might need a moment)
+      if (!window.kunaalAboutV22 || !window.kunaalAboutV22.places) {
+        if (attempts < 50) { // Wait up to 5 seconds
+          setTimeout(function() { tryDraw(attempts + 1); }, 100);
+          return;
+        }
+        // After waiting, proceed with empty data
+        console.warn('About page map: Places data not loaded after waiting. Proceeding with empty data.');
+      }
+      
       try {
         draw();
       } catch (e) {
         console.warn('World map draw failed:', e);
       }
-    } else {
-      // Fallback: wait a bit for scripts to load
-      setTimeout(function() {
-        if (window.d3 && window.topojson) {
-          try {
-            draw();
-          } catch (e) {
-            console.warn('World map draw failed:', e);
-          }
-        }
-      }, 500);
     }
+    
+    // Start trying to draw
+    tryDraw();
   }
 
   // =============================================
