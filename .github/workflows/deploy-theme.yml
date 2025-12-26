@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 22
           local_path: ./kunaal-theme/
-          remote_path: ./wp-content/themes/kunaal-theme/
+          remote_path: /html/wp-content/themes/kunaal-theme/
           sftp_only: true
           delete_remote_files: false
       
