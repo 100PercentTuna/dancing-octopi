@@ -1,0 +1,112 @@
+/**
+ * Framework Matrix Block Styles
+ */
+.wp-block-kunaal-framework-matrix {
+    margin: var(--space-8, 64px) 0;
+}
+
+.fm-title {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0 0 var(--space-4, 32px);
+    text-align: center;
+}
+
+.fm-container {
+    position: relative;
+    padding-left: 40px;
+    padding-bottom: 40px;
+}
+
+.fm-y-label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center center;
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted, rgba(11,18,32,0.66));
+    white-space: nowrap;
+}
+
+.fm-x-label {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted, rgba(11,18,32,0.66));
+}
+
+.fm-grid {
+    display: grid;
+    gap: 2px;
+    background: var(--hair, rgba(11,18,32,0.14));
+    border: 2px solid var(--hair, rgba(11,18,32,0.14));
+}
+
+.fm-cell {
+    background: var(--bg, #FDFCFA);
+    padding: var(--space-4, 32px);
+    text-align: center;
+}
+
+.fm-cell-label {
+    display: block;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue, #1E5AFF);
+    margin-bottom: var(--space-2, 16px);
+}
+
+.fm-cell-content {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted, rgba(11,18,32,0.66));
+    margin: 0;
+}
+
+/* 2x2 colors */
+.matrix-2x2 .fm-cell:nth-child(1) { background: rgba(22, 163, 74, 0.06); } /* High-High */
+.matrix-2x2 .fm-cell:nth-child(2) { background: rgba(234, 179, 8, 0.06); } /* High-Low */
+.matrix-2x2 .fm-cell:nth-child(3) { background: rgba(234, 179, 8, 0.06); } /* Low-High */
+.matrix-2x2 .fm-cell:nth-child(4) { background: rgba(220, 38, 38, 0.06); } /* Low-Low */
+
+/* 3x3 gradient */
+.matrix-3x3 .fm-cell:nth-child(1) { background: rgba(22, 163, 74, 0.08); }
+.matrix-3x3 .fm-cell:nth-child(2) { background: rgba(22, 163, 74, 0.05); }
+.matrix-3x3 .fm-cell:nth-child(3) { background: rgba(234, 179, 8, 0.05); }
+.matrix-3x3 .fm-cell:nth-child(4) { background: rgba(22, 163, 74, 0.05); }
+.matrix-3x3 .fm-cell:nth-child(5) { background: rgba(234, 179, 8, 0.05); }
+.matrix-3x3 .fm-cell:nth-child(6) { background: rgba(234, 179, 8, 0.08); }
+.matrix-3x3 .fm-cell:nth-child(7) { background: rgba(234, 179, 8, 0.05); }
+.matrix-3x3 .fm-cell:nth-child(8) { background: rgba(234, 179, 8, 0.08); }
+.matrix-3x3 .fm-cell:nth-child(9) { background: rgba(220, 38, 38, 0.06); }
+
+@media (max-width: 640px) {
+    .fm-cell {
+        padding: var(--space-2, 16px);
+    }
+    
+    .fm-cell-label {
+        font-size: 10px;
+    }
+    
+    .fm-cell-content {
+        font-size: 11px;
+    }
+}
+

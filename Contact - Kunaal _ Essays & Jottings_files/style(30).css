@@ -377,16 +377,6 @@ main {
   /* No padding-left/right - inherits from .container */
 }
 
-/* Navigation and theme toggle container - equal spacing */
-.mastInner > .nav {
-  margin-left: auto;
-  margin-right: var(--space-3);
-}
-
-.mastInner > .theme-toggle {
-  margin-left: 0;
-}
-
 .brand {
   display: flex;
   gap: calc(12px - (4px * var(--p)));
@@ -510,44 +500,37 @@ main {
 }
 .navToggle svg { width: 20px; height: 20px; }
 
-/* Theme toggle button - matches share/subscribe button aesthetic */
+/* Theme toggle button */
 .theme-toggle {
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: 50%;
   width: 40px;
   height: 40px;
-  border: 1px solid var(--hair);
-  background: var(--bg);
-  border-radius: 4px;
-  display: grid;
-  place-items: center;
   cursor: pointer;
-  color: var(--muted);
-  position: relative;
-  transition: all 200ms ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 200ms ease, background-color 200ms ease;
   padding: 0;
+  color: var(--muted);
 }
 
-.theme-toggle:hover,
-.theme-toggle:focus-visible { 
-  border-color: var(--blueStroke); 
-  color: var(--blue);
-  background: var(--blueTint);
-  box-shadow: 0 4px 12px rgba(30,90,255,0.12);
-  transform: translateY(-2px);
+.theme-toggle:hover {
+  border-color: var(--warm);
+  background-color: var(--bg-alt);
+  color: var(--ink);
+}
+
+.theme-toggle:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 
 .theme-toggle-icon {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
+  font-size: 18px;
+  line-height: 1;
   display: block;
-}
-
-.theme-toggle-icon-sun {
-  display: none;
 }
 
 /* Screen reader only */
@@ -3203,7 +3186,47 @@ button, .filterToggle, .topicDropdownBtn {
   stroke: white;
 }
 
-/* DK PDF integration removed - using custom PDF generator instead */
+/* ========================================
+   DK PDF BUTTON INTEGRATION
+   ======================================== */
+/* Style DK PDF button to match share dock */
+.shareItem.pdfBtn {
+  position: relative;
+}
+.shareItem.pdfBtn .dkpdf-button-link,
+.shareItem.pdfBtn a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--blue);
+  color: white;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 0;
+  transition: background 200ms ease, transform 200ms ease;
+}
+.shareItem.pdfBtn .dkpdf-button-link:hover,
+.shareItem.pdfBtn a:hover {
+  background: var(--ink);
+  transform: scale(1.1);
+}
+/* Add download icon */
+.shareItem.pdfBtn .dkpdf-button-link::before,
+.shareItem.pdfBtn a::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4'/%3E%3Cpolyline points='7,10 12,15 17,10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+/* Hide default DK PDF text */
+.shareItem.pdfBtn .dkpdf-button-link span,
+.shareItem.pdfBtn .dkpdf-button {
+  display: none;
+}
 
 /* ========================================
    YOAST HOW-TO BLOCK - IMPROVED STYLING
@@ -3392,7 +3415,20 @@ main {
   overflow: hidden;
 }
 
-/* DK PDF buttons removed - using custom PDF generator instead */
+/* ========================================
+   HIDE DK PDF AUTO-ADDED BUTTONS
+   (We use our own PDF system via the dock)
+   ======================================== */
+.dkpdf-button,
+.dkpdf-button-link,
+.dkpdf-link,
+#dkpdf-button,
+a[href*="dkpdfg"],
+.entry-content > .dkpdf-button-container,
+.post-content > .dkpdf-button-container,
+.article-content > .dkpdf-button-container {
+  display: none !important;
+}
 
 /* ========================================
    EPIC 5: MOTION PRIMITIVES
@@ -4364,33 +4400,15 @@ main {
 
 .ledgerSend:disabled { opacity: 0.7; cursor: not-allowed; }
 
-.ledgerSend .btn-text,
 .ledgerSend .btn-loading,
-.ledgerSend .btn-success {
-  display: inline-block;
-}
+.ledgerSend .btn-success { display: none; }
 
-.ledgerSend .btn-loading,
-.ledgerSend .btn-success { 
-  display: none; 
-}
-
-.ledgerSend.is-loading .btn-text { 
-  display: none; 
-}
-.ledgerSend.is-loading .btn-loading { 
-  display: inline-block; 
-}
-.ledgerSend.is-success { 
-  background: #0E7A3A; 
-}
+.ledgerSend.is-loading .btn-text { display: none; }
+.ledgerSend.is-loading .btn-loading { display: inline; }
+.ledgerSend.is-success { background: #0E7A3A; }
 .ledgerSend.is-success .btn-text,
-.ledgerSend.is-success .btn-loading { 
-  display: none; 
-}
-.ledgerSend.is-success .btn-success { 
-  display: inline-block; 
-}
+.ledgerSend.is-success .btn-loading { display: none; }
+.ledgerSend.is-success .btn-success { display: inline; }
 
 .contact-ledger .form-status {
   grid-column: 1 / -1;

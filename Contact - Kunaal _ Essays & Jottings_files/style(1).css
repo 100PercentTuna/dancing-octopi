@@ -1,0 +1,146 @@
+/**
+ * Sidenote Block Styles
+ * True Tufte-style margin notes positioned to the right
+ * Uses blue bullet marker (•) to distinguish from numbered footnotes
+ * Font: Garfield Signature (loaded via PHP)
+ */
+
+/* Sidenote wrapper - inline element */
+.sidenote-wrapper {
+    display: inline;
+}
+
+/* Hidden checkbox for mobile toggle */
+.sidenote-toggle {
+    display: none;
+}
+
+/* Blue bullet reference marker (distinct from footnote numbers) */
+.sidenote-number {
+    display: inline;
+    cursor: pointer;
+}
+
+.sidenote-number::after {
+    content: "•";
+    font-size: 1.1em;
+    font-weight: 700;
+    font-family: var(--sans, system-ui, sans-serif);
+    color: var(--blue, #1E5AFF);
+    vertical-align: middle;
+    line-height: 0;
+    margin: 0 0.15em;
+    transition: transform 150ms ease, color 150ms ease;
+}
+
+.sidenote-number:hover::after {
+    color: var(--blueMuted, #5B7BA8);
+    transform: scale(1.2);
+}
+
+/* The sidenote content - margin positioning on desktop */
+.sidenote {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    color: var(--muted, rgba(11,18,32,0.65));
+    font-weight: 500;
+}
+
+/* Desktop: True margin notes on the right */
+@media (min-width: 1200px) {
+    .sidenote {
+        float: right;
+        clear: right;
+        width: 200px;
+        margin-right: -240px;
+        margin-bottom: 0.5rem;
+        padding-left: 1rem;
+        border-left: 2px solid var(--warmLight, #d4c4b5);
+        position: relative;
+        vertical-align: baseline;
+    }
+    
+    /* Subtle reveal animation */
+    .sidenote {
+        opacity: 0.7;
+        transition: opacity 200ms ease;
+    }
+    
+    .sidenote-wrapper:hover .sidenote,
+    .sidenote:hover {
+        opacity: 1;
+    }
+}
+
+/* Medium screens: narrower margin */
+@media (min-width: 1000px) and (max-width: 1199px) {
+    .sidenote {
+        float: right;
+        clear: right;
+        width: 160px;
+        margin-right: -180px;
+        margin-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        border-left: 2px solid var(--warmLight, #d4c4b5);
+        font-size: 1rem;
+    }
+}
+
+/* Tablet/Mobile: Expandable inline notes */
+@media (max-width: 999px) {
+    .sidenote {
+        display: none;
+        margin: 0.75rem 0;
+        padding: 0.75rem 1rem;
+        background: var(--bgWarm, #FAF8F5);
+        border-left: 3px solid var(--warmLight, #d4c4b5);
+        border-radius: 0 4px 4px 0;
+        font-size: 1rem;
+    }
+    
+    /* Show sidenote when checkbox is checked */
+    .sidenote-toggle:checked + .sidenote {
+        display: block;
+    }
+    
+    /* Visual indicator that it's tappable */
+    .sidenote-number::after {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+        text-underline-offset: 2px;
+    }
+}
+
+/* Editor preview styles */
+.sidenote-editor-wrapper {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    background: var(--bgWarm, #FAF8F5);
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.25rem 0;
+}
+
+.sidenote-ref-preview {
+    color: var(--blue, #1E5AFF);
+    font-weight: 600;
+    font-size: 0.8em;
+    flex-shrink: 0;
+}
+
+.sidenote-content-preview {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--muted, rgba(11,18,32,0.65));
+    min-width: 150px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .sidenote {
+        transition: none;
+    }
+}

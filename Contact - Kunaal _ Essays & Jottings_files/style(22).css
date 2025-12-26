@@ -1,0 +1,181 @@
+/**
+ * Slopegraph Block Styles
+ */
+
+.wp-block-kunaal-slopegraph {
+  margin: var(--space-6) 0;
+  max-width: 800px;
+}
+
+.slopegraph-header {
+  margin-bottom: var(--space-4);
+}
+
+.slopegraph-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.slopegraph-subtitle {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.slopegraph-columns {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 120px;
+  margin-bottom: var(--space-2);
+}
+
+.slopegraph-column-label {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.slopegraph-lines {
+  width: 100%;
+  height: auto;
+  min-height: 300px;
+}
+
+.slopegraph-row {
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+
+.slopegraph-row:hover {
+  opacity: 0.7;
+}
+
+.slopegraph-row:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.slope-line {
+  transition: stroke-width 200ms ease;
+}
+
+.slopegraph-row:hover .slope-line {
+  stroke-width: 3;
+}
+
+.dot {
+  transition: r 200ms ease;
+}
+
+.slopegraph-row:hover .dot {
+  r: 7;
+}
+
+.label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--ink);
+}
+
+.value {
+  font-family: var(--mono);
+  font-size: 12px;
+  fill: var(--muted);
+}
+
+.pct-change {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.slopegraph-footer {
+  margin-top: var(--space-4);
+}
+
+.slopegraph-source {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  text-align: center;
+}
+
+.slopegraph-data-table {
+  margin-top: var(--space-4);
+}
+
+.slopegraph-data-table summary {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--blue);
+  cursor: pointer;
+  padding: var(--space-2);
+}
+
+.slopegraph-data-table table {
+  width: 100%;
+  margin-top: var(--space-2);
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.slopegraph-data-table th,
+.slopegraph-data-table td {
+  padding: var(--space-1) var(--space-2);
+  text-align: left;
+  border: 1px solid var(--hair);
+}
+
+.slopegraph-data-table th {
+  background-color: var(--bg-alt);
+  font-weight: 600;
+}
+
+/* Editor styles */
+.slopegraph-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.slopegraph-editor-table th,
+.slopegraph-editor-table td {
+  padding: 4px;
+  border: 1px solid var(--hair);
+}
+
+.slopegraph-editor-table input[type="number"] {
+  width: 80px;
+  padding: 4px;
+}
+
+.slopegraph-preview {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--bg-alt);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+}
+
+.slopegraph-row-preview {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slopegraph-row,
+  .slope-line,
+  .dot {
+    transition: none;
+  }
+}
+

@@ -1,0 +1,82 @@
+/**
+ * Reveal Wrapper Block Styles
+ */
+
+.reveal-wrapper {
+    --reveal-delay: 0ms;
+    --reveal-duration: 600ms;
+}
+
+/* Base hidden state */
+.reveal-wrapper:not(.revealed) {
+    opacity: 0;
+}
+
+/* Animation variants - initial states */
+.reveal-fade-up:not(.revealed) {
+    transform: translateY(40px);
+}
+
+.reveal-fade-down:not(.revealed) {
+    transform: translateY(-40px);
+}
+
+.reveal-fade-in:not(.revealed) {
+    /* Just opacity */
+}
+
+.reveal-slide-left:not(.revealed) {
+    transform: translateX(-60px);
+}
+
+.reveal-slide-right:not(.revealed) {
+    transform: translateX(60px);
+}
+
+.reveal-scale-up:not(.revealed) {
+    transform: scale(0.9);
+}
+
+.reveal-scale-down:not(.revealed) {
+    transform: scale(1.1);
+}
+
+/* Revealed state - all animations */
+.reveal-wrapper.revealed {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+    transition: 
+        opacity var(--reveal-duration) cubic-bezier(0.4, 0, 0.2, 1) var(--reveal-delay),
+        transform var(--reveal-duration) cubic-bezier(0.4, 0, 0.2, 1) var(--reveal-delay);
+}
+
+/* Editor styles */
+.reveal-wrapper-editor {
+    border: 2px dashed var(--blueStroke, rgba(30,90,255,0.28));
+    border-radius: 4px;
+    padding: var(--space-2, 16px);
+    background: var(--blueTint, rgba(30,90,255,0.04));
+}
+
+.reveal-label {
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--blue, #1E5AFF);
+    margin-bottom: var(--space-2, 16px);
+    padding-bottom: var(--space-1, 8px);
+    border-bottom: 1px solid var(--blueStroke, rgba(30,90,255,0.28));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .reveal-wrapper:not(.revealed) {
+        opacity: 1;
+        transform: none;
+    }
+    
+    .reveal-wrapper.revealed {
+        transition: none;
+    }
+}
+

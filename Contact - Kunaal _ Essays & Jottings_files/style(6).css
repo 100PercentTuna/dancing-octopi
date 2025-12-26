@@ -1,0 +1,73 @@
+/**
+ * Magazine Figure Block Styles
+ */
+.wp-block-kunaal-magazine-figure {
+    margin: var(--space-8, 64px) 0;
+}
+
+.wp-block-kunaal-magazine-figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.wp-block-kunaal-magazine-figure.alignwide {
+    margin-left: calc(-25vw + 50%);
+    margin-right: calc(-25vw + 50%);
+    max-width: 100vw;
+    width: 100vw;
+}
+
+.wp-block-kunaal-magazine-figure.alignfull {
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    max-width: 100vw;
+    width: 100vw;
+}
+
+.figure-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3, 24px);
+    margin-top: var(--space-2, 16px);
+    padding-top: var(--space-2, 16px);
+    border-top: 1px solid var(--hair2, rgba(11,18,32,0.07));
+}
+
+.caption-text {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--muted, rgba(11,18,32,0.66));
+    flex: 1;
+}
+
+.figure-credit {
+    font-family: var(--mono, monospace);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--muted2, rgba(11,18,32,0.46));
+    white-space: nowrap;
+}
+
+/* Editor */
+.figure-placeholder {
+    background: var(--bgWarm, #F9F7F4);
+    border: 2px dashed var(--hair, rgba(11,18,32,0.14));
+    padding: var(--space-8, 64px);
+    text-align: center;
+    border-radius: 4px;
+}
+
+.figure-image-wrapper {
+    position: relative;
+}
+
+.change-image-btn {
+    position: absolute;
+    bottom: var(--space-2, 16px);
+    right: var(--space-2, 16px);
+}
+
