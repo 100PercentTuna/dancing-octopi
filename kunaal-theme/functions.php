@@ -126,14 +126,26 @@ function kunaal_enqueue_assets() {
             KUNAAL_THEME_VERSION
         );
         
-        // Scrollama (from CDN)
+        // GSAP Core (required for ScrollTrigger)
         wp_enqueue_script(
-            'scrollama',
-            'https://unpkg.com/scrollama@3.2.0/build/scrollama.min.js',
+            'gsap-core',
+            'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
             array(),
-            '3.2.0',
-            true
+            '3.12.5',
+            false // Load in head for better performance
         );
+        
+        // GSAP ScrollTrigger Plugin
+        wp_enqueue_script(
+            'gsap-scrolltrigger',
+            'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js',
+            array('gsap-core'),
+            '3.12.5',
+            false
+        );
+        
+        // Register GSAP for use
+        wp_add_inline_script('gsap-scrolltrigger', 'gsap.registerPlugin(ScrollTrigger);', 'after');
         
         // Leaflet JS
         wp_enqueue_script(
@@ -144,11 +156,11 @@ function kunaal_enqueue_assets() {
             true
         );
         
-        // About page JS
+        // About page JS (depends on GSAP)
         wp_enqueue_script(
             'kunaal-about-page',
             KUNAAL_THEME_URI . '/assets/js/about-page.js',
-            array('scrollama', 'leaflet-js'),
+            array('gsap-scrolltrigger', 'leaflet-js'),
             KUNAAL_THEME_VERSION,
             true
         );

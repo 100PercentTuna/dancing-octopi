@@ -1,164 +1,467 @@
 /**
  * About Page - The Layered Exhibition
- * Scrollytelling, parallax, and interactive elements
+ * Professional scrollytelling with GSAP ScrollTrigger
+ * Inspired by gentlerain.ai, dhnn.com, and other premium sites
  */
 (function() {
   'use strict';
 
   // ========================================
-  // STATE
+  // STATE & CONFIG
   // ========================================
-  var scrollY = 0;
-  var ticking = false;
   var mapInstance = null;
   var countriesLayer = null;
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isInitialized = false;
 
   // ========================================
-  // SCROLL TRACKING
+  // HERO SECTION - Professional Collage
   // ========================================
-  function updateScrollY() {
-    document.documentElement.style.setProperty('--scroll-y', scrollY);
-  }
+  function initHero() {
+    var hero = document.querySelector('.about-hero');
+    if (!hero) return;
 
-  function onScroll() {
-    scrollY = window.scrollY || window.pageYOffset;
-    if (!ticking) {
-      requestAnimationFrame(function() {
-        updateScrollY();
-        updateHeroPhotos();
-        updateParallax();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }
+    var photos = hero.querySelectorAll('.hero-photo');
+    var identity = hero.querySelector('.hero-identity');
+    var annotation = hero.querySelector('.hero-annotation');
 
-  // ========================================
-  // HERO PHOTO COLLAGE
-  // ========================================
-  function initHeroCollage() {
-    var photos = document.querySelectorAll('.hero-photo');
-    if (!photos.length) return;
-
-    // Skip animations if reduced motion
     if (prefersReducedMotion) {
+      // Skip animations, show everything immediately
       photos.forEach(function(photo) {
-        photo.classList.add('is-colored');
+        gsap.set(photo, { opacity: 1, y: 0 });
+        photo.querySelector('img').style.filter = 'grayscale(0%) sepia(0%)';
       });
+      if (identity) gsap.set(identity, { opacity: 1, y: 0 });
+      if (annotation) gsap.set(annotation, { opacity: 1 });
       return;
     }
 
-    // Initial state
-    updateHeroPhotos();
-  }
+    // Initial state - photos hidden and slightly offset
+    gsap.set(photos, {
+      opacity: 0,
+      y: 40,
+      scale: 0.95
+    });
 
-  function updateHeroPhotos() {
-    var photos = document.querySelectorAll('.hero-photo');
-    if (!photos.length || prefersReducedMotion) return;
+    // Staggered photo entrance (inspired by premium sites)
+    gsap.to(photos, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 1.2,
+      stagger: {
+        amount: 0.6,
+        from: 'start'
+      },
+      ease: 'power3.out',
+      delay: 0.2
+    });
 
-    var colorThreshold = window.innerHeight * 0.3; // 30vh
+    // Identity entrance
+    if (identity) {
+      gsap.from(identity, {
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        ease: 'power2.out',
+        delay: 0.8
+      });
+    }
 
+    // Annotation entrance
+    if (annotation) {
+      gsap.from(annotation, {
+        opacity: 0,
+        y: 20,
+        rotation: -6,
+        duration: 0.8,
+        ease: 'back.out(1.2)',
+        delay: 1.4
+      });
+    }
+
+    // ========================================
+    // HERO PARALLAX - Subtle, smooth movement
+    // ========================================
     photos.forEach(function(photo, index) {
-      // Grayscale to color transition
-      if (scrollY > colorThreshold) {
-        photo.classList.add('is-colored');
-      } else {
-        photo.classList.remove('is-colored');
-      }
+      // Much more subtle speeds - prevent extreme offsets
+      var speeds = [0.08, 0.15, 0.12, 0.10]; // Reduced from 0.2-0.6
+      var speed = speeds[index] || 0.1;
 
-      // Parallax effect per photo
-      var speed = parseFloat(photo.dataset.parallaxSpeed) || 0.3;
-      var offset = scrollY * speed;
-      photo.style.transform = 'translateY(' + offset + 'px)';
+      gsap.to(photo, {
+        y: function() {
+          return window.innerHeight * speed;
+        },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5, // Smooth scrubbing
+          invalidateOnRefresh: true
+        }
+      });
+    });
+
+    // ========================================
+    // HERO COLOR REVEAL - Scroll-triggered
+    // ========================================
+    photos.forEach(function(photo) {
+      var img = photo.querySelector('img');
+      if (!img) return;
+
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top 70%',
+        onEnter: function() {
+          gsap.to(img, {
+            filter: 'grayscale(0%) sepia(0%)',
+            duration: 1.2,
+            ease: 'power2.out'
+          });
+          photo.classList.add('is-colored');
+        },
+        once: true
+      });
+    });
+
+    // ========================================
+    // HERO PIN - Pin during initial scroll
+    // ========================================
+    ScrollTrigger.create({
+      trigger: hero,
+      start: 'top top',
+      end: '+=100vh',
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1
     });
   }
 
   // ========================================
-  // PARALLAX FOR OTHER ELEMENTS
+  // ATMOSPHERIC IMAGES - Smooth Parallax
   // ========================================
-  function updateParallax() {
-    if (prefersReducedMotion) return;
+  function initAtmosphericImages() {
+    var atmoImages = document.querySelectorAll('.atmo-full img, .about-quote-image-bg img');
+    
+    atmoImages.forEach(function(img) {
+      // Subtle parallax - much slower than before
+      gsap.to(img, {
+        y: function() {
+          return window.innerHeight * 0.15; // Very subtle
+        },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: img.closest('.atmo-full, .about-quote-image'),
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.2
+        }
+      });
 
-    var slowElements = document.querySelectorAll('.parallax-slow');
-    var medElements = document.querySelectorAll('.parallax-medium');
-
-    slowElements.forEach(function(el) {
-      var rect = el.getBoundingClientRect();
-      var centerY = rect.top + rect.height / 2;
-      var viewportCenterY = window.innerHeight / 2;
-      var offset = (centerY - viewportCenterY) * 0.2;
-      el.style.transform = 'translateY(' + offset + 'px)';
-    });
-
-    medElements.forEach(function(el) {
-      var rect = el.getBoundingClientRect();
-      var centerY = rect.top + rect.height / 2;
-      var viewportCenterY = window.innerHeight / 2;
-      var offset = (centerY - viewportCenterY) * 0.4;
-      el.style.transform = 'translateY(' + offset + 'px)';
+      // Color reveal on scroll
+      ScrollTrigger.create({
+        trigger: img,
+        start: 'top 80%',
+        onEnter: function() {
+          gsap.to(img, {
+            filter: 'grayscale(0%) sepia(0%)',
+            duration: 1.5,
+            ease: 'power2.out'
+          });
+          img.classList.add('is-revealed');
+        },
+        once: true
+      });
     });
   }
 
   // ========================================
-  // REVEAL ANIMATIONS
+  // SECTION REVEALS - Professional Stagger
   // ========================================
-  function initReveals() {
-    var revealElements = document.querySelectorAll('.reveal-up');
-    if (!revealElements.length) return;
-
+  function initSectionReveals() {
     if (prefersReducedMotion) {
-      revealElements.forEach(function(el) {
+      document.querySelectorAll('.reveal-up').forEach(function(el) {
         el.classList.add('is-visible');
       });
       return;
     }
 
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
+    // Bio section
+    var bioSection = document.querySelector('.about-bio');
+    if (bioSection) {
+      var bioLabel = bioSection.querySelector('.gallery-label');
+      var bioText = bioSection.querySelector('.bio-text');
+      var pullquote = bioSection.querySelector('.bio-pullquote');
+
+      if (bioLabel) {
+        gsap.from(bioLabel, {
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: bioSection,
+            start: 'top 85%',
+            once: true
+          }
+        });
+      }
+
+      if (bioText) {
+        gsap.from(bioText, {
+          opacity: 0,
+          y: 30,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: bioText,
+            start: 'top 85%',
+            once: true
+          }
+        });
+      }
+
+      if (pullquote) {
+        gsap.from(pullquote, {
+          opacity: 0,
+          x: -30,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: pullquote,
+            start: 'top 85%',
+            once: true
+          }
+        });
+      }
+    }
+
+    // Bookshelf
+    var booksSection = document.querySelector('.about-books');
+    if (booksSection) {
+      var books = booksSection.querySelectorAll('.book-slot');
+      
+      gsap.from(books, {
+        opacity: 0,
+        y: 50,
+        scale: 0.9,
+        duration: 0.9,
+        stagger: {
+          amount: 0.4,
+          from: 'center'
+        },
+        ease: 'back.out(1.2)',
+        scrollTrigger: {
+          trigger: booksSection,
+          start: 'top 80%',
+          once: true
         }
       });
-    }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -50px 0px'
-    });
+    }
 
-    revealElements.forEach(function(el) {
-      observer.observe(el);
-    });
+    // Map section
+    var mapSection = document.querySelector('.about-map');
+    if (mapSection) {
+      var mapContainer = mapSection.querySelector('.about-map-container');
+      var mapLegend = mapSection.querySelector('.about-map-legend');
+
+      if (mapContainer) {
+        gsap.from(mapContainer, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: mapSection,
+            start: 'top 75%',
+            once: true
+          }
+        });
+      }
+
+      if (mapLegend) {
+        gsap.from(mapLegend, {
+          opacity: 0,
+          y: 20,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: mapLegend,
+            start: 'top 90%',
+            once: true
+          }
+        });
+      }
+    }
+
+    // Interests cloud
+    var interestsSection = document.querySelector('.about-interests');
+    if (interestsSection) {
+      var interests = interestsSection.querySelectorAll('.interest-item');
+      
+      gsap.from(interests, {
+        opacity: 0,
+        scale: 0.8,
+        y: 30,
+        duration: 0.7,
+        stagger: {
+          amount: 0.6,
+          grid: 'auto',
+          from: 'random'
+        },
+        ease: 'back.out(1.1)',
+        scrollTrigger: {
+          trigger: interestsSection,
+          start: 'top 80%',
+          once: true
+        }
+      });
+    }
+
+    // Inspirations grid
+    var inspirationsSection = document.querySelector('.about-inspirations');
+    if (inspirationsSection) {
+      var cards = inspirationsSection.querySelectorAll('.inspiration-card');
+      
+      gsap.from(cards, {
+        opacity: 0,
+        y: 40,
+        duration: 0.9,
+        stagger: {
+          amount: 0.5,
+          grid: 'auto',
+          from: 'start'
+        },
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: inspirationsSection,
+          start: 'top 80%',
+          once: true
+        }
+      });
+    }
+
+    // Stats section
+    var statsSection = document.querySelector('.about-stats');
+    if (statsSection) {
+      var stats = statsSection.querySelectorAll('.stat-item');
+      
+      gsap.from(stats, {
+        opacity: 0,
+        scale: 0.9,
+        y: 30,
+        duration: 1,
+        stagger: 0.15,
+        ease: 'back.out(1.2)',
+        scrollTrigger: {
+          trigger: statsSection,
+          start: 'top 80%',
+          once: true
+        }
+      });
+    }
+
+    // Connect section
+    var connectSection = document.querySelector('.about-connect');
+    if (connectSection) {
+      var connectTitle = connectSection.querySelector('.about-connect-title');
+      var connectIcons = connectSection.querySelectorAll('.connect-icon');
+      var connectLink = connectSection.querySelector('.connect-link');
+
+      if (connectTitle) {
+        gsap.from(connectTitle, {
+          opacity: 0,
+          y: 30,
+          duration: 0.9,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: connectSection,
+            start: 'top 85%',
+            once: true
+          }
+        });
+      }
+
+      if (connectIcons.length) {
+        gsap.from(connectIcons, {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'back.out(1.2)',
+          scrollTrigger: {
+            trigger: connectSection,
+            start: 'top 85%',
+            once: true
+          }
+        });
+      }
+
+      if (connectLink) {
+        gsap.from(connectLink, {
+          opacity: 0,
+          x: -20,
+          duration: 0.8,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: connectLink,
+            start: 'top 90%',
+            once: true
+          }
+        });
+      }
+    }
   }
 
   // ========================================
-  // GRAYSCALE TO COLOR IMAGE REVEALS
+  // STATS COUNTERS - GSAP Animation
   // ========================================
-  function initImageReveals() {
-    var images = document.querySelectorAll('.about-image');
-    if (!images.length) return;
+  function initStatsCounters() {
+    var stats = document.querySelectorAll('.stat-number[data-target]');
+    if (!stats.length) return;
 
-    if (prefersReducedMotion) {
-      images.forEach(function(img) {
-        img.classList.add('is-revealed');
+    stats.forEach(function(stat) {
+      var target = stat.dataset.target;
+      
+      // Handle non-numeric values
+      var matches = target.match(/^([^0-9]*)([0-9,]+)(.*)$/);
+      if (!matches) {
+        stat.textContent = target;
+        return;
+      }
+
+      var prefix = matches[1];
+      var number = parseInt(matches[2].replace(/,/g, ''), 10);
+      var suffix = matches[3];
+
+      if (prefersReducedMotion) {
+        stat.textContent = target;
+        return;
+      }
+
+      ScrollTrigger.create({
+        trigger: stat,
+        start: 'top 85%',
+        onEnter: function() {
+          gsap.fromTo(stat, 
+            { textContent: prefix + '0' + suffix },
+            {
+              textContent: prefix + number.toLocaleString() + suffix,
+              duration: 2,
+              ease: 'power2.out',
+              snap: { textContent: 1 },
+              onUpdate: function() {
+                var current = parseInt(this.targets()[0].textContent.replace(/[^0-9]/g, ''));
+                if (!isNaN(current)) {
+                  this.targets()[0].textContent = prefix + current.toLocaleString() + suffix;
+                }
+              }
+            }
+          );
+        },
+        once: true
       });
-      return;
-    }
-
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          setTimeout(function() {
-            entry.target.classList.add('is-revealed');
-          }, 100);
-        }
-      });
-    }, {
-      threshold: 0.4,
-      rootMargin: '0px 0px -100px 0px'
-    });
-
-    images.forEach(function(img) {
-      observer.observe(img);
     });
   }
 
@@ -212,7 +515,7 @@
       keyboardPanDelta: 80
     });
     
-    // Keyboard navigation for map
+    // Keyboard navigation
     var mapEl = document.getElementById('about-map');
     if (mapEl) {
       mapEl.addEventListener('keydown', function(e) {
@@ -224,12 +527,12 @@
       });
     }
 
-    // Use a grayscale tile layer
+    // Grayscale tile layer
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
       maxZoom: 19
     }).addTo(mapInstance);
 
-    // Load countries GeoJSON for shading
+    // Load countries GeoJSON
     fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
       .then(function(response) { return response.json(); })
       .then(function(data) {
@@ -243,11 +546,10 @@
   function addCountryLayer(geoData, visited, lived, current, stories) {
     if (!mapInstance) return;
 
-    // Color palette per spec - browns for lived/visited, terracotta for current
-    var colorLived = '#7D6B5D';     // --warm
-    var colorVisited = '#B8A99A';   // --warmLight
-    var colorCurrent = '#C9553D';   // --map-current (terracotta)
-    var colorDefault = '#E8E8E8';   // --map-default
+    var colorLived = '#7D6B5D';
+    var colorVisited = '#B8A99A';
+    var colorCurrent = '#C9553D';
+    var colorDefault = '#E8E8E8';
     
     var currentCountryBounds = null;
 
@@ -261,7 +563,6 @@
         var isVisited = visited.indexOf(iso) !== -1 || visited.indexOf(iso3) !== -1;
 
         if (isCurrent) {
-          // Store bounds for marker positioning
           currentCountryBounds = feature;
           return { fillColor: colorCurrent, fillOpacity: 0.7, color: colorCurrent, weight: 1.5 };
         } else if (isLived) {
@@ -313,32 +614,25 @@
       }
     }).addTo(mapInstance);
     
-    // Position the current location marker if we found the country
     if (current && currentCountryBounds) {
       positionCurrentMarker(currentCountryBounds);
     }
   }
   
-  // Position the pulsing marker on the current country
   function positionCurrentMarker(countryFeature) {
     var marker = document.querySelector('.map-current-marker');
     var mapContainer = document.querySelector('.about-map-container');
     if (!marker || !mapContainer || !mapInstance) return;
     
     try {
-      // Get the center of the country
       var bounds = L.geoJSON(countryFeature).getBounds();
       var center = bounds.getCenter();
-      
-      // Convert to pixel position
       var point = mapInstance.latLngToContainerPoint(center);
       
-      // Position the marker
       marker.style.left = point.x + 'px';
       marker.style.top = point.y + 'px';
       marker.classList.add('is-positioned');
       
-      // Update marker position on map move/zoom
       mapInstance.on('move zoom', function() {
         var newPoint = mapInstance.latLngToContainerPoint(center);
         marker.style.left = newPoint.x + 'px';
@@ -350,13 +644,12 @@
   }
 
   // ========================================
-  // BOOKSHELF
+  // BOOKSHELF - Enhanced 3D Effects
   // ========================================
   function initBookshelf() {
     var bookCovers = document.querySelectorAll('.book-cover-3d[role="button"]');
     if (!bookCovers.length) return;
 
-    // Keyboard accessibility for non-link books
     bookCovers.forEach(function(book) {
       book.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -376,7 +669,6 @@
       });
     });
 
-    // Touch support for mobile (all books)
     var allBooks = document.querySelectorAll('.book-slot');
     allBooks.forEach(function(book) {
       book.addEventListener('touchstart', function() {
@@ -391,7 +683,6 @@
       }, { passive: true });
     });
 
-    // Close book tooltips when clicking outside
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.book-slot')) {
         document.querySelectorAll('.book-slot.is-active').forEach(function(slot) {
@@ -402,90 +693,13 @@
   }
 
   // ========================================
-  // STATS COUNTERS
-  // ========================================
-  function initStatsCounters() {
-    var stats = document.querySelectorAll('.stat-number[data-target]');
-    if (!stats.length) return;
-
-    var animated = new Set();
-
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting && !animated.has(entry.target)) {
-          animated.add(entry.target);
-          animateCounter(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    stats.forEach(function(stat) {
-      observer.observe(stat);
-    });
-  }
-
-  function animateCounter(element) {
-    var target = element.dataset.target;
-    
-    // Handle non-numeric values (like "∞" or "500+")
-    var matches = target.match(/^([^0-9]*)([0-9,]+)(.*)$/);
-    if (!matches) {
-      element.textContent = target;
-      return;
-    }
-
-    var prefix = matches[1];
-    var number = parseInt(matches[2].replace(/,/g, ''), 10);
-    var suffix = matches[3];
-    var duration = 1500;
-    var startTime = null;
-
-    if (prefersReducedMotion) {
-      element.textContent = target;
-      return;
-    }
-
-    function animate(timestamp) {
-      if (!startTime) startTime = timestamp;
-      var progress = Math.min((timestamp - startTime) / duration, 1);
-      var eased = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
-      var current = Math.floor(number * eased);
-      
-      element.textContent = prefix + current.toLocaleString() + suffix;
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        element.textContent = target;
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-
-  // ========================================
-  // HERO LOADED STATE
-  // ========================================
-  function initHeroLoadState() {
-    var hero = document.querySelector('.about-hero');
-    if (!hero) return;
-
-    // Mark as loaded after brief delay for smooth entrance
-    setTimeout(function() {
-      hero.classList.add('is-loaded');
-    }, 100);
-  }
-
-  // ========================================
   // KEYBOARD ACCESSIBILITY
   // ========================================
   function initKeyboardNav() {
-    // Ensure all interactive elements are reachable
     var cards = document.querySelectorAll('.inspiration-card, .book-cover-3d');
     
     cards.forEach(function(card) {
       if (card.tagName !== 'A' && card.tagName !== 'BUTTON') {
-        // Non-link cards should not be focusable
         card.setAttribute('tabindex', '-1');
       }
     });
@@ -495,7 +709,6 @@
   // IMAGE ERROR HANDLING
   // ========================================
   function initImageErrorHandling() {
-    // Atmospheric images
     document.querySelectorAll('.atmo-full img, .about-quote-image-bg img').forEach(function(img) {
       img.addEventListener('error', function() {
         this.parentElement.classList.add('atmo--fallback');
@@ -503,7 +716,6 @@
       });
     });
 
-    // Interest images
     document.querySelectorAll('.interest-image img').forEach(function(img) {
       img.addEventListener('error', function() {
         this.style.display = 'none';
@@ -514,7 +726,6 @@
       });
     });
 
-    // Inspiration photos
     document.querySelectorAll('.inspiration-photo img').forEach(function(img) {
       img.addEventListener('error', function() {
         this.style.display = 'none';
@@ -525,7 +736,6 @@
       });
     });
 
-    // Book covers
     document.querySelectorAll('.book-cover-3d img').forEach(function(img) {
       img.addEventListener('error', function() {
         this.style.display = 'none';
@@ -539,29 +749,86 @@
   }
 
   // ========================================
-  // INITIALIZE
+  // FALLBACK FOR NO GSAP
   // ========================================
-  function init() {
-    // Scroll tracking
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+  function initFallback() {
+    // Basic reveal animations if GSAP not available
+    var revealElements = document.querySelectorAll('.reveal-up');
+    if (revealElements.length) {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.15 });
 
-    // Initialize components
-    initHeroCollage();
-    initHeroLoadState();
-    initReveals();
-    initImageReveals();
+      revealElements.forEach(function(el) {
+        observer.observe(el);
+      });
+    }
+
+    // Initialize other features
     initMap();
     initBookshelf();
-    initStatsCounters();
     initKeyboardNav();
     initImageErrorHandling();
   }
 
+  // ========================================
+  // INITIALIZE
+  // ========================================
+  function init() {
+    if (isInitialized) return;
+    isInitialized = true;
+
+    // Check if GSAP is available
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      console.warn('GSAP or ScrollTrigger not loaded. Falling back to basic animations.');
+      initFallback();
+      return;
+    }
+
+    // ========================================
+    // GSAP SETUP
+    // ========================================
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Set default easing for smoother animations
+    gsap.defaults({
+      ease: 'power2.out',
+      duration: 1
+    });
+
+    // Refresh ScrollTrigger on resize
+    ScrollTrigger.addEventListener('refresh', function() {
+      ScrollTrigger.refresh();
+    });
+
+    window.addEventListener('resize', function() {
+      ScrollTrigger.refresh();
+    });
+
+    // Initialize all features
+    initHero();
+    initAtmosphericImages();
+    initSectionReveals();
+    initStatsCounters();
+    initMap();
+    initBookshelf();
+    initKeyboardNav();
+    initImageErrorHandling();
+
+    // Refresh ScrollTrigger after everything is set up
+    ScrollTrigger.refresh();
+  }
+
+  // Start initialization
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
-    init();
+    // Small delay to ensure GSAP is loaded
+    setTimeout(init, 100);
   }
 
 })();

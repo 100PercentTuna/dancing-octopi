@@ -156,16 +156,8 @@
 
 /* ========================================
    PARALLAX SYSTEM
+   Now handled by GSAP ScrollTrigger for smooth, professional animations
    ======================================== */
-.parallax-slow {
-  transform: translateY(calc(var(--scroll-y, 0) * -0.15px));
-  will-change: transform;
-}
-
-.parallax-medium {
-  transform: translateY(calc(var(--scroll-y, 0) * -0.3px));
-  will-change: transform;
-}
 
 /* ========================================
    REVEAL ANIMATIONS
@@ -238,7 +230,7 @@
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
-  padding: var(--space-8) var(--space-4);
+  padding: var(--space-12) var(--space-4) var(--space-10);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -666,7 +658,7 @@
    BIO SECTION - Gallery wall text
    ======================================== */
 .about-bio {
-  padding: var(--space-15) var(--space-4);
+  padding: var(--space-20) var(--space-4) var(--space-15);
   max-width: var(--prose);
   margin: 0 auto;
   position: relative;
@@ -692,9 +684,10 @@
 
 .bio-text {
   font-family: var(--serif);
-  font-size: 19px;
-  line-height: 1.85;
+  font-size: 20px;
+  line-height: 1.9;
   color: var(--muted);
+  letter-spacing: 0.01em;
 }
 
 .bio-text p {
@@ -743,7 +736,7 @@
    BOOKSHELF - 3D book display
    ======================================== */
 .about-books {
-  padding: var(--space-10) var(--space-4) var(--space-15);
+  padding: var(--space-15) var(--space-4) var(--space-20);
   max-width: var(--wide);
   margin: 0 auto;
 }
@@ -883,7 +876,7 @@
    MAP SECTION
    ======================================== */
 .about-map {
-  padding: var(--space-10) var(--space-4) var(--space-15);
+  padding: var(--space-15) var(--space-4) var(--space-20);
   max-width: var(--wide);
   margin: 0 auto;
 }
@@ -1014,7 +1007,7 @@
    ======================================== */
 .about-interests {
   max-width: var(--wide);
-  margin: var(--space-15) auto;
+  margin: var(--space-20) auto;
   padding: 0 var(--space-4);
 }
 
@@ -1108,7 +1101,7 @@
    ======================================== */
 .about-inspirations {
   max-width: var(--wide);
-  margin: var(--space-15) auto;
+  margin: var(--space-20) auto;
   padding: 0 var(--space-4);
 }
 
@@ -1227,7 +1220,7 @@
    STATS SECTION
    ======================================== */
 .about-stats {
-  padding: var(--space-12) var(--space-4);
+  padding: var(--space-15) var(--space-4);
   background: var(--bgAlt);
   margin-top: calc(var(--section-overlap) * -1);
   margin-bottom: calc(var(--section-overlap) * -1);
@@ -1292,7 +1285,7 @@
    CONNECT SECTION
    ======================================== */
 .about-connect {
-  padding: var(--space-15) var(--space-4);
+  padding: var(--space-20) var(--space-4) var(--space-15);
   text-align: center;
 }
 
@@ -1551,10 +1544,7 @@
    REDUCED MOTION
    ======================================== */
 @media (prefers-reduced-motion: reduce) {
-  .parallax-slow,
-  .parallax-medium {
-    transform: none !important;
-  }
+  /* Parallax disabled on mobile for performance */
   
   .reveal-up {
     opacity: 1;
@@ -1624,10 +1614,7 @@
     filter: none;
   }
   
-  .parallax-slow,
-  .parallax-medium {
-    transform: none;
-  }
+  /* Parallax disabled on small screens for performance */
   
   .hero-scroll-hint,
   .map-current-marker__pulse {
