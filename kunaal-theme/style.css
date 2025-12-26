@@ -4417,15 +4417,33 @@ a[href*="dkpdfg"],
 
 .ledgerSend:disabled { opacity: 0.7; cursor: not-allowed; }
 
+.ledgerSend .btn-text,
 .ledgerSend .btn-loading,
-.ledgerSend .btn-success { display: none; }
+.ledgerSend .btn-success {
+  display: inline-block;
+}
 
-.ledgerSend.is-loading .btn-text { display: none; }
-.ledgerSend.is-loading .btn-loading { display: inline; }
-.ledgerSend.is-success { background: #0E7A3A; }
+.ledgerSend .btn-loading,
+.ledgerSend .btn-success { 
+  display: none; 
+}
+
+.ledgerSend.is-loading .btn-text { 
+  display: none; 
+}
+.ledgerSend.is-loading .btn-loading { 
+  display: inline-block; 
+}
+.ledgerSend.is-success { 
+  background: #0E7A3A; 
+}
 .ledgerSend.is-success .btn-text,
-.ledgerSend.is-success .btn-loading { display: none; }
-.ledgerSend.is-success .btn-success { display: inline; }
+.ledgerSend.is-success .btn-loading { 
+  display: none; 
+}
+.ledgerSend.is-success .btn-success { 
+  display: inline-block; 
+}
 
 .contact-ledger .form-status {
   grid-column: 1 / -1;

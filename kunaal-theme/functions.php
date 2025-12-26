@@ -2451,10 +2451,19 @@ function kunaal_get_places_v22() {
         $visited = array_filter($visited);
     }
     
+    // Ensure current is an array (even if empty)
+    $current_array = array();
+    if (!empty($current)) {
+        $current_trimmed = strtoupper(trim($current));
+        if (!empty($current_trimmed)) {
+            $current_array = array($current_trimmed);
+        }
+    }
+    
     return array(
         'lived' => $lived,
         'visited' => $visited,
-        'current' => strtoupper(trim($current)),
+        'current' => $current_array,
     );
 }
 

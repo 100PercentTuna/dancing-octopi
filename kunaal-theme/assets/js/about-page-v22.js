@@ -317,14 +317,20 @@
     function draw() {
       // Get places data from WordPress localization
       var placesData = (window.kunaalAboutV22 && window.kunaalAboutV22.places) || {
-        current: ['SGP'],
-        lived: ['USA', 'IND', 'GBR'],
-        visited: ['THA', 'PHL', 'CHE', 'CAN', 'MYS', 'MDV', 'BRA', 'MEX', 'ZAF']
+        current: [],
+        lived: [],
+        visited: []
       };
 
+      // Ensure all are arrays
       var current = Array.isArray(placesData.current) ? placesData.current : (placesData.current ? [placesData.current] : []);
-      var lived = Array.isArray(placesData.lived) ? placesData.lived : [];
-      var visited = Array.isArray(placesData.visited) ? placesData.visited : [];
+      var lived = Array.isArray(placesData.lived) ? placesData.lived : (placesData.lived ? [placesData.lived] : []);
+      var visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
+      
+      // Debug log (remove in production if needed)
+      if (current.length === 0 && lived.length === 0 && visited.length === 0) {
+        console.log('About page: No places data found. Check Customizer settings.');
+      }
 
       // Country name mapping (expandable)
       var countryNames = {

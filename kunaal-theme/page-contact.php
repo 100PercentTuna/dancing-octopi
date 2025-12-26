@@ -186,6 +186,16 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
     
     if (!btn) return;
     
+    // Check if kunaalTheme is available
+    if (typeof kunaalTheme === 'undefined' || !kunaalTheme.ajaxUrl) {
+        console.error('Contact form: kunaalTheme.ajaxUrl is not defined');
+        if (status) {
+            status.className = 'form-status is-error';
+            status.textContent = 'Form configuration error. Please refresh the page.';
+        }
+        return;
+    }
+    
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -202,9 +212,15 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
         
         fetch(kunaalTheme.ajaxUrl, {
             method: 'POST',
-            body: formData
+            body: formData,
+            credentials: 'same-origin'
         })
-        .then(function(response) { return response.json(); })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(function(data) {
             btn.classList.remove('is-loading');
             
@@ -225,7 +241,8 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
                 btn.disabled = false;
             }
         })
-        .catch(function() {
+        .catch(function(error) {
+            console.error('Contact form error:', error);
             btn.classList.remove('is-loading');
             if (status) {
                 status.className = 'form-status is-error';
