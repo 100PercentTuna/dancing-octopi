@@ -71,10 +71,18 @@
       const toggle = document.querySelector('.theme-toggle');
       if (toggle) {
         toggle.setAttribute('aria-pressed', theme === 'dark');
-        const icon = toggle.querySelector('.theme-toggle-icon');
-        if (icon) {
-          icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-          icon.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        const moonIcon = toggle.querySelector('.theme-toggle-icon-moon');
+        const sunIcon = toggle.querySelector('.theme-toggle-icon-sun');
+        if (moonIcon && sunIcon) {
+          if (theme === 'dark') {
+            moonIcon.style.display = 'none';
+            sunIcon.style.display = 'block';
+            toggle.setAttribute('aria-label', 'Switch to light mode');
+          } else {
+            moonIcon.style.display = 'block';
+            sunIcon.style.display = 'none';
+            toggle.setAttribute('aria-label', 'Switch to dark mode');
+          }
         }
       }
     }
