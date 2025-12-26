@@ -34,7 +34,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: sftp
+          port: 22
           local-dir: ./kunaal-theme/
           server-dir: /wp-content/themes/kunaal-theme/
           dangerous-clean-slate: false
