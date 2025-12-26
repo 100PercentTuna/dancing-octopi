@@ -704,7 +704,10 @@
         var title = this.alt || 'Book';
         var placeholder = document.createElement('div');
         placeholder.className = 'book-cover-placeholder';
-        placeholder.innerHTML = '<span>' + title + '</span>';
+        // Escape title to prevent XSS from alt attribute
+        var span = document.createElement('span');
+        span.textContent = title;
+        placeholder.appendChild(span);
         this.parentElement.appendChild(placeholder);
       });
     });

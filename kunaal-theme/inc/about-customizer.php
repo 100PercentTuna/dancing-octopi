@@ -671,8 +671,8 @@ add_action('customize_register', 'kunaal_about_customizer_v2', 20);
 function kunaal_get_books_v2() {
     $books = array();
     for ($i = 1; $i <= 8; $i++) {
-        $cover_id = get_theme_mod("kunaal_book_{$i}_cover", 0);
-        $title = get_theme_mod("kunaal_book_{$i}_title", '');
+        $cover_id = kunaal_mod("kunaal_book_{$i}_cover", 0);
+        $title = kunaal_mod("kunaal_book_{$i}_title", '');
         
         // Only add if title exists
         if (!empty($title)) {
@@ -680,8 +680,8 @@ function kunaal_get_books_v2() {
             $books[] = array(
                 'cover' => $cover_url,
                 'title' => $title,
-                'author' => get_theme_mod("kunaal_book_{$i}_author", ''),
-                'link' => get_theme_mod("kunaal_book_{$i}_url", ''),
+                'author' => kunaal_mod("kunaal_book_{$i}_author", ''),
+                'link' => kunaal_mod("kunaal_book_{$i}_url", ''),
             );
         }
     }
@@ -694,10 +694,10 @@ function kunaal_get_books_v2() {
 function kunaal_get_interests_v2() {
     $interests = array();
     for ($i = 1; $i <= 20; $i++) {
-        $name = get_theme_mod("kunaal_interest_{$i}_name", '');
+        $name = kunaal_mod("kunaal_interest_{$i}_name", '');
         
         if (!empty($name)) {
-            $image_id = get_theme_mod("kunaal_interest_{$i}_image", 0);
+            $image_id = kunaal_mod("kunaal_interest_{$i}_image", 0);
             $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
             $interests[] = array(
                 'name' => $name,
@@ -714,17 +714,17 @@ function kunaal_get_interests_v2() {
 function kunaal_get_inspirations_v2() {
     $inspirations = array();
     for ($i = 1; $i <= 8; $i++) {
-        $name = get_theme_mod("kunaal_inspiration_{$i}_name", '');
+        $name = kunaal_mod("kunaal_inspiration_{$i}_name", '');
         
         if (!empty($name)) {
-            $photo_id = get_theme_mod("kunaal_inspiration_{$i}_photo", 0);
+            $photo_id = kunaal_mod("kunaal_inspiration_{$i}_photo", 0);
             $photo_url = $photo_id ? wp_get_attachment_image_url($photo_id, 'medium') : '';
             $inspirations[] = array(
                 'photo' => $photo_url,
                 'name' => $name,
-                'role' => get_theme_mod("kunaal_inspiration_{$i}_role", ''),
-                'note' => get_theme_mod("kunaal_inspiration_{$i}_note", ''),
-                'link' => get_theme_mod("kunaal_inspiration_{$i}_url", ''),
+                'role' => kunaal_mod("kunaal_inspiration_{$i}_role", ''),
+                'note' => kunaal_mod("kunaal_inspiration_{$i}_note", ''),
+                'link' => kunaal_mod("kunaal_inspiration_{$i}_url", ''),
             );
         }
     }
@@ -737,8 +737,8 @@ function kunaal_get_inspirations_v2() {
 function kunaal_get_stats_v2() {
     $stats = array();
     for ($i = 1; $i <= 4; $i++) {
-        $value = get_theme_mod("kunaal_stat_{$i}_value", '');
-        $label = get_theme_mod("kunaal_stat_{$i}_label", '');
+        $value = kunaal_mod("kunaal_stat_{$i}_value", '');
+        $label = kunaal_mod("kunaal_stat_{$i}_label", '');
         
         if (!empty($value) && !empty($label)) {
             $stats[] = array(
@@ -756,12 +756,12 @@ function kunaal_get_stats_v2() {
 function kunaal_get_map_stories_v2() {
     $stories = array();
     for ($i = 1; $i <= 10; $i++) {
-        $country = get_theme_mod("kunaal_map_story_{$i}_country", '');
+        $country = kunaal_mod("kunaal_map_story_{$i}_country", '');
         
         if (!empty($country)) {
             $stories[strtoupper(trim($country))] = array(
-                'years' => get_theme_mod("kunaal_map_story_{$i}_years", ''),
-                'text' => get_theme_mod("kunaal_map_story_{$i}_text", ''),
+                'years' => kunaal_mod("kunaal_map_story_{$i}_years", ''),
+                'text' => kunaal_mod("kunaal_map_story_{$i}_text", ''),
             );
         }
     }
@@ -774,7 +774,7 @@ function kunaal_get_map_stories_v2() {
 function kunaal_get_hero_photos_v2() {
     $photos = array();
     for ($i = 1; $i <= 4; $i++) {
-        $photo_id = get_theme_mod("kunaal_about_hero_photo_{$i}", 0);
+        $photo_id = kunaal_mod("kunaal_about_hero_photo_{$i}", 0);
         if ($photo_id) {
             $photo_url = wp_get_attachment_image_url($photo_id, 'large');
             if ($photo_url) {
@@ -791,9 +791,9 @@ function kunaal_get_hero_photos_v2() {
 function kunaal_get_atmo_images_v2($position = 'all') {
     $images = array();
     for ($i = 1; $i <= 12; $i++) {
-        $image_id = get_theme_mod("kunaal_atmo_{$i}_image", 0);
-        $type = get_theme_mod("kunaal_atmo_{$i}_type", 'hidden');
-        $pos = get_theme_mod("kunaal_atmo_{$i}_position", 'auto');
+        $image_id = kunaal_mod("kunaal_atmo_{$i}_image", 0);
+        $type = kunaal_mod("kunaal_atmo_{$i}_type", 'hidden');
+        $pos = kunaal_mod("kunaal_atmo_{$i}_position", 'auto');
         
         if ($image_id && $type !== 'hidden') {
             if ($position === 'all' || $pos === $position || $pos === 'auto') {
@@ -801,11 +801,11 @@ function kunaal_get_atmo_images_v2($position = 'all') {
                     'image' => wp_get_attachment_image_url($image_id, 'full'),
                     'type' => $type,
                     'position' => $pos,
-                    'clip' => get_theme_mod("kunaal_atmo_{$i}_clip", 'straight'),
-                    'has_quote' => get_theme_mod("kunaal_atmo_{$i}_has_quote", false),
-                    'quote' => get_theme_mod("kunaal_atmo_{$i}_quote", ''),
-                    'quote_attr' => get_theme_mod("kunaal_atmo_{$i}_quote_attr", ''),
-                    'caption' => get_theme_mod("kunaal_atmo_{$i}_caption", ''),
+                    'clip' => kunaal_mod("kunaal_atmo_{$i}_clip", 'straight'),
+                    'has_quote' => kunaal_mod("kunaal_atmo_{$i}_has_quote", false),
+                    'quote' => kunaal_mod("kunaal_atmo_{$i}_quote", ''),
+                    'quote_attr' => kunaal_mod("kunaal_atmo_{$i}_quote_attr", ''),
+                    'caption' => kunaal_mod("kunaal_atmo_{$i}_caption", ''),
                 );
             }
         }

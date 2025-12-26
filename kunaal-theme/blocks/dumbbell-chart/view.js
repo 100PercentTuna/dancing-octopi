@@ -4,6 +4,13 @@
 (function() {
   'use strict';
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
   function initDumbbell(block) {
     const rows = block.querySelectorAll('.dumbbell-row');
     const tooltip = createTooltip();
@@ -21,11 +28,12 @@
       const endText = row.querySelector('.dumbbell-value-end')?.textContent;
       const gapText = row.querySelector('.dumbbell-gap')?.textContent;
       
+      // Escape category from data attribute to prevent XSS
       tooltip.innerHTML = `
-        <strong>${category}</strong><br>
-        Start: ${startText}<br>
-        End: ${endText}<br>
-        Gap: ${gapText || 'N/A'}
+        <strong>${escapeHtml(category)}</strong><br>
+        Start: ${escapeHtml(startText || '')}<br>
+        End: ${escapeHtml(endText || '')}<br>
+        Gap: ${escapeHtml(gapText || 'N/A')}
       `;
       tooltip.classList.add('visible');
       positionTooltip(row, tooltip);

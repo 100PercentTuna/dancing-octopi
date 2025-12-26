@@ -5,50 +5,16 @@
 (function() {
   'use strict';
 
-  let leafletLoaded = false;
-  let leafletLoading = false;
-  let leafletCSSLoaded = false;
-
+  // Use centralized library loader
   async function loadLeaflet() {
-    if (leafletLoaded && leafletCSSLoaded) return window.L;
-
-    // Load CSS first
-    if (!leafletCSSLoaded) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      document.head.appendChild(link);
-      leafletCSSLoaded = true;
+    if (window.kunaalLibLoader && window.kunaalLibLoader.loadLeaflet) {
+      return window.kunaalLibLoader.loadLeaflet();
     }
-
-    if (leafletLoaded) return window.L;
-    if (leafletLoading) {
-      return new Promise(resolve => {
-        const checkInterval = setInterval(() => {
-          if (leafletLoaded) {
-            clearInterval(checkInterval);
-            resolve(window.L);
-          }
-        }, 100);
-      });
+    // Fallback if loader not available
+    if (window.L) {
+      return Promise.resolve(window.L);
     }
-
-    leafletLoading = true;
-    
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      script.onload = () => {
-        leafletLoaded = true;
-        leafletLoading = false;
-        resolve(window.L);
-      };
-      script.onerror = () => {
-        leafletLoading = false;
-        reject(new Error('Failed to load Leaflet.js'));
-      };
-      document.head.appendChild(script);
-    });
+    return Promise.reject(new Error('Leaflet loader not available'));
   }
 
   async function initDataMap(block) {

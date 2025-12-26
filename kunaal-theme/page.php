@@ -9,7 +9,7 @@
 get_header();
 ?>
 
-<main class="article container">
+<main id="main" class="article container">
   <?php while (have_posts()) : the_post(); ?>
     <article class="pageContent">
       <header class="articleHeader reveal">
@@ -22,7 +22,7 @@ get_header();
         <?php 
         // If this is the Contact page, show contact info from Customizer
         if (is_page('contact')) :
-          $email = get_theme_mod('kunaal_contact_email', '');
+          $email = kunaal_mod('kunaal_contact_email', '');
           if ($email) :
         ?>
           <div class="contactInfo">

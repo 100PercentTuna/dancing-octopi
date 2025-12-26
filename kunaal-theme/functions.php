@@ -17,7 +17,7 @@
  *
  * @package Kunaal_Theme
  * @since 1.0.0
- * @version 4.11.2
+ * @version 4.20.0
  */
 
 if (!defined('ABSPATH')) {
@@ -28,7 +28,7 @@ if (!defined('ABSPATH')) {
 // 1. CONSTANTS & INCLUDES
 // ========================================
 
-define('KUNAAL_THEME_VERSION', '4.12.0');
+define('KUNAAL_THEME_VERSION', '4.20.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -40,6 +40,9 @@ require_once KUNAAL_THEME_DIR . '/inc/about-customizer.php';
 
 // Block Registration
 require_once KUNAAL_THEME_DIR . '/inc/blocks.php';
+
+// Helper Functions
+require_once KUNAAL_THEME_DIR . '/inc/helpers.php';
 
 /**
  * Theme Setup
@@ -120,20 +123,30 @@ function kunaal_enqueue_assets() {
         true
     );
 
+    // Centralized library loader (prevents duplicate loads)
+    wp_enqueue_script(
+        'kunaal-lib-loader',
+        KUNAAL_THEME_URI . '/assets/js/lib-loader.js',
+        array(),
+        KUNAAL_THEME_VERSION,
+        true
+    );
+
     // Localize script with data
     wp_localize_script('kunaal-theme-main', 'kunaalTheme', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('kunaal_theme_nonce'),
+        'pdfNonce' => wp_create_nonce('kunaal_pdf_nonce'),
         'homeUrl' => home_url('/'),
-        'shareText' => get_theme_mod('kunaal_share_text', ''),
-        'twitterHandle' => get_theme_mod('kunaal_twitter_handle', ''),
-        'linkedinUrl' => get_theme_mod('kunaal_linkedin_handle', ''),
-        'authorName' => get_theme_mod('kunaal_author_first_name', 'Kunaal') . ' ' . get_theme_mod('kunaal_author_last_name', 'Wadhwa'),
+        'shareText' => kunaal_mod('kunaal_share_text', ''),
+        'twitterHandle' => kunaal_mod('kunaal_twitter_handle', ''),
+        'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
+        'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
     ));
     
     // About page and Contact page assets
     // Template detection + explicit page selection to avoid slug brittleness
-    $about_page_id = (int) get_theme_mod('kunaal_about_page_id', 0);
+    $about_page_id = (int) kunaal_mod('kunaal_about_page_id', 0);
     $is_about_page = is_page_template('page-about.php') || ($about_page_id && is_page($about_page_id)) || is_page('about');
     $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
     
@@ -166,13 +179,13 @@ function kunaal_enqueue_assets() {
             KUNAAL_THEME_VERSION
         );
         
-        // GSAP Core (required for ScrollTrigger)
+        // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
         wp_enqueue_script(
             'gsap-core',
             'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
             array(),
             '3.12.5',
-            false // Load in head for better performance
+            true // Load in footer to avoid blocking render
         );
         
         // GSAP ScrollTrigger Plugin
@@ -181,7 +194,7 @@ function kunaal_enqueue_assets() {
             'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js',
             array('gsap-core'),
             '3.12.5',
-            false
+            true // Load in footer
         );
         
         // Register GSAP for use
@@ -994,7 +1007,7 @@ function kunaal_customize_register($wp_customize) {
     
     // Subscribe Description
     $wp_customize->add_setting('kunaal_subscribe_description', array(
-        'default' => 'Get notified when new essays and jottings are published.',
+        'default' => __('Get notified when new essays and jottings are published.', 'kunaal-theme'),
         'sanitize_callback' => 'sanitize_text_field',
     ));
     $wp_customize->add_control('kunaal_subscribe_description', array(
@@ -1297,22 +1310,22 @@ function kunaal_connect_template_redirect() {
 
     $platforms = array(
         'telegram' => array(
-            'enabled' => (bool) get_theme_mod('kunaal_contact_messenger_telegram_enabled', false),
-            'mode' => get_theme_mod('kunaal_contact_messenger_telegram_mode', 'redirect'),
-            'target' => get_theme_mod('kunaal_contact_messenger_telegram_target', ''),
-            'slug' => sanitize_title(get_theme_mod('kunaal_contact_messenger_telegram_redirect_slug', 'telegram')),
+            'enabled' => (bool) kunaal_mod('kunaal_contact_messenger_telegram_enabled', false),
+            'mode' => kunaal_mod('kunaal_contact_messenger_telegram_mode', 'redirect'),
+            'target' => kunaal_mod('kunaal_contact_messenger_telegram_target', ''),
+            'slug' => sanitize_title(kunaal_mod('kunaal_contact_messenger_telegram_redirect_slug', 'telegram')),
         ),
         'line' => array(
-            'enabled' => (bool) get_theme_mod('kunaal_contact_messenger_line_enabled', false),
-            'mode' => get_theme_mod('kunaal_contact_messenger_line_mode', 'redirect'),
-            'target' => get_theme_mod('kunaal_contact_messenger_line_target', ''),
-            'slug' => sanitize_title(get_theme_mod('kunaal_contact_messenger_line_redirect_slug', 'line')),
+            'enabled' => (bool) kunaal_mod('kunaal_contact_messenger_line_enabled', false),
+            'mode' => kunaal_mod('kunaal_contact_messenger_line_mode', 'redirect'),
+            'target' => kunaal_mod('kunaal_contact_messenger_line_target', ''),
+            'slug' => sanitize_title(kunaal_mod('kunaal_contact_messenger_line_redirect_slug', 'line')),
         ),
         'viber' => array(
-            'enabled' => (bool) get_theme_mod('kunaal_contact_messenger_viber_enabled', false),
-            'mode' => get_theme_mod('kunaal_contact_messenger_viber_mode', 'redirect'),
-            'target' => get_theme_mod('kunaal_contact_messenger_viber_target', ''),
-            'slug' => sanitize_title(get_theme_mod('kunaal_contact_messenger_viber_redirect_slug', 'viber')),
+            'enabled' => (bool) kunaal_mod('kunaal_contact_messenger_viber_enabled', false),
+            'mode' => kunaal_mod('kunaal_contact_messenger_viber_mode', 'redirect'),
+            'target' => kunaal_mod('kunaal_contact_messenger_viber_target', ''),
+            'slug' => sanitize_title(kunaal_mod('kunaal_contact_messenger_viber_redirect_slug', 'viber')),
         ),
     );
 
@@ -1363,8 +1376,8 @@ add_action('after_switch_theme', 'kunaal_flush_rewrite_on_switch');
  * Helper: Get initials
  */
 function kunaal_get_initials() {
-    $first = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-    $last = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+    $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+    $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
     return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
 }
 
@@ -1372,19 +1385,19 @@ function kunaal_get_initials() {
  * Helper: Output Subscribe Section
  */
 function kunaal_subscribe_section() {
-    if (!get_theme_mod('kunaal_subscribe_enabled', false)) {
+    if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
         return;
     }
     
     // Check location setting - only show bottom if 'bottom' or 'both'
-    $sub_location = get_theme_mod('kunaal_subscribe_location', 'both');
+    $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
     if (!in_array($sub_location, array('bottom', 'both'))) {
         return;
     }
     
-    $heading = get_theme_mod('kunaal_subscribe_heading', 'Stay updated');
-    $description = get_theme_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
-    $form_action = get_theme_mod('kunaal_subscribe_form_action', '');
+    $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
+    $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
+    $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
     
     ?>
     <section class="subscribe-section reveal">
@@ -1437,14 +1450,101 @@ function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
 }
 
 /**
+ * Helper: Render atmosphere images for About page
+ * Moved from page-about.php template to prevent side effects
+ */
+if (!function_exists('kunaal_render_atmo_images')) {
+    function kunaal_render_atmo_images($position, $images) {
+        if (empty($images)) {
+            return;
+        }
+        
+        foreach ($images as $img) {
+            if ($img['position'] !== $position && $img['position'] !== 'auto') {
+                continue;
+            }
+            if ($img['type'] === 'hidden') {
+                continue;
+            }
+            
+            $clip_class = '';
+            switch ($img['clip']) {
+                case 'angle_bottom':
+                    $clip_class = 'clip-angle-bottom';
+                    break;
+                case 'angle_top':
+                    $clip_class = 'clip-angle-top';
+                    break;
+                case 'angle_both':
+                    $clip_class = 'clip-angle-both';
+                    break;
+            }
+            
+            if ($img['has_quote'] && !empty($img['quote'])) {
+                ?>
+                <section class="about-quote-image about-layer-image">
+                    <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
+                        <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image">
+                    </div>
+                    <div class="about-quote-content reveal-up">
+                        <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
+                        <?php if (!empty($img['quote_attr'])) : ?>
+                        <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </section>
+                <?php
+            } else {
+                ?>
+                <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
+                    <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
+                    <?php if (!empty($img['caption'])) : ?>
+                    <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
+                    <?php endif; ?>
+                </div>
+                <?php
+            }
+        }
+    }
+}
+
+/**
+ * Get all theme mods (cached for request lifetime)
+ * 
+ * @return array All theme modification values
+ */
+function kunaal_get_theme_mods() {
+    static $mods = null;
+    if ($mods === null) {
+        $mods = get_theme_mods();
+    }
+    return $mods;
+}
+
+/**
+ * Get theme mod with caching
+ * 
+ * @param string $key Theme mod key
+ * @param mixed $default Default value if not set
+ * @return mixed Theme mod value or default
+ */
+function kunaal_mod($key, $default = '') {
+    $mods = kunaal_get_theme_mods();
+    return isset($mods[$key]) ? $mods[$key] : $default;
+}
+
+/**
  * AJAX: Filter content
  */
 function kunaal_filter_content() {
-    // Don't die on nonce failure - just log and continue for public pages
-    $nonce_valid = isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce');
-    
-    // For logged-in admin users, we might want stricter checking
-    // But for public filtering, allow it to work
+    // Verify nonce - this is a public endpoint but we still validate nonce for CSRF protection
+    // If nonce is provided, it must be valid; if not provided, we allow it (for backward compatibility)
+    if (isset($_POST['nonce'])) {
+        if (!wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+            wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
+            wp_die();
+        }
+    }
     
     $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
     
@@ -1463,6 +1563,8 @@ function kunaal_filter_content() {
     $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
     $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
     $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
+    // Limit per_page to prevent DoS via massive queries
+    $per_page = min($per_page, 100);
     
     $args = array(
         'post_type' => $post_type,
@@ -1506,6 +1608,11 @@ function kunaal_filter_content() {
     $posts_data = array();
     
     if ($query->have_posts()) {
+        // Prime caches to prevent N+1 queries
+        $post_ids = wp_list_pluck($query->posts, 'ID');
+        update_post_meta_cache($post_ids);
+        update_object_term_cache($post_ids, 'topic');
+        
         while ($query->have_posts()) {
             $query->the_post();
             $post_id = get_the_ID();
@@ -1541,6 +1648,7 @@ function kunaal_filter_content() {
         'pages' => $query->max_num_pages,
         'page' => $page,
     ));
+    wp_die(); // Prevent code execution after JSON response
 }
 add_action('wp_ajax_kunaal_filter', 'kunaal_filter_content');
 add_action('wp_ajax_nopriv_kunaal_filter', 'kunaal_filter_content');
@@ -1774,8 +1882,8 @@ function kunaal_add_open_graph_tags() {
     $title = get_the_title($post->ID);
     $url = get_permalink($post->ID);
     $site_name = get_bloginfo('name');
-    $author_first = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-    $author_last = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+    $author_first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+    $author_last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
     $author_name = $author_first . ' ' . $author_last;
     
     // Get description
@@ -1795,7 +1903,7 @@ function kunaal_add_open_graph_tags() {
     }
     
     // Twitter handle
-    $twitter_handle = get_theme_mod('kunaal_twitter_handle', '');
+    $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
     
     ?>
     <!-- Open Graph Meta Tags -->
@@ -1869,7 +1977,7 @@ function kunaal_handle_contact_form() {
     }
     
     // Get recipient email
-    $to_email = get_theme_mod('kunaal_contact_recipient_email', get_option('admin_email'));
+    $to_email = kunaal_mod('kunaal_contact_recipient_email', get_option('admin_email'));
     if (!is_email($to_email)) {
         $to_email = get_option('admin_email');
     }
@@ -1897,6 +2005,7 @@ function kunaal_handle_contact_form() {
     } else {
         wp_send_json_error(array('message' => 'Sorry, there was an error sending your message. Please try emailing directly.'));
     }
+    wp_die(); // Prevent code execution after JSON response
 }
 add_action('wp_ajax_kunaal_contact_form', 'kunaal_handle_contact_form');
 add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
@@ -1961,4 +2070,16 @@ function kunaal_enqueue_inline_formats_frontend() {
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');
+
+/**
+ * Add defer attribute to non-critical scripts for better performance
+ */
+function kunaal_add_defer_to_scripts($tag, $handle, $src) {
+    $defer_scripts = array('gsap-core', 'gsap-scrolltrigger', 'kunaal-lazy-blocks', 'kunaal-about-page');
+    if (in_array($handle, $defer_scripts)) {
+        return str_replace(' src', ' defer src', $tag);
+    }
+    return $tag;
+}
+add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 3);
 

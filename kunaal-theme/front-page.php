@@ -41,7 +41,7 @@ $shown_jottings = $jottings_query->post_count;
         <?php if (!empty($all_topics)) : ?>
         <div class="topicSelect" id="topicsWrap" aria-label="Filter by topic">
           <button class="topicDropdownBtn" id="topicBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-            <span class="topicSummary" id="topicSummary">all topics</span>
+            <span class="topicSummary" id="topicSummary"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
             <svg class="caret" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -49,7 +49,7 @@ $shown_jottings = $jottings_query->post_count;
           <div class="topicDropdown" id="topicMenu" role="listbox" aria-multiselectable="true">
             <div class="topicOpt" data-tag="__ALL__" role="option" aria-selected="true">
               <input type="checkbox" checked tabindex="-1" />
-              <span class="tName">all topics</span>
+              <span class="tName"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
             </div>
             <div class="topicDivider"></div>
             <?php foreach ($all_topics as $topic) : ?>
@@ -65,9 +65,9 @@ $shown_jottings = $jottings_query->post_count;
         
         <!-- Sort -->
         <select class="modernSelect" id="sortSelect" aria-label="Sort by">
-          <option value="new">newest first</option>
-          <option value="old">oldest first</option>
-          <option value="title">alphabetical</option>
+          <option value="new"><?php esc_html_e('newest first', 'kunaal-theme'); ?></option>
+          <option value="old"><?php esc_html_e('oldest first', 'kunaal-theme'); ?></option>
+          <option value="title"><?php esc_html_e('alphabetical', 'kunaal-theme'); ?></option>
         </select>
         
         <!-- Search -->
@@ -75,11 +75,11 @@ $shown_jottings = $jottings_query->post_count;
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
           </svg>
-          <input type="search" class="searchInput" id="searchInput" placeholder="search…" autocomplete="off" />
+          <input type="search" class="searchInput" id="searchInput" placeholder="<?php esc_attr_e('search…', 'kunaal-theme'); ?>" autocomplete="off" />
         </div>
         
         <!-- Reset -->
-        <button class="resetBtn" id="resetBtn" type="button">reset</button>
+        <button class="resetBtn" id="resetBtn" type="button"><?php esc_html_e('reset', 'kunaal-theme'); ?></button>
       </div>
       
       <!-- Filter toggle button (RIGHT SIDE, matches reference) -->
@@ -87,26 +87,32 @@ $shown_jottings = $jottings_query->post_count;
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <path d="M3 6h18M7 12h10M10 18h4"/>
         </svg>
-        <span>filter</span>
+        <span><?php esc_html_e('filter', 'kunaal-theme'); ?></span>
       </button>
     </div>
   </div>
 
   <!-- Essays Section -->
-  <section class="section" id="essays" aria-label="Essays">
+  <section class="section" id="essays" aria-label="<?php esc_attr_e('Essays', 'kunaal-theme'); ?>">
     <div class="sectionHead">
-      <h2>Essays</h2>
+      <h2><?php esc_html_e('Essays', 'kunaal-theme'); ?></h2>
       <span class="sectionCount">
         <span id="essayCountShown"><?php echo esc_html($shown_essays); ?></span> 
-        <span id="essayLabel"><?php echo $shown_essays === 1 ? 'essay' : 'essays'; ?></span>
+        <span id="essayLabel"><?php echo $shown_essays === 1 ? esc_html__('essay', 'kunaal-theme') : esc_html__('essays', 'kunaal-theme'); ?></span>
         <?php if ($total_essays > 6) : ?>
           &nbsp;&middot;&nbsp;
-          <a href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>" class="uBlue">more &rarr;</a>
+          <a href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>" class="uBlue"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
         <?php endif; ?>
       </span>
     </div>
 
     <?php if ($essays_query->have_posts()) : ?>
+      <?php
+      // Prime caches to prevent N+1 queries
+      $essay_ids = wp_list_pluck($essays_query->posts, 'ID');
+      update_post_meta_cache($essay_ids);
+      update_object_term_cache($essay_ids, 'topic');
+      ?>
       <div class="grid" id="essayGrid" role="list">
         <?php while ($essays_query->have_posts()) : $essays_query->the_post(); ?>
           <?php
@@ -171,26 +177,32 @@ $shown_jottings = $jottings_query->post_count;
         <?php endwhile; ?>
       </div>
     <?php else : ?>
-      <p class="no-posts">No essays yet.</p>
+      <p class="no-posts"><?php esc_html_e('No essays yet.', 'kunaal-theme'); ?></p>
     <?php endif; ?>
     <?php wp_reset_postdata(); ?>
   </section>
 
   <!-- Jottings Section -->
-  <section class="section" id="jottings" aria-label="Jottings">
+  <section class="section" id="jottings" aria-label="<?php esc_attr_e('Jottings', 'kunaal-theme'); ?>">
     <div class="sectionHead">
-      <h2>Jottings</h2>
+      <h2><?php esc_html_e('Jottings', 'kunaal-theme'); ?></h2>
       <span class="sectionCount">
         <span id="jotCountShown"><?php echo esc_html($shown_jottings); ?></span>
-        <span id="jotLabel"><?php echo $shown_jottings === 1 ? 'quick jotted-down rough idea' : 'quick jotted-down rough ideas'; ?></span>
+        <span id="jotLabel"><?php echo $shown_jottings === 1 ? esc_html__('quick jotted-down rough idea', 'kunaal-theme') : esc_html__('quick jotted-down rough ideas', 'kunaal-theme'); ?></span>
         <?php if ($total_jottings > 6) : ?>
           &nbsp;&middot;&nbsp;
-          <a href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>" class="uBlue">more &rarr;</a>
+          <a href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>" class="uBlue"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
         <?php endif; ?>
       </span>
     </div>
 
     <?php if ($jottings_query->have_posts()) : ?>
+      <?php
+      // Prime caches to prevent N+1 queries
+      $jotting_ids = wp_list_pluck($jottings_query->posts, 'ID');
+      update_post_meta_cache($jotting_ids);
+      update_object_term_cache($jotting_ids, 'topic');
+      ?>
       <div class="ledger" id="jotList" role="list">
         <?php while ($jottings_query->have_posts()) : $jottings_query->the_post(); ?>
           <?php
@@ -226,7 +238,7 @@ $shown_jottings = $jottings_query->post_count;
         <?php endwhile; ?>
       </div>
     <?php else : ?>
-      <p class="no-posts">No jottings yet.</p>
+      <p class="no-posts"><?php esc_html_e('No jottings yet.', 'kunaal-theme'); ?></p>
     <?php endif; ?>
     <?php wp_reset_postdata(); ?>
   </section>

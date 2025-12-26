@@ -1,0 +1,203 @@
+<?php
+/**
+ * Helper Functions
+ * 
+ * @package Kunaal_Theme
+ * @version 4.20.0
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Helper: Get initials
+ */
+function kunaal_get_initials() {
+    $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+    $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
+    return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
+}
+
+/**
+ * Helper: Output Subscribe Section
+ */
+function kunaal_subscribe_section() {
+    if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
+        return;
+    }
+    
+    // Check location setting - only show bottom if 'bottom' or 'both'
+    $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
+    if (!in_array($sub_location, array('bottom', 'both'))) {
+        return;
+    }
+    
+    $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
+    $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
+    $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
+    
+    ?>
+    <section class="subscribe-section reveal">
+        <h3><?php echo esc_html($heading); ?></h3>
+        <p><?php echo esc_html($description); ?></p>
+        <form class="subscribe-form" action="<?php echo esc_url($form_action); ?>" method="post">
+            <input type="email" name="email" placeholder="Your email address" required />
+            <button type="submit">Subscribe</button>
+        </form>
+    </section>
+    <?php
+}
+
+/**
+ * Helper: Get all topics with counts
+ */
+function kunaal_get_all_topics() {
+    $topics = get_terms(array(
+        'taxonomy' => 'topic',
+        'hide_empty' => false,
+    ));
+
+    if (is_wp_error($topics) || empty($topics)) {
+        return array();
+    }
+
+    $result = array();
+    foreach ($topics as $topic) {
+        $result[] = array(
+            'slug' => $topic->slug,
+            'name' => $topic->name,
+            'count' => $topic->count,
+        );
+    }
+    return $result;
+}
+
+/**
+ * Helper: Get card image URL
+ */
+function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
+    $card_image = get_post_meta($post_id, 'kunaal_card_image', true);
+    if ($card_image) {
+        return wp_get_attachment_image_url($card_image, $size);
+    }
+    if (has_post_thumbnail($post_id)) {
+        return get_the_post_thumbnail_url($post_id, $size);
+    }
+    return '';
+}
+
+/**
+ * Helper: Render atmosphere images for About page
+ * Moved from page-about.php template to prevent side effects
+ */
+if (!function_exists('kunaal_render_atmo_images')) {
+    function kunaal_render_atmo_images($position, $images) {
+        if (empty($images)) {
+            return;
+        }
+        
+        foreach ($images as $img) {
+            if ($img['position'] !== $position && $img['position'] !== 'auto') {
+                continue;
+            }
+            if ($img['type'] === 'hidden') {
+                continue;
+            }
+            
+            $clip_class = '';
+            switch ($img['clip']) {
+                case 'angle_bottom':
+                    $clip_class = 'clip-angle-bottom';
+                    break;
+                case 'angle_top':
+                    $clip_class = 'clip-angle-top';
+                    break;
+                case 'angle_both':
+                    $clip_class = 'clip-angle-both';
+                    break;
+            }
+            
+            if ($img['has_quote'] && !empty($img['quote'])) {
+                ?>
+                <section class="about-quote-image about-layer-image">
+                    <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
+                        <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image">
+                    </div>
+                    <div class="about-quote-content reveal-up">
+                        <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
+                        <?php if (!empty($img['quote_attr'])) : ?>
+                        <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </section>
+                <?php
+            } else {
+                ?>
+                <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
+                    <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
+                    <?php if (!empty($img['caption'])) : ?>
+                    <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
+                    <?php endif; ?>
+                </div>
+                <?php
+            }
+        }
+    }
+}
+
+/**
+ * Get all theme mods (cached for request lifetime)
+ * 
+ * @return array All theme modification values
+ */
+function kunaal_get_theme_mods() {
+    static $mods = null;
+    if ($mods === null) {
+        $mods = get_theme_mods();
+    }
+    return $mods;
+}
+
+/**
+ * Get theme mod with caching
+ * 
+ * @param string $key Theme mod key
+ * @param mixed $default Default value if not set
+ * @return mixed Theme mod value or default
+ */
+function kunaal_mod($key, $default = '') {
+    $mods = kunaal_get_theme_mods();
+    return isset($mods[$key]) ? $mods[$key] : $default;
+}
+
+/**
+ * Helper: Build messenger target URL
+ */
+function kunaal_build_messenger_target_url($platform, $raw_target) {
+    $raw_target = is_string($raw_target) ? trim($raw_target) : '';
+    if ($raw_target === '') return '';
+
+    // If looks like a URL/protocol, trust it (we'll validate protocol later when redirecting)
+    if (preg_match('#^[a-zA-Z][a-zA-Z0-9+.-]*://#', $raw_target)) {
+        return $raw_target;
+    }
+
+    // Handle-based convenience (Telegram only)
+    if ($platform === 'telegram') {
+        $handle = ltrim($raw_target, '@');
+        return $handle ? ('https://t.me/' . $handle) : '';
+    }
+
+    // For LINE/Viber, require an explicit URL for safety/clarity
+    return '';
+}
+
+/**
+ * Helper: QR image source
+ */
+function kunaal_qr_img_src($text, $size = 220) {
+    $size = max(120, min(512, (int) $size));
+    return 'https://chart.googleapis.com/chart?cht=qr&chs=' . $size . 'x' . $size . '&chld=M|0&chl=' . rawurlencode($text);
+}
+

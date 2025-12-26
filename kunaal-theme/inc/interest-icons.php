@@ -252,8 +252,8 @@ endif;
  */
 if (!function_exists('kunaal_get_initials')) :
 function kunaal_get_initials() {
-    $first = get_theme_mod('kunaal_author_first_name', 'K');
-    $last = get_theme_mod('kunaal_author_last_name', 'W');
+    $first = kunaal_mod('kunaal_author_first_name', 'K');
+    $last = kunaal_mod('kunaal_author_last_name', 'W');
     return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
 }
 endif;

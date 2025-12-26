@@ -21,6 +21,11 @@ function kunaal_generate_pdf() {
         return;
     }
     
+    // Verify nonce for security
+    if (!isset($_GET['nonce']) || !wp_verify_nonce($_GET['nonce'], 'kunaal_pdf_nonce')) {
+        wp_die('Security check failed. Please refresh the page and try again.', 'Security Error', array('response' => 403));
+    }
+    
     // Load Dompdf if available
     $autoloader = KUNAAL_THEME_DIR . '/vendor/autoload.php';
     if (file_exists($autoloader)) {
@@ -36,12 +41,17 @@ function kunaal_generate_pdf() {
         wp_die('Invalid post');
     }
     
+    // Only allow published posts to prevent enumeration of drafts/private posts
+    if ($post->post_status !== 'publish') {
+        wp_die('This post is not available for PDF download.', 'Access Denied', array('response' => 403));
+    }
+    
     // Get post data
     $title = get_the_title($post_id);
     $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
     $content = apply_filters('the_content', $post->post_content);
-    $author_first = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-    $author_last = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+    $author_first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+    $author_last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
     $author_name = $author_first . ' ' . $author_last;
     $site_url = home_url('/');
     $post_url = get_permalink($post_id);

@@ -3,7 +3,7 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 4.11.2
+Version: 4.20.0
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
@@ -91,6 +91,27 @@ Text Domain: kunaal-theme
   
   /* Scroll progress (0â†'1) - set by JS */
   --p: 0;
+}
+
+/* ========================================
+   SKIP LINKS (Accessibility)
+   ======================================== */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--blue);
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 10000;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 
 /* ========================================
@@ -1245,7 +1266,12 @@ h2::after {
   color: var(--ink);
 }
 .jRow:last-child { border-bottom: none; }
-.jRow:hover { background: var(--blueTint); }
+.jRow:hover,
+.jRow:focus-visible { 
+  background: var(--blueTint); 
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
 
 /* Blue accent on hover */
 .jRow::before {
@@ -2225,12 +2251,15 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   transition: all 200ms ease;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.dockButton:hover { 
+.dockButton:hover,
+.dockButton:focus-visible { 
   border-color: var(--blueStroke); 
   color: var(--blue);
   background: var(--blueTint);
   box-shadow: 0 4px 12px rgba(30,90,255,0.12);
   transform: translateY(-2px);
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 
 /* Active state (when panel is open) - blue like filter button */

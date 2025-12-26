@@ -647,7 +647,9 @@
     }
     
     const postId = postIdMatch[1];
-    const pdfUrl = window.location.origin + '/?kunaal_pdf=1&post_id=' + postId;
+    // Generate nonce for PDF download (use existing nonce from kunaalTheme or create new one)
+    const nonce = window.kunaalTheme?.pdfNonce || '';
+    const pdfUrl = window.location.origin + '/?kunaal_pdf=1&post_id=' + postId + '&nonce=' + encodeURIComponent(nonce);
     
     // Open PDF in new window
     window.open(pdfUrl, '_blank', 'noopener');
@@ -801,106 +803,6 @@
   }
 
   // ========================================
-  // ABOUT PAGE REVEAL ANIMATIONS
-  // ========================================
-  function initAboutReveal() {
-    const revealElements = document.querySelectorAll('.about-page-v2 .reveal-up, .about-journey .reveal-up');
-    if (!revealElements.length) return;
-    
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
-    
-    revealElements.forEach(function(el) {
-      observer.observe(el);
-    });
-  }
-
-  // ========================================
-  // WORLD MAP INTERACTIVITY
-  // ========================================
-  function initWorldMap() {
-    var mapWrapper = document.querySelector('.world-map');
-    if (!mapWrapper) return;
-    
-    var visited = (mapWrapper.dataset.visited || '').split(',').filter(Boolean);
-    var lived = (mapWrapper.dataset.lived || '').split(',').filter(Boolean);
-    var notes = {};
-    try {
-      notes = JSON.parse(mapWrapper.dataset.notes || '{}');
-    } catch (e) {}
-    
-    var tooltip = document.querySelector('.map-tooltip');
-    var countries = mapWrapper.querySelectorAll('.country');
-    
-    // Apply classes based on data
-    countries.forEach(function(country) {
-      var id = country.id;
-      if (lived.indexOf(id) !== -1) {
-        country.classList.add('lived');
-      } else if (visited.indexOf(id) !== -1) {
-        country.classList.add('visited');
-      }
-    });
-    
-    // Tooltip on hover
-    countries.forEach(function(country) {
-      var id = country.id;
-      var name = country.dataset.name || id;
-      var isLived = lived.indexOf(id) !== -1;
-      var isVisited = visited.indexOf(id) !== -1;
-      
-      if (!isLived && !isVisited) return; // Only show tooltip for visited/lived
-      
-      country.addEventListener('mouseenter', function(e) {
-        var status = isLived ? 'Lived here' : 'Visited';
-        var note = notes[id] || '';
-        
-        var html = '<div class="tooltip-name">' + name + '</div>';
-        html += '<div class="tooltip-status">' + status + '</div>';
-        if (note) {
-          html += '<div class="tooltip-note">' + note + '</div>';
-        }
-        
-        tooltip.innerHTML = html;
-        tooltip.classList.add('visible');
-        
-        updateTooltipPosition(e);
-      });
-      
-      country.addEventListener('mousemove', function(e) {
-        updateTooltipPosition(e);
-      });
-      
-      country.addEventListener('mouseleave', function() {
-        tooltip.classList.remove('visible');
-      });
-    });
-    
-    function updateTooltipPosition(e) {
-      var rect = mapWrapper.getBoundingClientRect();
-      var x = e.clientX - rect.left + 15;
-      var y = e.clientY - rect.top + 15;
-      
-      // Keep tooltip in bounds
-      if (x + 200 > rect.width) {
-        x = e.clientX - rect.left - 215;
-      }
-      
-      tooltip.style.left = x + 'px';
-      tooltip.style.top = y + 'px';
-    }
-  }
-
-  // ========================================
   // INITIALIZE
   // ========================================
   function init() {
@@ -927,8 +829,7 @@
     initCodeBlocks();
     initAccordions();
     initInlineFormatTouch();
-    initAboutReveal();
-    initWorldMap();
+    // About page functionality is handled by about-page.js
 
     // Initial scroll effect
     lastY = window.scrollY || 0;

@@ -109,6 +109,7 @@
             const content = footnoteItem.querySelector('.footnote-content');
             if (!content) return;
 
+            // Safe: content.innerHTML is from server-rendered HTML sanitized with wp_kses_post()
             tooltip.innerHTML = content.innerHTML;
             tooltip.classList.add('visible');
             positionTooltip(tooltip, ref);

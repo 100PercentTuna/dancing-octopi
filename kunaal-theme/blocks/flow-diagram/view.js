@@ -5,39 +5,16 @@
 (function() {
   'use strict';
 
-  let d3Loaded = false;
-  let d3Loading = false;
-
+  // Use centralized library loader
   async function loadD3() {
-    if (d3Loaded) return window.d3;
-    if (d3Loading) {
-      // Wait for existing load
-      return new Promise(resolve => {
-        const checkInterval = setInterval(() => {
-          if (d3Loaded) {
-            clearInterval(checkInterval);
-            resolve(window.d3);
-          }
-        }, 100);
-      });
+    if (window.kunaalLibLoader && window.kunaalLibLoader.loadD3) {
+      return window.kunaalLibLoader.loadD3();
     }
-
-    d3Loading = true;
-    
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://d3js.org/d3.v7.min.js';
-      script.onload = () => {
-        d3Loaded = true;
-        d3Loading = false;
-        resolve(window.d3);
-      };
-      script.onerror = () => {
-        d3Loading = false;
-        reject(new Error('Failed to load D3.js'));
-      };
-      document.head.appendChild(script);
-    });
+    // Fallback if loader not available
+    if (window.d3) {
+      return Promise.resolve(window.d3);
+    }
+    return Promise.reject(new Error('D3 loader not available'));
   }
 
   async function initFlowDiagram(block) {
@@ -46,7 +23,15 @@
     const links = JSON.parse(block.dataset.links || '[]');
     
     if (nodes.length === 0 || links.length === 0) {
-      block.querySelector('.flow-svg').innerHTML = '<text x="400" y="250" text-anchor="middle" fill="var(--muted)">No data</text>';
+      const svg = block.querySelector('.flow-svg');
+      svg.innerHTML = '';
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', '400');
+      text.setAttribute('y', '250');
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('fill', 'var(--muted)');
+      text.textContent = 'No data';
+      svg.appendChild(text);
       return;
     }
 
@@ -55,7 +40,15 @@
       renderFlowDiagram(block, d3, diagramType, nodes, links);
     } catch (error) {
       console.error('Failed to render flow diagram:', error);
-      block.querySelector('.flow-svg').innerHTML = '<text x="400" y="250" text-anchor="middle" fill="var(--muted)">Error loading diagram</text>';
+      const svg = block.querySelector('.flow-svg');
+      svg.innerHTML = '';
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', '400');
+      text.setAttribute('y', '250');
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('fill', 'var(--muted)');
+      text.textContent = 'Error loading diagram';
+      svg.appendChild(text);
     }
   }
 

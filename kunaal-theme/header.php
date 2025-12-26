@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <?php 
   // Custom favicon
-  $favicon = get_theme_mod('kunaal_favicon', '');
+  $favicon = kunaal_mod('kunaal_favicon', '');
   if ($favicon) : ?>
     <link rel="icon" type="image/png" href="<?php echo esc_url($favicon); ?>">
     <link rel="apple-touch-icon" href="<?php echo esc_url($favicon); ?>">
@@ -27,16 +27,20 @@
 <body <?php body_class(); ?>>
 <?php if (function_exists('wp_body_open')) { wp_body_open(); } ?>
 
+<!-- Skip Links for Accessibility -->
+<a href="#main" class="skip-link"><?php esc_html_e('Skip to main content', 'kunaal-theme'); ?></a>
+<a href="#nav" class="skip-link"><?php esc_html_e('Skip to navigation', 'kunaal-theme'); ?></a>
+
 <!-- Progress bar -->
 <div class="progress" aria-hidden="true">
   <div class="progressFill" id="progressFill"></div>
 </div>
 
 <?php
-$avatar_url = get_theme_mod('kunaal_avatar', '');
-$first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-$last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
-$tagline = get_theme_mod('kunaal_author_tagline', 'A slightly alarming curiosity about humans and human collectives.');
+$avatar_url = kunaal_mod('kunaal_avatar', '');
+$first_name = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+$last_name = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
+$tagline = kunaal_mod('kunaal_author_tagline', 'A slightly alarming curiosity about humans and human collectives.');
 $initials = kunaal_get_initials();
 ?>
 
@@ -58,28 +62,28 @@ $initials = kunaal_get_initials();
     </a>
 
     <nav class="nav" id="nav" role="navigation">
-      <a class="uBlue<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? ' current' : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>">Essays</a>
-      <a class="uBlue<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? ' current' : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>">Jottings</a>
+      <a class="uBlue<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? ' current' : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
+      <a class="uBlue<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? ' current' : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>
       <?php
       $about_page = get_page_by_path('about');
       if ($about_page) :
       ?>
-        <a class="uBlue<?php echo is_page('about') ? ' current' : ''; ?>" href="<?php echo esc_url(get_permalink($about_page)); ?>">About</a>
+        <a class="uBlue<?php echo is_page('about') ? ' current' : ''; ?>" href="<?php echo esc_url(get_permalink($about_page)); ?>"><?php esc_html_e('About', 'kunaal-theme'); ?></a>
       <?php endif; ?>
       <?php
       $contact_page = get_page_by_path('contact');
       if ($contact_page) :
       ?>
-        <a class="uBlue<?php echo is_page('contact') ? ' current' : ''; ?>" href="<?php echo esc_url(get_permalink($contact_page)); ?>">Contact</a>
+        <a class="uBlue<?php echo is_page('contact') ? ' current' : ''; ?>" href="<?php echo esc_url(get_permalink($contact_page)); ?>"><?php esc_html_e('Contact', 'kunaal-theme'); ?></a>
       <?php endif; ?>
     </nav>
 
-    <button class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+    <button class="theme-toggle" type="button" aria-label="<?php esc_attr_e('Toggle dark mode', 'kunaal-theme'); ?>" aria-pressed="false">
       <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
-      <span class="sr-only">Toggle dark mode</span>
+      <span class="sr-only"><?php esc_html_e('Toggle dark mode', 'kunaal-theme'); ?></span>
     </button>
 
-    <button class="navToggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+    <button class="navToggle" id="navToggle" aria-label="<?php esc_attr_e('Toggle navigation', 'kunaal-theme'); ?>" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <path d="M4 6h16M4 12h16M4 18h16"/>
       </svg>

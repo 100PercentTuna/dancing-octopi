@@ -11,8 +11,7 @@
 get_header();
 ?>
 
-<!-- Skip Link for Accessibility (09-ACCESSIBILITY.md) -->
-<a href="#about-content" class="skip-link">Skip to content</a>
+<!-- Skip Link handled in header.php for consistency -->
 
 <?php
 // ========================================
@@ -20,70 +19,70 @@ get_header();
 // ========================================
 
 // Author info (from existing Author section)
-$first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
-$last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+$first_name = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+$last_name = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
 $full_name = trim($first_name . ' ' . $last_name);
 if (empty($full_name)) {
     $full_name = get_bloginfo('name');
 }
-$tagline = get_theme_mod('kunaal_author_tagline', get_bloginfo('description'));
-$email = get_theme_mod('kunaal_contact_email', '');
-$linkedin = get_theme_mod('kunaal_linkedin_handle', '');
-$twitter = get_theme_mod('kunaal_twitter_handle', '');
+$tagline = kunaal_mod('kunaal_author_tagline', get_bloginfo('description'));
+$email = kunaal_mod('kunaal_contact_email', '');
+$linkedin = kunaal_mod('kunaal_linkedin_handle', '');
+$twitter = kunaal_mod('kunaal_twitter_handle', '');
 
 // Hero
-$hero_annotation = get_theme_mod('kunaal_about_hero_annotation', 'still figuring it out');
+$hero_annotation = kunaal_mod('kunaal_about_hero_annotation', 'still figuring it out');
 $hero_photos = function_exists('kunaal_get_hero_photos_v2') ? kunaal_get_hero_photos_v2() : array();
 
 // Fallback to old single photo if no new photos set
 if (empty($hero_photos)) {
-    $old_photo = get_theme_mod('kunaal_about_photo', '');
+    $old_photo = kunaal_mod('kunaal_about_photo', '');
     if ($old_photo) {
         $hero_photos = array($old_photo);
     }
 }
 
 // Section toggles
-$show_hero = get_theme_mod('kunaal_about_hero_show', true);
-$show_bio = get_theme_mod('kunaal_about_bio_show', get_theme_mod('kunaal_about_show_bio', true));
-$show_map = get_theme_mod('kunaal_about_map_show', get_theme_mod('kunaal_about_show_map', true));
-$show_books = get_theme_mod('kunaal_about_books_show', get_theme_mod('kunaal_about_show_books', true));
-$show_interests = get_theme_mod('kunaal_about_interests_show', get_theme_mod('kunaal_about_show_interests', true));
-$show_inspirations = get_theme_mod('kunaal_about_inspirations_show', get_theme_mod('kunaal_about_show_inspirations', true));
-$show_stats = get_theme_mod('kunaal_about_stats_show', get_theme_mod('kunaal_about_show_stats', true));
-$show_connect = get_theme_mod('kunaal_about_connect_show', get_theme_mod('kunaal_about_show_connect', true));
+$show_hero = kunaal_mod('kunaal_about_hero_show', true);
+$show_bio = kunaal_mod('kunaal_about_bio_show', kunaal_mod('kunaal_about_show_bio', true));
+$show_map = kunaal_mod('kunaal_about_map_show', kunaal_mod('kunaal_about_show_map', true));
+$show_books = kunaal_mod('kunaal_about_books_show', kunaal_mod('kunaal_about_show_books', true));
+$show_interests = kunaal_mod('kunaal_about_interests_show', kunaal_mod('kunaal_about_show_interests', true));
+$show_inspirations = kunaal_mod('kunaal_about_inspirations_show', kunaal_mod('kunaal_about_show_inspirations', true));
+$show_stats = kunaal_mod('kunaal_about_stats_show', kunaal_mod('kunaal_about_show_stats', true));
+$show_connect = kunaal_mod('kunaal_about_connect_show', kunaal_mod('kunaal_about_show_connect', true));
 
 // Bio section
-$bio_year = get_theme_mod('kunaal_about_bio_year', '');
-$pullquote_show = get_theme_mod('kunaal_about_pullquote_show', false);
-$pullquote_text = get_theme_mod('kunaal_about_pullquote_text', get_theme_mod('kunaal_about_pullquote', ''));
-$pullquote_attr = get_theme_mod('kunaal_about_pullquote_attr', '');
+$bio_year = kunaal_mod('kunaal_about_bio_year', '');
+$pullquote_show = kunaal_mod('kunaal_about_pullquote_show', false);
+$pullquote_text = kunaal_mod('kunaal_about_pullquote_text', kunaal_mod('kunaal_about_pullquote', ''));
+$pullquote_attr = kunaal_mod('kunaal_about_pullquote_attr', '');
 
 // Map section
-$map_label = get_theme_mod('kunaal_about_map_label', "Places I've Called Home");
-$map_intro = get_theme_mod('kunaal_about_map_intro_v2', get_theme_mod('kunaal_about_map_intro', 'The places that have shaped who I am.'));
-$map_visited = get_theme_mod('kunaal_map_visited', get_theme_mod('kunaal_about_map_visited', ''));
-$map_lived = get_theme_mod('kunaal_map_lived', get_theme_mod('kunaal_about_map_lived', ''));
-$map_current = get_theme_mod('kunaal_map_current', '');
+$map_label = kunaal_mod('kunaal_about_map_label', "Places I've Called Home");
+$map_intro = kunaal_mod('kunaal_about_map_intro_v2', kunaal_mod('kunaal_about_map_intro', 'The places that have shaped who I am.'));
+$map_visited = kunaal_mod('kunaal_map_visited', kunaal_mod('kunaal_about_map_visited', ''));
+$map_lived = kunaal_mod('kunaal_map_lived', kunaal_mod('kunaal_about_map_lived', ''));
+$map_current = kunaal_mod('kunaal_map_current', '');
 $map_stories = function_exists('kunaal_get_map_stories_v2') ? kunaal_get_map_stories_v2() : array();
 
 // Books section - use new helpers with fallback
-$books_label = get_theme_mod('kunaal_about_books_label', get_theme_mod('kunaal_about_books_title', 'Currently Reading'));
+$books_label = kunaal_mod('kunaal_about_books_label', kunaal_mod('kunaal_about_books_title', 'Currently Reading'));
 $books = function_exists('kunaal_get_books_v2') ? kunaal_get_books_v2() : array();
 
 // Interests section - use new helpers with fallback
-$interests_label = get_theme_mod('kunaal_about_interests_label', get_theme_mod('kunaal_about_interests_title', 'Things That Fascinate Me'));
+$interests_label = kunaal_mod('kunaal_about_interests_label', kunaal_mod('kunaal_about_interests_title', 'Things That Fascinate Me'));
 $interests = function_exists('kunaal_get_interests_v2') ? kunaal_get_interests_v2() : array();
 
 // Inspirations section - use new helpers with fallback
-$inspirations_label = get_theme_mod('kunaal_about_inspirations_label', get_theme_mod('kunaal_about_inspirations_title', 'People Who Inspire Me'));
+$inspirations_label = kunaal_mod('kunaal_about_inspirations_label', kunaal_mod('kunaal_about_inspirations_title', 'People Who Inspire Me'));
 $inspirations = function_exists('kunaal_get_inspirations_v2') ? kunaal_get_inspirations_v2() : array();
 
 // Stats section - use new helpers
 $stats = function_exists('kunaal_get_stats_v2') ? kunaal_get_stats_v2() : array();
 
 // Connect section
-$connect_heading = get_theme_mod('kunaal_about_connect_heading', get_theme_mod('kunaal_about_connect_title', "Let's Connect"));
+$connect_heading = kunaal_mod('kunaal_about_connect_heading', kunaal_mod('kunaal_about_connect_title', "Let's Connect"));
 
 // Atmospheric images
 $atmo_images = function_exists('kunaal_get_atmo_images_v2') ? kunaal_get_atmo_images_v2('all') : array();
@@ -94,49 +93,7 @@ while (have_posts()) : the_post();
     $bio_content = get_the_content();
 endwhile;
 
-// Helper function for atmospheric images at a position
-if (!function_exists('kunaal_render_atmo_images')) :
-function kunaal_render_atmo_images($position, $images) {
-    if (empty($images)) return;
-    
-    foreach ($images as $img) {
-        if ($img['position'] !== $position && $img['position'] !== 'auto') continue;
-        if ($img['type'] === 'hidden') continue;
-        
-        $clip_class = '';
-        switch ($img['clip']) {
-            case 'angle_bottom': $clip_class = 'clip-angle-bottom'; break;
-            case 'angle_top': $clip_class = 'clip-angle-top'; break;
-            case 'angle_both': $clip_class = 'clip-angle-both'; break;
-        }
-        
-        if ($img['has_quote'] && !empty($img['quote'])) {
-            ?>
-            <section class="about-quote-image about-layer-image">
-                <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
-                    <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image">
-                </div>
-                <div class="about-quote-content reveal-up">
-                    <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
-                    <?php if (!empty($img['quote_attr'])) : ?>
-                    <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
-                    <?php endif; ?>
-                </div>
-            </section>
-            <?php
-        } else {
-            ?>
-            <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
-                <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
-                <?php if (!empty($img['caption'])) : ?>
-                <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
-                <?php endif; ?>
-            </div>
-            <?php
-        }
-    }
-}
-endif;
+// Helper function moved to functions.php to prevent side effects
 ?>
 
 <main id="about-content" class="about-exhibition" role="main" aria-label="About page content" tabindex="-1">
