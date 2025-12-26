@@ -493,6 +493,11 @@ main {
   cursor: pointer;
   color: var(--muted);
 }
+.navToggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 .navToggle svg { width: 20px; height: 20px; }
 
 /* Theme toggle button */
@@ -621,10 +626,14 @@ main {
   cursor: pointer;
   transition: all 200ms ease;
 }
-.filterToggle:hover {
+.filterToggle:hover, .filterToggle:focus-visible {
   border-color: var(--blueStroke);
   background: var(--blueTint);
   color: var(--ink);
+}
+.filterToggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 .filterToggle.active {
   background: var(--blue);
@@ -678,12 +687,12 @@ main {
   white-space: nowrap;
   line-height: 1.1;
 }
-.topicDropdownBtn:hover {
+.topicDropdownBtn:hover, .topicDropdownBtn:focus-visible {
   border-color: var(--blueStroke);
   background: var(--blueTint);
   color: var(--ink);
 }
-.topicDropdownBtn:focus {
+.topicDropdownBtn:focus-visible {
   outline: none;
   border-color: var(--blue);
   box-shadow: 0 0 0 3px var(--blueRing);
@@ -763,7 +772,7 @@ main {
   cursor: pointer;
   transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
 }
-.modernSelect:hover {
+.modernSelect:hover, .modernSelect:focus-visible {
   border-color: var(--blueStroke);
   background-color: var(--blueTint);
 }
@@ -811,7 +820,7 @@ main {
   outline: none;
   transition: width 200ms ease;
 }
-.searchInput:focus { width: 140px; }
+.searchInput:focus, .searchInput:focus-visible { width: 140px; outline: 2px solid var(--blue); outline-offset: 2px; }
 .searchInput::placeholder { color: var(--muted2); }
 
 /* Reset button */
@@ -831,12 +840,12 @@ main {
   transition: all 200ms ease;
   white-space: nowrap;
 }
-.resetBtn:hover {
+.resetBtn:hover, .resetBtn:focus-visible {
   border-color: var(--blueStroke);
   background: var(--blueTint);
   color: var(--ink);
 }
-.resetBtn:focus {
+.resetBtn:focus-visible {
   outline: none;
   border-color: var(--blue);
   box-shadow: 0 0 0 3px var(--blueRing);

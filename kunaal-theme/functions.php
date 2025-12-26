@@ -2031,6 +2031,7 @@ function kunaal_handle_contact_form() {
     // Verify nonce
     if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
         wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
+        wp_die();
     }
     
     // Sanitize inputs
@@ -2042,6 +2043,7 @@ function kunaal_handle_contact_form() {
     // Honeypot check (bots)
     if (!empty($honeypot)) {
         wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
+        wp_die();
     }
 
     // Basic rate limiting by IP
@@ -2050,16 +2052,19 @@ function kunaal_handle_contact_form() {
     $count = (int) get_transient($rate_key);
     if ($count >= 5) {
         wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
+        wp_die();
     }
     set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
     
     // Validate
     if (empty($name) || empty($email) || empty($message)) {
         wp_send_json_error(array('message' => 'Please fill in all fields.'));
+        wp_die();
     }
     
     if (!is_email($email)) {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+        wp_die();
     }
     
     // Get recipient email
@@ -2088,8 +2093,10 @@ function kunaal_handle_contact_form() {
     
     if ($sent) {
         wp_send_json_success(array('message' => 'Thank you! Your message has been sent.'));
+        wp_die();
     } else {
         wp_send_json_error(array('message' => 'Sorry, there was an error sending your message. Please try emailing directly.'));
+        wp_die();
     }
     wp_die(); // Prevent code execution after JSON response
 }
