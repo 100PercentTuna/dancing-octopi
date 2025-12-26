@@ -1626,13 +1626,10 @@ function kunaal_mod($key, $default = '') {
  * AJAX: Filter content
  */
 function kunaal_filter_content() {
-    // Verify nonce - this is a public endpoint but we still validate nonce for CSRF protection
-    // If nonce is provided, it must be valid; if not provided, we allow it (for backward compatibility)
-    if (!empty($_POST['nonce'])) {
-        if (!wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
-            wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
-            wp_die();
-        }
+    // Verify nonce for CSRF protection - enforce nonce requirement
+    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
+        wp_die();
     }
     
     $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
@@ -1998,7 +1995,7 @@ function kunaal_add_open_graph_tags() {
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="article" />
     <meta property="og:title" content="<?php echo esc_attr($title); ?>" />
-    <meta property="og:description" content="<?php echo $description; ?>" />
+    <meta property="og:description" content="<?php echo esc_attr($description); ?>" />
     <meta property="og:url" content="<?php echo esc_url($url); ?>" />
     <meta property="og:site_name" content="<?php echo esc_attr($site_name); ?>" />
     <?php if ($image) : ?>
@@ -2049,7 +2046,7 @@ function kunaal_handle_contact_form() {
 
     // Basic rate limiting by IP
     $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field($_SERVER['REMOTE_ADDR']) : '';
-    $rate_key = 'kunaal_contact_rl_' . md5($ip);
+    $rate_key = 'kunaal_contact_rl_' . wp_hash($ip);
     $count = (int) get_transient($rate_key);
     if ($count >= 5) {
         wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
