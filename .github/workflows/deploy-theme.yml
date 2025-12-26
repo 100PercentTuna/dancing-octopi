@@ -29,26 +29,16 @@ jobs:
       
       - name: Deploy via SFTP
         if: steps.changed.outputs.changed == 'true'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: sftp
           port: 22
-          local-dir: ./kunaal-theme/
-          server-dir: /wp-content/themes/kunaal-theme/
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/vendor/**
-            **/*.md
-            **/composer.json
-            **/composer.lock
-            **/package.json
-            **/package-lock.json
+          local_path: ./kunaal-theme/*
+          remote_path: /wp-content/themes/kunaal-theme/
+          sftp_only: true
+          delete_remote_files: false
       
       - name: Trigger cache clear (optional)
         if: steps.changed.outputs.changed == 'true'
