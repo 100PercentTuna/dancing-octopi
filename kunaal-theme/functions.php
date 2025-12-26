@@ -18,7 +18,7 @@
  * @package Kunaal_Theme
  * @since 1.0.0
  * @version 4.20.7
- * Updated: 2025-12-27 - GoDaddy SFTP deployment
+ * Updated: 2025-12-27 - Fixed nested directory deployment issue
  */
 
 if (!defined('ABSPATH')) {
