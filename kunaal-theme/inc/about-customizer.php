@@ -48,6 +48,7 @@ function kunaal_about_customizer_v2($wp_customize) {
     $wp_customize->add_setting('kunaal_about_hero_annotation', array(
         'default' => 'still figuring it out',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage', // Live preview without refresh
     ));
     $wp_customize->add_control('kunaal_about_hero_annotation', array(
         'label' => 'Handwritten Annotation',
@@ -155,10 +156,11 @@ function kunaal_about_customizer_v2($wp_customize) {
         'type' => 'checkbox',
     ));
     
-    // Section Label
+    // Section Label (live preview)
     $wp_customize->add_setting('kunaal_about_books_label', array(
         'default' => 'Currently Reading',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_books_label', array(
         'label' => 'Section Label',
@@ -235,6 +237,7 @@ function kunaal_about_customizer_v2($wp_customize) {
     $wp_customize->add_setting('kunaal_about_map_label', array(
         'default' => "Places I've Called Home",
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_map_label', array(
         'label' => 'Section Label',
@@ -348,6 +351,7 @@ function kunaal_about_customizer_v2($wp_customize) {
     $wp_customize->add_setting('kunaal_about_interests_label', array(
         'default' => 'Things That Fascinate Me',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_interests_label', array(
         'label' => 'Section Label',
@@ -403,6 +407,7 @@ function kunaal_about_customizer_v2($wp_customize) {
     $wp_customize->add_setting('kunaal_about_inspirations_label', array(
         'default' => 'People Who Inspire Me',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_inspirations_label', array(
         'label' => 'Section Label',
@@ -650,6 +655,7 @@ function kunaal_about_customizer_v2($wp_customize) {
     $wp_customize->add_setting('kunaal_about_connect_heading', array(
         'default' => "Let's Connect",
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_connect_heading', array(
         'label' => 'Heading',

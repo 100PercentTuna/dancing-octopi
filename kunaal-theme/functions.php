@@ -1,23 +1,45 @@
 ﻿<?php
 /**
  * Kunaal Theme Functions
+ * 
+ * Main theme functions file. This file is organized into sections:
+ * 
+ * 1. CONSTANTS & INCLUDES
+ * 2. THEME SETUP
+ * 3. ASSET ENQUEUING
+ * 4. CUSTOM POST TYPES & TAXONOMIES
+ * 5. META BOXES
+ * 6. VALIDATION
+ * 7. CUSTOMIZER SETTINGS
+ * 8. HELPER FUNCTIONS
+ * 9. AJAX HANDLERS
+ * 10. SHORTCODES
  *
  * @package Kunaal_Theme
+ * @since 1.0.0
+ * @version 4.11.2
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KUNAAL_THEME_VERSION', '4.11.1');
+// ========================================
+// 1. CONSTANTS & INCLUDES
+// ========================================
+
+define('KUNAAL_THEME_VERSION', '4.12.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
-// Include custom PDF generator
+// PDF Generator for essays
 require_once KUNAAL_THEME_DIR . '/pdf-generator.php';
 
-// Include About Page Customizer (NO JSON version)
+// About Page Customizer (individual fields, no JSON)
 require_once KUNAAL_THEME_DIR . '/inc/about-customizer.php';
+
+// Block Registration
+require_once KUNAAL_THEME_DIR . '/inc/blocks.php';
 
 /**
  * Theme Setup
@@ -224,6 +246,31 @@ function kunaal_enqueue_editor_assets() {
             border-color: #d63638 !important;
         }
     ');
+    
+    // Enqueue color picker component
+    wp_enqueue_script(
+        'kunaal-color-picker',
+        KUNAAL_THEME_URI . '/assets/js/components/color-picker.js',
+        array('wp-element', 'wp-components', 'wp-i18n'),
+        KUNAAL_THEME_VERSION,
+        true
+    );
+    
+    wp_enqueue_style(
+        'kunaal-color-picker',
+        KUNAAL_THEME_URI . '/assets/js/components/color-picker.css',
+        array(),
+        KUNAAL_THEME_VERSION
+    );
+    
+    // Enqueue presets system
+    wp_enqueue_script(
+        'kunaal-presets',
+        KUNAAL_THEME_URI . '/assets/js/presets.js',
+        array(),
+        KUNAAL_THEME_VERSION,
+        true
+    );
 }
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_editor_assets');
 
@@ -781,10 +828,11 @@ function kunaal_customize_register($wp_customize) {
         'section' => 'kunaal_author',
     )));
 
-    // First Name
+    // First Name (live preview)
     $wp_customize->add_setting('kunaal_author_first_name', array(
         'default' => 'Kunaal',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage', // Live preview without refresh
     ));
     $wp_customize->add_control('kunaal_author_first_name', array(
         'label' => 'First Name',
@@ -792,10 +840,11 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
 
-    // Last Name
+    // Last Name (live preview)
     $wp_customize->add_setting('kunaal_author_last_name', array(
         'default' => 'Wadhwa',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage', // Live preview without refresh
     ));
     $wp_customize->add_control('kunaal_author_last_name', array(
         'label' => 'Last Name',
@@ -803,10 +852,11 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
 
-    // Tagline
+    // Tagline (live preview)
     $wp_customize->add_setting('kunaal_author_tagline', array(
         'default' => 'A slightly alarming curiosity about humans and human collectives.',
         'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage', // Live preview without refresh
     ));
     $wp_customize->add_control('kunaal_author_tagline', array(
         'label' => 'Tagline',
@@ -1179,6 +1229,23 @@ function kunaal_customize_register($wp_customize) {
 add_action('customize_register', 'kunaal_customize_register');
 
 /**
+ * Enqueue Customizer Preview Script
+ * 
+ * Loads JavaScript that handles live preview updates without page refresh.
+ * Uses debouncing to prevent excessive updates while typing.
+ */
+function kunaal_customizer_preview_js() {
+    wp_enqueue_script(
+        'kunaal-customizer-preview',
+        KUNAAL_THEME_URI . '/assets/js/customizer-preview.js',
+        array('jquery', 'customize-preview'),
+        KUNAAL_THEME_VERSION,
+        true
+    );
+}
+add_action('customize_preview_init', 'kunaal_customizer_preview_js');
+
+/**
  * Build a messenger URL from a platform + target (URL or handle).
  */
 function kunaal_build_messenger_target_url($platform, $raw_target) {
@@ -1533,10 +1600,7 @@ function kunaal_set_reading_settings() {
 }
 add_action('after_switch_theme', 'kunaal_set_reading_settings');
 
-/**
- * Include block patterns and Gutenberg enhancements
- */
-require_once KUNAAL_THEME_DIR . '/inc/blocks.php';
+// Note: Block registration is now in inc/blocks.php (included at top of file)
 
 /**
  * DK PDF Customization - Improve PDF output
