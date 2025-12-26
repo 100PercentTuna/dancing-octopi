@@ -35,3 +35,4 @@ AUDIT-*.md
 DEPLOYMENT.md
 .cursor/
 
+# GitHub Actions will deploy automatically - see .github/SETUP-DEPLOYMENT.md

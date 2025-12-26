@@ -1,0 +1,56 @@
+name: Deploy WordPress Theme
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'kunaal-theme/**'
+
+jobs:
+  deploy:
+    name: Deploy to WordPress
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      
+      - name: Check if theme files changed
+        id: changed
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '^kunaal-theme/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Deploy via SFTP
+        if: steps.changed.outputs.changed == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./kunaal-theme/
+          server-dir: /wp-content/themes/kunaal-theme/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/vendor/**
+            **/*.md
+            **/composer.json
+            **/composer.lock
+            **/package.json
+            **/package-lock.json
+      
+      - name: Trigger cache clear (optional)
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          curl -X POST "${{ secrets.CACHE_CLEAR_URL }}" || true
+
