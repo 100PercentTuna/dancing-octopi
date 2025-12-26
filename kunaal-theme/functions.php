@@ -97,7 +97,7 @@ function kunaal_theme_safe_require_once($absolute_path) {
 // 1. CONSTANTS & INCLUDES
 // ========================================
 
-define('KUNAAL_THEME_VERSION', '4.20.7');
+define('KUNAAL_THEME_VERSION', '4.20.8');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
