@@ -329,6 +329,9 @@ function kunaal_add_defer_to_scripts($tag, $handle) {
         'kunaal-theme-controller',
         'kunaal-lazy-blocks',
         'kunaal-lib-loader',
+        'gsap-core',
+        'gsap-scrolltrigger',
+        'kunaal-about-page',
     );
     
     if (in_array($handle, $defer_scripts)) {
@@ -2235,15 +2238,5 @@ function kunaal_enqueue_inline_formats_frontend() {
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');
 
-/**
- * Add defer attribute to non-critical scripts for better performance
- */
-function kunaal_add_defer_to_scripts($tag, $handle, $src) {
-    $defer_scripts = array('gsap-core', 'gsap-scrolltrigger', 'kunaal-lazy-blocks', 'kunaal-about-page');
-    if (in_array($handle, $defer_scripts)) {
-        return str_replace(' src', ' defer src', $tag);
-    }
-    return $tag;
-}
-add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 3);
+// Defer function consolidated above - removed duplicate
 
