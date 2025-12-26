@@ -115,8 +115,8 @@ function kunaal_asset_version($relative_path) {
 // PDF Generator for essays
 kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/pdf-generator.php');
 
-// About Page Customizer (individual fields, no JSON)
-kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/about-customizer.php');
+// About Page Customizer V22 (new polished design)
+kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/about-customizer-v22.php');
 
 // Block Registration
 kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/blocks.php');
@@ -262,20 +262,12 @@ function kunaal_enqueue_assets() {
     
     // About page specific assets (heavier libraries)
     if ($is_about_page) {
-        // Leaflet CSS
+        // About page V22 CSS
         wp_enqueue_style(
-            'leaflet-css',
-            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-            array(),
-            '1.9.4'
-        );
-        
-        // About page CSS
-        wp_enqueue_style(
-            'kunaal-about-page',
-            KUNAAL_THEME_URI . '/assets/css/about-page.css',
+            'kunaal-about-page-v22',
+            KUNAAL_THEME_URI . '/assets/css/about-page-v22.css',
             array('kunaal-theme-style'),
-            kunaal_asset_version('assets/css/about-page.css')
+            kunaal_asset_version('assets/css/about-page-v22.css')
         );
         
         // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
@@ -299,23 +291,38 @@ function kunaal_enqueue_assets() {
         // Register GSAP for use
         wp_add_inline_script('gsap-scrolltrigger', 'gsap.registerPlugin(ScrollTrigger);', 'after');
         
-        // Leaflet JS
+        // D3.js for world map
         wp_enqueue_script(
-            'leaflet-js',
-            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+            'd3-js',
+            'https://d3js.org/d3.v7.min.js',
             array(),
-            '1.9.4',
+            '7.0.0',
             true
         );
         
-        // About page JS (depends on GSAP)
+        // TopoJSON for world map
         wp_enqueue_script(
-            'kunaal-about-page',
-            KUNAAL_THEME_URI . '/assets/js/about-page.js',
-            array('gsap-scrolltrigger', 'leaflet-js'),
-            kunaal_asset_version('assets/js/about-page.js'),
+            'topojson-js',
+            'https://unpkg.com/topojson-client@3',
+            array('d3-js'),
+            '3.0.0',
             true
         );
+        
+        // About page V22 JS (depends on GSAP, D3, TopoJSON)
+        wp_enqueue_script(
+            'kunaal-about-page-v22',
+            KUNAAL_THEME_URI . '/assets/js/about-page-v22.js',
+            array('gsap-scrolltrigger', 'd3-js', 'topojson-js'),
+            kunaal_asset_version('assets/js/about-page-v22.js'),
+            true
+        );
+        
+        // Localize script with places data for map
+        $places = kunaal_get_places_v22();
+        wp_localize_script('kunaal-about-page-v22', 'kunaalAboutV22', array(
+            'places' => $places,
+        ));
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
@@ -2239,4 +2246,239 @@ function kunaal_enqueue_inline_formats_frontend() {
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_inline_formats_frontend');
 
 // Defer function consolidated above - removed duplicate
+
+/**
+ * ========================================
+ * ABOUT PAGE V22 HELPER FUNCTIONS
+ * ========================================
+ */
+
+/**
+ * Get hero photos for v22 About page
+ * Returns array of up to 10 photo URLs
+ */
+function kunaal_get_hero_photos_v22() {
+    $photos = array();
+    for ($i = 1; $i <= 10; $i++) {
+        $photo_id = kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
+        if ($photo_id) {
+            $photo_url = wp_get_attachment_image_url($photo_id, 'large');
+            if ($photo_url) {
+                $photos[] = $photo_url;
+            }
+        }
+    }
+    return $photos;
+}
+
+/**
+ * Get numbers data for v22 About page
+ * Returns array of number items (up to 8) plus infinity option
+ */
+function kunaal_get_numbers_v22() {
+    $numbers = array();
+    for ($i = 1; $i <= 8; $i++) {
+        $value = kunaal_mod("kunaal_about_v22_number_{$i}_value", '');
+        $label = kunaal_mod("kunaal_about_v22_number_{$i}_label", '');
+        if (!empty($value) && !empty($label)) {
+            $numbers[] = array(
+                'value' => $value,
+                'suffix' => kunaal_mod("kunaal_about_v22_number_{$i}_suffix", ''),
+                'label' => $label,
+            );
+        }
+    }
+    
+    // Add infinity if enabled
+    if (kunaal_mod('kunaal_about_v22_numbers_infinity_show', true)) {
+        $infinity_label = kunaal_mod('kunaal_about_v22_numbers_infinity_label', 'Rabbit holes');
+        if (!empty($infinity_label)) {
+            $numbers[] = array(
+                'value' => 'infinity',
+                'suffix' => '',
+                'label' => $infinity_label,
+            );
+        }
+    }
+    
+    return $numbers;
+}
+
+/**
+ * Get categories for v22 About page
+ * Returns array of category definitions (up to 12)
+ */
+function kunaal_get_categories_v22() {
+    $categories = array();
+    for ($i = 1; $i <= 12; $i++) {
+        $name = kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
+        if (!empty($name)) {
+            $slug = sanitize_title($name);
+            $categories[$slug] = array(
+                'name' => $name,
+                'color' => kunaal_mod("kunaal_about_v22_category_{$i}_color", '#7D6B5D'),
+            );
+        }
+    }
+    return $categories;
+}
+
+/**
+ * Get rabbit holes for v22 About page
+ * Returns array of rabbit hole items (up to 200)
+ */
+function kunaal_get_rabbit_holes_v22() {
+    $rabbit_holes = array();
+    for ($i = 1; $i <= 200; $i++) {
+        $text = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_text", '');
+        if (!empty($text)) {
+            $image_id = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_image", 0);
+            $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
+            $category = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_category", '');
+            
+            $rabbit_holes[] = array(
+                'image' => $image_url,
+                'text' => $text,
+                'category' => $category,
+            );
+        }
+    }
+    return $rabbit_holes;
+}
+
+/**
+ * Get panoramas for v22 About page
+ * Returns array organized by position
+ */
+function kunaal_get_panoramas_v22() {
+    $panoramas_by_position = array(
+        'after_hero' => array(),
+        'after_numbers' => array(),
+        'after_rabbit_holes' => array(),
+        'after_media' => array(),
+        'after_map' => array(),
+        'after_inspirations' => array(),
+    );
+    
+    for ($i = 1; $i <= 10; $i++) {
+        $position = kunaal_mod("kunaal_about_v22_panorama_{$i}_position", 'none');
+        if ($position !== 'none' && isset($panoramas_by_position[$position])) {
+            $image_id = kunaal_mod("kunaal_about_v22_panorama_{$i}_image", 0);
+            if ($image_id) {
+                $image_url = wp_get_attachment_image_url($image_id, 'full');
+                if ($image_url) {
+                    $panoramas_by_position[$position][] = array(
+                        'image' => $image_url,
+                        'height' => kunaal_mod("kunaal_about_v22_panorama_{$i}_height", '160'),
+                        'cut' => kunaal_mod("kunaal_about_v22_panorama_{$i}_cut", 'none'),
+                        'bg' => kunaal_mod("kunaal_about_v22_panorama_{$i}_bg", 'default'),
+                        'speed' => kunaal_mod("kunaal_about_v22_panorama_{$i}_speed", '2.0'),
+                    );
+                }
+            }
+        }
+    }
+    
+    return $panoramas_by_position;
+}
+
+/**
+ * Get books for v22 About page
+ * Returns array of book items (up to 6)
+ */
+function kunaal_get_books_v22() {
+    $books = array();
+    for ($i = 1; $i <= 6; $i++) {
+        $title = kunaal_mod("kunaal_about_v22_book_{$i}_title", '');
+        if (!empty($title)) {
+            $cover_id = kunaal_mod("kunaal_about_v22_book_{$i}_cover", 0);
+            $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
+            
+            $books[] = array(
+                'cover' => $cover_url,
+                'title' => $title,
+                'author' => kunaal_mod("kunaal_about_v22_book_{$i}_author", ''),
+                'url' => kunaal_mod("kunaal_about_v22_book_{$i}_url", ''),
+            );
+        }
+    }
+    return $books;
+}
+
+/**
+ * Get digital media for v22 About page
+ * Returns array of digital items (up to 6)
+ */
+function kunaal_get_digital_media_v22() {
+    $digital = array();
+    for ($i = 1; $i <= 6; $i++) {
+        $title = kunaal_mod("kunaal_about_v22_digital_{$i}_title", '');
+        if (!empty($title)) {
+            $cover_id = kunaal_mod("kunaal_about_v22_digital_{$i}_cover", 0);
+            $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
+            $link_type = kunaal_mod("kunaal_about_v22_digital_{$i}_link_type", 'spotify');
+            
+            $digital[] = array(
+                'cover' => $cover_url,
+                'title' => $title,
+                'artist' => kunaal_mod("kunaal_about_v22_digital_{$i}_artist", ''),
+                'link_type' => $link_type,
+                'url' => kunaal_mod("kunaal_about_v22_digital_{$i}_url", ''),
+            );
+        }
+    }
+    return $digital;
+}
+
+/**
+ * Get places data for v22 About page
+ * Returns array with lived, visited, and current location ISO codes
+ */
+function kunaal_get_places_v22() {
+    $lived_str = kunaal_mod('kunaal_about_v22_places_lived', '');
+    $visited_str = kunaal_mod('kunaal_about_v22_places_visited', '');
+    $current = kunaal_mod('kunaal_about_v22_places_current', '');
+    
+    $lived = array();
+    if (!empty($lived_str)) {
+        $lived = array_map('trim', array_map('strtoupper', explode(',', $lived_str)));
+        $lived = array_filter($lived);
+    }
+    
+    $visited = array();
+    if (!empty($visited_str)) {
+        $visited = array_map('trim', array_map('strtoupper', explode(',', $visited_str)));
+        $visited = array_filter($visited);
+    }
+    
+    return array(
+        'lived' => $lived,
+        'visited' => $visited,
+        'current' => strtoupper(trim($current)),
+    );
+}
+
+/**
+ * Get inspirations for v22 About page
+ * Returns array of inspiration items (up to 10)
+ */
+function kunaal_get_inspirations_v22() {
+    $inspirations = array();
+    for ($i = 1; $i <= 10; $i++) {
+        $name = kunaal_mod("kunaal_about_v22_inspiration_{$i}_name", '');
+        if (!empty($name)) {
+            $photo_id = kunaal_mod("kunaal_about_v22_inspiration_{$i}_photo", 0);
+            $photo_url = $photo_id ? wp_get_attachment_image_url($photo_id, 'medium') : '';
+            
+            $inspirations[] = array(
+                'photo' => $photo_url,
+                'name' => $name,
+                'role' => kunaal_mod("kunaal_about_v22_inspiration_{$i}_role", ''),
+                'note' => kunaal_mod("kunaal_about_v22_inspiration_{$i}_note", ''),
+                'url' => kunaal_mod("kunaal_about_v22_inspiration_{$i}_url", ''),
+            );
+        }
+    }
+    return $inspirations;
+}
 
