@@ -80,6 +80,24 @@ function kunaal_enqueue_assets() {
         true
     );
 
+    // Theme controller (dark mode)
+    wp_enqueue_script(
+        'kunaal-theme-controller',
+        KUNAAL_THEME_URI . '/assets/js/theme-controller.js',
+        array(),
+        KUNAAL_THEME_VERSION,
+        true
+    );
+
+    // Lazy loading for heavy blocks
+    wp_enqueue_script(
+        'kunaal-lazy-blocks',
+        KUNAAL_THEME_URI . '/assets/js/lazy-blocks.js',
+        array(),
+        KUNAAL_THEME_VERSION,
+        true
+    );
+
     // Localize script with data
     wp_localize_script('kunaal-theme-main', 'kunaalTheme', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -967,319 +985,10 @@ function kunaal_customize_register($wp_customize) {
     ));
 
     // =====================================================
-    // ABOUT PAGE - HERO SECTION
+    // ABOUT PAGE SETTINGS
+    // Note: All About page settings are in the "About Page" panel
+    // See: Appearance → Customize → About Page
     // =====================================================
-    $wp_customize->add_section('kunaal_about_hero', array(
-        'title' => 'About: Hero',
-        'priority' => 50,
-        'description' => 'Hero section at top of About page.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_greeting', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_greeting', array(
-        'label' => 'Greeting',
-        'description' => 'e.g., "Hi, I\'m Kunaal." Leave blank for default.',
-        'section' => 'kunaal_about_hero',
-        'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_photo', array(
-        'default' => '',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'kunaal_about_photo', array(
-        'label' => 'Hero Photo',
-        'description' => 'Large photo for hero (falls back to Avatar)',
-        'section' => 'kunaal_about_hero',
-    )));
-    
-    // =====================================================
-    // ABOUT PAGE - BIO SECTION
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_bio', array(
-        'title' => 'About: Bio',
-        'priority' => 51,
-        'description' => 'Your personal bio/story. Use the page editor for the main content.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_bio', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_bio', array(
-        'label' => 'Show Bio Section',
-        'section' => 'kunaal_about_bio',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_bio_title', array(
-        'default' => 'About',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_bio_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_bio',
-        'type' => 'text',
-    ));
-    
-    // =====================================================
-    // ABOUT PAGE - WORLD MAP
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_map', array(
-        'title' => 'About: World Map',
-        'priority' => 52,
-        'description' => 'Interactive map showing places you\'ve been.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_map', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_map', array(
-        'label' => 'Show World Map',
-        'section' => 'kunaal_about_map',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_map_title', array(
-        'default' => 'Places',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_map_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_map',
-        'type' => 'text',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_map_visited', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_map_visited', array(
-        'label' => 'Countries Visited',
-        'description' => 'Comma-separated ISO codes: US,UK,FR,JP,DE',
-        'section' => 'kunaal_about_map',
-        'type' => 'textarea',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_map_lived', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_map_lived', array(
-        'label' => 'Countries Lived In',
-        'description' => 'Comma-separated ISO codes: US,IN',
-        'section' => 'kunaal_about_map',
-        'type' => 'textarea',
-    ));
-    
-    // NOTE: Country notes now use individual story fields in the About Page panel
-    // See "World Map" section with Story 1-10 slots for NO-JSON input
-    
-    // =====================================================
-    // ABOUT PAGE - BOOKSHELF
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_books', array(
-        'title' => 'About: Bookshelf',
-        'priority' => 53,
-        'description' => 'Currently reading / favorite books.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_books', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_books', array(
-        'label' => 'Show Bookshelf',
-        'section' => 'kunaal_about_books',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_books_title', array(
-        'default' => 'Currently Reading',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_books_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_books',
-        'type' => 'text',
-    ));
-    
-    // NOTE: Books now use individual fields in the About Page panel
-    // See "Bookshelf" section with Book 1-8 slots (cover, title, author, URL each)
-    
-    // =====================================================
-    // ABOUT PAGE - INTERESTS CLOUD
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_interests', array(
-        'title' => 'About: Interests',
-        'priority' => 54,
-        'description' => 'Things you love - displayed as a beautiful tag cloud.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_interests', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_interests', array(
-        'label' => 'Show Interests',
-        'section' => 'kunaal_about_interests',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_interests_title', array(
-        'default' => 'Things I Love',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_interests_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_interests',
-        'type' => 'text',
-    ));
-    
-    // NOTE: Interests now use individual fields in the About Page panel
-    // See "Interests" section with Interest 1-20 slots (name + image each)
-    
-    // =====================================================
-    // ABOUT PAGE - INSPIRATIONS
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_inspirations', array(
-        'title' => 'About: Inspirations',
-        'priority' => 55,
-        'description' => 'People whose work inspires you.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_inspirations', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_inspirations', array(
-        'label' => 'Show Inspirations',
-        'section' => 'kunaal_about_inspirations',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_inspirations_title', array(
-        'default' => 'People Who Inspire Me',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_inspirations_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_inspirations',
-        'type' => 'text',
-    ));
-    
-    // NOTE: Inspirations now use individual fields in the About Page panel
-    // See "Inspirations" section with Person 1-8 slots (photo, name, role, note, URL each)
-    
-    // =====================================================
-    // ABOUT PAGE - FUN STATS
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_stats', array(
-        'title' => 'About: Fun Stats',
-        'priority' => 56,
-        'description' => 'Animated number counters.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_stats', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_stats', array(
-        'label' => 'Show Stats',
-        'section' => 'kunaal_about_stats',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_stats_title', array(
-        'default' => 'By the Numbers',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_stats_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_stats',
-        'type' => 'text',
-    ));
-    
-    // NOTE: Stats now use individual fields in the About Page panel
-    // See "Stats Counters" section with Stat 1-4 slots (value + label each)
-    
-    // =====================================================
-    // ABOUT PAGE - CONNECT
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_connect', array(
-        'title' => 'About: Connect',
-        'priority' => 57,
-        'description' => 'Social links section.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_show_connect', array(
-        'default' => true,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_about_show_connect', array(
-        'label' => 'Show Connect Section',
-        'section' => 'kunaal_about_connect',
-        'type' => 'checkbox',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_connect_title', array(
-        'default' => 'Want to connect?',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_connect_title', array(
-        'label' => 'Section Title',
-        'section' => 'kunaal_about_connect',
-        'type' => 'text',
-    ));
-    
-    // =====================================================
-    // ABOUT PAGE - INTERSTITIAL IMAGE
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_interstitial', array(
-        'title' => 'About: Interstitial Image',
-        'priority' => 58,
-        'description' => 'Full-bleed parallax image break.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_interstitial_image', array(
-        'default' => '',
-        'sanitize_callback' => 'esc_url_raw',
-    ));
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'kunaal_about_interstitial_image', array(
-        'label' => 'Interstitial Image',
-        'description' => 'Full-bleed image for visual break. Leave empty to skip.',
-        'section' => 'kunaal_about_interstitial',
-    )));
-    
-    $wp_customize->add_setting('kunaal_about_interstitial_caption', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_interstitial_caption', array(
-        'label' => 'Caption',
-        'section' => 'kunaal_about_interstitial',
-        'type' => 'text',
-    ));
-    
-    // =====================================================
-    // ABOUT PAGE - MAP PLACES (NEW FORMAT)
-    // =====================================================
-    $wp_customize->add_setting('kunaal_about_map_intro', array(
-        'default' => 'The places that have shaped who I am.',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_about_map_intro', array(
-        'label' => 'Map Introduction',
-        'section' => 'kunaal_about_map',
-        'type' => 'textarea',
-    ));
-    
-    // NOTE: Map places now use individual story fields in the About Page panel
-    // See "World Map" section with Story 1-10 slots (country code, years, text)
     
     // =====================================================
     // CONTACT PAGE SECTION

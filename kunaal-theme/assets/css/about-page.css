@@ -199,23 +199,31 @@
 
 /* ========================================
    REVEAL ANIMATIONS
+   These are only applied when JS is ready
    ======================================== */
 .reveal-up {
+  /* Visible by default without JS */
+  opacity: 1;
+  transform: none;
+}
+
+/* JS adds initial hidden state */
+.js-ready .reveal-up {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 800ms ease-out, transform 800ms ease-out;
 }
 
-.reveal-up.is-visible {
+.js-ready .reveal-up.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.reveal-up[data-delay="1"] { transition-delay: 100ms; }
-.reveal-up[data-delay="2"] { transition-delay: 200ms; }
-.reveal-up[data-delay="3"] { transition-delay: 300ms; }
-.reveal-up[data-delay="4"] { transition-delay: 400ms; }
-.reveal-up[data-delay="5"] { transition-delay: 500ms; }
+.js-ready .reveal-up[data-delay="1"] { transition-delay: 100ms; }
+.js-ready .reveal-up[data-delay="2"] { transition-delay: 200ms; }
+.js-ready .reveal-up[data-delay="3"] { transition-delay: 300ms; }
+.js-ready .reveal-up[data-delay="4"] { transition-delay: 400ms; }
+.js-ready .reveal-up[data-delay="5"] { transition-delay: 500ms; }
 
 /* ========================================
    GALLERY LABEL (Museum-style section markers)
@@ -276,16 +284,7 @@
   background: linear-gradient(180deg, var(--bg) 0%, var(--bgWarm) 100%);
 }
 
-/* Loaded state for smooth entrance */
-.about-hero.is-loaded .hero-photo {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.about-hero.is-loaded .hero-identity {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* Loaded state handled in fallback section */
 
 /* The Collage Container */
 .hero-collage {
@@ -303,10 +302,7 @@
   border-radius: 3px;
   overflow: hidden;
   pointer-events: auto;
-  opacity: 0;
-  transition: 
-    opacity 800ms ease-out,
-    transform 100ms linear;
+  /* opacity and transform set in fallback section */
   box-shadow: 
     0 4px 16px rgba(0, 0, 0, 0.08),
     0 8px 40px rgba(0, 0, 0, 0.06);
@@ -1639,6 +1635,84 @@
 .about-exhibition [role="button"]:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 3px;
+}
+
+/* ========================================
+   NO-JS FALLBACK - Show content without JavaScript
+   ======================================== */
+
+/* Default: content visible (JS will hide and animate) */
+.hero-photo {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-photo img {
+  filter: var(--img-color);
+}
+
+.hero-identity,
+.hero-annotation,
+.gallery-label,
+.bio-text,
+.bio-pullquote,
+.bookshelf,
+.about-map-container,
+.about-map-legend,
+.interests-cloud,
+.inspirations-grid,
+.stats-row,
+.about-connect-title,
+.connect-icons,
+.connect-link,
+.book-slot,
+.interest-item,
+.inspiration-card,
+.stat-item {
+  opacity: 1;
+  transform: none;
+}
+
+/* When JS is ready, it adds .js-ready to body */
+.js-ready .hero-photo {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+}
+
+.js-ready .hero-photo img {
+  filter: var(--img-grayscale);
+  transition: filter 800ms ease-out;
+}
+
+.js-ready .hero-identity {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+}
+
+.js-ready .hero-annotation {
+  opacity: 0;
+  transition: opacity 800ms ease-out;
+}
+
+/* Loaded state restores visibility */
+.js-ready .about-hero.is-loaded .hero-photo {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.js-ready .about-hero.is-loaded .hero-photo img {
+  filter: var(--img-color);
+}
+
+.js-ready .about-hero.is-loaded .hero-identity {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.js-ready .about-hero.is-loaded .hero-annotation {
+  opacity: 1;
 }
 
 /* ========================================
