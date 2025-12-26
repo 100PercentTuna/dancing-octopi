@@ -5,6 +5,10 @@
 (function() {
   'use strict';
 
+  // Only enable "hide until revealed" animations once this script is actually running.
+  // If this JS fails to load/parse on a client, we want server-rendered content visible.
+  document.documentElement.classList.add('js-ready');
+
   // ========================================
   // DOM REFERENCES
   // ========================================
@@ -43,6 +47,11 @@
   let currentPage = 1;
   let isLoading = false;
   let hasMore = true;
+  let ajaxDisabled = false;
+
+  // Preserve initial server-rendered items for client-side filtering fallback
+  const initialEssayItems = essayGrid ? Array.from(essayGrid.children) : null;
+  const initialJotItems = jotList ? Array.from(jotList.children) : null;
 
   // ========================================
   // SCROLL ENGINE - Header compaction & progress
@@ -138,15 +147,16 @@
       return;
     }
 
+    let didRevealAny = false;
+
     revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
+          didRevealAny = true;
         } else {
-          // Bidirectional - remove when scrolling back up
-          if (entry.boundingClientRect.top > 0) {
-            entry.target.classList.remove('revealed');
-          }
+          // Never "un-reveal" content. If reveal logic fails for any reason,
+          // keeping content visible is always better than hiding it.
         }
       });
     }, {
@@ -157,6 +167,15 @@
     document.querySelectorAll('.card, .jRow, .reveal, .reveal-left, .reveal-right, .sectionHead').forEach(el => {
       revealObserver.observe(el);
     });
+
+    // Failsafe: if IntersectionObserver never marks anything as revealed,
+    // show server-rendered content after a short delay.
+    setTimeout(() => {
+      if (didRevealAny) return;
+      document.querySelectorAll('.card, .jRow, .reveal, .reveal-left, .reveal-right, .sectionHead').forEach(el => {
+        el.classList.add('revealed');
+      });
+    }, 400);
   }
 
   // ========================================
@@ -304,13 +323,102 @@
     if (essayGrid) postType = essayGrid.dataset.postType || 'essay';
     if (jotList) postType = jotList.dataset.postType || 'jotting';
     
-    // For homepage, filter both sections
-    if (document.body.classList.contains('home')) {
-      filterContent('essay', true);
-      filterContent('jotting', true);
+    // For homepage (or any page that renders BOTH sections), filter both sections
+    const hasBoth = !!(essayGrid && jotList);
+    if (hasBoth || document.body.classList.contains('home') || document.body.classList.contains('front-page')) {
+      applyFilter('essay', true);
+      applyFilter('jotting', true);
     } else {
-      filterContent(postType, true);
+      applyFilter(postType, true);
     }
+  }
+
+  function applyFilter(postType, replace = false) {
+    // If AJAX is blocked (WAF/maintenance/non-JSON), fall back to filtering what we already have.
+    if (ajaxDisabled) {
+      filterDom(postType, replace);
+      return;
+    }
+    filterContent(postType, replace);
+  }
+
+  function filterDom(postType, replace = false) {
+    const container = postType === 'essay' ? essayGrid : jotList;
+    if (!container) return;
+
+    // Only support "replace" mode for the fallback (no infinite scroll).
+    if (!replace) return;
+
+    const source = postType === 'essay' ? (initialEssayItems || []) : (initialJotItems || []);
+    const topics = Array.from(selectedTopics);
+    const search = (searchInput?.value || '').trim().toLowerCase();
+    const sort = sortSelect?.value || 'new';
+
+    const filtered = source.filter((el) => {
+      if (!(el instanceof Element)) return false;
+
+      // Topic filter
+      if (topics.length) {
+        const tags = (el.getAttribute('data-tags') || '').split(',').map(s => s.trim()).filter(Boolean);
+        const hasAny = topics.some(t => tags.includes(t));
+        if (!hasAny) return false;
+      }
+
+      // Search filter (title + subtitle/dek/text)
+      if (search) {
+        const title = (el.getAttribute('data-title') || '').toLowerCase();
+        const dek = (el.getAttribute('data-dek') || el.getAttribute('data-text') || '').toLowerCase();
+        if (!title.includes(search) && !dek.includes(search)) return false;
+      }
+
+      return true;
+    });
+
+    // Sort (works on loaded items only)
+    const byDate = (a, b) => {
+      const da = (a.getAttribute('data-date') || '');
+      const db = (b.getAttribute('data-date') || '');
+      // YYYY-MM-DD string compares correctly
+      if (da === db) return 0;
+      return da < db ? -1 : 1;
+    };
+    const byTitle = (a, b) => {
+      const ta = (a.getAttribute('data-title') || '').toLowerCase();
+      const tb = (b.getAttribute('data-title') || '').toLowerCase();
+      return ta.localeCompare(tb);
+    };
+
+    if (sort === 'old') filtered.sort(byDate);
+    else if (sort === 'title') filtered.sort(byTitle);
+    else filtered.sort((a, b) => -byDate(a, b)); // newest
+
+    // Render
+    container.innerHTML = '';
+    if (!filtered.length) {
+      container.innerHTML = `<p class="no-posts">No ${postType === 'essay' ? 'essays' : 'jottings'} match.</p>`;
+    } else {
+      const frag = document.createDocumentFragment();
+      filtered.forEach(el => frag.appendChild(el));
+      container.appendChild(frag);
+    }
+
+    // Update counts on homepage
+    if (postType === 'essay') {
+      const countEl = document.getElementById('essayCountShown');
+      const labelEl = document.getElementById('essayLabel');
+      if (countEl) countEl.textContent = String(filtered.length);
+      if (labelEl) labelEl.textContent = filtered.length === 1 ? 'essay' : 'essays';
+    }
+    if (postType === 'jotting') {
+      const countEl = document.getElementById('jotCountShown');
+      const labelEl = document.getElementById('jotLabel');
+      if (countEl) countEl.textContent = String(filtered.length);
+      if (labelEl) labelEl.textContent = filtered.length === 1 ? 'jotting' : 'jottings';
+    }
+
+    // Ensure visibility
+    initScrollReveal();
+    initParallax();
   }
 
   function filterContent(postType, replace = false) {
@@ -321,7 +429,9 @@
 
     const formData = new FormData();
     formData.append('action', 'kunaal_filter');
-    formData.append('nonce', window.kunaalTheme?.nonce || '');
+    // Only send nonce if present; backend allows missing nonce for backwards-compat.
+    const nonce = window.kunaalTheme?.nonce;
+    if (nonce) formData.append('nonce', nonce);
     formData.append('post_type', postType);
     formData.append('topics', Array.from(selectedTopics));
     formData.append('sort', sortSelect?.value || 'new');
@@ -333,7 +443,15 @@
       method: 'POST',
       body: formData
     })
-    .then(res => res.json())
+    .then(async (res) => {
+      const contentType = res.headers.get('content-type') || '';
+      const text = await res.text();
+      if (!contentType.includes('application/json')) {
+        // Managed hosts/plugins sometimes return HTML (maintenance/WAF) or "0".
+        throw new Error('Non-JSON response from admin-ajax (' + contentType + '): ' + text.slice(0, 200));
+      }
+      return JSON.parse(text);
+    })
     .then(data => {
       if (data.success) {
         renderPosts(data.data.posts, postType, replace);
@@ -354,13 +472,27 @@
           if (labelEl) labelEl.textContent = data.data.total === 1 ? 'jotting' : 'jottings';
         }
       }
+      // If request fails, keep existing content and surface a useful error.
+      if (!data.success) {
+        console.error('Filter request failed:', data?.data || data);
+        ajaxDisabled = true;
+        filterDom(postType, replace);
+      }
     })
-    .catch(err => console.error('Filter error:', err))
+    .catch(err => {
+      console.error('Filter error:', err);
+      ajaxDisabled = true;
+      filterDom(postType, replace);
+      // Announce to screen readers + keep UI responsive
+      const announcer = document.getElementById('announcer');
+      if (announcer) announcer.textContent = 'Filtering failed. Please refresh the page.';
+    })
     .finally(() => {
       isLoading = false;
-      if (infiniteLoader) {
-        infiniteLoader.classList.toggle('hidden', !hasMore);
-      }
+    if (infiniteLoader) {
+      // If AJAX is disabled (fallback mode), we don't support infinite scroll.
+      infiniteLoader.classList.add('hidden');
+    }
     });
   }
 
@@ -806,34 +938,39 @@
   // INITIALIZE
   // ========================================
   function init() {
-    cacheViewport();
-    
-    window.addEventListener('scroll', () => {
+    try {
+      cacheViewport();
+      
+      window.addEventListener('scroll', () => {
+        lastY = window.scrollY || 0;
+        requestTick();
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        cacheViewport();
+      });
+
+      initNav();
+      initAvatar();
+      initFilters();
+      initParallax();
+      initScrollReveal();
+      initInfiniteScroll();
+      initDocks();
+      initTOC();
+      initScrolly();
+      initCodeBlocks();
+      initAccordions();
+      initInlineFormatTouch();
+      // About page functionality is handled by about-page.js
+
+      // Initial scroll effect
       lastY = window.scrollY || 0;
       requestTick();
-    }, { passive: true });
-
-    window.addEventListener('resize', () => {
-      cacheViewport();
-    });
-
-    initNav();
-    initAvatar();
-    initFilters();
-    initParallax();
-    initScrollReveal();
-    initInfiniteScroll();
-    initDocks();
-    initTOC();
-    initScrolly();
-    initCodeBlocks();
-    initAccordions();
-    initInlineFormatTouch();
-    // About page functionality is handled by about-page.js
-
-    // Initial scroll effect
-    lastY = window.scrollY || 0;
-    requestTick();
+    } catch (e) {
+      console.error('Theme init failed; disabling js-only reveals', e);
+      document.documentElement.classList.remove('js-ready');
+    }
   }
 
   // Run on DOM ready

@@ -1,0 +1,390 @@
+﻿=== HOOKS_add_action ===
+PATTERN=add_action\s*\(
+TOTAL_MATCHES=36
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:63:add_action('after_setup_theme', 'kunaal_theme_setup');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:209:add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:218:add_action('wp_head', 'kunaal_add_js_class', 0);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:275:add_action('enqueue_block_editor_assets', 'kunaal_enqueue_editor_assets');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:347:add_action('init', 'kunaal_register_post_types');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:393:add_action('add_meta_boxes', 'kunaal_add_meta_boxes');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:536:add_action('save_post', 'kunaal_save_meta_box_data');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:596:add_action('init', 'kunaal_register_meta_fields');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:808:add_action('admin_notices', 'kunaal_display_essay_errors');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1229:add_action('customize_register', 'kunaal_customize_register');
+
+=== HOOKS_add_filter ===
+PATTERN=add_filter\s*\(
+TOTAL_MATCHES=8
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:681:add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:722:add_filter('rest_pre_insert_jotting', 'kunaal_validate_jotting_rest', 10, 2);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:782:add_filter('wp_insert_post_data', 'kunaal_validate_essay_classic', 10, 2);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1290:add_filter('query_vars', 'kunaal_connect_query_vars');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1749:add_filter('dkpdf_button_position', 'kunaal_dkpdf_button_position');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1759:add_filter('dkpdf_button_attributes', 'kunaal_dkpdf_button_attributes');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:54:add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:342:add_filter('render_block', 'kunaal_block_wrapper', 10, 2);
+
+=== HOOKS_priorities_add_action ===
+PATTERN=add_action\s*\([^;]*,\s*[0-9]+\s*\)
+TOTAL_MATCHES=7
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:218:add_action('wp_head', 'kunaal_add_js_class', 0);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1743:add_action('init', 'kunaal_disable_dkpdf_button', 99);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1831:add_action('wp_head', 'kunaal_add_open_graph_tags', 5);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\about-customizer.php:666:add_action('customize_register', 'kunaal_about_customizer_v2', 20);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:76:add_action('init', 'kunaal_unregister_core_blocks', 100);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:245:add_action('init', 'kunaal_register_block_scripts', 5);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:272:add_action('init', 'kunaal_register_blocks', 10);
+
+=== HOOKS_priorities_add_filter ===
+PATTERN=add_filter\s*\([^;]*,\s*[0-9]+\s*(,\s*[0-9]+\s*)?\)
+TOTAL_MATCHES=5
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:681:add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:722:add_filter('rest_pre_insert_jotting', 'kunaal_validate_jotting_rest', 10, 2);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:782:add_filter('wp_insert_post_data', 'kunaal_validate_essay_classic', 10, 2);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:54:add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:342:add_filter('render_block', 'kunaal_block_wrapper', 10, 2);
+
+=== ENQUEUE_wp_enqueue_or_register ===
+PATTERN=wp_(enqueue|register)_(script|style)\s*\(
+TOTAL_MATCHES=27
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:70:    wp_enqueue_style(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:78:    wp_enqueue_style(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:88:    wp_enqueue_style(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:97:    wp_enqueue_script(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:106:    wp_enqueue_script(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:115:    wp_enqueue_script(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:142:        wp_enqueue_style(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:154:        wp_enqueue_style(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:162:        wp_enqueue_style(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:170:        wp_enqueue_script(
+
+=== ENQUEUE_wp_add_inline ===
+PATTERN=wp_add_inline_(script|style)\s*\(
+TOTAL_MATCHES=2
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:188:        wp_add_inline_script('gsap-scrolltrigger', 'gsap.registerPlugin(ScrollTrigger);', 'after');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:239:    wp_add_inline_style('wp-edit-post', '
+
+=== ENQUEUE_wp_localize_script ===
+PATTERN=wp_localize_script\s*\(
+TOTAL_MATCHES=1
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:124:    wp_localize_script('kunaal-theme-main', 'kunaalTheme', array(
+
+=== ENQUEUE_loader_tag_filters ===
+PATTERN=(script_loader_tag|style_loader_tag)\s*\(
+TOTAL_MATCHES=0
+TOP10_HITS:
+
+=== JS_dynamic_script_createElement ===
+PATTERN=createElement\(['"]script['"]\)
+TOTAL_MATCHES=3
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\data-map\view.js:39:      const script = document.createElement('script');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\flow-diagram\view.js:28:      const script = document.createElement('script');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\network-graph\view.js:27:      const script = document.createElement('script');
+
+=== JS_dynamic_document_write ===
+PATTERN=document\.write
+TOTAL_MATCHES=0
+TOP10_HITS:
+
+=== JS_dynamic_import ===
+PATTERN=\bimport\s*\(
+TOTAL_MATCHES=0
+TOP10_HITS:
+
+=== SEC_superglobals ===
+PATTERN=\$_(GET|POST|REQUEST)\b
+TOTAL_MATCHES=41
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:511:    if (!isset($_POST['kunaal_meta_nonce']) || !wp_verify_nonce($_POST['kunaal_meta_nonce'], 'kunaal_save_meta')) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:521:    if (isset($_POST['kunaal_subtitle'])) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:522:        update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field($_POST['kunaal_subtitle']));
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:532:    if (isset($_POST['kunaal_card_image'])) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:533:        update_post_meta($post_id, 'kunaal_card_image', absint($_POST['kunaal_card_image']));
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:741:    $read_time = isset($_POST['kunaal_read_time']) ? $_POST['kunaal_read_time'] : '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:750:    $topics = isset($_POST['tax_input']['topic']) ? $_POST['tax_input']['topic'] : array();
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:761:    $card_image = isset($_POST['kunaal_card_image']) ? $_POST['kunaal_card_image'] : '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:765:    $featured = isset($_POST['_thumbnail_id']) ? $_POST['_thumbnail_id'] : '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1444:    $nonce_valid = isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce');
+
+=== SEC_ajax_actions ===
+PATTERN=wp_ajax_(nopriv_)?[A-Za-z0-9_]+
+TOTAL_MATCHES=4
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1545:add_action('wp_ajax_kunaal_filter', 'kunaal_filter_content');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1546:add_action('wp_ajax_nopriv_kunaal_filter', 'kunaal_filter_content');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1901:add_action('wp_ajax_kunaal_contact_form', 'kunaal_handle_contact_form');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1902:add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
+
+=== SEC_rest_register ===
+PATTERN=register_rest_route\s*\(
+TOTAL_MATCHES=0
+TOP10_HITS:
+
+=== SEC_nonce_checks ===
+PATTERN=(wp_verify_nonce|check_ajax_referer)\s*\(
+TOTAL_MATCHES=3
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:511:    if (!isset($_POST['kunaal_meta_nonce']) || !wp_verify_nonce($_POST['kunaal_meta_nonce'], 'kunaal_save_meta')) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1444:    $nonce_valid = isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1838:    if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
+
+=== SEC_caps ===
+PATTERN=current_user_can\s*\(
+TOTAL_MATCHES=7
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:517:    if (!current_user_can('edit_post', $post_id)) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:547:            return current_user_can('edit_posts');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:556:            return current_user_can('edit_posts');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:565:            return current_user_can('edit_posts');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:574:            return current_user_can('edit_posts');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:583:            return current_user_can('edit_posts');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:592:            return current_user_can('edit_posts');
+
+=== SEC_escaping ===
+PATTERN=\b(esc_html|esc_attr|esc_url|esc_url_raw|wp_kses_post)\s*\(
+TOTAL_MATCHES=634
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\404.php:15:    <a href="<?php echo esc_url(home_url('/')); ?>">Go home</a>
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:36:            <div class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" role="option" aria-selected="false">
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:38:              <span class="tName">#<?php echo esc_html($topic['name']); ?></span>
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:39:              <span class="tCount"><?php echo esc_html($topic['count']); ?></span>
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:72:        <span id="essayCountShown"><?php echo esc_html($total_essays); ?></span>
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:93:             data-title="<?php echo esc_attr(get_the_title()); ?>"
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:94:             data-dek="<?php echo esc_attr($subtitle); ?>"
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:95:             data-date="<?php echo esc_attr(get_the_date('Y-m-d')); ?>"
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:96:             data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:99:                <img src="<?php echo esc_url($card_image); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy" />
+
+=== SEC_sanitization ===
+PATTERN=\b(sanitize_text_field|sanitize_email|sanitize_textarea_field|absint)\s*\(
+TOTAL_MATCHES=13
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:522:        update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field($_POST['kunaal_subtitle']));
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:533:        update_post_meta($post_id, 'kunaal_card_image', absint($_POST['kunaal_card_image']));
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1449:    $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1462:    $sort = isset($_POST['sort']) ? sanitize_text_field($_POST['sort']) : 'new';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1463:    $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1464:    $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1465:    $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1843:    $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1844:    $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1845:    $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
+
+=== SEC_wpdb ===
+PATTERN=\$wpdb\b
+TOTAL_MATCHES=0
+TOP10_HITS:
+
+=== JS_dom_sinks ===
+PATTERN=\b(innerHTML|insertAdjacentHTML|outerHTML)\b
+TOTAL_MATCHES=14
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:707:        placeholder.innerHTML = '<span>' + title + '</span>';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:372:      container.innerHTML = '';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:376:      container.innerHTML = `<p class="no-posts">No ${postType === 'essay' ? 'essays' : 'jottings'} yet.</p>`;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:382:      container.insertAdjacentHTML('beforeend', el);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:440:    return div.innerHTML;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:873:        tooltip.innerHTML = html;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\dumbbell-chart\view.js:24:      tooltip.innerHTML = `
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\flow-diagram\view.js:49:      block.querySelector('.flow-svg').innerHTML = '<text x="400" y="250" text-anchor="middle" fill="var(--muted)">No data</text>';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\flow-diagram\view.js:58:      block.querySelector('.flow-svg').innerHTML = '<text x="400" y="250" text-anchor="middle" fill="var(--muted)">Error loading diagram</text>';
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\footnote\view.js:112:            tooltip.innerHTML = content.innerHTML;
+
+=== PERF_queries ===
+PATTERN=\b(WP_Query|get_posts|query_posts)\s*\(
+TOTAL_MATCHES=3
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:15:$essays_query = new WP_Query(array(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:22:$jottings_query = new WP_Query(array(
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1505:    $query = new WP_Query($args);
+
+=== PERF_meta_tax_query ===
+PATTERN=\b(meta_query|tax_query)\b
+TOTAL_MATCHES=1
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1476:        $args['tax_query'] = array(
+
+=== PERF_get_theme_mod ===
+PATTERN=\bget_theme_mod\s*\(
+TOTAL_MATCHES=146
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:5:        <?php echo esc_html(get_theme_mod('kunaal_footer_disclaimer', 'Personal writing. Independent of my day job.')); ?>
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:9:      $contact_email = get_theme_mod('kunaal_contact_email', '');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:12:        <a class="mailWrap uBlue" href="mailto:<?php echo esc_attr($contact_email); ?>" aria-label="Email <?php echo esc_attr(get_theme_mod('kunaal_author_first_name', 'Kunaal') . ' ' . get_theme_mod('kunaal_author_last_name', 'Wadhwa')); ?>">
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:26:        $first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:27:        $last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:128:        'shareText' => get_theme_mod('kunaal_share_text', ''),
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:129:        'twitterHandle' => get_theme_mod('kunaal_twitter_handle', ''),
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:130:        'linkedinUrl' => get_theme_mod('kunaal_linkedin_handle', ''),
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:131:        'authorName' => get_theme_mod('kunaal_author_first_name', 'Kunaal') . ' ' . get_theme_mod('kunaal_author_last_name', 'Wadhwa'),
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:136:    $about_page_id = (int) get_theme_mod('kunaal_about_page_id', 0);
+
+=== PERF_get_post_meta ===
+PATTERN=\bget_post_meta\s*\(
+TOTAL_MATCHES=30
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:81:          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:82:          $read_time = get_post_meta(get_the_ID(), 'kunaal_read_time', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-jotting.php:81:          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:113:          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:114:          $read_time = get_post_meta(get_the_ID(), 'kunaal_read_time', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:197:          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:400:    $subtitle = get_post_meta($post->ID, 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:401:    $read_time = get_post_meta($post->ID, 'kunaal_read_time', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:424:    $subtitle = get_post_meta($post->ID, 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:438:    $card_image = get_post_meta($post->ID, 'kunaal_card_image', true);
+
+=== PERF_get_option ===
+PATTERN=\bget_option\s*\(
+TOTAL_MATCHES=4
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1054:        'default' => get_option('admin_email'),
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1872:    $to_email = get_theme_mod('kunaal_contact_recipient_email', get_option('admin_email'));
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1874:        $to_email = get_option('admin_email');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1888:        'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
+
+=== PERF_get_the_terms ===
+PATTERN=\bget_the_terms\s*\(
+TOTAL_MATCHES=11
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:83:          $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-jotting.php:82:          $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:115:          $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\front-page.php:198:          $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:646:        $existing_topics = get_the_terms($post_id, 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:752:        $existing = get_the_terms($post_id, 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1512:            $topics_list = get_the_terms($post_id, 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\pdf-generator.php:50:    $topics = get_the_terms($post_id, 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\single-essay.php:108:    $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\single-jotting.php:106:    $topics = get_the_terms(get_the_ID(), 'topic');
+
+=== PERF_get_terms ===
+PATTERN=\bget_terms\s*\(
+TOTAL_MATCHES=1
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1405:    $topics = get_terms(array(
+
+=== PERF_theme_mod_option_meta ===
+PATTERN=\b(get_theme_mod|get_option|get_post_meta|get_the_terms|get_terms)\s*\(
+TOTAL_MATCHES=192
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:81:          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:82:          $read_time = get_post_meta(get_the_ID(), 'kunaal_read_time', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-essay.php:83:          $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-jotting.php:81:          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\archive-jotting.php:82:          $topics = get_the_terms(get_the_ID(), 'topic');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:5:        <?php echo esc_html(get_theme_mod('kunaal_footer_disclaimer', 'Personal writing. Independent of my day job.')); ?>
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:9:      $contact_email = get_theme_mod('kunaal_contact_email', '');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:12:        <a class="mailWrap uBlue" href="mailto:<?php echo esc_attr($contact_email); ?>" aria-label="Email <?php echo esc_attr(get_theme_mod('kunaal_author_first_name', 'Kunaal') . ' ' . get_theme_mod('kunaal_author_last_name', 'Wadhwa')); ?>">
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:26:        $first_name = get_theme_mod('kunaal_author_first_name', 'Kunaal');
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\footer.php:27:        $last_name = get_theme_mod('kunaal_author_last_name', 'Wadhwa');
+
+=== PERF_caching ===
+PATTERN=\b(set_transient|get_transient|wp_cache_)\b
+TOTAL_MATCHES=4
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:777:        set_transient('kunaal_essay_errors_' . ($post_id ?: 'new'), $errors, 60);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:795:    $errors = get_transient('kunaal_essay_errors_' . $post_id);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1856:    $count = (int) get_transient($rate_key);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1860:    set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
+
+=== PERF_file_exists ===
+PATTERN=\bfile_exists\s*\(
+TOTAL_MATCHES=6
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\functions.php:1910:    if (!file_exists($formats_dir . '/index.js')) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:219:        if (file_exists($script_path)) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:234:        if (file_exists($view_path)) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\inc\blocks.php:266:            if (file_exists($block_path . '/block.json')) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\pdf-generator.php:26:    if (file_exists($autoloader)) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\pdf-generator.php:236:    if (file_exists($css_file)) {
+
+=== PERF_remote_http ===
+PATTERN=\bwp_remote_(get|post)\s*\(
+TOTAL_MATCHES=0
+TOP10_HITS:
+
+=== CSS_important ===
+PATTERN=!important
+TOTAL_MATCHES=86
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\about-page.css:1441:    top: auto !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\about-page.css:1442:    left: auto !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\about-page.css:1443:    right: auto !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:15:  -webkit-print-color-adjust: exact !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:16:  print-color-adjust: exact !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:17:  color-adjust: exact !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:36:  -webkit-print-color-adjust: exact !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:37:  print-color-adjust: exact !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:38:  color-adjust: exact !important;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\css\pdf-ebook.css:328:  display: none !important;
+
+=== JS_window_dot ===
+PATTERN=\bwindow\.
+TOTAL_MATCHES=160
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:13:  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:160:        y: function() { return window.innerHeight * speed; },
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:259:        y: function() { return window.innerHeight * 0.1; },
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:732:        window.addEventListener('resize', function() {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\components\color-picker.js:140:})(window.wp);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\editor-sidebar.js:454:})(window.wp);
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\lazy-blocks.js:100:  window.kunaalLazyLoad = {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:108:    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:109:    const vh = window.innerHeight || 1;
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:131:    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+=== JS_intersection_observer ===
+PATTERN=IntersectionObserver
+TOTAL_MATCHES=17
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:233:      // Fallback with IntersectionObserver
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:234:      var observer = new IntersectionObserver(function(entries) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:316:      // Fallback with IntersectionObserver
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:317:      var observer = new IntersectionObserver(function(entries) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:456:    var observer = new IntersectionObserver(function(entries) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\lazy-blocks.js:8:  // IntersectionObserver for lazy loading
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\lazy-blocks.js:12:    // Check if IntersectionObserver is supported
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\lazy-blocks.js:13:    if (!('IntersectionObserver' in window)) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\lazy-blocks.js:22:    observer = new IntersectionObserver((entries) => {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:94:    parallaxObserver = new IntersectionObserver((entries) => {
+
+=== JS_mutation_observer ===
+PATTERN=MutationObserver
+TOTAL_MATCHES=2
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\heatmap\view.js:105:  if (window.MutationObserver) {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\heatmap\view.js:106:    const observer = new MutationObserver(mutations => {
+
+=== JS_setInterval ===
+PATTERN(simple)=setInterval(
+TOTAL_MATCHES=3
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\data-map\view.js:27:        const checkInterval = setInterval(() => {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\flow-diagram\view.js:16:        const checkInterval = setInterval(() => {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\network-graph\view.js:15:        const checkInterval = setInterval(() => {
+
+=== JS_scroll_listener ===
+PATTERN(simple)=addEventListener('scroll'
+TOTAL_MATCHES=2
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:909:    window.addEventListener('scroll', () => {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\parallax-section\view.js:69:            window.addEventListener('scroll', onScroll, { passive: true });
+
+=== JS_resize_listener ===
+PATTERN(simple)=addEventListener('resize'
+TOTAL_MATCHES=4
+TOP10_HITS:
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\about-page.js:732:        window.addEventListener('resize', function() {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\assets\js\main.js:914:    window.addEventListener('resize', () => {
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\parallax-section\view.js:70:            window.addEventListener('resize', updateParallax, { passive: true });
+C:\Users\Wadhwa Kunaal\OneDrive - The Boston Consulting Group, Inc\Desktop\Personal\cursor-github repos\dancing-octopi\kunaal-theme\blocks\small-multiples\view.js:75:  window.addEventListener('resize', () => {
+

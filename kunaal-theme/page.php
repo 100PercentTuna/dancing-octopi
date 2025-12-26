@@ -7,6 +7,14 @@
  */
 
 get_header();
+
+// If WordPress (or a page template assignment) routes the front page through page.php,
+// render the dedicated home layout so the site always has essays/jottings on the homepage.
+if (is_front_page()) {
+  get_template_part('template-parts/home');
+  get_footer();
+  return;
+}
 ?>
 
 <main id="main" class="article container">

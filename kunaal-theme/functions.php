@@ -25,24 +25,119 @@ if (!defined('ABSPATH')) {
 }
 
 // ========================================
+// CRASH-SAFE LOGGING (for managed hosts where debug.log is blocked)
+// ========================================
+
+/**
+ * Best-effort logger.
+ * Writes to:
+ * - PHP error log (always attempted)
+ * - wp-content/kunaal-theme-debug.log (if writable)
+ */
+function kunaal_theme_log($message, $context = array()) {
+    try {
+        $prefix = '[kunaal-theme] ';
+        $ts = gmdate('c');
+        $ctx = '';
+        if (!empty($context)) {
+            // Avoid throwing on non-UTF8 / non-serializable values.
+            $ctx = ' ' . wp_json_encode($context);
+        }
+        @error_log($prefix . $ts . ' ' . (string) $message . $ctx);
+
+        if (defined('WP_CONTENT_DIR') && is_dir(WP_CONTENT_DIR) && is_writable(WP_CONTENT_DIR)) {
+            $logFile = trailingslashit(WP_CONTENT_DIR) . 'kunaal-theme-debug.log';
+            $line = $prefix . $ts . ' ' . (string) $message . $ctx . PHP_EOL;
+            @file_put_contents($logFile, $line, FILE_APPEND);
+        }
+    } catch (\Throwable $e) {
+        // Never allow logging to crash the site.
+        @error_log('[kunaal-theme] log failure: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Capture fatal errors that result in white-screen/500 without wp-content/debug.log.
+ */
+function kunaal_theme_register_shutdown_handler() {
+    register_shutdown_function(function () {
+        $err = error_get_last();
+        if (!$err || !isset($err['type'])) {
+            return;
+        }
+        $fatal_types = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
+        if (in_array($err['type'], $fatal_types, true)) {
+            kunaal_theme_log('FATAL', array(
+                'type' => $err['type'],
+                'message' => $err['message'] ?? '',
+                'file' => $err['file'] ?? '',
+                'line' => $err['line'] ?? 0,
+                'uri' => $_SERVER['REQUEST_URI'] ?? '',
+            ));
+        }
+    });
+}
+kunaal_theme_register_shutdown_handler();
+
+/**
+ * Crash-safe require_once wrapper.
+ * If a file is missing (bad zip / partial deploy), we log and continue.
+ */
+function kunaal_theme_safe_require_once($absolute_path) {
+    if (is_string($absolute_path) && $absolute_path !== '' && file_exists($absolute_path)) {
+        require_once $absolute_path;
+        return true;
+    }
+    kunaal_theme_log('Missing required file', array('path' => (string) $absolute_path));
+    return false;
+}
+
+// ========================================
 // 1. CONSTANTS & INCLUDES
 // ========================================
 
-define('KUNAAL_THEME_VERSION', '4.20.0');
+define('KUNAAL_THEME_VERSION', '4.20.7');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
+/**
+ * Asset version helper (cache-bust on managed hosts/CDNs).
+ */
+function kunaal_asset_version($relative_path) {
+    $relative_path = ltrim((string) $relative_path, '/');
+    $full = trailingslashit(KUNAAL_THEME_DIR) . $relative_path;
+    if ($relative_path && file_exists($full)) {
+        return (string) filemtime($full);
+    }
+    return KUNAAL_THEME_VERSION;
+}
+
+// =========================================================
+// Diagnostics: show which template rendered (admin-only)
+// Visit any page with ?kunaal_diag=1 while logged in as admin.
+// =========================================================
+$GLOBALS['kunaal_theme_template_path'] = null;
+add_filter('template_include', function ($template) {
+    $GLOBALS['kunaal_theme_template_path'] = $template;
+    return $template;
+}, 9999);
+
+/**
+ * Diagnostics header (helps confirm whether the response is coming from WordPress/theme,
+ * even if a plugin short-circuits rendering before wp_footer()).
+ */
 // PDF Generator for essays
-require_once KUNAAL_THEME_DIR . '/pdf-generator.php';
+kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/pdf-generator.php');
 
 // About Page Customizer (individual fields, no JSON)
-require_once KUNAAL_THEME_DIR . '/inc/about-customizer.php';
+kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/about-customizer.php');
 
 // Block Registration
-require_once KUNAAL_THEME_DIR . '/inc/blocks.php';
+kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/blocks.php');
 
-// Helper Functions
-require_once KUNAAL_THEME_DIR . '/inc/helpers.php';
+// Note: Helper functions currently live in this file.
+// Do NOT include `inc/helpers.php` here unless the duplicates in this file are removed,
+// otherwise it can cause "Cannot redeclare ..." fatal errors on boot.
 
 /**
  * Theme Setup
@@ -82,7 +177,7 @@ function kunaal_enqueue_assets() {
         'kunaal-theme-style',
         get_stylesheet_uri(),
         array('kunaal-google-fonts'),
-        KUNAAL_THEME_VERSION
+        kunaal_asset_version('style.css')
     );
     
     // Sidenote font (Caveat from Google Fonts - already loaded above)
@@ -92,7 +187,7 @@ function kunaal_enqueue_assets() {
         'kunaal-print-style',
         KUNAAL_THEME_URI . '/assets/css/print.css',
         array('kunaal-theme-style'),
-        KUNAAL_THEME_VERSION,
+        kunaal_asset_version('assets/css/print.css'),
         'print'
     );
 
@@ -101,7 +196,7 @@ function kunaal_enqueue_assets() {
         'kunaal-theme-main',
         KUNAAL_THEME_URI . '/assets/js/main.js',
         array(),
-        KUNAAL_THEME_VERSION,
+        kunaal_asset_version('assets/js/main.js'),
         true
     );
 
@@ -110,7 +205,7 @@ function kunaal_enqueue_assets() {
         'kunaal-theme-controller',
         KUNAAL_THEME_URI . '/assets/js/theme-controller.js',
         array(),
-        KUNAAL_THEME_VERSION,
+        kunaal_asset_version('assets/js/theme-controller.js'),
         true
     );
 
@@ -119,7 +214,7 @@ function kunaal_enqueue_assets() {
         'kunaal-lazy-blocks',
         KUNAAL_THEME_URI . '/assets/js/lazy-blocks.js',
         array(),
-        KUNAAL_THEME_VERSION,
+        kunaal_asset_version('assets/js/lazy-blocks.js'),
         true
     );
 
@@ -128,7 +223,7 @@ function kunaal_enqueue_assets() {
         'kunaal-lib-loader',
         KUNAAL_THEME_URI . '/assets/js/lib-loader.js',
         array(),
-        KUNAAL_THEME_VERSION,
+        kunaal_asset_version('assets/js/lib-loader.js'),
         true
     );
 
@@ -176,7 +271,7 @@ function kunaal_enqueue_assets() {
             'kunaal-about-page',
             KUNAAL_THEME_URI . '/assets/css/about-page.css',
             array('kunaal-theme-style'),
-            KUNAAL_THEME_VERSION
+            kunaal_asset_version('assets/css/about-page.css')
         );
         
         // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
@@ -214,7 +309,7 @@ function kunaal_enqueue_assets() {
             'kunaal-about-page',
             KUNAAL_THEME_URI . '/assets/js/about-page.js',
             array('gsap-scrolltrigger', 'leaflet-js'),
-            KUNAAL_THEME_VERSION,
+            kunaal_asset_version('assets/js/about-page.js'),
             true
         );
     }
@@ -1375,31 +1470,34 @@ add_action('after_switch_theme', 'kunaal_flush_rewrite_on_switch');
 /**
  * Helper: Get initials
  */
-function kunaal_get_initials() {
-    $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
-    $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
-    return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
+if (!function_exists('kunaal_get_initials')) {
+    function kunaal_get_initials() {
+        $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+        $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
+        return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
+    }
 }
 
 /**
  * Helper: Output Subscribe Section
  */
-function kunaal_subscribe_section() {
-    if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
-        return;
-    }
-    
-    // Check location setting - only show bottom if 'bottom' or 'both'
-    $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
-    if (!in_array($sub_location, array('bottom', 'both'))) {
-        return;
-    }
-    
-    $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
-    $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
-    $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
-    
-    ?>
+if (!function_exists('kunaal_subscribe_section')) {
+    function kunaal_subscribe_section() {
+        if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
+            return;
+        }
+        
+        // Check location setting - only show bottom if 'bottom' or 'both'
+        $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
+        if (!in_array($sub_location, array('bottom', 'both'))) {
+            return;
+        }
+        
+        $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
+        $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
+        $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
+        
+        ?>
     <section class="subscribe-section reveal">
         <h3><?php echo esc_html($heading); ?></h3>
         <p><?php echo esc_html($description); ?></p>
@@ -1409,12 +1507,14 @@ function kunaal_subscribe_section() {
         </form>
     </section>
     <?php
+    }
 }
 
 /**
  * Helper: Get all topics with counts
  */
-function kunaal_get_all_topics() {
+if (!function_exists('kunaal_get_all_topics')) {
+    function kunaal_get_all_topics() {
     $topics = get_terms(array(
         'taxonomy' => 'topic',
         'hide_empty' => false,
@@ -1433,20 +1533,23 @@ function kunaal_get_all_topics() {
         );
     }
     return $result;
+    }
 }
 
 /**
  * Helper: Get card image URL
  */
-function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
-    $card_image = get_post_meta($post_id, 'kunaal_card_image', true);
-    if ($card_image) {
-        return wp_get_attachment_image_url($card_image, $size);
+if (!function_exists('kunaal_get_card_image_url')) {
+    function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
+        $card_image = get_post_meta($post_id, 'kunaal_card_image', true);
+        if ($card_image) {
+            return wp_get_attachment_image_url($card_image, $size);
+        }
+        if (has_post_thumbnail($post_id)) {
+            return get_the_post_thumbnail_url($post_id, $size);
+        }
+        return '';
     }
-    if (has_post_thumbnail($post_id)) {
-        return get_the_post_thumbnail_url($post_id, $size);
-    }
-    return '';
 }
 
 /**
@@ -1539,7 +1642,7 @@ function kunaal_mod($key, $default = '') {
 function kunaal_filter_content() {
     // Verify nonce - this is a public endpoint but we still validate nonce for CSRF protection
     // If nonce is provided, it must be valid; if not provided, we allow it (for backward compatibility)
-    if (isset($_POST['nonce'])) {
+    if (!empty($_POST['nonce'])) {
         if (!wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
             wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
             wp_die();
@@ -2047,7 +2150,12 @@ function kunaal_enqueue_inline_formats_editor() {
     }
     
     $screen = get_current_screen();
-    if (!$screen || !$screen->is_block_editor()) {
+    // Older WP versions may not have is_block_editor(); avoid fatal.
+    if (
+        !$screen ||
+        !method_exists($screen, 'is_block_editor') ||
+        !$screen->is_block_editor()
+    ) {
         return;
     }
     

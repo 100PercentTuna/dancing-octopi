@@ -14,6 +14,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Compatibility guard:
+ * Some WordPress installs may be behind on block APIs. If core block
+ * registration functions don't exist, we should no-op instead of fataling.
+ */
+function kunaal_blocks_api_available() {
+    return function_exists('register_block_type');
+}
+
 // ========================================
 // BLOCK CATEGORIES
 // ========================================
@@ -64,7 +73,11 @@ add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
  * the theme's design language.
  */
 function kunaal_unregister_core_blocks() {
-    if (class_exists('WP_Block_Type_Registry')) {
+    if (!kunaal_blocks_api_available()) {
+        return;
+    }
+
+    if (class_exists('WP_Block_Type_Registry') && function_exists('unregister_block_type')) {
         $registry = WP_Block_Type_Registry::get_instance();
         
         // Unregister core pullquote - we have kunaal/pullquote
@@ -193,6 +206,10 @@ function kunaal_get_view_script_blocks() {
  * that need frontend JavaScript.
  */
 function kunaal_register_block_scripts() {
+    if (!kunaal_blocks_api_available()) {
+        return;
+    }
+
     $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
     $blocks_uri = KUNAAL_THEME_URI . '/blocks';
     $version = KUNAAL_THEME_VERSION;
@@ -255,6 +272,10 @@ add_action('init', 'kunaal_register_block_scripts', 5);
  * Each block must have a valid block.json file.
  */
 function kunaal_register_blocks() {
+    if (!kunaal_blocks_api_available()) {
+        return;
+    }
+
     $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
     
     // Get all block folders
@@ -352,6 +373,10 @@ add_filter('render_block', 'kunaal_block_wrapper', 10, 2);
  * This category remains for any future quick patterns.
  */
 function kunaal_register_block_pattern_categories() {
+    if (!function_exists('register_block_pattern_category')) {
+        return;
+    }
+
     register_block_pattern_category(
         'kunaal-bespoke',
         array(
@@ -372,6 +397,10 @@ add_action('init', 'kunaal_register_block_pattern_categories');
  * Most patterns have been converted to proper blocks.
  */
 function kunaal_register_essential_patterns() {
+    if (!function_exists('register_block_pattern')) {
+        return;
+    }
+
     // Hero Image Pattern - useful for quick hero setup
     register_block_pattern(
         'kunaal/hero-image',
