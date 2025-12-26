@@ -1,0 +1,104 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/heatmap",
+  "version": "1.0.0",
+  "title": "Heatmap",
+  "category": "kunaal-advanced-viz",
+  "icon": "grid-view",
+  "description": "Display data as a matrix of colored cells, where color intensity represents value magnitude.",
+  "keywords": ["heatmap", "matrix", "grid", "data", "visualization"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "rowLabels": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "columnLabels": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "data": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "colorScale": {
+      "type": "string",
+      "enum": ["theme", "diverging", "custom"],
+      "default": "theme"
+    },
+    "customColorLow": {
+      "type": "string",
+      "default": "#F5F0EB"
+    },
+    "customColorHigh": {
+      "type": "string",
+      "default": "#7D6B5D"
+    },
+    "customColorMid": {
+      "type": "string",
+      "default": ""
+    },
+    "showValues": {
+      "type": "boolean",
+      "default": false
+    },
+    "valueFormat": {
+      "type": "string",
+      "enum": ["number", "percent", "decimal1", "decimal2"],
+      "default": "number"
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true
+    },
+    "legendPosition": {
+      "type": "string",
+      "enum": ["bottom", "right"],
+      "default": "bottom"
+    },
+    "cellSize": {
+      "type": "string",
+      "enum": ["auto", "small", "medium", "large"],
+      "default": "auto"
+    },
+    "rotateColumnLabels": {
+      "type": "boolean",
+      "default": false
+    },
+    "sourceNote": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-heatmap-editor",
+  "viewScript": "kunaal-heatmap-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

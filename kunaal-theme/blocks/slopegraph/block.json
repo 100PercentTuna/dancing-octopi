@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/slopegraph",
+  "version": "1.0.0",
+  "title": "Slopegraph",
+  "category": "kunaal-advanced-viz",
+  "icon": "arrow-right-alt",
+  "description": "Compare two time periods or conditions with connecting lines showing change.",
+  "keywords": ["slopegraph", "comparison", "before after", "data"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "subtitle": { "type": "string", "default": "" },
+    "leftColumnLabel": { "type": "string", "default": "Before" },
+    "rightColumnLabel": { "type": "string", "default": "After" },
+    "rowHeight": { "type": "string", "enum": ["compact", "normal", "spacious"], "default": "normal" },
+    "showPercentChange": { "type": "boolean", "default": true },
+    "showDirectionArrows": { "type": "boolean", "default": false },
+    "valueFormat": { "type": "string", "enum": ["number", "percent", "currency", "decimal1", "decimal2"], "default": "number" },
+    "currencySymbol": { "type": "string", "default": "$" },
+    "sortBy": { "type": "string", "enum": ["none", "leftValue", "rightValue", "change", "alphabetical"], "default": "none" },
+    "sortOrder": { "type": "string", "enum": ["asc", "desc"], "default": "desc" },
+    "highlightedRows": { "type": "array", "default": [] },
+    "sourceNote": { "type": "string", "default": "" },
+    "dataRows": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "leftValue": { "type": "number" },
+          "rightValue": { "type": "number" }
+        }
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-slopegraph-editor",
+  "viewScript": "kunaal-slopegraph-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

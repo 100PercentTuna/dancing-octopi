@@ -683,3 +683,4 @@ function animate(element, options) {
 - [ ] Reduced motion preference respected
 - [ ] Animations don't block interaction
 
+

@@ -1,0 +1,234 @@
+/**
+ * Data Map Block Styles
+ */
+
+.wp-block-kunaal-data-map {
+  margin: var(--space-6) 0;
+  max-width: 100%;
+}
+
+.map-header {
+  margin-bottom: var(--space-4);
+}
+
+.map-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.map-subtitle {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.map-container {
+  position: relative;
+  margin: var(--space-4) 0;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.data-map-visual {
+  width: 100%;
+  height: 100%;
+}
+
+.map-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.map-legend {
+  position: absolute;
+  background: var(--bg);
+  border: 1px solid var(--warmLight);
+  border-radius: 6px;
+  padding: var(--space-2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  font-family: var(--sans);
+  font-size: 11px;
+}
+
+.map-legend--bottom-left {
+  bottom: var(--space-2);
+  left: var(--space-2);
+}
+
+.map-legend--bottom-right {
+  bottom: var(--space-2);
+  right: var(--space-2);
+}
+
+.map-legend--top-left {
+  top: var(--space-2);
+  left: var(--space-2);
+}
+
+.map-legend--top-right {
+  top: var(--space-2);
+  right: var(--space-2);
+}
+
+.legend-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--ink);
+}
+
+.legend-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.legend-gradient {
+  width: 120px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.legend-min,
+.legend-max {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.map-tooltip {
+  position: absolute;
+  background: var(--bg);
+  border: 1px solid var(--warmLight);
+  border-radius: 6px;
+  padding: var(--space-2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  z-index: 1001;
+  font-family: var(--sans);
+  font-size: 12px;
+}
+
+.tooltip-region {
+  font-weight: 600;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--ink);
+}
+
+.tooltip-value {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.map-footer {
+  margin-top: var(--space-4);
+}
+
+.map-source {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  text-align: center;
+}
+
+.map-data-table {
+  margin-top: var(--space-4);
+}
+
+.map-data-table summary {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--blue);
+  cursor: pointer;
+  padding: var(--space-2);
+}
+
+.map-data-table table {
+  width: 100%;
+  margin-top: var(--space-2);
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.map-data-table th,
+.map-data-table td {
+  padding: var(--space-1) var(--space-2);
+  text-align: left;
+  border: 1px solid var(--hair);
+}
+
+.map-data-table th {
+  background-color: var(--bg-alt);
+  font-weight: 600;
+}
+
+/* Leaflet overrides for theme */
+.wp-block-kunaal-data-map .leaflet-container {
+  background: var(--bg);
+  font-family: var(--sans);
+}
+
+.wp-block-kunaal-data-map .leaflet-popup-content-wrapper {
+  background: var(--bg);
+  border: 1px solid var(--warmLight);
+  border-radius: 6px;
+}
+
+.wp-block-kunaal-data-map .leaflet-popup-content {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* Editor styles */
+.map-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.map-editor-table th,
+.map-editor-table td {
+  padding: 4px;
+  border: 1px solid var(--hair);
+}
+
+.map-editor-table input {
+  width: 100%;
+  padding: 4px;
+}
+
+.map-preview {
+  margin: var(--space-4) 0;
+}
+
+.map-chart-preview {
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+/* Dark mode */
+:root[data-theme="dark"] .wp-block-kunaal-data-map .leaflet-container {
+  background: var(--bg);
+}
+
+:root[data-theme="dark"] .wp-block-kunaal-data-map .leaflet-tile-container img {
+  filter: brightness(0.8) invert(1) hue-rotate(180deg);
+}
+

@@ -363,3 +363,4 @@ Small multiples display the same chart type repeated across a grid, each showing
 - [ ] Keyboard navigation works
 - [ ] Focus visible on interactive elements
 
+

@@ -1,0 +1,151 @@
+/**
+ * Flow Diagram Block Styles
+ */
+
+.wp-block-kunaal-flow-diagram {
+  margin: var(--space-6) 0;
+  max-width: 1000px;
+}
+
+.flow-header {
+  margin-bottom: var(--space-4);
+}
+
+.flow-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.flow-subtitle {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.flow-chart {
+  margin: var(--space-4) 0;
+  overflow-x: auto;
+}
+
+.flow-svg {
+  width: 100%;
+  height: auto;
+  min-height: 300px;
+}
+
+.flow-node {
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+
+.flow-node:hover {
+  opacity: 0.8;
+}
+
+.flow-link {
+  cursor: pointer;
+  transition: opacity 200ms ease, stroke-width 200ms ease;
+}
+
+.flow-link:hover {
+  opacity: 1;
+  stroke-width: 4;
+}
+
+.flow-node-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  fill: var(--ink);
+  pointer-events: none;
+}
+
+.flow-node-value {
+  font-family: var(--mono);
+  font-size: 11px;
+  fill: var(--muted);
+  pointer-events: none;
+}
+
+.flow-footer {
+  margin-top: var(--space-4);
+}
+
+.flow-source {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  text-align: center;
+}
+
+.flow-data-table {
+  margin-top: var(--space-4);
+}
+
+.flow-data-table summary {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--blue);
+  cursor: pointer;
+  padding: var(--space-2);
+}
+
+.flow-data-table table {
+  width: 100%;
+  margin-top: var(--space-2);
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.flow-data-table th,
+.flow-data-table td {
+  padding: var(--space-1) var(--space-2);
+  text-align: left;
+  border: 1px solid var(--hair);
+}
+
+.flow-data-table th {
+  background-color: var(--bg-alt);
+  font-weight: 600;
+}
+
+/* Editor styles */
+.flow-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.flow-editor-table th,
+.flow-editor-table td {
+  padding: 4px;
+  border: 1px solid var(--hair);
+}
+
+.flow-editor-table input,
+.flow-editor-table select {
+  width: 100%;
+  padding: 4px;
+}
+
+.flow-preview {
+  margin: var(--space-4) 0;
+  padding: var(--space-4);
+  background: var(--bg-alt);
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-node,
+  .flow-link {
+    transition: none;
+  }
+}
+

@@ -71,6 +71,104 @@
         if (window.location.hash) {
             handleHashNavigation();
         }
+
+        // Tooltip preview on hover/focus (enhanced per spec)
+        const tooltip = createTooltip();
+        let tooltipTimeout;
+
+        footnoteRefs.forEach(function(ref) {
+            ref.addEventListener('mouseenter', function() {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    return; // Skip tooltips for reduced motion
+                }
+                tooltipTimeout = setTimeout(() => {
+                    showTooltip(this);
+                }, 300);
+            });
+
+            ref.addEventListener('mouseleave', function() {
+                clearTimeout(tooltipTimeout);
+                hideTooltip();
+            });
+
+            ref.addEventListener('focus', function() {
+                showTooltip(this);
+            });
+
+            ref.addEventListener('blur', function() {
+                hideTooltip();
+            });
+        });
+
+        function showTooltip(ref) {
+            const targetId = ref.getAttribute('href').substring(1);
+            const footnoteItem = document.getElementById(targetId);
+            
+            if (!footnoteItem) return;
+
+            const content = footnoteItem.querySelector('.footnote-content');
+            if (!content) return;
+
+            tooltip.innerHTML = content.innerHTML;
+            tooltip.classList.add('visible');
+            positionTooltip(tooltip, ref);
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        function positionTooltip(tooltip, ref) {
+            const rect = ref.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            const scrollY = window.scrollY;
+            const scrollX = window.scrollX;
+
+            let top = rect.top + scrollY - tooltipRect.height - 8;
+            let left = rect.left + scrollX + (rect.width / 2) - (tooltipRect.width / 2);
+
+            if (left < 8) {
+                left = rect.left + scrollX + 8;
+            }
+            if (left + tooltipRect.width > window.innerWidth - 8) {
+                left = rect.left + scrollX + rect.width - tooltipRect.width - 8;
+            }
+            if (top < scrollY + 8) {
+                top = rect.bottom + scrollY + 8;
+            }
+
+            tooltip.style.top = top + 'px';
+            tooltip.style.left = left + 'px';
+        }
+
+        function createTooltip() {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'footnote-tooltip';
+            tooltip.setAttribute('role', 'tooltip');
+            tooltip.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(tooltip);
+            return tooltip;
+        }
+
+        // Mobile: tap to show tooltip
+        if ('ontouchstart' in window) {
+            footnoteRefs.forEach(function(ref) {
+                ref.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (tooltip.classList.contains('visible')) {
+                        hideTooltip();
+                    } else {
+                        showTooltip(this);
+                    }
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.footnote-ref, .footnote-tooltip')) {
+                    hideTooltip();
+                }
+            });
+        }
     });
 })();
 

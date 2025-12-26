@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/small-multiples",
+  "version": "1.0.0",
+  "title": "Small Multiples",
+  "category": "kunaal-advanced-viz",
+  "icon": "grid-view",
+  "description": "Display the same chart type repeated across a grid for easy comparison.",
+  "keywords": ["small multiples", "grid", "comparison", "charts"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "subtitle": { "type": "string", "default": "" },
+    "chartType": { "type": "string", "enum": ["line", "bar", "area", "sparkline"], "default": "line" },
+    "columns": { "type": "number", "default": 4, "minimum": 2, "maximum": 8 },
+    "cellAspectRatio": { "type": "string", "enum": ["4:3", "1:1", "16:9", "3:2"], "default": "4:3" },
+    "showAxes": { "type": "boolean", "default": false },
+    "sharedYScale": { "type": "boolean", "default": true },
+    "showLegend": { "type": "boolean", "default": false },
+    "highlightMax": { "type": "boolean", "default": false },
+    "highlightMin": { "type": "boolean", "default": false },
+    "sourceNote": { "type": "string", "default": "" },
+    "dataRows": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "values": { "type": "array", "items": { "type": "number" } },
+          "color": { "type": "string" }
+        }
+      }
+    },
+    "xLabels": { "type": "array", "default": [], "items": { "type": "string" } },
+    "colorPalette": { "type": "string", "enum": ["theme", "custom"], "default": "theme" },
+    "customColors": { "type": "array", "default": [] }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-small-multiples-editor",
+  "viewScript": "kunaal-small-multiples-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

@@ -133,11 +133,48 @@
     min-width: 150px;
 }
 
+/* Tooltip preview */
+.footnote-tooltip {
+    position: absolute;
+    background: var(--bg);
+    border: 1px solid var(--warmLight);
+    border-radius: 6px;
+    padding: var(--space-2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 200ms ease, transform 200ms ease;
+    z-index: 1000;
+    max-width: 300px;
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+.footnote-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.footnote-tooltip p {
+    margin: 0;
+}
+
+.footnote-tooltip p + p {
+    margin-top: var(--space-1);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .footnote-ref a:target,
     .footnote-item:target {
         animation: none;
+    }
+    
+    .footnote-tooltip {
+        transition: none;
     }
 }
 

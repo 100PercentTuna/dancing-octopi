@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/data-map",
+  "version": "1.0.0",
+  "title": "Data Map",
+  "category": "kunaal-advanced-viz",
+  "icon": "location",
+  "description": "Choropleth, proportional symbols, or gradient dot maps with geographic data.",
+  "keywords": ["map", "choropleth", "geographic", "data visualization", "location"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "subtitle": { "type": "string", "default": "" },
+    "mapType": { "type": "string", "enum": ["choropleth", "dots", "gradient-dots", "combined"], "default": "choropleth" },
+    "baseMap": { "type": "string", "enum": ["world", "usa", "europe", "custom-geojson"], "default": "world" },
+    "customGeoJSON": { "type": "string", "default": "" },
+    "centerLat": { "type": "number", "default": 25 },
+    "centerLng": { "type": "number", "default": 0 },
+    "initialZoom": { "type": "number", "default": 2 },
+    "enableZoom": { "type": "boolean", "default": true },
+    "enablePan": { "type": "boolean", "default": true },
+    "showLabels": { "type": "boolean", "default": false },
+    "colorScale": { "type": "string", "enum": ["sequential", "diverging", "categorical"], "default": "sequential" },
+    "colorLow": { "type": "string", "default": "#F5F0EB" },
+    "colorHigh": { "type": "string", "default": "#7D6B5D" },
+    "colorMid": { "type": "string", "default": "#F5F0EB" },
+    "colorNegative": { "type": "string", "default": "#C9553D" },
+    "dotSizeMin": { "type": "number", "default": 4 },
+    "dotSizeMax": { "type": "number", "default": 40 },
+    "dotOpacity": { "type": "number", "default": 0.7 },
+    "dotBorderColor": { "type": "string", "default": "#FFFFFF" },
+    "valueLabel": { "type": "string", "default": "Value" },
+    "valueFormat": { "type": "string", "enum": ["number", "percent", "currency", "compact", "decimal1"], "default": "number" },
+    "currencySymbol": { "type": "string", "default": "$" },
+    "valueSuffix": { "type": "string", "default": "" },
+    "showLegend": { "type": "boolean", "default": true },
+    "legendPosition": { "type": "string", "enum": ["bottom-left", "bottom-right", "top-left", "top-right"], "default": "bottom-right" },
+    "legendTitle": { "type": "string", "default": "" },
+    "height": { "type": "number", "default": 500 },
+    "sourceNote": { "type": "string", "default": "" },
+    "regionData": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "value": { "type": "number" },
+          "label": { "type": "string" }
+        }
+      }
+    },
+    "pointData": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "value": { "type": "number" },
+          "label": { "type": "string" },
+          "category": { "type": "string" }
+        }
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-data-map-editor",
+  "viewScript": "kunaal-data-map-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

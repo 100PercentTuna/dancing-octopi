@@ -516,3 +516,4 @@ When enabled, provides screen-reader-friendly summary:
 - [ ] Hover highlights single group
 - [ ] Tooltip shows group statistics
 
+

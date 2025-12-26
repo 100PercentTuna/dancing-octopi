@@ -389,3 +389,4 @@ A slopegraph is a minimalist chart that shows change between exactly two points 
 - [ ] Change direction clear
 - [ ] Touch targets adequate
 
+

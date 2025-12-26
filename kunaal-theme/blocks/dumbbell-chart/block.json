@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/dumbbell-chart",
+  "version": "1.0.0",
+  "title": "Dumbbell Chart",
+  "category": "kunaal-advanced-viz",
+  "icon": "minus",
+  "description": "Display the difference between two values for each category with connecting lines.",
+  "keywords": ["dumbbell", "gap", "comparison", "dot plot", "data"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": ""
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "startLabel": {
+      "type": "string",
+      "default": "Start"
+    },
+    "endLabel": {
+      "type": "string",
+      "default": "End"
+    },
+    "showGapAnnotation": {
+      "type": "boolean",
+      "default": true
+    },
+    "gapPrefix": {
+      "type": "string",
+      "default": ""
+    },
+    "gapSuffix": {
+      "type": "string",
+      "default": ""
+    },
+    "showAxis": {
+      "type": "boolean",
+      "default": true
+    },
+    "axisMin": {
+      "type": "number",
+      "default": null
+    },
+    "axisMax": {
+      "type": "number",
+      "default": null
+    },
+    "valueFormat": {
+      "type": "string",
+      "enum": ["number", "percent", "currency", "decimal1", "decimal2", "compact"],
+      "default": "number"
+    },
+    "currencySymbol": {
+      "type": "string",
+      "default": "$"
+    },
+    "sortBy": {
+      "type": "string",
+      "enum": ["none", "startValue", "endValue", "gap", "alphabetical"],
+      "default": "gap"
+    },
+    "sortOrder": {
+      "type": "string",
+      "enum": ["asc", "desc"],
+      "default": "desc"
+    },
+    "rowHeight": {
+      "type": "string",
+      "enum": ["compact", "normal", "spacious"],
+      "default": "normal"
+    },
+    "colorMode": {
+      "type": "string",
+      "enum": ["theme", "direction", "custom"],
+      "default": "theme"
+    },
+    "startColor": {
+      "type": "string",
+      "default": "#7D6B5D"
+    },
+    "endColor": {
+      "type": "string",
+      "default": "#B8A99A"
+    },
+    "showLegend": {
+      "type": "boolean",
+      "default": true
+    },
+    "sourceNote": {
+      "type": "string",
+      "default": ""
+    },
+    "dataRows": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "startValue": { "type": "number" },
+          "endValue": { "type": "number" }
+        }
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-dumbbell-chart-editor",
+  "viewScript": "kunaal-dumbbell-chart-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

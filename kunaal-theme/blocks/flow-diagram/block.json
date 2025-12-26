@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/flow-diagram",
+  "version": "1.0.0",
+  "title": "Flow Diagram",
+  "category": "kunaal-advanced-viz",
+  "icon": "arrow-right-alt",
+  "description": "Sankey or Alluvial diagram showing flows between nodes.",
+  "keywords": ["sankey", "alluvial", "flow", "diagram", "network"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "subtitle": { "type": "string", "default": "" },
+    "diagramType": { "type": "string", "enum": ["sankey", "alluvial"], "default": "sankey" },
+    "nodeWidth": { "type": "number", "default": 20 },
+    "nodePadding": { "type": "number", "default": 8 },
+    "linkColorMode": { "type": "string", "enum": ["source", "target", "gradient", "single"], "default": "source" },
+    "singleLinkColor": { "type": "string", "default": "#B8A99A" },
+    "showValues": { "type": "boolean", "default": true },
+    "valueFormat": { "type": "string", "enum": ["number", "percent", "currency", "compact"], "default": "number" },
+    "currencySymbol": { "type": "string", "default": "$" },
+    "valueUnit": { "type": "string", "default": "" },
+    "columnLabels": { "type": "array", "default": [], "items": { "type": "string" } },
+    "sourceNote": { "type": "string", "default": "" },
+    "nodes": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "column": { "type": "number" },
+          "color": { "type": "string" }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "value": { "type": "number" },
+          "label": { "type": "string" }
+        }
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-flow-diagram-editor",
+  "viewScript": "kunaal-flow-diagram-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

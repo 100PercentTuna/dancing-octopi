@@ -616,3 +616,4 @@ function GradientPicker({ value, onChange, showPresets, label }) {
 - [ ] Suggestions for better colors
 - [ ] Can dismiss warning
 
+

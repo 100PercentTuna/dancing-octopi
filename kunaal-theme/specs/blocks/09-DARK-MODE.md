@@ -497,3 +497,4 @@ All color combinations must meet WCAG 2.1 AA:
 - [ ] Legend adapts to theme
 - [ ] Controls visible in both modes
 
+

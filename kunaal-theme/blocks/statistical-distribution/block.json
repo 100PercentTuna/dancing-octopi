@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/statistical-distribution",
+  "version": "1.0.0",
+  "title": "Box Plot & Violin Plot",
+  "category": "kunaal-advanced-viz",
+  "icon": "chart-bar",
+  "description": "Display statistical distributions with box plots or violin plots.",
+  "keywords": ["box plot", "violin plot", "distribution", "statistics", "quartiles"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "subtitle": { "type": "string", "default": "" },
+    "chartType": { "type": "string", "enum": ["box", "violin", "combo"], "default": "box" },
+    "orientation": { "type": "string", "enum": ["horizontal", "vertical"], "default": "horizontal" },
+    "showMean": { "type": "boolean", "default": false },
+    "showOutliers": { "type": "boolean", "default": true },
+    "showDataPoints": { "type": "boolean", "default": false },
+    "showStatistics": { "type": "boolean", "default": false },
+    "axisMin": { "type": "number", "default": null },
+    "axisMax": { "type": "number", "default": null },
+    "valueFormat": { "type": "string", "enum": ["number", "currency", "percent", "decimal1", "decimal2"], "default": "number" },
+    "currencySymbol": { "type": "string", "default": "$" },
+    "sourceNote": { "type": "string", "default": "" },
+    "dataGroups": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "values": { "type": "array", "items": { "type": "number" } },
+          "color": { "type": "string" }
+        }
+      }
+    },
+    "precomputedStats": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "min": { "type": "number" },
+          "q1": { "type": "number" },
+          "median": { "type": "number" },
+          "q3": { "type": "number" },
+          "max": { "type": "number" },
+          "mean": { "type": "number" },
+          "outliers": { "type": "array", "items": { "type": "number" } }
+        }
+      }
+    },
+    "dataMode": { "type": "string", "enum": ["raw", "precomputed"], "default": "raw" }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-statistical-distribution-editor",
+  "viewScript": "kunaal-statistical-distribution-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

@@ -590,3 +590,4 @@ radius = minRadius + Math.sqrt(normalizedValue) * (maxRadius - minRadius);
 - [ ] Can edit label and value after placement
 - [ ] Can drag to reposition
 
+

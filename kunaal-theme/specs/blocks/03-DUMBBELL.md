@@ -440,3 +440,4 @@ A dumbbell chart (also called a dot plot or gap chart) shows the difference betw
 - [ ] Mini horizontal dumbbell in each card
 - [ ] Gap clearly labeled
 
+

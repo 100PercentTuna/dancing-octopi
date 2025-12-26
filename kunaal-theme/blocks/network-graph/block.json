@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kunaal/network-graph",
+  "version": "1.0.0",
+  "title": "Network Graph",
+  "category": "kunaal-advanced-viz",
+  "icon": "networking",
+  "description": "Force-directed network graph showing relationships between entities.",
+  "keywords": ["network", "graph", "relationships", "nodes", "edges"],
+  "textdomain": "kunaal-theme",
+  "attributes": {
+    "title": { "type": "string", "default": "" },
+    "subtitle": { "type": "string", "default": "" },
+    "layout": { "type": "string", "enum": ["force", "radial", "hierarchical"], "default": "force" },
+    "showLabels": { "type": "boolean", "default": true },
+    "enableZoom": { "type": "boolean", "default": true },
+    "enableDrag": { "type": "boolean", "default": true },
+    "enablePhysics": { "type": "boolean", "default": true },
+    "chargeStrength": { "type": "number", "default": -300 },
+    "linkDistance": { "type": "number", "default": 100 },
+    "colorByGroup": { "type": "boolean", "default": true },
+    "groupColors": { "type": "object", "default": {} },
+    "showLegend": { "type": "boolean", "default": true },
+    "height": { "type": "number", "default": 500 },
+    "sourceNote": { "type": "string", "default": "" },
+    "nodes": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "group": { "type": "string" },
+          "size": { "type": "string", "enum": ["small", "medium", "large"] },
+          "color": { "type": "string" },
+          "description": { "type": "string" },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "weight": { "type": "number" },
+          "label": { "type": "string" }
+        }
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "className": true,
+    "anchor": true
+  },
+  "editorScript": "kunaal-network-graph-editor",
+  "viewScript": "kunaal-network-graph-view",
+  "render": "file:./render.php",
+  "style": "file:./style.css"
+}
+

@@ -686,3 +686,4 @@ function BlockInspector({ attributes, setAttributes }) {
 - [ ] Settings transfer correctly
 - [ ] Works across block types (where applicable)
 
+
