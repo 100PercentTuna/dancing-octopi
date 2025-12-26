@@ -67,12 +67,6 @@ function kunaal_home_recent_ids($post_type, $limit = 6) {
 
 $kunaal_home_used_fallback_essays = false;
 $kunaal_home_used_fallback_jottings = false;
-
-// Expose to admin debug banner.
-$GLOBALS['kunaal_home_used_fallback_essays'] = false;
-$GLOBALS['kunaal_home_used_fallback_jottings'] = false;
-$GLOBALS['kunaal_home_essays_post_count'] = (int) $essays_query->post_count;
-$GLOBALS['kunaal_home_jottings_post_count'] = (int) $jottings_query->post_count;
 ?>
 
 <main class="container" id="main">

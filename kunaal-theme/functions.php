@@ -17,8 +17,7 @@
  *
  * @package Kunaal_Theme
  * @since 1.0.0
- * @version 4.20.7
- * Updated: 2025-12-27 - Fixed nested directory deployment issue
+ * @version 4.20.8
  */
 
 if (!defined('ABSPATH')) {
@@ -113,20 +112,6 @@ function kunaal_asset_version($relative_path) {
     return KUNAAL_THEME_VERSION;
 }
 
-// =========================================================
-// Diagnostics: show which template rendered (admin-only)
-// Visit any page with ?kunaal_diag=1 while logged in as admin.
-// =========================================================
-$GLOBALS['kunaal_theme_template_path'] = null;
-add_filter('template_include', function ($template) {
-    $GLOBALS['kunaal_theme_template_path'] = $template;
-    return $template;
-}, 9999);
-
-/**
- * Diagnostics header (helps confirm whether the response is coming from WordPress/theme,
- * even if a plugin short-circuits rendering before wp_footer()).
- */
 // PDF Generator for essays
 kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/pdf-generator.php');
 
