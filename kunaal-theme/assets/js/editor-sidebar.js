@@ -135,7 +135,8 @@
                 setNewTopicName('');
             } catch (error) {
                 console.error('Failed to create topic:', error);
-                alert('Failed to create topic. Please try again.');
+                // Error handled by UI feedback, no alert needed
+                console.error('Failed to create topic');
             } finally {
                 setIsCreatingTopic(false);
             }

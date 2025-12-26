@@ -42,15 +42,15 @@ if (empty($hero_photos)) {
     }
 }
 
-// Section toggles
+// Section toggles (removed nested fallbacks - use single source)
 $show_hero = kunaal_mod('kunaal_about_hero_show', true);
-$show_bio = kunaal_mod('kunaal_about_bio_show', kunaal_mod('kunaal_about_show_bio', true));
-$show_map = kunaal_mod('kunaal_about_map_show', kunaal_mod('kunaal_about_show_map', true));
-$show_books = kunaal_mod('kunaal_about_books_show', kunaal_mod('kunaal_about_show_books', true));
-$show_interests = kunaal_mod('kunaal_about_interests_show', kunaal_mod('kunaal_about_show_interests', true));
-$show_inspirations = kunaal_mod('kunaal_about_inspirations_show', kunaal_mod('kunaal_about_show_inspirations', true));
-$show_stats = kunaal_mod('kunaal_about_stats_show', kunaal_mod('kunaal_about_show_stats', true));
-$show_connect = kunaal_mod('kunaal_about_connect_show', kunaal_mod('kunaal_about_show_connect', true));
+$show_bio = kunaal_mod('kunaal_about_bio_show', true);
+$show_map = kunaal_mod('kunaal_about_map_show', true);
+$show_books = kunaal_mod('kunaal_about_books_show', true);
+$show_interests = kunaal_mod('kunaal_about_interests_show', true);
+$show_inspirations = kunaal_mod('kunaal_about_inspirations_show', true);
+$show_stats = kunaal_mod('kunaal_about_stats_show', true);
+$show_connect = kunaal_mod('kunaal_about_connect_show', true);
 
 // Bio section
 $bio_year = kunaal_mod('kunaal_about_bio_year', '');

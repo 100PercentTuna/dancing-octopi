@@ -147,6 +147,24 @@ function kunaal_theme_setup() {
 add_action('after_setup_theme', 'kunaal_theme_setup');
 
 /**
+ * Add resource hints for Google Fonts (preconnect for faster DNS)
+ */
+function kunaal_resource_hints($urls, $relation_type) {
+    if ('preconnect' === $relation_type) {
+        $urls[] = array(
+            'href' => 'https://fonts.googleapis.com',
+            'crossorigin',
+        );
+        $urls[] = array(
+            'href' => 'https://fonts.gstatic.com',
+            'crossorigin',
+        );
+    }
+    return $urls;
+}
+add_filter('wp_resource_hints', 'kunaal_resource_hints', 10, 2);
+
+/**
  * Enqueue Scripts and Styles
  */
 function kunaal_enqueue_assets() {
@@ -177,7 +195,7 @@ function kunaal_enqueue_assets() {
         'print'
     );
 
-    // Main script
+    // Main script (defer for non-blocking)
     wp_enqueue_script(
         'kunaal-theme-main',
         KUNAAL_THEME_URI . '/assets/js/main.js',
@@ -186,7 +204,7 @@ function kunaal_enqueue_assets() {
         true
     );
 
-    // Theme controller (dark mode)
+    // Theme controller (dark mode) - defer
     wp_enqueue_script(
         'kunaal-theme-controller',
         KUNAAL_THEME_URI . '/assets/js/theme-controller.js',
@@ -195,7 +213,7 @@ function kunaal_enqueue_assets() {
         true
     );
 
-    // Lazy loading for heavy blocks
+    // Lazy loading for heavy blocks - defer
     wp_enqueue_script(
         'kunaal-lazy-blocks',
         KUNAAL_THEME_URI . '/assets/js/lazy-blocks.js',
@@ -204,7 +222,7 @@ function kunaal_enqueue_assets() {
         true
     );
 
-    // Centralized library loader (prevents duplicate loads)
+    // Centralized library loader (prevents duplicate loads) - defer
     wp_enqueue_script(
         'kunaal-lib-loader',
         KUNAAL_THEME_URI . '/assets/js/lib-loader.js',
@@ -303,6 +321,25 @@ function kunaal_enqueue_assets() {
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
 
 /**
+ * Add defer attribute to non-critical scripts for better performance
+ */
+function kunaal_add_defer_to_scripts($tag, $handle) {
+    $defer_scripts = array(
+        'kunaal-theme-main',
+        'kunaal-theme-controller',
+        'kunaal-lazy-blocks',
+        'kunaal-lib-loader',
+    );
+    
+    if (in_array($handle, $defer_scripts)) {
+        return str_replace(' src', ' defer src', $tag);
+    }
+    
+    return $tag;
+}
+add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 2);
+
+/**
  * Add a `js` class to <html> early for progressive enhancement.
  * This ensures About page content is visible even if JS fails.
  */
@@ -312,59 +349,81 @@ function kunaal_add_js_class() {
 add_action('wp_head', 'kunaal_add_js_class', 0);
 
 /**
- * Enqueue Gutenberg Editor Sidebar Script
+ * Consolidated Block Editor Assets
+ * Enqueues all editor assets in one place to avoid conflicts
  */
 function kunaal_enqueue_editor_assets() {
-    // Only load on post edit screens
+    // Editor sidebar (only on essay/jotting edit screens)
     $screen = get_current_screen();
-    if (!$screen || !in_array($screen->post_type, array('essay', 'jotting'))) {
-        return;
+    if ($screen && in_array($screen->post_type, array('essay', 'jotting'))) {
+        wp_enqueue_script(
+            'kunaal-editor-sidebar',
+            KUNAAL_THEME_URI . '/assets/js/editor-sidebar.js',
+            array('wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-api-fetch'),
+            KUNAAL_THEME_VERSION,
+            true
+        );
+        
+        // Add some CSS for the sidebar
+        wp_add_inline_style('wp-edit-post', '
+            .kunaal-field-missing input {
+                border-color: #d63638 !important;
+                box-shadow: 0 0 0 1px #d63638 !important;
+            }
+            .kunaal-field-missing-btn {
+                background: #d63638 !important;
+                border-color: #d63638 !important;
+            }
+        ');
+        
+        // Enqueue color picker component
+        wp_enqueue_script(
+            'kunaal-color-picker',
+            KUNAAL_THEME_URI . '/assets/js/components/color-picker.js',
+            array('wp-element', 'wp-components', 'wp-i18n'),
+            KUNAAL_THEME_VERSION,
+            true
+        );
+        
+        wp_enqueue_style(
+            'kunaal-color-picker',
+            KUNAAL_THEME_URI . '/assets/js/components/color-picker.css',
+            array(),
+            KUNAAL_THEME_VERSION
+        );
+        
+        // Enqueue presets system
+        wp_enqueue_script(
+            'kunaal-presets',
+            KUNAAL_THEME_URI . '/assets/js/presets.js',
+            array(),
+            KUNAAL_THEME_VERSION,
+            true
+        );
     }
     
-    wp_enqueue_script(
-        'kunaal-editor-sidebar',
-        KUNAAL_THEME_URI . '/assets/js/editor-sidebar.js',
-        array('wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-api-fetch'),
-        KUNAAL_THEME_VERSION,
-        true
-    );
-    
-    // Add some CSS for the sidebar
-    wp_add_inline_style('wp-edit-post', '
-        .kunaal-field-missing input {
-            border-color: #d63638 !important;
-            box-shadow: 0 0 0 1px #d63638 !important;
-        }
-        .kunaal-field-missing-btn {
-            background: #d63638 !important;
-            border-color: #d63638 !important;
-        }
-    ');
-    
-    // Enqueue color picker component
-    wp_enqueue_script(
-        'kunaal-color-picker',
-        KUNAAL_THEME_URI . '/assets/js/components/color-picker.js',
-        array('wp-element', 'wp-components', 'wp-i18n'),
-        KUNAAL_THEME_VERSION,
-        true
-    );
-    
-    wp_enqueue_style(
-        'kunaal-color-picker',
-        KUNAAL_THEME_URI . '/assets/js/components/color-picker.css',
-        array(),
-        KUNAAL_THEME_VERSION
-    );
-    
-    // Enqueue presets system
-    wp_enqueue_script(
-        'kunaal-presets',
-        KUNAAL_THEME_URI . '/assets/js/presets.js',
-        array(),
-        KUNAAL_THEME_VERSION,
-        true
-    );
+    // Block editor assets (fonts and styles for all blocks)
+    if ($screen && method_exists($screen, 'is_block_editor') && $screen->is_block_editor()) {
+        // Caveat font for sidenote block preview
+        wp_enqueue_style(
+            'kunaal-caveat-editor',
+            'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap',
+            array(),
+            null
+        );
+        
+        // Theme's main stylesheet for block previews
+        wp_enqueue_style(
+            'kunaal-blocks-editor',
+            KUNAAL_THEME_URI . '/style.css',
+            array(),
+            KUNAAL_THEME_VERSION
+        );
+        
+        // Inline formats
+        wp_enqueue_script('kunaal-inline-formats');
+        wp_enqueue_style('kunaal-inline-formats-style');
+    }
 }
 add_action('enqueue_block_editor_assets', 'kunaal_enqueue_editor_assets');
 
@@ -1447,11 +1506,66 @@ function kunaal_connect_template_redirect() {
 }
 add_action('template_redirect', 'kunaal_connect_template_redirect');
 
-function kunaal_flush_rewrite_on_switch() {
+/**
+ * Consolidated theme activation handler
+ * Runs all activation tasks in proper order
+ */
+function kunaal_theme_activation_handler() {
+    // 1. Register post types and rewrite rules
+    kunaal_register_post_types();
     kunaal_register_connect_rewrite();
     flush_rewrite_rules();
+    
+    // 2. Create default pages
+    if (!get_page_by_path('about')) {
+        wp_insert_post(array(
+            'post_title' => 'About',
+            'post_name' => 'about',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => '<!-- wp:paragraph --><p>Write about yourself here.</p><!-- /wp:paragraph -->',
+        ));
+    }
+    
+    if (!get_page_by_path('contact')) {
+        wp_insert_post(array(
+            'post_title' => 'Contact',
+            'post_name' => 'contact',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => '<!-- wp:paragraph --><p>Add your contact information here.</p><!-- /wp:paragraph -->',
+        ));
+    }
+    
+    // 3. Set reading settings (only if not already set)
+    $current_front = get_option('show_on_front');
+    if (empty($current_front)) {
+        update_option('show_on_front', 'posts');
+    }
 }
-add_action('after_switch_theme', 'kunaal_flush_rewrite_on_switch');
+add_action('after_switch_theme', 'kunaal_theme_activation_handler');
+
+/**
+ * Clean up transients on theme deactivation
+ */
+function kunaal_theme_deactivation_handler() {
+    global $wpdb;
+    
+    // Delete all rate limiting transients
+    $wpdb->query(
+        "DELETE FROM {$wpdb->options} 
+         WHERE option_name LIKE '_transient_kunaal_contact_rl_%' 
+         OR option_name LIKE '_transient_timeout_kunaal_contact_rl_%'"
+    );
+    
+    // Delete all error transients
+    $wpdb->query(
+        "DELETE FROM {$wpdb->options} 
+         WHERE option_name LIKE '_transient_kunaal_essay_errors_%' 
+         OR option_name LIKE '_transient_timeout_kunaal_essay_errors_%'"
+    );
+}
+add_action('switch_theme', 'kunaal_theme_deactivation_handler');
 
 /**
  * Helper: Get initials
@@ -1626,115 +1740,121 @@ function kunaal_mod($key, $default = '') {
  * AJAX: Filter content
  */
 function kunaal_filter_content() {
-    // Verify nonce for CSRF protection - enforce nonce requirement
-    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
-        wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
-        wp_die();
-    }
-    
-    $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
-    
-    // Handle topics - can be string, array, or empty
-    $topics = array();
-    if (isset($_POST['topics'])) {
-        $topics_raw = $_POST['topics'];
-        if (is_array($topics_raw)) {
-            $topics = array_filter(array_map('sanitize_text_field', $topics_raw));
-        } elseif (is_string($topics_raw) && !empty($topics_raw)) {
-            $topics = array_filter(array_map('sanitize_text_field', explode(',', $topics_raw)));
+    try {
+        // Verify nonce for CSRF protection - enforce nonce requirement
+        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+            wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
+            wp_die();
         }
-    }
-    
-    $sort = isset($_POST['sort']) ? sanitize_text_field($_POST['sort']) : 'new';
-    $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
-    $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
-    $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
-    // Limit per_page to prevent DoS via massive queries
-    $per_page = min($per_page, 100);
-    
-    $args = array(
-        'post_type' => $post_type,
-        'posts_per_page' => $per_page,
-        'paged' => $page,
-        'post_status' => 'publish',
-    );
-    
-    // Topics filter - only if topics selected
-    if (!empty($topics)) {
-        $args['tax_query'] = array(
-            array(
-                'taxonomy' => 'topic',
-                'field' => 'slug',
-                'terms' => $topics,
-            ),
-        );
-    }
-    
-    // Sort
-    switch ($sort) {
-        case 'old':
-            $args['orderby'] = 'date';
-            $args['order'] = 'ASC';
-            break;
-        case 'title':
-            $args['orderby'] = 'title';
-            $args['order'] = 'ASC';
-            break;
-        default: // new (newest first)
-            $args['orderby'] = 'date';
-            $args['order'] = 'DESC';
-    }
-    
-    // Search
-    if (!empty($search)) {
-        $args['s'] = $search;
-    }
-    
-    $query = new WP_Query($args);
-    $posts_data = array();
-    
-    if ($query->have_posts()) {
-        // Prime caches to prevent N+1 queries
-        $post_ids = wp_list_pluck($query->posts, 'ID');
-        update_post_meta_cache($post_ids);
-        update_object_term_cache($post_ids, 'topic');
         
-        while ($query->have_posts()) {
-            $query->the_post();
-            $post_id = get_the_ID();
-            $topics_list = get_the_terms($post_id, 'topic');
-            $tags = array();
-            $tag_slugs = array();
-            if ($topics_list && !is_wp_error($topics_list)) {
-                foreach ($topics_list as $topic) {
-                    $tags[] = $topic->name;
-                    $tag_slugs[] = $topic->slug;
-                }
+        $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
+        
+        // Handle topics - can be string, array, or empty
+        $topics = array();
+        if (isset($_POST['topics'])) {
+            $topics_raw = $_POST['topics'];
+            if (is_array($topics_raw)) {
+                $topics = array_filter(array_map('sanitize_text_field', $topics_raw));
+            } elseif (is_string($topics_raw) && !empty($topics_raw)) {
+                $topics = array_filter(array_map('sanitize_text_field', explode(',', $topics_raw)));
             }
-            
-            $posts_data[] = array(
-                'id' => $post_id,
-                'title' => get_the_title(),
-                'url' => get_permalink(),
-                'date' => get_the_date('j F Y'),
-                'dateShort' => get_the_date('j M Y'),
-                'subtitle' => get_post_meta($post_id, 'kunaal_subtitle', true),
-                'readTime' => get_post_meta($post_id, 'kunaal_read_time', true),
-                'image' => kunaal_get_card_image_url($post_id),
-                'tags' => $tags,
-                'tagSlugs' => $tag_slugs,
+        }
+        
+        $sort = isset($_POST['sort']) ? sanitize_text_field($_POST['sort']) : 'new';
+        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
+        $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
+        // Limit per_page to prevent DoS via massive queries
+        $per_page = min($per_page, 100);
+        
+        $args = array(
+            'post_type' => $post_type,
+            'posts_per_page' => $per_page,
+            'paged' => $page,
+            'post_status' => 'publish',
+        );
+        
+        // Topics filter - only if topics selected
+        if (!empty($topics)) {
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'topic',
+                    'field' => 'slug',
+                    'terms' => $topics,
+                ),
             );
         }
+        
+        // Sort
+        switch ($sort) {
+            case 'old':
+                $args['orderby'] = 'date';
+                $args['order'] = 'ASC';
+                break;
+            case 'title':
+                $args['orderby'] = 'title';
+                $args['order'] = 'ASC';
+                break;
+            default: // new (newest first)
+                $args['orderby'] = 'date';
+                $args['order'] = 'DESC';
+        }
+        
+        // Search
+        if (!empty($search)) {
+            $args['s'] = $search;
+        }
+        
+        $query = new WP_Query($args);
+        $posts_data = array();
+        
+        if ($query->have_posts()) {
+            // Prime caches to prevent N+1 queries
+            $post_ids = wp_list_pluck($query->posts, 'ID');
+            update_post_meta_cache($post_ids);
+            update_object_term_cache($post_ids, 'topic');
+            
+            while ($query->have_posts()) {
+                $query->the_post();
+                $post_id = get_the_ID();
+                $topics_list = get_the_terms($post_id, 'topic');
+                $tags = array();
+                $tag_slugs = array();
+                if ($topics_list && !is_wp_error($topics_list)) {
+                    foreach ($topics_list as $topic) {
+                        $tags[] = $topic->name;
+                        $tag_slugs[] = $topic->slug;
+                    }
+                }
+                
+                $posts_data[] = array(
+                    'id' => $post_id,
+                    'title' => get_the_title(),
+                    'url' => get_permalink(),
+                    'date' => get_the_date('j F Y'),
+                    'dateShort' => get_the_date('j M Y'),
+                    'subtitle' => get_post_meta($post_id, 'kunaal_subtitle', true),
+                    'readTime' => get_post_meta($post_id, 'kunaal_read_time', true),
+                    'image' => kunaal_get_card_image_url($post_id),
+                    'tags' => $tags,
+                    'tagSlugs' => $tag_slugs,
+                );
+            }
+        }
+        wp_reset_postdata();
+        
+        wp_send_json_success(array(
+            'posts' => $posts_data,
+            'total' => $query->found_posts,
+            'pages' => $query->max_num_pages,
+            'page' => $page,
+        ));
+        wp_die(); // Prevent code execution after JSON response
+    } catch (Exception $e) {
+        kunaal_theme_log('AJAX filter error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
+        wp_send_json_error(array('message' => 'An error occurred. Please try again.'));
+        wp_die();
     }
-    wp_reset_postdata();
-    
-    wp_send_json_success(array(
-        'posts' => $posts_data,
-        'total' => $query->found_posts,
-        'pages' => $query->max_num_pages,
-        'page' => $page,
-    ));
-    wp_die(); // Prevent code execution after JSON response
 }
 add_action('wp_ajax_kunaal_filter', 'kunaal_filter_content');
 add_action('wp_ajax_nopriv_kunaal_filter', 'kunaal_filter_content');
@@ -1749,50 +1869,7 @@ function kunaal_admin_scripts($hook) {
 }
 add_action('admin_enqueue_scripts', 'kunaal_admin_scripts');
 
-/**
- * Flush rewrite rules on theme switch
- */
-function kunaal_theme_activation() {
-    kunaal_register_post_types();
-    flush_rewrite_rules();
-}
-add_action('after_switch_theme', 'kunaal_theme_activation');
-
-/**
- * Create default pages on theme activation
- */
-function kunaal_create_default_pages() {
-    // About page
-    if (!get_page_by_path('about')) {
-        wp_insert_post(array(
-            'post_title' => 'About',
-            'post_name' => 'about',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_content' => '<!-- wp:paragraph --><p>Write about yourself here.</p><!-- /wp:paragraph -->',
-        ));
-    }
-    
-    // Contact page
-    if (!get_page_by_path('contact')) {
-        wp_insert_post(array(
-            'post_title' => 'Contact',
-            'post_name' => 'contact',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_content' => '<!-- wp:paragraph --><p>Add your contact information here.</p><!-- /wp:paragraph -->',
-        ));
-    }
-}
-add_action('after_switch_theme', 'kunaal_create_default_pages');
-
-/**
- * Set reading settings on activation
- */
-function kunaal_set_reading_settings() {
-    update_option('show_on_front', 'posts');
-}
-add_action('after_switch_theme', 'kunaal_set_reading_settings');
+// Theme activation tasks consolidated into kunaal_theme_activation_handler above
 
 // Note: Block registration is now in inc/blocks.php (included at top of file)
 
@@ -2009,7 +2086,7 @@ function kunaal_add_open_graph_tags() {
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="<?php echo esc_attr($title); ?>" />
-    <meta name="twitter:description" content="<?php echo $description; ?>" />
+    <meta name="twitter:description" content="<?php echo esc_attr($description); ?>" />
     <?php if ($image) : ?>
     <meta name="twitter:image" content="<?php echo esc_url($image); ?>" />
     <?php endif; ?>
@@ -2028,77 +2105,88 @@ add_action('wp_head', 'kunaal_add_open_graph_tags', 5);
  * Contact Form AJAX Handler
  */
 function kunaal_handle_contact_form() {
-    // Verify nonce
-    if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
-        wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
-        wp_die();
-    }
-    
-    // Sanitize inputs
-    $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
-    $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
-    $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
-    $honeypot = isset($_POST['contact_company']) ? sanitize_text_field($_POST['contact_company']) : '';
+    try {
+        // Verify nonce
+        if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
+            wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
+            wp_die();
+        }
+        
+        // Sanitize inputs
+        $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
+        $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
+        $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
+        $honeypot = isset($_POST['contact_company']) ? sanitize_text_field($_POST['contact_company']) : '';
 
-    // Honeypot check (bots)
-    if (!empty($honeypot)) {
-        wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
-        wp_die();
-    }
+        // Honeypot check (bots)
+        if (!empty($honeypot)) {
+            wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
+            wp_die();
+        }
 
-    // Basic rate limiting by IP
-    $ip = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field($_SERVER['REMOTE_ADDR']) : '';
-    $rate_key = 'kunaal_contact_rl_' . wp_hash($ip);
-    $count = (int) get_transient($rate_key);
-    if ($count >= 5) {
-        wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
+        // Basic rate limiting by IP (check X-Forwarded-For for proxies)
+        $ip = '';
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $forwarded = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ip = sanitize_text_field(trim($forwarded[0]));
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        }
+        $rate_key = 'kunaal_contact_rl_' . wp_hash($ip);
+        $count = (int) get_transient($rate_key);
+        if ($count >= 5) {
+            wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
+            wp_die();
+        }
+        set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
+        
+        // Validate
+        if (empty($name) || empty($email) || empty($message)) {
+            wp_send_json_error(array('message' => 'Please fill in all fields.'));
+            wp_die();
+        }
+        
+        if (!is_email($email)) {
+            wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+            wp_die();
+        }
+        
+        // Get recipient email
+        $to_email = kunaal_mod('kunaal_contact_recipient_email', get_option('admin_email'));
+        if (!is_email($to_email)) {
+            $to_email = get_option('admin_email');
+        }
+        
+        // Build email
+        $site_name = get_bloginfo('name');
+        $email_subject = '[' . $site_name . '] New note from ' . $name;
+        $email_body = "You received a new message from your site contact form.\n\n";
+        $email_body .= "Name: {$name}\n";
+        $email_body .= "Email: {$email}\n";
+        $email_body .= "Page: " . esc_url_raw(wp_get_referer()) . "\n";
+        $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
+        $email_body .= "Message:\n{$message}\n";
+        
+        $headers = array(
+            'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
+            'Reply-To: ' . $name . ' <' . $email . '>',
+        );
+        
+        // Send email
+        $sent = wp_mail($to_email, $email_subject, $email_body, $headers);
+        
+        if ($sent) {
+            wp_send_json_success(array('message' => 'Thank you! Your message has been sent.'));
+            wp_die();
+        } else {
+            wp_send_json_error(array('message' => 'Sorry, there was an error sending your message. Please try emailing directly.'));
+            wp_die();
+        }
+    } catch (Exception $e) {
+        kunaal_theme_log('Contact form error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
+        wp_send_json_error(array('message' => 'An error occurred. Please try again.'));
         wp_die();
     }
-    set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
-    
-    // Validate
-    if (empty($name) || empty($email) || empty($message)) {
-        wp_send_json_error(array('message' => 'Please fill in all fields.'));
-        wp_die();
-    }
-    
-    if (!is_email($email)) {
-        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
-        wp_die();
-    }
-    
-    // Get recipient email
-    $to_email = kunaal_mod('kunaal_contact_recipient_email', get_option('admin_email'));
-    if (!is_email($to_email)) {
-        $to_email = get_option('admin_email');
-    }
-    
-    // Build email
-    $site_name = get_bloginfo('name');
-    $email_subject = '[' . $site_name . '] New note from ' . $name;
-    $email_body = "You received a new message from your site contact form.\n\n";
-    $email_body .= "Name: {$name}\n";
-    $email_body .= "Email: {$email}\n";
-    $email_body .= "Page: " . esc_url_raw(wp_get_referer()) . "\n";
-    $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
-    $email_body .= "Message:\n{$message}\n";
-    
-    $headers = array(
-        'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
-        'Reply-To: ' . $name . ' <' . $email . '>',
-    );
-    
-    // Send email
-    $sent = wp_mail($to_email, $email_subject, $email_body, $headers);
-    
-    if ($sent) {
-        wp_send_json_success(array('message' => 'Thank you! Your message has been sent.'));
-        wp_die();
-    } else {
-        wp_send_json_error(array('message' => 'Sorry, there was an error sending your message. Please try emailing directly.'));
-        wp_die();
-    }
-    wp_die(); // Prevent code execution after JSON response
 }
 add_action('wp_ajax_kunaal_contact_form', 'kunaal_handle_contact_form');
 add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
@@ -2130,29 +2218,7 @@ function kunaal_register_inline_formats() {
 }
 add_action('init', 'kunaal_register_inline_formats');
 
-/**
- * Enqueue Inline Formats in Editor
- */
-function kunaal_enqueue_inline_formats_editor() {
-    // Only in admin and block editor context
-    if (!is_admin()) {
-        return;
-    }
-    
-    $screen = get_current_screen();
-    // Older WP versions may not have is_block_editor(); avoid fatal.
-    if (
-        !$screen ||
-        !method_exists($screen, 'is_block_editor') ||
-        !$screen->is_block_editor()
-    ) {
-        return;
-    }
-    
-    wp_enqueue_script('kunaal-inline-formats');
-    wp_enqueue_style('kunaal-inline-formats-style');
-}
-add_action('enqueue_block_editor_assets', 'kunaal_enqueue_inline_formats_editor');
+// Inline formats now enqueued in consolidated kunaal_enqueue_editor_assets above
 
 /**
  * Enqueue Inline Format Styles on Frontend

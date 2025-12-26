@@ -284,8 +284,33 @@ function kunaal_register_blocks() {
     foreach ($block_definitions as $category => $blocks) {
         foreach ($blocks as $block) {
             $block_path = $blocks_dir . '/' . $block;
-            if (file_exists($block_path . '/block.json')) {
-                register_block_type($block_path);
+            $block_json = $block_path . '/block.json';
+            
+            if (!file_exists($block_json)) {
+                continue;
+            }
+            
+            // Validate block.json before registration
+            $block_data = json_decode(file_get_contents($block_json), true);
+            if (json_last_error() !== JSON_ERROR_NONE || !is_array($block_data)) {
+                kunaal_theme_log('Invalid block.json', array('block' => $block, 'error' => json_last_error_msg()));
+                continue;
+            }
+            
+            // Validate required fields
+            if (empty($block_data['name']) || empty($block_data['title'])) {
+                kunaal_theme_log('Block.json missing required fields', array('block' => $block));
+                continue;
+            }
+            
+            // Register block with error handling
+            try {
+                $result = register_block_type($block_path);
+                if (!$result) {
+                    kunaal_theme_log('Block registration failed', array('block' => $block));
+                }
+            } catch (Exception $e) {
+                kunaal_theme_log('Block registration exception', array('block' => $block, 'error' => $e->getMessage()));
             }
         }
     }
@@ -319,7 +344,8 @@ function kunaal_enqueue_block_editor_assets() {
         KUNAAL_THEME_VERSION
     );
 }
-add_action('enqueue_block_editor_assets', 'kunaal_enqueue_block_editor_assets');
+// Consolidated into kunaal_enqueue_editor_assets in functions.php to avoid conflicts
+// Hook removed - assets enqueued in consolidated function
 
 // ========================================
 // REVEAL ANIMATIONS

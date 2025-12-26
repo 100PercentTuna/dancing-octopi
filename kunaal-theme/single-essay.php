@@ -34,7 +34,7 @@ get_header();
   <?php endif; ?>
   
   <!-- Download/Print Button -->
-  <?php if (shortcode_exists('dkpdf-button') || true) : ?>
+  <?php if (shortcode_exists('dkpdf-button')) : ?>
   <button class="dockButton" id="downloadButton" aria-label="<?php esc_attr_e('Download PDF', 'kunaal-theme'); ?>" data-action="download">
     <span class="tip"><?php esc_html_e('Download PDF', 'kunaal-theme'); ?></span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
