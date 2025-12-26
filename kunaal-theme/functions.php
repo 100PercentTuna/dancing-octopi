@@ -333,12 +333,8 @@ function kunaal_enqueue_assets() {
             'places' => $places,
         ));
         
-        // Ensure GSAP registration happens after GSAP is loaded
-        // Move registration to after the script loads, not as inline
-        wp_add_inline_script('kunaal-about-page-v22', 
-            '(function() { if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") { try { gsap.registerPlugin(ScrollTrigger); } catch(e) { console.warn("GSAP registration failed:", e); } } })();',
-            'after'
-        );
+        // GSAP registration is handled inside about-page-v22.js after checking if GSAP is available
+        // No separate inline script needed - the JS file already has proper GSAP checks
     }
 }
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
