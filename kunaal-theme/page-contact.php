@@ -178,23 +178,33 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
 
 <script>
 (function() {
-    var form = document.getElementById('contact-form');
-    if (!form) return;
-    
-    var btn = form.querySelector('.ledgerSend');
-    var status = form.querySelector('.form-status');
-    
-    if (!btn) return;
-    
-    // Check if kunaalTheme is available
-    if (typeof kunaalTheme === 'undefined' || !kunaalTheme.ajaxUrl) {
-        console.error('Contact form: kunaalTheme.ajaxUrl is not defined');
-        if (status) {
-            status.className = 'form-status is-error';
-            status.textContent = 'Form configuration error. Please refresh the page.';
+    // Wait for DOM and ensure kunaalTheme is available
+    function initContactForm() {
+        var form = document.getElementById('contact-form');
+        if (!form) {
+            // Retry if form not ready yet
+            setTimeout(initContactForm, 100);
+            return;
         }
-        return;
-    }
+        
+        var btn = form.querySelector('.ledgerSend');
+        var status = form.querySelector('.form-status');
+        
+        if (!btn) return;
+        
+        // Get AJAX URL - try kunaalTheme first, fallback to WordPress default
+        var ajaxUrl = (typeof kunaalTheme !== 'undefined' && kunaalTheme.ajaxUrl) 
+            ? kunaalTheme.ajaxUrl 
+            : '<?php echo esc_js(admin_url('admin-ajax.php')); ?>';
+        
+        if (!ajaxUrl) {
+            console.error('Contact form: AJAX URL is not defined');
+            if (status) {
+                status.className = 'form-status is-error';
+                status.textContent = 'Form configuration error. Please refresh the page.';
+            }
+            return;
+        }
     
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -210,7 +220,7 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
         var formData = new FormData(form);
         formData.append('action', 'kunaal_contact_form');
         
-        fetch(kunaalTheme.ajaxUrl, {
+        fetch(ajaxUrl, {
             method: 'POST',
             body: formData,
             credentials: 'same-origin'
@@ -250,7 +260,14 @@ $contact_response = kunaal_mod('kunaal_contact_response_time', '');
             }
             btn.disabled = false;
         });
-    });
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initContactForm);
+    } else {
+        initContactForm();
+    }
 })();
 </script>
 

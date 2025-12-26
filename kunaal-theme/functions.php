@@ -232,6 +232,7 @@ function kunaal_enqueue_assets() {
     );
 
     // Localize script with data
+    // Always localize to ensure kunaalTheme is available on all pages
     wp_localize_script('kunaal-theme-main', 'kunaalTheme', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('kunaal_theme_nonce'),
@@ -242,6 +243,15 @@ function kunaal_enqueue_assets() {
         'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
         'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
     ));
+    
+    // For contact page, also add inline script to ensure kunaalTheme is available
+    // even if main.js loads late or fails
+    if (is_page_template('page-contact.php') || (is_page() && get_page_template_slug() === 'page-contact.php')) {
+        wp_add_inline_script('kunaal-theme-main', 
+            'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(admin_url('admin-ajax.php')) . '" }; }',
+            'before'
+        );
+    }
     
     // About page and Contact page assets
     // Template detection + explicit page selection to avoid slug brittleness
