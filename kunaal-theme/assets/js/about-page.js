@@ -57,11 +57,12 @@
       delay: 0.2
     });
 
-    // Identity entrance
+    // Identity entrance - use timeline for better control
     if (identity) {
-      gsap.from(identity, {
-        opacity: 0,
-        y: 30,
+      gsap.set(identity, { opacity: 0, y: 30 });
+      gsap.to(identity, {
+        opacity: 1,
+        y: 0,
         duration: 1,
         ease: 'power2.out',
         delay: 0.8
@@ -70,13 +71,31 @@
 
     // Annotation entrance
     if (annotation) {
-      gsap.from(annotation, {
-        opacity: 0,
-        y: 20,
-        rotation: -6,
+      gsap.set(annotation, { opacity: 0, y: 20, rotation: -6 });
+      gsap.to(annotation, {
+        opacity: 1,
+        y: 0,
+        rotation: -4,
         duration: 0.8,
         ease: 'back.out(1.2)',
         delay: 1.4
+      });
+    }
+
+    // Scroll hint fade out
+    var scrollHint = hero.querySelector('.hero-scroll-hint');
+    if (scrollHint) {
+      ScrollTrigger.create({
+        trigger: hero,
+        start: 'top 50%',
+        onEnter: function() {
+          gsap.to(scrollHint, {
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power2.out'
+          });
+        },
+        once: true
       });
     }
 
@@ -126,7 +145,7 @@
     });
 
     // ========================================
-    // HERO PIN - Pin during initial scroll
+    // HERO PIN - Pin during initial scroll (premium scrollytelling)
     // ========================================
     ScrollTrigger.create({
       trigger: hero,
@@ -134,44 +153,92 @@
       end: '+=100vh',
       pin: true,
       pinSpacing: true,
-      anticipatePin: 1
+      anticipatePin: 1,
+      onEnter: function() {
+        // Ensure photos are colored by the time pinning starts
+        photos.forEach(function(photo) {
+          var img = photo.querySelector('img');
+          if (img && !photo.classList.contains('is-colored')) {
+            gsap.to(img, {
+              filter: 'grayscale(0%) sepia(0%)',
+              duration: 1.2,
+              ease: 'power2.out'
+            });
+            photo.classList.add('is-colored');
+          }
+        });
+      }
     });
   }
 
   // ========================================
-  // ATMOSPHERIC IMAGES - Smooth Parallax
+  // ATMOSPHERIC IMAGES - Scrollytelling Integration
   // ========================================
   function initAtmosphericImages() {
-    var atmoImages = document.querySelectorAll('.atmo-full img, .about-quote-image-bg img');
+    if (prefersReducedMotion) {
+      document.querySelectorAll('.atmo-full img, .about-quote-image-bg img').forEach(function(img) {
+        img.style.filter = 'grayscale(0%) sepia(0%)';
+        img.classList.add('is-revealed');
+      });
+      return;
+    }
+
+    var atmoContainers = document.querySelectorAll('.atmo-full, .about-quote-image');
     
-    atmoImages.forEach(function(img) {
-      // Subtle parallax - much slower than before
+    atmoContainers.forEach(function(container) {
+      var img = container.querySelector('img');
+      if (!img) return;
+
+      // Pin atmospheric images during scroll transitions (premium scrollytelling)
+      var pinTrigger = ScrollTrigger.create({
+        trigger: container,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        pin: false, // Don't pin, but use for timing
+        pinSpacing: false
+      });
+
+      // Subtle parallax - creates depth illusion
       gsap.to(img, {
         y: function() {
-          return window.innerHeight * 0.15; // Very subtle
+          return window.innerHeight * 0.12; // Very subtle parallax
         },
         ease: 'none',
         scrollTrigger: {
-          trigger: img.closest('.atmo-full, .about-quote-image'),
+          trigger: container,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 1.2
+          scrub: 1.5,
+          invalidateOnRefresh: true
         }
       });
 
-      // Color reveal on scroll
+      // Color reveal on scroll - progressive reveal
       ScrollTrigger.create({
-        trigger: img,
-        start: 'top 80%',
+        trigger: container,
+        start: 'top 75%',
         onEnter: function() {
           gsap.to(img, {
             filter: 'grayscale(0%) sepia(0%)',
-            duration: 1.5,
+            duration: 1.8,
             ease: 'power2.out'
           });
           img.classList.add('is-revealed');
         },
         once: true
+      });
+
+      // Fade in/out at edges for smooth transitions
+      var fadeTrigger = ScrollTrigger.create({
+        trigger: container,
+        start: 'top bottom',
+        end: 'bottom top',
+        onUpdate: function(self) {
+          var progress = self.progress;
+          // Fade in as it enters, fade out as it exits
+          var opacity = progress < 0.1 ? progress * 10 : (progress > 0.9 ? (1 - progress) * 10 : 1);
+          gsap.set(container, { opacity: Math.max(0.3, opacity) });
+        }
       });
     });
   }
@@ -182,6 +249,7 @@
   function initSectionReveals() {
     if (prefersReducedMotion) {
       document.querySelectorAll('.reveal-up').forEach(function(el) {
+        gsap.set(el, { opacity: 1, y: 0, x: 0, scale: 1 });
         el.classList.add('is-visible');
       });
       return;
@@ -195,9 +263,10 @@
       var pullquote = bioSection.querySelector('.bio-pullquote');
 
       if (bioLabel) {
-        gsap.from(bioLabel, {
-          opacity: 0,
-          y: 40,
+        gsap.set(bioLabel, { opacity: 0, y: 40 });
+        gsap.to(bioLabel, {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: 'power2.out',
           scrollTrigger: {
@@ -209,9 +278,10 @@
       }
 
       if (bioText) {
-        gsap.from(bioText, {
-          opacity: 0,
-          y: 30,
+        gsap.set(bioText, { opacity: 0, y: 30 });
+        gsap.to(bioText, {
+          opacity: 1,
+          y: 0,
           duration: 1,
           ease: 'power2.out',
           scrollTrigger: {
@@ -223,9 +293,10 @@
       }
 
       if (pullquote) {
-        gsap.from(pullquote, {
-          opacity: 0,
-          x: -30,
+        gsap.set(pullquote, { opacity: 0, x: -30 });
+        gsap.to(pullquote, {
+          opacity: 1,
+          x: 0,
           duration: 1,
           ease: 'power2.out',
           scrollTrigger: {
@@ -242,22 +313,25 @@
     if (booksSection) {
       var books = booksSection.querySelectorAll('.book-slot');
       
-      gsap.from(books, {
-        opacity: 0,
-        y: 50,
-        scale: 0.9,
-        duration: 0.9,
-        stagger: {
-          amount: 0.4,
-          from: 'center'
-        },
-        ease: 'back.out(1.2)',
-        scrollTrigger: {
-          trigger: booksSection,
-          start: 'top 80%',
-          once: true
-        }
-      });
+      if (books.length) {
+        gsap.set(books, { opacity: 0, y: 50, scale: 0.9 });
+        gsap.to(books, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.9,
+          stagger: {
+            amount: 0.4,
+            from: 'center'
+          },
+          ease: 'back.out(1.2)',
+          scrollTrigger: {
+            trigger: booksSection,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      }
     }
 
     // Map section
@@ -267,9 +341,10 @@
       var mapLegend = mapSection.querySelector('.about-map-legend');
 
       if (mapContainer) {
-        gsap.from(mapContainer, {
-          opacity: 0,
-          scale: 0.95,
+        gsap.set(mapContainer, { opacity: 0, scale: 0.95 });
+        gsap.to(mapContainer, {
+          opacity: 1,
+          scale: 1,
           duration: 1.2,
           ease: 'power2.out',
           scrollTrigger: {
@@ -281,9 +356,10 @@
       }
 
       if (mapLegend) {
-        gsap.from(mapLegend, {
-          opacity: 0,
-          y: 20,
+        gsap.set(mapLegend, { opacity: 0, y: 20 });
+        gsap.to(mapLegend, {
+          opacity: 1,
+          y: 0,
           duration: 0.8,
           ease: 'power2.out',
           scrollTrigger: {
@@ -300,23 +376,26 @@
     if (interestsSection) {
       var interests = interestsSection.querySelectorAll('.interest-item');
       
-      gsap.from(interests, {
-        opacity: 0,
-        scale: 0.8,
-        y: 30,
-        duration: 0.7,
-        stagger: {
-          amount: 0.6,
-          grid: 'auto',
-          from: 'random'
-        },
-        ease: 'back.out(1.1)',
-        scrollTrigger: {
-          trigger: interestsSection,
-          start: 'top 80%',
-          once: true
-        }
-      });
+      if (interests.length) {
+        gsap.set(interests, { opacity: 0, scale: 0.8, y: 30 });
+        gsap.to(interests, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: {
+            amount: 0.6,
+            grid: 'auto',
+            from: 'random'
+          },
+          ease: 'back.out(1.1)',
+          scrollTrigger: {
+            trigger: interestsSection,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      }
     }
 
     // Inspirations grid
@@ -324,22 +403,25 @@
     if (inspirationsSection) {
       var cards = inspirationsSection.querySelectorAll('.inspiration-card');
       
-      gsap.from(cards, {
-        opacity: 0,
-        y: 40,
-        duration: 0.9,
-        stagger: {
-          amount: 0.5,
-          grid: 'auto',
-          from: 'start'
-        },
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: inspirationsSection,
-          start: 'top 80%',
-          once: true
-        }
-      });
+      if (cards.length) {
+        gsap.set(cards, { opacity: 0, y: 40 });
+        gsap.to(cards, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: {
+            amount: 0.5,
+            grid: 'auto',
+            from: 'start'
+          },
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: inspirationsSection,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      }
     }
 
     // Stats section
@@ -347,19 +429,22 @@
     if (statsSection) {
       var stats = statsSection.querySelectorAll('.stat-item');
       
-      gsap.from(stats, {
-        opacity: 0,
-        scale: 0.9,
-        y: 30,
-        duration: 1,
-        stagger: 0.15,
-        ease: 'back.out(1.2)',
-        scrollTrigger: {
-          trigger: statsSection,
-          start: 'top 80%',
-          once: true
-        }
-      });
+      if (stats.length) {
+        gsap.set(stats, { opacity: 0, scale: 0.9, y: 30 });
+        gsap.to(stats, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: 'back.out(1.2)',
+          scrollTrigger: {
+            trigger: statsSection,
+            start: 'top 80%',
+            once: true
+          }
+        });
+      }
     }
 
     // Connect section
@@ -370,9 +455,10 @@
       var connectLink = connectSection.querySelector('.connect-link');
 
       if (connectTitle) {
-        gsap.from(connectTitle, {
-          opacity: 0,
-          y: 30,
+        gsap.set(connectTitle, { opacity: 0, y: 30 });
+        gsap.to(connectTitle, {
+          opacity: 1,
+          y: 0,
           duration: 0.9,
           ease: 'power2.out',
           scrollTrigger: {
@@ -384,9 +470,10 @@
       }
 
       if (connectIcons.length) {
-        gsap.from(connectIcons, {
-          opacity: 0,
-          scale: 0.8,
+        gsap.set(connectIcons, { opacity: 0, scale: 0.8 });
+        gsap.to(connectIcons, {
+          opacity: 1,
+          scale: 1,
           duration: 0.7,
           stagger: 0.1,
           ease: 'back.out(1.2)',
@@ -399,9 +486,10 @@
       }
 
       if (connectLink) {
-        gsap.from(connectLink, {
-          opacity: 0,
-          x: -20,
+        gsap.set(connectLink, { opacity: 0, x: -20 });
+        gsap.to(connectLink, {
+          opacity: 1,
+          x: 0,
           duration: 0.8,
           ease: 'power2.out',
           scrollTrigger: {
@@ -755,20 +843,36 @@
     // Basic reveal animations if GSAP not available
     var revealElements = document.querySelectorAll('.reveal-up');
     if (revealElements.length) {
+      // Respect reduced motion
+      if (prefersReducedMotion) {
+        revealElements.forEach(function(el) {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          el.classList.add('is-visible');
+        });
+        return;
+      }
+
       var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'none';
             entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.15 });
+      }, { 
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      });
 
       revealElements.forEach(function(el) {
         observer.observe(el);
       });
     }
 
-    // Initialize other features
+    // Initialize other features (non-GSAP dependent)
     initMap();
     initBookshelf();
     initKeyboardNav();
@@ -776,15 +880,36 @@
   }
 
   // ========================================
-  // INITIALIZE
+  // WAIT FOR GSAP TO LOAD
   // ========================================
-  function init() {
+  function waitForGSAP(callback, maxAttempts) {
+    maxAttempts = maxAttempts || 20; // Try for up to 2 seconds
+    
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      // GSAP is ready, proceed
+      callback();
+    } else if (maxAttempts > 0) {
+      // Wait 100ms and try again
+      setTimeout(function() {
+        waitForGSAP(callback, maxAttempts - 1);
+      }, 100);
+    } else {
+      // GSAP didn't load, use fallback
+      console.warn('GSAP or ScrollTrigger not available after waiting. Using fallback animations.');
+      initFallback();
+    }
+  }
+
+  // ========================================
+  // INITIALIZE WITH GSAP
+  // ========================================
+  function initWithGSAP() {
     if (isInitialized) return;
     isInitialized = true;
 
-    // Check if GSAP is available
+    // Double-check GSAP is available
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
-      console.warn('GSAP or ScrollTrigger not loaded. Falling back to basic animations.');
+      console.warn('GSAP check failed during init. Using fallback.');
       initFallback();
       return;
     }
@@ -792,7 +917,13 @@
     // ========================================
     // GSAP SETUP
     // ========================================
-    gsap.registerPlugin(ScrollTrigger);
+    try {
+      gsap.registerPlugin(ScrollTrigger);
+    } catch (e) {
+      console.error('Error registering ScrollTrigger:', e);
+      initFallback();
+      return;
+    }
 
     // Set default easing for smoother animations
     gsap.defaults({
@@ -801,34 +932,56 @@
     });
 
     // Refresh ScrollTrigger on resize
-    ScrollTrigger.addEventListener('refresh', function() {
-      ScrollTrigger.refresh();
-    });
-
+    var resizeTimer;
     window.addEventListener('resize', function() {
-      ScrollTrigger.refresh();
-    });
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        ScrollTrigger.refresh();
+      }, 250);
+    }, { passive: true });
 
     // Initialize all features
-    initHero();
-    initAtmosphericImages();
-    initSectionReveals();
-    initStatsCounters();
-    initMap();
-    initBookshelf();
-    initKeyboardNav();
-    initImageErrorHandling();
+    try {
+      initHero();
+      initAtmosphericImages();
+      initSectionReveals();
+      initStatsCounters();
+      initMap();
+      initBookshelf();
+      initKeyboardNav();
+      initImageErrorHandling();
 
-    // Refresh ScrollTrigger after everything is set up
-    ScrollTrigger.refresh();
+      // Refresh ScrollTrigger after everything is set up
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(function() {
+        ScrollTrigger.refresh();
+      });
+    } catch (e) {
+      console.error('Error during initialization:', e);
+      // Still try to show content even if animations fail
+      document.querySelectorAll('.reveal-up').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }
   }
 
-  // Start initialization
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    // Small delay to ensure GSAP is loaded
-    setTimeout(init, 100);
+  // ========================================
+  // START INITIALIZATION
+  // ========================================
+  function startInit() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        waitForGSAP(initWithGSAP);
+      });
+    } else {
+      // DOM is ready, wait for GSAP
+      waitForGSAP(initWithGSAP);
+    }
   }
+
+  // Start the initialization process
+  startInit();
 
 })();
