@@ -1,8 +1,8 @@
 <?php
 /**
- * About Page Customizer - V22 Polished Design
+ * About Page Customizer
  * 
- * Comprehensive Customizer implementation for the v22-polished About page design.
+ * Comprehensive Customizer implementation for the About page design.
  * All fields use native WordPress controls - no JSON editing required.
  *
  * @package Kunaal_Theme
@@ -14,15 +14,15 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Register About Page V22 Customizer Panel and Sections
+ * Register About Page Customizer Panel and Sections
  */
 function kunaal_about_customizer_v22($wp_customize) {
     
     // ============================
-    // PANEL: About Page V22
+    // PANEL: About Page
     // ============================
     $wp_customize->add_panel('kunaal_about_v22_panel', array(
-        'title' => 'About Page (V22)',
+        'title' => 'About Page',
         'priority' => 50,
         'description' => 'Configure your About page sections. All fields are intuitive - no JSON required.',
     ));
@@ -299,7 +299,18 @@ function kunaal_about_customizer_v22($wp_customize) {
             'description' => 'Select category (must be defined in Categories section first)',
             'section' => 'kunaal_about_v22_rabbit_holes',
             'type' => 'select',
-            'choices' => kunaal_get_category_choices_v22($wp_customize),
+            'choices' => kunaal_get_category_choices_v22(),
+        ));
+        
+        // URL (optional link)
+        $wp_customize->add_setting("kunaal_about_v22_rabbit_hole_{$i}_url", array(
+            'sanitize_callback' => 'esc_url_raw',
+        ));
+        $wp_customize->add_control("kunaal_about_v22_rabbit_hole_{$i}_url", array(
+            'label' => "Rabbit Hole {$i}: URL (Optional)",
+            'description' => 'Optional link for this rabbit hole',
+            'section' => 'kunaal_about_v22_rabbit_holes',
+            'type' => 'url',
         ));
     }
     
@@ -750,18 +761,10 @@ add_action('customize_register', 'kunaal_about_customizer_v22', 20);
  * @param WP_Customize_Manager $wp_customize Optional. Customizer instance for live preview.
  * @return array Category choices for select dropdown
  */
-function kunaal_get_category_choices_v22($wp_customize = null) {
+function kunaal_get_category_choices_v22() {
     $choices = array('' => '-- Select Category --');
     for ($i = 1; $i <= 12; $i++) {
-        // Get value from customizer if available, otherwise from theme mod
-        if ($wp_customize) {
-            $name = $wp_customize->get_setting("kunaal_about_v22_category_{$i}_name") ? 
-                    $wp_customize->get_setting("kunaal_about_v22_category_{$i}_name")->value() : 
-                    kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
-        } else {
-            $name = kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
-        }
-        
+        $name = kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
         if (!empty($name)) {
             // Use slugified version as key
             $slug = sanitize_title($name);

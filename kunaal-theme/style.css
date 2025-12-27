@@ -93,6 +93,16 @@ Text Domain: kunaal-theme
   --p: 0;
 }
 
+/* Subtle background gradient for all pages */
+body {
+  background: 
+    radial-gradient(2000px 1500px at 20% 10%, rgba(30,90,255,0.04), transparent 70%),
+    radial-gradient(1800px 1400px at 80% 90%, rgba(125,107,93,0.04), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
 /* ========================================
    SKIP LINKS (Accessibility)
    ======================================== */
@@ -146,6 +156,16 @@ Text Domain: kunaal-theme
   --blueRing: rgba(224,122,98,0.30);
   --blueShadow: rgba(224,122,98,0.16);
   --blueMuted: #E8956E;
+}
+
+/* Subtle background gradient for all pages (dark mode) */
+:root[data-theme="dark"] body {
+  background: 
+    radial-gradient(2000px 1500px at 20% 10%, rgba(224,122,98,0.06), transparent 70%),
+    radial-gradient(1800px 1400px at 80% 90%, rgba(201,184,168,0.06), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
   
   /* Chart colors - adjusted for dark mode */
   --chart-blue: #6BB3C9;

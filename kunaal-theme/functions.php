@@ -1228,14 +1228,15 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'text',
     ));
     
-    $wp_customize->add_setting('kunaal_contact_intro', array(
-        'default' => 'Have a question, idea, or just want to say hello? I\'d love to hear from you.',
+    $wp_customize->add_setting('kunaal_contact_placeholder', array(
+        'default' => 'Leave a note...',
         'sanitize_callback' => 'sanitize_text_field',
     ));
-    $wp_customize->add_control('kunaal_contact_intro', array(
-        'label' => 'Introduction',
+    $wp_customize->add_control('kunaal_contact_placeholder', array(
+        'label' => 'Message Placeholder Text',
+        'description' => 'Text shown in the message textarea when empty',
         'section' => 'kunaal_contact_page',
-        'type' => 'textarea',
+        'type' => 'text',
     ));
     
     $wp_customize->add_setting('kunaal_contact_response_time', array(
@@ -1804,13 +1805,14 @@ function kunaal_handle_contact_form() {
         }
         set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
         
-        // Validate
-        if (empty($name) || empty($email) || empty($message)) {
-            wp_send_json_error(array('message' => 'Please fill in all fields.'));
+        // Validate - message is required, name and email are optional
+        if (empty($message)) {
+            wp_send_json_error(array('message' => 'Please enter a message.'));
             wp_die();
         }
         
-        if (!is_email($email)) {
+        // If email is provided, validate it
+        if (!empty($email) && !is_email($email)) {
             wp_send_json_error(array('message' => 'Please enter a valid email address.'));
             wp_die();
         }
@@ -1823,18 +1825,25 @@ function kunaal_handle_contact_form() {
         
         // Build email
         $site_name = get_bloginfo('name');
-        $email_subject = '[' . $site_name . '] New note from ' . $name;
+        $sender_name = !empty($name) ? $name : 'Anonymous';
+        $email_subject = '[' . $site_name . '] New note' . (!empty($name) ? ' from ' . $name : '');
         $email_body = "You received a new message from your site contact form.\n\n";
-        $email_body .= "Name: {$name}\n";
-        $email_body .= "Email: {$email}\n";
+        if (!empty($name)) {
+            $email_body .= "Name: {$name}\n";
+        }
+        if (!empty($email)) {
+            $email_body .= "Email: {$email}\n";
+        }
         $email_body .= "Page: " . esc_url_raw(wp_get_referer()) . "\n";
         $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
         $email_body .= "Message:\n{$message}\n";
         
         $headers = array(
             'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
-            'Reply-To: ' . $name . ' <' . $email . '>',
         );
+        if (!empty($email)) {
+            $headers[] = 'Reply-To: ' . $sender_name . ' <' . $email . '>';
+        }
         
         // Send email
         $sent = wp_mail($to_email, $email_subject, $email_body, $headers);
@@ -1989,11 +1998,13 @@ function kunaal_get_rabbit_holes_v22() {
             $image_id = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_image", 0);
             $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
             $category = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_category", '');
+            $url = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_url", '');
             
             $rabbit_holes[] = array(
                 'image' => $image_url,
                 'text' => $text,
                 'category' => $category,
+                'url' => $url,
             );
         }
     }

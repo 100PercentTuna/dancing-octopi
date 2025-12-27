@@ -21,7 +21,7 @@ $line = kunaal_mod('kunaal_contact_line', '');
 
 // Contact-specific settings
 $contact_headline = kunaal_mod('kunaal_contact_headline', __('Say hello', 'kunaal-theme'));
-$contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from you.", 'kunaal-theme'));
+$contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note...', 'kunaal-theme'));
 ?>
 <main id="main" class="contact-page">
     <div class="contact-container">
@@ -29,9 +29,6 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
             <header class="contact-header">
                 <div class="contact-label" data-reveal="up">Note</div>
                 <h1 class="contact-title" data-reveal="up"><?php echo esc_html($contact_headline); ?></h1>
-                <?php if ($contact_intro) : ?>
-                <p class="contact-intro" data-reveal="up"><?php echo esc_html($contact_intro); ?></p>
-                <?php endif; ?>
             </header>
             
             <form id="contact-form" class="contact-form" method="post" novalidate>
@@ -49,7 +46,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                         name="contact_message" 
                         rows="5" 
                         required 
-                        placeholder="<?php esc_attr_e('Leave a note...', 'kunaal-theme'); ?>"
+                        placeholder="<?php echo esc_attr($contact_placeholder); ?>"
                         data-reveal="up"
                     ></textarea>
                 </div>
@@ -180,10 +177,11 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     min-height: calc(100vh - var(--mastH, 100px));
     padding: var(--space-6) var(--space-4);
     background: 
-        radial-gradient(1200px 800px at 20% 10%, rgba(30,90,255,0.04), transparent 55%),
-        radial-gradient(900px 700px at 80% 90%, rgba(125,107,93,0.04), transparent 60%),
+        radial-gradient(2000px 1500px at 20% 10%, rgba(30,90,255,0.04), transparent 70%),
+        radial-gradient(1800px 1400px at 80% 90%, rgba(125,107,93,0.04), transparent 70%),
         var(--bg);
     position: relative;
+    background-attachment: fixed;
 }
 
 .contact-container {
@@ -527,9 +525,10 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
 /* Dark mode */
 :root[data-theme="dark"] .contact-page {
     background: 
-        radial-gradient(1200px 800px at 20% 10%, rgba(224,122,98,0.06), transparent 55%),
-        radial-gradient(900px 700px at 80% 90%, rgba(201,184,168,0.06), transparent 60%),
+        radial-gradient(2000px 1500px at 20% 10%, rgba(224,122,98,0.06), transparent 70%),
+        radial-gradient(1800px 1400px at 80% 90%, rgba(201,184,168,0.06), transparent 70%),
         var(--bg);
+    background-attachment: fixed;
 }
 
 :root[data-theme="dark"] .contact-card {
@@ -649,8 +648,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                     optionalFields.style.display = 'block';
                     // Trigger reflow for animation
                     optionalFields.offsetHeight;
-                    nameField.setAttribute('required', 'required');
-                    emailField.setAttribute('required', 'required');
+                    // Name and email are OPTIONAL - do not set required
                     
                     // Trigger scroll reveals for new fields
                     setTimeout(function() {
@@ -661,8 +659,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                     }, 50);
                 } else {
                     optionalFields.style.display = 'none';
-                    nameField.removeAttribute('required');
-                    emailField.removeAttribute('required');
+                    // Name and email are optional - no required attribute
                     nameField.value = '';
                     emailField.value = '';
                 }

@@ -295,7 +295,8 @@ a:focus-visible, button:focus-visible {
   top: 0; left: 0;
   width: 28px; height: 28px;
   background: linear-gradient(135deg, var(--blue) 50%, transparent 50%);
-  z-index: 2;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .hero-text {
@@ -381,9 +382,9 @@ a:focus-visible, button:focus-visible {
   align-items: center;
   gap: 0.4rem;
   z-index: 20;
+  opacity: 1 !important;
   transition: opacity 0.5s;
-  opacity: 1;
-  pointer-events: auto;
+  pointer-events: none;
 }
 .scroll-indicator.hidden { 
   opacity: 0; 
@@ -717,6 +718,7 @@ a:focus-visible, button:focus-visible {
   color: inherit;
   cursor: pointer;
   display: block;
+  width: 100%;
 }
 .media-cover {
   position: relative;
@@ -724,6 +726,7 @@ a:focus-visible, button:focus-visible {
   background: var(--bgAlt);
   border-radius: 2px;
   transition: transform var(--transition), box-shadow var(--transition);
+  width: 100%;
 }
 .media-item:hover .media-cover {
   transform: translateY(-4px) rotate(-1deg);
@@ -754,10 +757,25 @@ a:focus-visible, button:focus-visible {
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0;
+  position: relative;
+}
+.media-cover.album::before {
+  content: '';
+  display: block;
+  padding-bottom: 100%; /* 1:1 aspect ratio */
 }
 .media-cover.album img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
   border-radius: 3px !important;
   object-fit: cover !important;
+  display: block;
 }
 .media-cover .play-icon {
   position: absolute;

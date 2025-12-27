@@ -215,13 +215,15 @@ endif;
         <div class="capsules-cloud">
             <?php foreach ($rabbit_holes as $hole) : 
                 $category_slug = !empty($hole['category']) ? esc_attr($hole['category']) : '';
+                $has_link = !empty($hole['url']);
+                $tag = $has_link ? 'a' : 'span';
             ?>
-            <span class="capsule" data-cat="<?php echo $category_slug; ?>" data-reveal="left">
+            <<?php echo $tag; ?> class="capsule" data-cat="<?php echo $category_slug; ?>" data-reveal="left" <?php echo $has_link ? 'href="' . esc_url($hole['url']) . '" target="_blank" rel="noopener"' : ''; ?>>
                 <?php if (!empty($hole['image'])) : ?>
                 <img alt="Photo" class="capsule-img" decoding="async" loading="lazy" src="<?php echo esc_url($hole['image']); ?>"/>
                 <?php endif; ?>
                 <span class="capsule-text"><?php echo esc_html($hole['text']); ?></span>
-            </span>
+            </<?php echo $tag; ?>>
             <?php endforeach; ?>
         </div>
         <?php if (!empty($categories)) : ?>

@@ -117,11 +117,13 @@
         var speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
         var y = 100 * speed; // Increased for more visible parallax effect
+        // Start image lower (closer to bottom) so it doesn't run out when scrolling up
+        var startY = y * 0.3; // Start at 30% down instead of at top
         try {
           window.gsap.fromTo(img,
-            { y: -y },
+            { y: -y + startY },
             {
-              y: y,
+              y: y + startY,
               ease: 'none',
               scrollTrigger: {
                 trigger: band,
@@ -472,11 +474,18 @@
           var px = pt[0], py = pt[1];
           var g = svg.append('g').attr('transform', 'translate(' + px + ',' + py + ')');
 
+          // Use CSS variable for beacon color (adapts to dark mode)
+          var beaconColor = getComputedStyle(document.documentElement).getPropertyValue('--blue').trim() || '#1E5AFF';
+          var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          if (isDark) {
+            beaconColor = getComputedStyle(document.documentElement).getPropertyValue('--warm').trim() || '#E07A62';
+          }
+          
           function pulse() {
             g.append('circle')
               .attr('r', 5)
               .attr('fill', 'none')
-              .attr('stroke', '#1E5AFF')
+              .attr('stroke', beaconColor)
               .attr('stroke-width', 2)
               .attr('opacity', 0.7)
               .transition()
@@ -488,7 +497,7 @@
           }
           pulse();
 
-          g.append('circle').attr('r', 5).attr('fill', '#1E5AFF');
+          g.append('circle').attr('r', 5).attr('fill', beaconColor);
           g.append('circle').attr('r', 2).attr('fill', '#fff');
         }
       }).catch(function (err) {
