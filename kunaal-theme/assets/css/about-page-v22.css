@@ -206,7 +206,7 @@ body.page-template-page-about .hero,
   max-height: 100vh; /* Prevent expansion */
   background: var(--bg);
   position: relative;
-  overflow: visible !important; /* Ensure hero section doesn't clip children (like scroll indicator and dog-ear accent) */
+  overflow: visible; /* Ensure hero section doesn't clip children (like scroll indicator and dog-ear accent) */
 }
 
 .hero-photo {
@@ -214,8 +214,10 @@ body.page-template-page-about .hero,
   overflow: hidden; /* Match reference - ensures proper clipping while allowing accent to show */
   background: var(--bgAlt);
 }
-.hero-photo.has-accent {
-  overflow: visible !important; /* Allow dog-ear accent to show - force override */
+/* Dog-ear accent needs visible overflow - scoped to About page for specificity */
+body.page-template-page-about .hero-photo.has-accent,
+.page-template-page-about .hero-photo.has-accent {
+  overflow: visible; /* Allow dog-ear accent to show */
 }
 .hero-photo img {
   width: 100%;
@@ -247,14 +249,17 @@ body.page-template-page-about .hero,
 .hero-photo:hover::after { transform: scaleY(1); }
 .hero-photo.color-active::after { transform: scaleY(1); }
 /* Dog-ear accent - exact original implementation using linear-gradient */
-.hero-photo.has-accent {
-  position: relative !important; /* Ensure ::before can be positioned absolutely */
+/* Scoped to About page for higher specificity */
+body.page-template-page-about .hero-photo.has-accent,
+.page-template-page-about .hero-photo.has-accent {
+  position: relative; /* Ensure ::before can be positioned absolutely */
   isolation: isolate; /* Create new stacking context to ensure accent is above image */
-  overflow: visible !important; /* Force override - prevent any clipping of accent */
+  overflow: visible; /* Prevent any clipping of accent */
   z-index: 1; /* Ensure stacking context */
 }
 
-.hero-photo.has-accent::before {
+body.page-template-page-about .hero-photo.has-accent::before,
+.page-template-page-about .hero-photo.has-accent::before {
   content: '';
   position: absolute;
   top: 0;
@@ -262,7 +267,7 @@ body.page-template-page-about .hero,
   width: 28px;
   height: 28px;
   background: linear-gradient(135deg, var(--blue, #1E5AFF) 50%, transparent 50%);
-  z-index: 10 !important; /* Above image - force high z-index */
+  z-index: 10; /* Above image - high z-index within stacking context */
   pointer-events: none;
   /* Ensure accent is not clipped */
   clip-path: none;
@@ -427,7 +432,7 @@ body.page-template-page-about .hero,
     padding-top: 0;
     /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
     grid-auto-rows: 0;
-    overflow: visible !important; /* Allow dog-ear accent to show, prevent clipping */
+    overflow: visible; /* Allow dog-ear accent to show, prevent clipping */
   }
   .hero-text {
     grid-column: 1 / -1;
@@ -458,9 +463,10 @@ body.page-template-page-about .hero,
   }
   
   /* Mobile: Hero photo with dog-ear (first photo) - keep in grid but ensure accent shows */
-  .hero-photo.has-accent {
+  body.page-template-page-about .hero-photo.has-accent,
+  .page-template-page-about .hero-photo.has-accent {
     /* Keep in normal grid flow - don't force full width */
-    overflow: visible !important; /* Ensure accent shows */
+    overflow: visible; /* Ensure accent shows */
     z-index: 2; /* Ensure accent is above other elements */
   }
   
@@ -492,8 +498,9 @@ body.page-template-page-about .hero,
   }
   
   /* Hide all photos beyond the first 4 on mobile to prevent overflow below text */
-  .hero-photo:nth-child(n+5) {
-    display: none !important;
+  body.page-template-page-about .hero-photo:nth-child(n+5),
+  .page-template-page-about .hero-photo:nth-child(n+5) {
+    display: none;
   }
   
   /* Mobile: Smaller dog-ear accent */
@@ -614,31 +621,41 @@ body.page-template-page-about .hero,
 .rabbit-holes .section-inner {
   max-width: 850px;
 }
-.capsules-cloud {
+/* Scoped to About page for higher specificity */
+body.page-template-page-about .capsules-cloud,
+.page-template-page-about .capsules-cloud {
   position: relative;
-  padding: 1rem 0 !important;
-  border-radius: 0 !important;
+  padding: 1rem 0;
+  border-radius: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.6rem;
 }
-.capsules-cloud::before{content:none !important;display:none !important}
+body.page-template-page-about .capsules-cloud::before,
+.page-template-page-about .capsules-cloud::before {
+  content: none;
+  display: none;
+}
 
 /* Outer wrapper: layout + GSAP reveal target */
-.capsule{
+body.page-template-page-about .capsule,
+.page-template-page-about .capsule {
   position: relative;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-  padding:0 !important;
-  height:auto !important;
-  transform:none;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  height: auto;
+  transform: none;
   display: inline-block;
 }
-.capsule:hover{transform:none !important}
+body.page-template-page-about .capsule:hover,
+.page-template-page-about .capsule:hover {
+  transform: none;
+}
 
 /* Inner pill: floats independently so it doesn't fight GSAP transforms */
 .capsule-inner{
@@ -679,15 +696,18 @@ body.page-template-page-about .hero,
 }
 
 .capsule-img{
-  width:22px !important;
-  height:22px !important;
-  border-radius:50% !important;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
 }
 
 /* Category dot lives INSIDE the moving inner wrapper */
-.capsule::after{content:none !important}
+body.page-template-page-about .capsule::after,
+.page-template-page-about .capsule::after {
+  content: none;
+}
 
 .capsule-dot{
   width:5px;
@@ -967,29 +987,62 @@ body.page-template-page-about .hero,
   width: 100%;
   height: 100%;
 }
-.country {
-  fill: #E8E4DF !important;
+/* Map country colors - scoped to About page for specificity */
+body.page-template-page-about .country,
+.page-template-page-about .country {
+  fill: #E8E4DF;
   stroke: #F9F7F4;
   stroke-width: 0.3;
   transition: fill var(--transition);
 }
-.country.visited { fill: #B8A99A !important; }
-.country.lived { fill: #7D6B5D !important; }
-.country.current { fill: #1E5AFF !important; }
+body.page-template-page-about .country.visited,
+.page-template-page-about .country.visited {
+  fill: #B8A99A;
+}
+body.page-template-page-about .country.lived,
+.page-template-page-about .country.lived {
+  fill: #7D6B5D;
+}
+body.page-template-page-about .country.current,
+.page-template-page-about .country.current {
+  fill: #1E5AFF;
+}
 /* Hover: darken warm colors, NOT blue */
-.country.visited:hover { fill: #9A8B7C !important; }
-.country.lived:hover { fill: #5C4D42 !important; }
+body.page-template-page-about .country.visited:hover,
+.page-template-page-about .country.visited:hover {
+  fill: #9A8B7C;
+}
+body.page-template-page-about .country.lived:hover,
+.page-template-page-about .country.lived:hover {
+  fill: #5C4D42;
+}
 
-/* Dark mode map colors */
-:root[data-theme="dark"] .country {
+/* Dark mode map colors - scoped to About page */
+:root[data-theme="dark"] body.page-template-page-about .country,
+:root[data-theme="dark"] .page-template-page-about .country {
   fill: #2F2F2F;
   stroke: #3A3A3A;
 }
-:root[data-theme="dark"] .country.visited { fill: #8B7D6F; }
-:root[data-theme="dark"] .country.lived { fill: #C9B8A8; }
-:root[data-theme="dark"] .country.current { fill: #FF6B35 !important; } /* Orange beacon in dark mode */
-:root[data-theme="dark"] .country.visited:hover { fill: #7A6B5D; }
-:root[data-theme="dark"] .country.lived:hover { fill: #A89585; }
+:root[data-theme="dark"] body.page-template-page-about .country.visited,
+:root[data-theme="dark"] .page-template-page-about .country.visited {
+  fill: #8B7D6F;
+}
+:root[data-theme="dark"] body.page-template-page-about .country.lived,
+:root[data-theme="dark"] .page-template-page-about .country.lived {
+  fill: #C9B8A8;
+}
+:root[data-theme="dark"] body.page-template-page-about .country.current,
+:root[data-theme="dark"] .page-template-page-about .country.current {
+  fill: #FF6B35; /* Orange beacon in dark mode */
+}
+:root[data-theme="dark"] body.page-template-page-about .country.visited:hover,
+:root[data-theme="dark"] .page-template-page-about .country.visited:hover {
+  fill: #7A6B5D;
+}
+:root[data-theme="dark"] body.page-template-page-about .country.lived:hover,
+:root[data-theme="dark"] .page-template-page-about .country.lived:hover {
+  fill: #A89585;
+}
 
 /* Dark mode category colors - auto-invert for better visibility */
 :root[data-theme="dark"] .legend-dot,
@@ -1034,7 +1087,10 @@ body.page-template-page-about .hero,
 .map-legend-dot.lived { background: var(--warm); }
 .map-legend-dot.visited { background: var(--warmLight); }
 /* Dark mode legend dot colors */
-:root[data-theme="dark"] .map-legend-dot.current { background: #FF6B35 !important; } /* Orange in dark mode */
+:root[data-theme="dark"] body.page-template-page-about .map-legend-dot.current,
+:root[data-theme="dark"] .page-template-page-about .map-legend-dot.current {
+  background: #FF6B35; /* Orange in dark mode */
+}
 
 /* =============================================
    INSPIRATIONS
@@ -1189,15 +1245,19 @@ body.page-template-page-about .say-hello .section-inner {
   transform: translateY(-2px);
 }
 /* Hard-scope SVG sizing for about page - prevent 900px explosion */
+/* High specificity selector to override any global SVG styles */
 body.page-template-page-about .say-hello-link svg,
 body.page-template-page-about .say-hello-links svg,
-body.page-template-page-about .say-hello-social-link svg {
-  width: 15px !important; /* Force size to prevent oversized icons */
-  height: 15px !important;
-  max-width: 15px !important;
-  max-height: 15px !important;
-  min-width: 15px !important;
-  min-height: 15px !important;
+body.page-template-page-about .say-hello-social-link svg,
+body.page-template-page-about .say-hello .say-hello-link svg,
+body.page-template-page-about .say-hello .say-hello-links svg,
+body.page-template-page-about .say-hello .say-hello-social-link svg {
+  width: 15px;
+  height: 15px;
+  max-width: 15px;
+  max-height: 15px;
+  min-width: 15px;
+  min-height: 15px;
   display: block;
   flex-shrink: 0;
 }
