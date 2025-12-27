@@ -130,3 +130,6 @@ npx purgecss --css style.css --content "**/*.php" "**/*.js" --output ./purged/
 - [ ] No visual regressions
 - [ ] Performance not degraded
 
+
+
+

@@ -47,3 +47,6 @@
 - [ ] Map colors in dark mode (orange beacon)
 - [ ] Category capsule colors visible
 
+
+
+

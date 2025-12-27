@@ -240,12 +240,28 @@ function kunaal_enqueue_assets() {
         kunaal_asset_version('assets/css/header.css')
     );
 
-    // 6. Main stylesheet (legacy - contains remaining styles)
+    // 6. Components (cards, buttons, panels, footer)
+    wp_enqueue_style(
+        'kunaal-theme-components',
+        KUNAAL_THEME_URI . '/assets/css/components.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/components.css')
+    );
+
+    // 7. Utilities (progress bar, lazy loading, animations)
+    wp_enqueue_style(
+        'kunaal-theme-utilities',
+        KUNAAL_THEME_URI . '/assets/css/utilities.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/utilities.css')
+    );
+
+    // 8. Main stylesheet (legacy - contains remaining styles)
     // Will be gradually reduced as more modules are extracted
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header'),
+        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities'),
         kunaal_asset_version('style.css')
     );
     

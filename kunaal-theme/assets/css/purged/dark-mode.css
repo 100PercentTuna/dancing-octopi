@@ -30,7 +30,6 @@
   --blueHover: rgba(224,122,98,0.26);
   --blueRing: rgba(224,122,98,0.30);
   --blueShadow: rgba(224,122,98,0.16);
-  --blueMuted: #E8956E;
 }
 
 /* Subtle background gradient for all pages (dark mode) */
@@ -44,21 +43,6 @@
 
 /* Chart colors - adjusted for dark mode */
 :root[data-theme="dark"] {
-  --chart-blue: #6BB3C9;
-  --chart-blue-light: #8BC9DB;
-  --chart-blue-muted: #A5D4E5;
-  --chart-warm: #C9B8A8;
-  --chart-warm-light: #8B7D6F;
-  --chart-warm-muted: #5C5248;
-  --chart-accent: #E07A62;
-  --chart-accent-light: #E8956E;
-  --chart-accent-muted: #F0B5A0;
-  --chart-green: #7FE0A0;
-  --chart-green-light: #9FE8B8;
-  --chart-green-muted: #BFF0D0;
-  --chart-gray: #A0A0A0;
-  --chart-gray-light: #B8B8B8;
-  --chart-gray-muted: #3D3D3D;
 }
 
 /* Dark mode header override */

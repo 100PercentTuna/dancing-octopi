@@ -73,13 +73,6 @@
     line-height: 1.2;
 }
 
-.contact-intro {
-    font-family: var(--serif);
-    font-size: 0.95rem;
-    color: var(--muted);
-    line-height: 1.6;
-}
-
 .contact-form {
     margin-bottom: var(--space-5);
     position: relative;

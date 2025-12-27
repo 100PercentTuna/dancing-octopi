@@ -1,0 +1,62 @@
+/**
+ * Editor Styles for Gutenberg
+ * Matches the frontend styling
+ */
+
+/* Root variables */
+:root {
+  --bg: #FDFCFA;
+  --ink: #0b1220;
+  --muted: rgba(11,18,32,.66);
+  --warm: #7D6B5D;
+  --warmLight: #B8A99A;
+  --warmTint: rgba(125,107,93,0.08);
+  --blue: #1E5AFF;
+  --blueTint: rgba(30,90,255,0.04);
+  --hair2: rgba(11,18,32,.07);
+  --bgWarm: #F9F7F4;
+  --bgAlt: #F5F3EF;
+  --prose: 620px;
+  --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --serif: "Newsreader", ui-serif, Georgia, serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+}
+
+/* Editor body */
+
+/* Headings */
+
+/* Paragraphs */
+
+/* Links */
+
+/* Quotes */
+
+/* Pull Quote */
+
+/* Insight Box */
+
+/* Section Head */
+
+/* Accordion */
+
+/* Split */
+
+/* Code Block */
+
+/* Aside */
+
+/* Takeaways */
+
+/* Chart */
+
+/* Citation */
+
+/* Images */

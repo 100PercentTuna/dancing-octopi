@@ -1,0 +1,454 @@
+/**
+ * Kunaal Theme - PDF Stylesheet
+ * Clean, tight journal-paper style
+ */
+
+/* Page setup */
+@page {
+  size: A4;
+  margin: 2cm 2cm 2.5cm 2cm;
+}
+
+/* Base - Preserve all colors in PDF */
+* {
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+/* Ensure all colored elements maintain their colors */
+.confidence-meter .cm-bar,
+.argument-map .supporting,
+.argument-map .opposing,
+.status-badge,
+.confidence-indicator,
+.sc-card::before,
+.de-marker,
+.fm-cell,
+.debate-side {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #1a1a1a;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Running header/footer for browser print */
+@media print {
+  @page {
+    @top-center {
+      content: element(running-header);
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 9pt;
+      color: #888;
+    }
+  }
+}
+
+/* Article Header */
+.pdf-header {
+  margin-bottom: 0.8cm;
+  padding-bottom: 0.5cm;
+  border-bottom: 1px solid #ddd;
+}
+
+.pdf-title {
+  font-family: Georgia, serif;
+  font-size: 22pt;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #1a1a1a;
+  margin: 0 0 0.3cm;
+}
+
+.pdf-subtitle {
+  font-size: 12pt;
+  line-height: 1.4;
+  color: #555;
+  margin: 0 0 0.4cm;
+  font-style: italic;
+}
+
+.pdf-meta {
+  font-family: -apple-system, sans-serif;
+  font-size: 9pt;
+  color: #777;
+}
+
+.pdf-meta .sep {
+  color: #ccc;
+  margin: 0 0.2cm;
+}
+
+.pdf-topics {
+  font-family: monospace;
+  font-size: 8pt;
+  color: #1E5AFF;
+  margin-top: 0.3cm;
+}
+
+/* Main Content - tighter spacing */
+.pdf-content {
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #1a1a1a;
+}
+
+.pdf-content p {
+  margin: 0 0 0.5cm;
+  text-align: left;
+  orphans: 3;
+  widows: 3;
+}
+
+/* Headings - reduced spacing */
+.pdf-content h2 {
+  font-family: Georgia, serif;
+  font-size: 14pt;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0.8cm 0 0.3cm;
+  page-break-after: avoid;
+}
+
+.pdf-content h3 {
+  font-family: Georgia, serif;
+  font-size: 12pt;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0.6cm 0 0.25cm;
+  page-break-after: avoid;
+}
+
+/* Links */
+.pdf-content a {
+  color: #1E5AFF;
+  text-decoration: none;
+}
+
+/* Blockquotes & Pullquotes */
+.pdf-content blockquote,
+.pdf-content .pullquote,
+.pdf-content .wp-block-kunaal-pullquote {
+  margin: 0.5cm 0;
+  padding: 0 0 0 0.6cm;
+  border-left: 2px solid #1E5AFF;
+  font-style: italic;
+  color: #333;
+  page-break-inside: avoid;
+}
+
+.pdf-content blockquote p,
+.pdf-content .pullquote p {
+  margin: 0;
+}
+
+.pdf-content blockquote cite,
+.pdf-content .pullquote cite {
+  display: block;
+  margin-top: 0.2cm;
+  font-style: normal;
+  font-size: 9pt;
+  color: #777;
+}
+
+/* Insight Boxes */
+.pdf-content .insightBox,
+.pdf-content .wp-block-kunaal-insight {
+  background: #f9f9f9;
+  padding: 0.4cm;
+  margin: 0.5cm 0;
+  border-left: 2px solid #7D6B5D;
+  page-break-inside: avoid;
+}
+
+.pdf-content .insightBox .label,
+.pdf-content .wp-block-kunaal-insight .label {
+  font-family: sans-serif;
+  font-size: 8pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7D6B5D;
+  margin-bottom: 0.2cm;
+}
+
+/* Accordions - Expanded, minimal style */
+.pdf-content details,
+.pdf-content .accordion,
+.pdf-content .wp-block-kunaal-accordion {
+  border: 1px solid #ddd;
+  border-left: 2px solid #1E5AFF;
+  padding: 0.4cm;
+  margin: 0.5cm 0;
+  page-break-inside: avoid;
+  background: #fafafa;
+}
+
+.pdf-content summary {
+  font-weight: 600;
+  font-size: 10pt;
+  margin-bottom: 0.3cm;
+  color: #1a1a1a;
+  list-style: none;
+}
+
+.pdf-content summary .marker {
+  display: none;
+}
+
+/* Code */
+.pdf-content pre,
+.pdf-content code {
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  background: #f5f5f5;
+}
+
+.pdf-content pre {
+  padding: 0.4cm;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  page-break-inside: avoid;
+  line-height: 1.4;
+  margin: 0.5cm 0;
+}
+
+.pdf-content code {
+  padding: 0.05cm 0.15cm;
+}
+
+/* Tables */
+.pdf-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5cm 0;
+  font-size: 9pt;
+  page-break-inside: avoid;
+}
+
+.pdf-content th {
+  background: #f5f5f5;
+  border-bottom: 2px solid #333;
+  padding: 0.2cm 0.3cm;
+  text-align: left;
+  font-weight: 600;
+}
+
+.pdf-content td {
+  border-bottom: 1px solid #ddd;
+  padding: 0.2cm 0.3cm;
+}
+
+/* Images */
+.pdf-content img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0.5cm auto;
+}
+
+.pdf-content figure {
+  margin: 0.5cm 0;
+  page-break-inside: avoid;
+}
+
+.pdf-content figcaption {
+  font-size: 8pt;
+  color: #777;
+  text-align: center;
+  margin-top: 0.2cm;
+}
+
+.pdf-content .wp-block-image {
+  margin: 0.5cm 0;
+  page-break-inside: avoid;
+}
+
+.pdf-content .wp-block-image img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lists */
+.pdf-content ul,
+.pdf-content ol {
+  margin: 0.4cm 0;
+  padding-left: 1cm;
+}
+
+.pdf-content li {
+  margin-bottom: 0.2cm;
+}
+
+/* Page breaks */
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+/* Hide interactive elements */
+button,
+.shareItem,
+.subscribe-form,
+video,
+.rail,
+.tocList,
+.actionDock,
+.sharePanel,
+.subscribePanel,
+.marker,
+.wp-block-cover__inner-container,
+.parallax-section {
+  display: none !important;
+}
+
+/* Cover blocks - show image only */
+.wp-block-cover {
+  page-break-inside: avoid;
+  margin: 0.5cm 0;
+}
+
+.wp-block-cover img {
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Sidenotes inline */
+.sidenote {
+  font-size: 8pt;
+  color: #666;
+  font-style: italic;
+}
+
+/* Footer */
+.pdf-footer {
+  margin-top: 1.2cm;
+  padding-top: 0.4cm;
+  border-top: 1px solid #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 9pt;
+  color: #888;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.pdf-footer p {
+  margin: 0;
+}
+
+.pdf-footer a {
+  color: #1E5AFF;
+  text-decoration: none;
+}
+
+/* Scrolly/Parallax sections - linearize */
+.scrolly-step,
+.parallax-content {
+  margin: 0.5cm 0;
+  padding: 0.3cm;
+  background: #f9f9f9;
+  border-left: 2px solid #1E5AFF;
+}
+
+/* ========================================
+   INLINE FORMATS
+   ======================================== */
+
+/* Sidenote - show as inline footnote in PDF */
+.kunaal-sidenote {
+  color: #1E5AFF;
+  border-bottom: 1px dotted #1E5AFF;
+}
+
+.kunaal-sidenote::after {
+  content: " [" attr(data-note) "]";
+  font-size: 8pt;
+  color: #666;
+  font-style: italic;
+}
+
+/* Highlight - yellow background preserved */
+.kunaal-highlight {
+  background-color: rgba(255, 236, 61, 0.5) !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Definition - show definition inline */
+.kunaal-definition {
+  font-weight: 500;
+  color: #7D6B5D;
+  border-bottom: 1px solid #7D6B5D;
+}
+
+.kunaal-definition::after {
+  content: " (" attr(data-definition) ")";
+  font-size: 9pt;
+  font-weight: 400;
+  color: #666;
+  font-style: italic;
+}
+
+/* Key Term */
+.kunaal-key-term {
+  font-weight: 600;
+  color: #1E5AFF;
+  background-color: rgba(30, 90, 255, 0.08) !important;
+  padding: 0 3px;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Data Reference */
+.kunaal-data-ref {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #1a1a1a;
+  background-color: rgba(30, 90, 255, 0.06) !important;
+  padding: 0 4px;
+  border-bottom: 2px solid #1E5AFF;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.kunaal-data-ref[data-source]::after {
+  content: " (Source: " attr(data-source) ")";
+  font-size: 8pt;
+  font-weight: 400;
+  color: #777;
+}
+
+/* ========================================
+   CHART COLORS - Ensure vivid in PDF
+   ======================================== */
+
+.pdf-content svg rect[fill],
+.pdf-content svg circle[fill],
+.pdf-content svg path[fill] {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Chart accent colors */
+:root {
+}
+
+/* Force SVG colors in print */
+svg {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}

@@ -89,3 +89,6 @@ All major bloat has been identified and removed. The codebase is now:
 - ✅ Performance optimized (single resize handler)
 - ✅ Production-ready (no debug code)
 
+
+
+
