@@ -116,14 +116,13 @@
         if (!img) return;
         var speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
-        var y = 100 * speed; // Increased for more visible parallax effect
-        // Start image lower (closer to bottom) so it doesn't run out when scrolling up
-        var startY = y * 0.3; // Start at 30% down instead of at top
+        // Parallax movement - image starts at -50% (top), moves to +50% (bottom)
+        var y = 50 * speed; // Movement amount
         try {
           window.gsap.fromTo(img,
-            { y: -y + startY },
+            { y: '-50%' }, // Start at -50% (image starts lower, more visible at bottom)
             {
-              y: y + startY,
+              y: '50%', // End at +50% (image moves up as we scroll)
               ease: 'none',
               scrollTrigger: {
                 trigger: band,
@@ -474,31 +473,62 @@
           var px = pt[0], py = pt[1];
           var g = svg.append('g').attr('transform', 'translate(' + px + ',' + py + ')');
 
-          // Use CSS variable for beacon color (adapts to dark mode)
-          var beaconColor = getComputedStyle(document.documentElement).getPropertyValue('--blue').trim() || '#1E5AFF';
-          var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-          if (isDark) {
-            beaconColor = getComputedStyle(document.documentElement).getPropertyValue('--warm').trim() || '#E07A62';
+          // Get beacon color - orange (inverse of blue) in dark mode, blue in light mode
+          function getBeaconColor() {
+            var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            // Orange color (inverse/complement of blue) for dark mode
+            if (isDark) {
+              return '#FF6B35'; // Orange - inverse of blue
+            } else {
+              return '#1E5AFF'; // Blue for light mode
+            }
           }
+          
+          var beaconColor = getBeaconColor();
+          var beaconSize = 7; // Bigger beacon (was 5)
           
           function pulse() {
             g.append('circle')
-              .attr('r', 5)
+              .attr('r', beaconSize)
               .attr('fill', 'none')
               .attr('stroke', beaconColor)
               .attr('stroke-width', 2)
               .attr('opacity', 0.7)
               .transition()
               .duration(1200)
-              .attr('r', 18)
+              .attr('r', 22) // Bigger pulse (was 18)
               .attr('opacity', 0)
               .remove()
               .on('end', pulse);
           }
           pulse();
 
-          g.append('circle').attr('r', 5).attr('fill', beaconColor);
-          g.append('circle').attr('r', 2).attr('fill', '#fff');
+          g.append('circle').attr('r', beaconSize).attr('fill', beaconColor);
+          g.append('circle').attr('r', 3).attr('fill', '#fff'); // Bigger inner dot
+          
+          // Listen for theme changes and update beacon color
+          var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                beaconColor = getBeaconColor();
+                // Update existing circles
+                g.selectAll('circle').attr('fill', function() {
+                  var r = d3.select(this).attr('r');
+                  if (parseFloat(r) === beaconSize) {
+                    return beaconColor;
+                  }
+                  return '#fff';
+                }).attr('stroke', function() {
+                  var r = d3.select(this).attr('r');
+                  if (parseFloat(r) > beaconSize) {
+                    return beaconColor;
+                  }
+                  return null;
+                });
+              }
+            });
+          });
+          observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         }
       }).catch(function (err) {
         console.warn('World map data load failed:', err);

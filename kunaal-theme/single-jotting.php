@@ -42,7 +42,6 @@ get_header();
       <line x1="12" y1="15" x2="12" y2="3"/>
     </svg>
   </button>
-  <?php endif; ?>
 </div>
 
 <!-- Share Panel (slides out when share button clicked) -->

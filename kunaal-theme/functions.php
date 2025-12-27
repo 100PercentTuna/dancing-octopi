@@ -1626,9 +1626,20 @@ function kunaal_filter_content() {
         
         if ($query->have_posts()) {
             // Prime caches to prevent N+1 queries
+            // Ensure WordPress functions are available
+            if (!function_exists('update_post_meta_cache')) {
+                require_once(ABSPATH . 'wp-admin/includes/post.php');
+            }
+            if (!function_exists('update_object_term_cache')) {
+                require_once(ABSPATH . 'wp-includes/taxonomy.php');
+            }
             $post_ids = wp_list_pluck($query->posts, 'ID');
-            update_post_meta_cache($post_ids);
-            update_object_term_cache($post_ids, 'topic');
+            if (function_exists('update_post_meta_cache')) {
+                update_post_meta_cache($post_ids);
+            }
+            if (function_exists('update_object_term_cache')) {
+                update_object_term_cache($post_ids, array('essay', 'jotting'));
+            }
             
             while ($query->have_posts()) {
                 $query->the_post();
@@ -1852,7 +1863,16 @@ function kunaal_handle_contact_form() {
             wp_send_json_success(array('message' => 'Thank you! Your message has been sent.'));
             wp_die();
         } else {
-            wp_send_json_error(array('message' => 'Sorry, there was an error sending your message. Please try emailing directly.'));
+            // Log the error for debugging
+            global $phpmailer;
+            $error_message = 'Sorry, there was an error sending your message.';
+            if (isset($phpmailer) && is_object($phpmailer) && isset($phpmailer->ErrorInfo)) {
+                kunaal_theme_log('Contact form wp_mail error', array('error' => $phpmailer->ErrorInfo, 'to' => $to_email));
+                $error_message .= ' Please check your email configuration or try emailing directly.';
+            } else {
+                kunaal_theme_log('Contact form wp_mail failed', array('to' => $to_email, 'subject' => $email_subject));
+            }
+            wp_send_json_error(array('message' => $error_message));
             wp_die();
         }
     } catch (Exception $e) {
