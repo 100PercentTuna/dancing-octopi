@@ -267,6 +267,9 @@ a:focus-visible, button:focus-visible {
   overflow: hidden; /* Match reference - ensures proper clipping while allowing accent to show */
   background: var(--bgAlt);
 }
+.hero-photo.has-accent {
+  overflow: visible; /* Allow dog-ear accent to show */
+}
 .hero-photo img {
   width: 100%;
   height: 100%;
@@ -453,6 +456,14 @@ a:focus-visible, button:focus-visible {
   50% { 
     transform: rotate(45deg) translateY(6px) translateX(0); /* Vertical movement only - no X translation */
     opacity: 0.5; 
+  }
+}
+
+/* Wide viewport fallback - ensure hero text is visible at >1600px */
+@media (min-width: 1600px) {
+  .hero-label, .hero-title, .hero-intro, .hero-meta {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

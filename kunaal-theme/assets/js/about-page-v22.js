@@ -127,12 +127,13 @@
         .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
         .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
         .from('#scrollIndicator', { 
-          opacity: 0, 
+          opacity: 0,
+          y: 8, /* Only animate on y-axis, not x */
           duration: 0.35,
           onComplete: function() {
             // Ensure final opacity is 1, not the low value from animation
             if (scrollIndicator) {
-              window.gsap.set(scrollIndicator, { opacity: 1, clearProps: 'opacity' });
+              window.gsap.set(scrollIndicator, { opacity: 1, y: 0, clearProps: 'opacity,transform' });
             }
           }
         }, '<0.25');

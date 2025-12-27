@@ -404,7 +404,7 @@ main {
 }
 
 .mastInner > .theme-toggle {
-  margin-left: 0;
+  margin-left: 16px; /* Fixed gap from menu, not auto */
   align-self: center;
   display: flex;
   align-items: center;
