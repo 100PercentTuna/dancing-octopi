@@ -18,57 +18,7 @@ $source_note = $attributes['sourceNote'] ?? '';
 $data_groups = $attributes['dataGroups'] ?? [];
 $data_mode = $attributes['dataMode'] ?? 'raw';
 
-function kunaal_calculate_quartiles($values) {
-    $sorted = $values;
-    sort($sorted);
-    $n = count($sorted);
-    if ($n === 0) return ['min' => 0, 'q1' => 0, 'median' => 0, 'q3' => 0, 'max' => 0, 'mean' => 0];
-    
-    $median = $n % 2 === 0
-        ? ($sorted[$n/2 - 1] + $sorted[$n/2]) / 2
-        : $sorted[floor($n/2)];
-    
-    $q1 = $n % 4 === 0
-        ? ($sorted[$n/4 - 1] + $sorted[$n/4]) / 2
-        : $sorted[floor($n/4)];
-    
-    $q3 = $n % 4 === 0
-        ? ($sorted[3*$n/4 - 1] + $sorted[3*$n/4]) / 2
-        : $sorted[floor(3*$n/4)];
-    
-    $iqr = $q3 - $q1;
-    $lower_fence = $q1 - 1.5 * $iqr;
-    $upper_fence = $q3 + 1.5 * $iqr;
-    
-    $min = $sorted[0] >= $lower_fence ? $sorted[0] : $sorted[0];
-    $max = $sorted[$n-1] <= $upper_fence ? $sorted[$n-1] : $sorted[$n-1];
-    
-    $outliers = array_filter($sorted, function($v) use ($lower_fence, $upper_fence) {
-        return $v < $lower_fence || $v > $upper_fence;
-    });
-    
-    $mean = array_sum($sorted) / $n;
-    
-    return [
-        'min' => $min,
-        'q1' => $q1,
-        'median' => $median,
-        'q3' => $q3,
-        'max' => $max,
-        'mean' => $mean,
-        'outliers' => array_values($outliers)
-    ];
-}
-
-function kunaal_format_stat_value($value, $format, $currency = '$') {
-    switch ($format) {
-        case 'currency': return $currency . number_format($value);
-        case 'percent': return round($value, 1) . '%';
-        case 'decimal1': return number_format($value, 1);
-        case 'decimal2': return number_format($value, 2);
-        default: return round($value);
-    }
-}
+// Helper functions are defined in inc/block-helpers.php
 
 $block_id = 'stat-dist-' . wp_unique_id();
 $stats_data = [];

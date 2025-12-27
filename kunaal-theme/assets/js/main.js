@@ -816,9 +816,6 @@
                 setTimeout(() => { tip.textContent = originalText; }, 1500);
               }
             });
-
-  // Initialize built-in subscribe flow if subscribe forms are present
-  initSubscribeForms();
             return;
         }
 
@@ -1033,6 +1030,7 @@
       initCodeBlocks();
       initAccordions();
       initInlineFormatTouch();
+      initSubscribeForms(); // Initialize built-in subscribe flow if subscribe forms are present
       // About page functionality is handled by about-page-v22.js
 
       // Initial scroll effect

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Kunaal Theme Functions
  *
@@ -281,7 +281,7 @@ function kunaal_enqueue_assets() {
                 $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
             }
             $css_vars .= "}";
-            wp_add_inline_style('kunaal-about-page-v22-style', $css_vars);
+            wp_add_inline_style('kunaal-about-page-v22', $css_vars);
         }
     }
     

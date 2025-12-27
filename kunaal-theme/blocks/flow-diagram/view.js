@@ -205,15 +205,11 @@
     });
   }
 
-  // Use lazy loading system if available
-  if (window.kunaalLazyLoad) {
-    window.kunaalLazyLoad.loadBlock = async function(element) {
-      if (element.dataset.lazyBlock === 'flow-diagram') {
-        await initFlowDiagram(element);
-        element.classList.remove('is-loading');
-        element.classList.add('is-loaded');
-      }
-    };
+  // Register loader with lazy loading system
+  if (window.kunaalLazyLoad && window.kunaalLazyLoad.register) {
+    window.kunaalLazyLoad.register('flow-diagram', async function(element) {
+      await initFlowDiagram(element);
+    });
   }
 
   // Also initialize on DOM ready

@@ -22,17 +22,7 @@ $links = $attributes['links'] ?? [];
 
 $block_id = 'flow-' . wp_unique_id();
 
-function kunaal_format_flow_value($value, $format, $currency = '$', $unit = '') {
-    switch ($format) {
-        case 'percent': return round($value, 1) . '%';
-        case 'currency': return $currency . number_format($value) . ($unit ? ' ' . $unit : '');
-        case 'compact':
-            if ($value >= 1000000) return $currency . round($value / 1000000, 1) . 'M' . ($unit ? ' ' . $unit : '');
-            if ($value >= 1000) return $currency . round($value / 1000, 1) . 'K' . ($unit ? ' ' . $unit : '');
-            return $currency . round($value) . ($unit ? ' ' . $unit : '');
-        default: return round($value) . ($unit ? ' ' . $unit : '');
-    }
-}
+// Helper functions are defined in inc/block-helpers.php
 ?>
 
 <figure class="wp-block-kunaal-flow-diagram flow-diagram--<?php echo esc_attr($diagram_type); ?>"

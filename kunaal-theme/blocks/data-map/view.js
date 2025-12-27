@@ -196,14 +196,11 @@
     });
   }
 
-  if (window.kunaalLazyLoad) {
-    window.kunaalLazyLoad.loadBlock = async function(element) {
-      if (element.dataset.lazyBlock === 'data-map') {
-        await initDataMap(element);
-        element.classList.remove('is-loading');
-        element.classList.add('is-loaded');
-      }
-    };
+  // Register loader with lazy loading system
+  if (window.kunaalLazyLoad && window.kunaalLazyLoad.register) {
+    window.kunaalLazyLoad.register('data-map', async function(element) {
+      await initDataMap(element);
+    });
   }
 
   if (document.readyState === 'loading') {

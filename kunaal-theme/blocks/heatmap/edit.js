@@ -276,7 +276,7 @@
               ],
               onChange: (value) => setAttributes({ colorScale: value })
             }),
-            colorScale === 'custom' && el('div', {},
+            colorScale === 'custom' ? el('div', {},
               el('p', { style: { marginBottom: '8px' } }, __('Low Value Color')),
               el('input', {
                 type: 'color',
@@ -288,16 +288,28 @@
                 type: 'color',
                 value: customColorHigh,
                 onChange: (e) => setAttributes({ customColorHigh: e.target.value })
+              })
+            ) : null,
+            colorScale === 'diverging' ? el('div', {},
+              el('p', { style: { marginBottom: '8px' } }, __('Low Value Color')),
+              el('input', {
+                type: 'color',
+                value: customColorLow,
+                onChange: (e) => setAttributes({ customColorLow: e.target.value })
               }),
-              colorScale === 'diverging' && el('div', {},
-                el('p', { style: { marginBottom: '8px', marginTop: '16px' } }, __('Mid Value Color')),
-                el('input', {
-                  type: 'color',
-                  value: customColorMid || '#F5F0EB',
-                  onChange: (e) => setAttributes({ customColorMid: e.target.value })
-                })
-              )
-            })
+              el('p', { style: { marginBottom: '8px', marginTop: '16px' } }, __('Mid Value Color')),
+              el('input', {
+                type: 'color',
+                value: customColorMid || '#F5F0EB',
+                onChange: (e) => setAttributes({ customColorMid: e.target.value })
+              }),
+              el('p', { style: { marginBottom: '8px', marginTop: '16px' } }, __('High Value Color')),
+              el('input', {
+                type: 'color',
+                value: customColorHigh,
+                onChange: (e) => setAttributes({ customColorHigh: e.target.value })
+              })
+            ) : null
           ),
 
           // Legend

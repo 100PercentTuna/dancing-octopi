@@ -45,67 +45,7 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
 // Generate unique ID for this block instance
 $block_id = 'heatmap-' . wp_unique_id();
 
-// Color interpolation function
-function kunaal_interpolate_color($color1, $color2, $t) {
-    $c1 = kunaal_hex_to_rgb($color1);
-    $c2 = kunaal_hex_to_rgb($color2);
-    $r = round($c1['r'] + ($c2['r'] - $c1['r']) * $t);
-    $g = round($c1['g'] + ($c2['g'] - $c1['g']) * $t);
-    $b = round($c1['b'] + ($c2['b'] - $c1['b']) * $t);
-    return "rgb($r, $g, $b)";
-}
-
-function kunaal_hex_to_rgb($hex) {
-    $hex = ltrim($hex, '#');
-    return [
-        'r' => hexdec(substr($hex, 0, 2)),
-        'g' => hexdec(substr($hex, 2, 2)),
-        'b' => hexdec(substr($hex, 4, 2))
-    ];
-}
-
-function kunaal_get_theme_color($normalized) {
-    $colors = [
-        '#F5F0EB', '#E8DFD5', '#D4C4B5', '#B8A99A',
-        '#8B7355', '#7D6B5D', '#5C4A3D'
-    ];
-    $index = min(floor($normalized * (count($colors) - 1)), count($colors) - 1);
-    return $colors[$index];
-}
-
-function kunaal_format_value($value, $format) {
-    switch ($format) {
-        case 'percent':
-            return round($value, 1) . '%';
-        case 'decimal1':
-            return number_format($value, 1);
-        case 'decimal2':
-            return number_format($value, 2);
-        default:
-            return round($value);
-    }
-}
-
-// Get cell background color
-function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '') {
-    if ($max <= $min) {
-        $normalized = 0.5;
-    } else {
-        $normalized = ($value - $min) / ($max - $min);
-    }
-    
-    if ($scale === 'custom') {
-        return kunaal_interpolate_color($low, $high, $normalized);
-    } elseif ($scale === 'diverging' && $mid) {
-        if ($normalized < 0.5) {
-            return kunaal_interpolate_color($low, $mid, $normalized * 2);
-        } else {
-            return kunaal_interpolate_color($mid, $high, ($normalized - 0.5) * 2);
-        }
-    } else {
-        return kunaal_get_theme_color($normalized);
-    }
-}
+// Helper functions are defined in inc/block-helpers.php
 ?>
 
 <figure class="wp-block-kunaal-heatmap heatmap-<?php echo esc_attr($cell_size); ?>"
@@ -132,8 +72,8 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
             esc_html__('Heatmap showing %d rows and %d columns. Values range from %s to %s.', 'kunaal-theme'),
             count($row_labels),
             count($column_labels),
-            kunaal_format_value($min_value, $value_format),
-            kunaal_format_value($max_value, $value_format)
+            kunaal_format_heatmap_value($min_value, $value_format),
+            kunaal_format_heatmap_value($max_value, $value_format)
         );
         ?>
     </div>
@@ -165,9 +105,9 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
                         role="gridcell"
                         tabindex="0"
                         style="--cell-value: <?php echo esc_attr($normalized); ?>; background-color: <?php echo esc_attr($cell_color); ?>;"
-                        aria-label="<?php printf(esc_attr__('%s, %s: %s', 'kunaal-theme'), esc_attr($row_label), esc_attr($col_label), kunaal_format_value($value, $value_format)); ?>">
+                        aria-label="<?php printf(esc_attr__('%s, %s: %s', 'kunaal-theme'), esc_attr($row_label), esc_attr($col_label), kunaal_format_heatmap_value($value, $value_format)); ?>">
                         <?php if ($show_values) : ?>
-                        <span class="heatmap-cell-value"><?php echo esc_html(kunaal_format_value($value, $value_format)); ?></span>
+                        <span class="heatmap-cell-value"><?php echo esc_html(kunaal_format_heatmap_value($value, $value_format)); ?></span>
                         <?php endif; ?>
                     </td>
                     <?php endforeach; ?>
@@ -180,13 +120,13 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
     <?php if ($show_legend) : ?>
     <footer class="heatmap-footer">
         <div class="heatmap-legend heatmap-legend--<?php echo esc_attr($legend_position); ?>">
-            <span class="legend-min"><?php echo esc_html(kunaal_format_value($min_value, $value_format)); ?></span>
+            <span class="legend-min"><?php echo esc_html(kunaal_format_heatmap_value($min_value, $value_format)); ?></span>
             <div class="legend-gradient"
                  style="background: linear-gradient(to right,
                     <?php echo esc_attr(kunaal_get_cell_color($min_value, $min_value, $max_value, $color_scale, $custom_color_low, $custom_color_high, $custom_color_mid)); ?>,
                     <?php echo esc_attr(kunaal_get_cell_color($max_value, $min_value, $max_value, $color_scale, $custom_color_low, $custom_color_high, $custom_color_mid)); ?>);">
             </div>
-            <span class="legend-max"><?php echo esc_html(kunaal_format_value($max_value, $value_format)); ?></span>
+            <span class="legend-max"><?php echo esc_html(kunaal_format_heatmap_value($max_value, $value_format)); ?></span>
         </div>
         <?php if ($source_note) : ?>
         <p class="heatmap-source"><?php echo esc_html($source_note); ?></p>
@@ -215,7 +155,7 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
                     foreach ($column_labels as $j => $col_label) :
                         $value = isset($row_data[$j]) && is_numeric($row_data[$j]) ? floatval($row_data[$j]) : 0;
                     ?>
-                    <td><?php echo esc_html(kunaal_format_value($value, $value_format)); ?></td>
+                    <td><?php echo esc_html(kunaal_format_heatmap_value($value, $value_format)); ?></td>
                     <?php endforeach; ?>
                 </tr>
                 <?php endforeach; ?>

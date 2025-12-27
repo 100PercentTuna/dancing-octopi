@@ -244,14 +244,11 @@
     });
   }
 
-  if (window.kunaalLazyLoad) {
-    window.kunaalLazyLoad.loadBlock = async function(element) {
-      if (element.dataset.lazyBlock === 'network-graph') {
-        await initNetworkGraph(element);
-        element.classList.remove('is-loading');
-        element.classList.add('is-loaded');
-      }
-    };
+  // Register loader with lazy loading system
+  if (window.kunaalLazyLoad && window.kunaalLazyLoad.register) {
+    window.kunaalLazyLoad.register('network-graph', async function(element) {
+      await initNetworkGraph(element);
+    });
   }
 
   if (document.readyState === 'loading') {
