@@ -265,7 +265,7 @@
 
     navToggle.addEventListener('click', () => {
       const isOpen = nav.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', isOpen);
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
     document.addEventListener('click', (e) => {
@@ -292,7 +292,7 @@
       filterBtn.addEventListener('click', () => {
         const isOpen = filterPanel.classList.toggle('open');
         filterBtn.classList.toggle('active', isOpen);
-        filterBtn.setAttribute('aria-expanded', isOpen);
+        filterBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
     }
 
@@ -301,7 +301,7 @@
       topicBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isOpen = topicMenu.classList.toggle('open');
-        topicBtn.setAttribute('aria-expanded', isOpen);
+        topicBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
 
       // Topic options
@@ -974,20 +974,33 @@
     const touchElements = document.querySelectorAll('.kunaal-sidenote, .kunaal-definition, .kunaal-data-ref[data-source]');
     
     touchElements.forEach(function(el) {
+      // Find tooltip content element
+      const tooltip = el.querySelector('.tooltip-content, .definition-content, .data-ref-content');
+      
       el.addEventListener('click', function(e) {
         // If already active, close it
         if (this.classList.contains('active')) {
           this.classList.remove('active');
+          if (tooltip) {
+            tooltip.setAttribute('aria-hidden', 'true');
+          }
           return;
         }
         
         // Close any other active tooltips
         touchElements.forEach(function(other) {
           other.classList.remove('active');
+          const otherTooltip = other.querySelector('.tooltip-content, .definition-content, .data-ref-content');
+          if (otherTooltip) {
+            otherTooltip.setAttribute('aria-hidden', 'true');
+          }
         });
         
         // Open this one
         this.classList.add('active');
+        if (tooltip) {
+          tooltip.setAttribute('aria-hidden', 'false');
+        }
         e.stopPropagation();
       });
     });
@@ -997,6 +1010,10 @@
       if (!e.target.closest('.kunaal-sidenote, .kunaal-definition, .kunaal-data-ref')) {
         touchElements.forEach(function(el) {
           el.classList.remove('active');
+          const tooltip = el.querySelector('.tooltip-content, .definition-content, .data-ref-content');
+          if (tooltip) {
+            tooltip.setAttribute('aria-hidden', 'true');
+          }
         });
       }
     });

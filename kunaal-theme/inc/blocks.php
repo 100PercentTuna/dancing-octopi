@@ -162,6 +162,7 @@ function kunaal_get_block_definitions() {
             'statistical-distribution',
             'flow-diagram',
             'network-graph',
+            'data-map',
         ),
         
         // Interactive blocks - scrollytelling and reveals
@@ -192,6 +193,7 @@ function kunaal_get_view_script_blocks() {
         'statistical-distribution',
         'flow-diagram',
         'network-graph',
+        'data-map',
     );
 }
 

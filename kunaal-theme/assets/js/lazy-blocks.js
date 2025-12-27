@@ -58,12 +58,18 @@
         element.classList.remove('is-loading');
         element.classList.add('is-loaded');
       } else {
-        console.warn(`No loader registered for block type: ${blockType}`);
+        // Only log in debug mode
+        if (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug) {
+          console.warn(`No loader registered for block type: ${blockType}`);
+        }
         element.classList.add('is-error');
         element.classList.remove('is-loading');
       }
     } catch (error) {
-      console.error(`Failed to load ${blockType}:`, error);
+      // Always log errors as they indicate real problems
+      if (typeof console !== 'undefined' && console.error) {
+        console.error(`Failed to load ${blockType}:`, error);
+      }
       element.classList.add('is-error');
       element.classList.remove('is-loading');
       

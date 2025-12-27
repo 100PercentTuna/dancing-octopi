@@ -740,6 +740,7 @@
             if (iso && countryNames[iso]) {
               tooltip.textContent = countryNames[iso];
               tooltip.classList.add('visible');
+              tooltip.setAttribute('aria-hidden', 'false');
             }
           })
           .on('mousemove', function (event) {
@@ -750,6 +751,7 @@
           .on('mouseleave', function () {
             if (!tooltip) return;
             tooltip.classList.remove('visible');
+            tooltip.setAttribute('aria-hidden', 'true');
           });
 
         // Add pin for current location (use first current location)
