@@ -243,40 +243,21 @@ a:focus-visible, button:focus-visible {
 }
 
 /* =============================================
-   HERO
+   HERO - Exact original layout restored
 ============================================= */
-/* Rewritten: robust hero layout for mobile + varied widths (prevents collage tiles being auto-placed off-screen). */
-.hero.about-hero {
+.hero {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 1fr minmax(280px, 400px) 60px;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  min-height: 100vh;
   background: var(--bg);
   position: relative;
-  padding: 0 clamp(14px, 3.6vw, 48px);
-  min-height: calc(100svh - var(--mastH, 100px));
-  display: flex;
-  align-items: stretch;
-}
-
-.about-hero-inner{
-  width: 100%;
-  max-width: 1240px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
-  gap: 2px;
-  align-items: stretch;
-  padding: 2px 0;
-}
-
-.hero-collage{
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: repeat(2, 1fr);
-  gap: 2px;
-  height: clamp(340px, 64vh, 620px);
 }
 
 .hero-photo {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background: var(--bgAlt);
 }
 .hero-photo img {
@@ -303,20 +284,22 @@ a:focus-visible, button:focus-visible {
 }
 .hero-photo:hover::after { transform: scaleY(1); }
 .hero-photo.color-active::after { transform: scaleY(1); }
-/* Dog-ear accent (DOM element) — avoids pseudo-element + stacking context edge cases */
-.hero-photo .hero-accent{
+/* Dog-ear accent - exact original implementation using linear-gradient */
+.hero-photo.has-accent::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
-  background: var(--blue);
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-  z-index: 5;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--blue) 50%, transparent 50%);
+  z-index: 10;
   pointer-events: none;
 }
 
 .hero-text {
+  grid-column: 5;
+  grid-row: 1 / 3;
   background: var(--bg);
   display: flex;
   flex-direction: column;
@@ -324,7 +307,6 @@ a:focus-visible, button:focus-visible {
   padding: 3rem 2.5rem;
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
-  z-index: 3;
 }
 
 .hero-label {
@@ -388,26 +370,20 @@ a:focus-visible, button:focus-visible {
   color: var(--ink);
 }
 
-/* Scroll indicator */
+/* Scroll indicator - positioned inside hero text, below meta */
 .scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  z-index: 20;
-  opacity: 1 !important;
+  margin-top: 1.5rem;
+  opacity: 1;
   transition: opacity 0.5s ease;
   pointer-events: none;
   color: var(--warm);
-  visibility: visible !important;
 }
 .scroll-indicator.hidden { 
-  opacity: 0 !important;
-  visibility: hidden !important;
+  opacity: 0;
   pointer-events: none; 
 }
 .scroll-indicator-text {
@@ -432,56 +408,34 @@ a:focus-visible, button:focus-visible {
   border-right: 2px solid var(--warm);
   border-bottom: 2px solid var(--warm);
   transform: rotate(45deg);
-  animation: bounce 1.8s ease-in-out infinite;
+  animation: scrollBounce 1.8s ease-in-out infinite;
   opacity: 0.9;
 }
-@keyframes bounce {
+/* Scroll indicator animation - down/up movement (not side) */
+@keyframes scrollBounce {
   0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
   50% { transform: rotate(45deg) translateY(6px); opacity: 0.5; }
 }
 
-/* Inline scroll indicator lives inside hero text (mobile-safe) */
-.scroll-indicator--inline{
-  position: static;
-  transform: none;
-  margin-top: 1.25rem;
-  align-self: flex-start;
-  display: none;
-}
-.scroll-indicator--abs{ display:flex; }
-
 @media (max-width: 900px) {
-  .hero.about-hero{
-    padding: 0 14px;
-    min-height: unset;
+  .hero {
+    grid-template-columns: 30px 1fr 1fr 30px;
+    grid-template-rows: 1fr 1fr auto;
+    min-height: auto;
+    padding-top: 0;
   }
-  .about-hero-inner{
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 14px 0 22px;
-  }
-  .hero-collage{
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(2, 1fr);
-    height: min(52vh, 420px);
-    min-height: 280px;
-  }
-  /* Keep the dog-ear tile visible and prominent on mobile */
-  .hero-photo--3{ grid-column: 1 / span 2; }
-  /* Hide extra tiles to avoid a chaotic collage on small screens */
-  .hero-photo--7,
-  .hero-photo--8,
-  .hero-photo--9,
-  .hero-photo--10{ display:none; }
-
-  .hero-text{
+  .hero-text {
+    grid-column: 1 / -1;
+    grid-row: 3;
     padding: 1.6rem 1.2rem;
     box-shadow: none;
     border: 1px solid var(--hair2);
     border-radius: 8px;
   }
-  .scroll-indicator--abs{ display:none; }
-  .scroll-indicator--inline{ display:flex; }
+  /* Mobile: ensure hero photos fill width without whitespace */
+  .hero-photo {
+    min-height: 120px;
+  }
 }
 
 /* =============================================
@@ -827,28 +781,42 @@ a:focus-visible, button:focus-visible {
 
 .media-cover.book { aspect-ratio: 2/3; }
 .media-cover.album{
-  /* Use the classic padding-square technique (more robust than aspect-ratio across edge-case browsers) */
+  /* Force consistent square sizing for all album covers */
   position: relative;
   width: 100%;
   border-radius: 6px;
   overflow: hidden;
   background: var(--bgAlt);
   border: 1px solid var(--hair2);
+  aspect-ratio: 1;
 }
 .media-cover.album::before{
   content: '';
   display: block;
   padding-top: 100%;
+  height: 0;
 }
 .media-cover.album img{
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   margin: 0;
   border-radius: 0;
+}
+/* Override any nth-child rules that might affect sizing */
+.media-item:first-child .media-cover.album,
+.media-item:nth-child(1) .media-cover.album,
+.media-item:nth-child(2) .media-cover.album,
+.media-item:nth-child(3) .media-cover.album,
+.media-item:nth-child(4) .media-cover.album,
+.media-item:nth-child(5) .media-cover.album,
+.media-item:nth-child(6) .media-cover.album {
+  aspect-ratio: 1 !important;
+  width: 100% !important;
 }
 .media-cover .play-icon {
   position: absolute;

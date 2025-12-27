@@ -64,7 +64,8 @@
       var tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
         .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
-        .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15');
+        .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
+        .from('#scrollIndicator', { y: 8, opacity: 0, duration: 0.35 }, '<0.25');
     } catch (e) {
       console.warn('Page load animation failed:', e);
     }
@@ -84,7 +85,7 @@
         if (dir === 'right') { x = 18; y = 0; }
         if (dir === 'down') { x = 0; y = -14; }
         try {
-          window.gsap.from(el, {
+          var st = window.gsap.from(el, {
             x: x,
             y: y,
             opacity: 0,
@@ -93,9 +94,17 @@
             scrollTrigger: {
               trigger: el,
               start: 'top 86%',
-              toggleActions: 'play none none reverse'
+              toggleActions: 'play none none reverse',
+              // Refresh on resize to prevent disappearing text
+              refreshPriority: 1
             }
           });
+          // Recalculate on window resize to fix disappearing text
+          window.addEventListener('resize', function() {
+            if (st && st.scrollTrigger) {
+              st.scrollTrigger.refresh();
+            }
+          }, { passive: true });
         } catch (e) {
           console.warn('Scroll reveal failed for element:', e);
         }

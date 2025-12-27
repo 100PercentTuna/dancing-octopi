@@ -72,68 +72,75 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 ?>
 
 <main id="main">
-<!-- HERO -->
-<section class="hero about-hero">
-  <?php $photo_count = count($hero_photos); ?>
-  <div class="about-hero-inner">
-    <!-- Collage -->
-    <div class="hero-collage" aria-hidden="true">
-      <?php
-      // Robust rendering: always output up to 10 tiles in a dedicated collage grid.
-      // This avoids mobile/width breakage caused by auto-placing 10 items into a desktop-only grid.
-      for ($i = 0; $i < min(10, $photo_count); $i++) :
-          $photo_url = $hero_photos[$i];
-          $is_accent = ($i === 2); // Third photo (index 2) is the accent tile (dog-ear).
-          $loading = $i < 2 ? 'eager' : 'lazy';
-          $tile_classes = array('hero-photo', 'hero-photo--' . ($i + 1));
-          if ($is_accent) { $tile_classes[] = 'has-accent'; }
-      ?>
-      <div class="<?php echo esc_attr(implode(' ', $tile_classes)); ?>" data-idx="<?php echo esc_attr($i + 1); ?>">
-        <?php if ($is_accent) : ?>
-          <span class="hero-accent" aria-hidden="true"></span>
-        <?php endif; ?>
-        <img alt="Photo" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
-      </div>
-      <?php endfor; ?>
-    </div>
+<!-- HERO - Exact original layout restored -->
+<section class="hero">
+<!-- Row 1 -->
+<?php
+// Render 10 hero photos in grid layout matching reference exactly
+// Row 1: photos 1-4, then hero-text, then photo 5
+// Row 2: photos 6-10
+$photo_count = count($hero_photos);
+// Row 1 - Photos 1-4
+for ($i = 0; $i < min(4, $photo_count); $i++) :
+    $photo_url = $hero_photos[$i];
+    $has_accent = ($i === 2); // Third photo (index 2) has accent
+    $loading = $i === 0 ? 'eager' : 'lazy';
+?>
+<div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">
+    <img alt="Photo" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
+</div>
+<?php endfor; ?>
 
-    <!-- Text -->
-    <div class="hero-text">
-      <div class="hero-label" data-reveal="up">About</div>
-      <h1 class="hero-title" data-reveal="up">Hi, I'm <span class="name"><?php echo esc_html($first_name); ?></span></h1>
-      <p class="hero-intro" data-reveal="up">
+<!-- Hero Text (positioned in grid, spans both rows) -->
+<div class="hero-text">
+    <div class="hero-label" data-reveal="up">About</div>
+    <h1 class="hero-title" data-reveal="up">Hi, I'm <span class="name"><?php echo esc_html($first_name); ?></span></h1>
+    <p class="hero-intro" data-reveal="up">
         <?php echo esc_html($hero_intro); ?> <span class="hand-note"><?php echo esc_html($hero_hand_note); ?></span>
-      </p>
-      <div class="hero-meta" data-reveal="up">
+    </p>
+    <div class="hero-meta" data-reveal="up">
         <div class="hero-meta-row">
-          <span class="label">Location</span>
-          <span class="value"><?php echo esc_html($hero_location); ?></span>
+            <span class="label">Location</span>
+            <span class="value"><?php echo esc_html($hero_location); ?></span>
         </div>
         <div class="hero-meta-row">
-          <span class="label">Listening</span>
-          <span class="value"><?php echo esc_html($hero_listening); ?></span>
+            <span class="label">Listening</span>
+            <span class="value"><?php echo esc_html($hero_listening); ?></span>
         </div>
         <div class="hero-meta-row">
-          <span class="label">Reading</span>
-          <span class="value"><?php echo esc_html($hero_reading); ?></span>
+            <span class="label">Reading</span>
+            <span class="value"><?php echo esc_html($hero_reading); ?></span>
         </div>
-      </div>
-
-      <!-- Mobile-only scroll hint (kept inside the text column so it can't be pushed off-screen) -->
-      <div class="scroll-indicator scroll-indicator--inline" aria-hidden="true">
+    </div>
+    
+    <!-- Scroll indicator inside hero text (below meta) -->
+    <div class="scroll-indicator scroll-indicator--hero-text" id="scrollIndicator">
         <span class="scroll-indicator-text">Scroll</span>
         <div class="scroll-indicator-line"></div>
         <div class="scroll-indicator-chevron"></div>
-      </div>
     </div>
-  </div>
+</div>
 
-  <!-- Desktop scroll indicator -->
-  <div class="scroll-indicator scroll-indicator--abs" id="scrollIndicator" aria-hidden="true">
-    <span class="scroll-indicator-text">Scroll</span>
-    <div class="scroll-indicator-line"></div>
-    <div class="scroll-indicator-chevron"></div>
-  </div>
+<?php
+// Row 1 - Photo 5 (after hero-text)
+if ($photo_count > 4) :
+    $photo_url = $hero_photos[4];
+?>
+<div class="hero-photo">
+    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+</div>
+<?php endif; ?>
+
+<!-- Row 2 -->
+<?php
+// Row 2 - Photos 6-10
+for ($i = 5; $i < min(10, $photo_count); $i++) :
+    $photo_url = $hero_photos[$i];
+?>
+<div class="hero-photo">
+    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+</div>
+<?php endfor; ?>
 </section>
 
 <?php
@@ -307,7 +314,13 @@ endif;
                         <div class="media-title"><?php echo esc_html($item['title']); ?></div>
                         <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
                         <?php if ($has_link) : ?>
-                        <span class="media-link">↗ <?php echo esc_html($link_type_label); ?></span>
+                        <div class="media-link">
+                            <?php echo esc_html($link_type_label); ?>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <line x1="7" y1="17" x2="17" y2="7"></line>
+                                <polyline points="7 7 17 7 17 17"></polyline>
+                            </svg>
+                        </div>
                         <?php endif; ?>
                     </<?php echo $tag; ?>>
                     <?php endforeach; ?>
@@ -338,33 +351,37 @@ if (!empty($panoramas['after_media'])) :
 endif;
 ?>
 
-<?php if ($places_show) : ?>
-<!-- MAP -->
-<section class="map-section section warm">
+<?php if ($places_show && !empty($places)) : ?>
+<!-- PLACES -->
+<section class="places section">
     <div class="section-inner">
-        <div class="section-bgword" data-dir="right" data-marquee="">Places</div>
         <div class="section-label" data-reveal="up">Places</div>
         <h2 class="section-title" data-reveal="up"><?php echo esc_html($places_title); ?></h2>
-        <div id="world-map"></div>
-        <div class="map-legend">
-            <?php if (!empty($places['current'])) : ?>
-            <div class="map-legend-item"><div class="map-legend-dot current"></div> Now</div>
-            <?php endif; ?>
-            <?php if (!empty($places['lived'])) : ?>
-            <div class="map-legend-item"><div class="map-legend-dot lived"></div> Lived</div>
-            <?php endif; ?>
-            <?php if (!empty($places['visited'])) : ?>
-            <div class="map-legend-item"><div class="map-legend-dot visited"></div> Visited</div>
-            <?php endif; ?>
+        <div class="map-container" id="worldMap" data-reveal="up">
+            <!-- Map rendered by D3.js -->
+        </div>
+        <div class="map-legend" data-reveal="up">
+            <div class="map-legend-item">
+                <div class="map-legend-dot current"></div>
+                <span>Current</span>
+            </div>
+            <div class="map-legend-item">
+                <div class="map-legend-dot lived"></div>
+                <span>Lived</span>
+            </div>
+            <div class="map-legend-item">
+                <div class="map-legend-dot visited"></div>
+                <span>Visited</span>
+            </div>
         </div>
     </div>
 </section>
 <?php endif; ?>
 
 <?php
-// Panorama after map
-if (!empty($panoramas['after_map'])) :
-    foreach ($panoramas['after_map'] as $panorama) :
+// Panorama after places
+if (!empty($panoramas['after_places'])) :
+    foreach ($panoramas['after_places'] as $panorama) :
         $height_class = 'h-' . esc_attr($panorama['height']);
         $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
         $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
@@ -382,86 +399,55 @@ endif;
 
 <?php if ($inspirations_show && !empty($inspirations)) : ?>
 <!-- INSPIRATIONS -->
-<section class="inspirations section">
+<section class="inspirations section warm">
     <div class="section-inner">
-        <div class="section-bgword" data-dir="left" data-marquee="">Inspirations</div>
         <div class="section-label" data-reveal="up">Inspirations</div>
         <h2 class="section-title" data-reveal="up"><?php echo esc_html($inspirations_title); ?></h2>
         <div class="inspirations-grid">
-            <?php foreach ($inspirations as $person) : 
-                $has_link = !empty($person['url']);
-                $tag = $has_link ? 'a' : 'div';
-            ?>
-            <<?php echo $tag; ?> class="person-card" <?php echo $has_link ? 'href="' . esc_url($person['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
-                <div class="person-avatar">
-                    <?php if (!empty($person['photo'])) : ?>
-                    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($person['photo']); ?>"/>
-                    <?php endif; ?>
-                </div>
-                <div class="person-info">
-                    <div class="person-name"><?php echo esc_html($person['name']); ?></div>
-                    <div class="person-role"><?php echo esc_html($person['role']); ?></div>
-                </div>
-            </<?php echo $tag; ?>>
+            <?php foreach ($inspirations as $inspiration) : ?>
+            <div class="inspiration-item" data-reveal="up">
+                <div class="inspiration-name"><?php echo esc_html($inspiration['name']); ?></div>
+                <div class="inspiration-role"><?php echo esc_html($inspiration['role']); ?></div>
+                <div class="inspiration-note"><?php echo esc_html($inspiration['note']); ?></div>
+            </div>
             <?php endforeach; ?>
         </div>
     </div>
 </section>
 <?php endif; ?>
 
-<?php
-// Panorama after inspirations
-if (!empty($panoramas['after_inspirations'])) :
-    foreach ($panoramas['after_inspirations'] as $panorama) :
-        $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
-?>
-<!-- PANORAMA -->
-<div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
-    <div class="panorama-inner">
-        <img alt="Photo" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
-    </div>
-</div>
-<?php
-    endforeach;
-endif;
-?>
-
-<?php if ($say_hello_show && ($contact_email || $linkedin_url || $twitter_handle)) : ?>
+<?php if ($say_hello_show) : ?>
 <!-- SAY HELLO -->
-<section class="say-hello">
-    <div class="say-hello-label">Say Hello</div>
-    <div class="say-hello-links">
-        <?php if ($contact_email) : ?>
-        <a class="say-hello-link" href="mailto:<?php echo esc_attr($contact_email); ?>" target="_blank" rel="noopener">
-            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
-                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-        </a>
-        <?php endif; ?>
-        
-        <?php if ($linkedin_url) : ?>
-        <a class="say-hello-link" href="<?php echo esc_url($linkedin_url); ?>" target="_blank" rel="noopener">
-            <svg fill="currentColor" viewbox="0 0 24 24">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
-            </svg>
-        </a>
-        <?php endif; ?>
-        
-        <?php if ($twitter_handle) : 
-            $twitter_url = 'https://x.com/' . ltrim($twitter_handle, '@');
-        ?>
-        <a class="say-hello-link" href="<?php echo esc_url($twitter_url); ?>" target="_blank" rel="noopener">
-            <svg fill="currentColor" viewbox="0 0 24 24">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-            </svg>
-        </a>
-        <?php endif; ?>
+<section class="say-hello section">
+    <div class="section-inner">
+        <div class="section-label" data-reveal="up">Say Hello</div>
+        <h2 class="section-title" data-reveal="up">Let's connect</h2>
+        <p class="say-hello-text" data-reveal="up">
+            <?php if ($contact_email) : ?>
+            <a href="mailto:<?php echo esc_attr($contact_email); ?>" class="say-hello-link"><?php echo esc_html($contact_email); ?></a>
+            <?php endif; ?>
+        </p>
+        <div class="say-hello-social" data-reveal="up">
+            <?php if ($linkedin_url) : ?>
+            <a href="<?php echo esc_url($linkedin_url); ?>" target="_blank" rel="noopener" class="say-hello-social-link">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+            </a>
+            <?php endif; ?>
+            <?php if ($twitter_handle) : 
+                $twitter_url = 'https://x.com/' . ltrim($twitter_handle, '@');
+            ?>
+            <a href="<?php echo esc_url($twitter_url); ?>" target="_blank" rel="noopener" class="say-hello-social-link">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            <?php endif; ?>
+        </div>
     </div>
 </section>
 <?php endif; ?>
-
 </main>
 
 <?php get_footer(); ?>

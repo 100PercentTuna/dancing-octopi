@@ -33,6 +33,10 @@ scripts/
 _wt_*/
 AUDIT-*.md
 DEPLOYMENT.md
+EMAIL-SETUP-GUIDE.md
+GITHUB-ACTIONS-SETUP.md
+GODADDY-CLEANUP-INSTRUCTIONS.md
+local-notes/
 .cursor/
 
 # GitHub Actions will deploy automatically - see .github/SETUP-DEPLOYMENT.md

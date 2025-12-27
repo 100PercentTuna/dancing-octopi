@@ -3,7 +3,7 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 4.24.0
+Version: 4.25.0
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 8.0
@@ -405,6 +405,28 @@ main {
 
 .mastInner > .theme-toggle {
   margin-left: 0;
+}
+@media (max-width: 640px) {
+  /* Mobile theme toggle: smaller, snug to menu, no box styling */
+  .mastInner > .theme-toggle {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    margin-left: var(--space-2);
+    padding: 0;
+  }
+  .theme-toggle-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .brand {
@@ -2283,6 +2305,22 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
 }
 @media (max-width: 1200px) {
   .actionDock { top: auto; bottom: var(--space-3); }
+}
+@media (max-width: 640px) {
+  /* Smaller, less obstructive action dock on mobile */
+  .actionDock {
+    right: var(--space-2);
+    bottom: var(--space-2);
+    gap: 8px;
+  }
+  .dockButton {
+    width: 32px;
+    height: 32px;
+  }
+  .dockButton svg {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 /* Dock Buttons (Share, Subscribe, Download) */

@@ -1210,6 +1210,19 @@ function kunaal_customize_register($wp_customize) {
         'section' => 'kunaal_subscribe',
         'type' => 'url',
     ));
+    
+    // Subscribe notification delay (hours after publish)
+    $wp_customize->add_setting('kunaal_subscribe_notify_delay_hours', array(
+        'default' => 0,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_notify_delay_hours', array(
+        'label' => 'Email Delay (Hours)',
+        'description' => 'Send notification emails X hours after a new essay/jotting is published (0 = immediately)',
+        'section' => 'kunaal_subscribe',
+        'type' => 'number',
+        'input_attrs' => array('min' => 0, 'max' => 168, 'step' => 1),
+    ));
 
     // Subscribe mode (built-in vs external)
     $wp_customize->add_setting('kunaal_subscribe_mode', array(
