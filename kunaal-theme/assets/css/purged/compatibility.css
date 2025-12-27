@@ -1,0 +1,122 @@
+/**
+ * Compatibility CSS
+ * 
+ * Print styles, reduced motion, cross-browser compatibility, parallax sections, and Gutenberg editor styles
+ *
+ * @package Kunaal_Theme
+ * @since 4.20.8
+ */
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card:hover, .card:focus-visible { transform: none; box-shadow: none; }
+  .media img, .media svg, .avatar img { transform: none !important; }
+  h2::after { animation: none !important; transform: scaleX(1); }
+  .sectionHead { animation: none !important; opacity: 1; transform: none; }
+  .reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  .mast, .progress, .actionDock, .sharePanel, .subscribePanel, .navToggle, .filterToggle, .filterPanel { display: none !important; }
+  body { padding-top: 0; }
+  .card { break-inside: avoid; }
+  .media img { filter: none; }
+  a { text-decoration: underline; }
+  .prose a::after { content: " (" attr(href) ")"; font-size: 0.8em; color: var(--muted); }
+}
+
+/* ========================================
+   GUTENBERG BLOCK EDITOR STYLES
+   ======================================== */
+.wp-block { max-width: var(--prose); }
+
+/* ========================================
+   CROSS-BROWSER COMPATIBILITY
+   ======================================== */
+/* Safari flexbox fixes */
+.grid, .toolbar, .filterPanel {
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hair) transparent;
+}
+
+/* Safari backdrop-filter fallback */
+@supports not (backdrop-filter: blur(10px)) {
+  .overlay { background: color-mix(in srgb, var(--ink) 25%, transparent); }
+  .mast { background: var(--bg); }
+}
+
+/* Edge smooth scroll fix */
+@supports (-ms-ime-align: auto) {
+  html { scroll-behavior: auto; }
+}
+
+/* iOS momentum scrolling */
+.topicDropdown, .ledger {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent iOS zoom on inputs */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Fix Safari button styling */
+button, .filterToggle, .topicDropdownBtn {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ========================================
+   PARALLAX SECTIONS
+   ======================================== */
+.parallax-section {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.parallax-bg {
+  position: absolute;
+  inset: -20%;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+/* Disable parallax on mobile for performance */
+@media (max-width: 768px), (hover: none) {
+  .parallax-bg {
+    background-attachment: scroll !important;
+  }
+}
+
+.parallax-content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--prose);
+  padding: var(--space-6);
+}
+

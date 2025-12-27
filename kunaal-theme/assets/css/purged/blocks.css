@@ -1,0 +1,384 @@
+/**
+ * Custom Blocks CSS
+ * 
+ * Styles for all custom content blocks (pullquote, insightBox, accordion, split, chart, codeBlock, canvas, scrolly, takeaways, citation, aside, rail, tocList)
+ *
+ * @package Kunaal_Theme
+ * @since 4.20.8
+ */
+
+/* ========================================
+   PULL QUOTE BLOCK
+   ======================================== */
+.pullquote,
+.wp-block-kunaal-pullquote {
+  margin: var(--space-8) 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 3px solid var(--blue);
+  background: linear-gradient(90deg, var(--warmTint) 0%, transparent 100%);
+}
+.pullquote blockquote,
+.wp-block-kunaal-pullquote blockquote {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  border: none;
+  padding: 0;
+  background: none;
+}
+.pullquote cite,
+.wp-block-kunaal-pullquote cite {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-style: normal;
+  color: var(--warm);
+}
+
+/* ========================================
+   INSIGHT BOX (KEY INSIGHT)
+   ======================================== */
+.insightBox,
+.wp-block-kunaal-insight {
+  margin: var(--space-8) 0;
+  padding: var(--space-4);
+  background: var(--bgWarm);
+  border-left: 2px solid var(--warm);
+}
+.insightBox .label,
+.wp-block-kunaal-insight .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--warm);
+  margin-bottom: var(--space-1);
+}
+.insightBox p,
+.wp-block-kunaal-insight p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.insightBox p strong,
+.wp-block-kunaal-insight p strong { color: var(--ink); }
+
+/* ========================================
+   ACCORDION
+   ======================================== */
+.accordion,
+.wp-block-kunaal-accordion {
+  border-top: 1px solid var(--hair2);
+  margin: var(--space-2) 0;
+}
+.accordion:last-of-type,
+.wp-block-kunaal-accordion:last-of-type { border-bottom: 1px solid var(--hair2); }
+
+.accordion summary,
+.wp-block-kunaal-accordion summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  cursor: pointer;
+  list-style: none;
+}
+.accordion summary::-webkit-details-marker,
+.wp-block-kunaal-accordion summary::-webkit-details-marker { display: none; }
+
+.accordion summary span,
+.wp-block-kunaal-accordion summary span {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.accordion .marker,
+.wp-block-kunaal-accordion .marker {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--warmLight);
+  transition: color 200ms ease, transform 200ms ease;
+}
+
+.accordion[open],
+.wp-block-kunaal-accordion[open] {
+  border-left: 2px solid var(--blue);
+  padding-left: var(--space-3);
+  margin-left: calc(-1 * var(--space-3));
+}
+.accordion[open] summary span,
+.wp-block-kunaal-accordion[open] summary span { color: var(--blue); }
+.accordion[open] .marker,
+.wp-block-kunaal-accordion[open] .marker { color: var(--blue); transform: rotate(45deg); }
+
+.accordion .accBody,
+.wp-block-kunaal-accordion .accBody {
+  padding: 0 0 var(--space-4);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+/* ========================================
+   SPLIT LAYOUTS (image + text)
+   ======================================== */
+.split,
+.wp-block-kunaal-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  align-items: center;
+  margin: var(--space-10) 0;
+}
+@media (max-width: 700px) { 
+  .split, .wp-block-kunaal-split { grid-template-columns: 1fr; gap: var(--space-4); } 
+}
+.split.reverse, .wp-block-kunaal-split.reverse { direction: rtl; }
+.split.reverse > *, .wp-block-kunaal-split.reverse > * { direction: ltr; }
+
+/* ========================================
+   CHARTS
+   ======================================== */
+
+.wp-block-kunaal-chart {
+  margin: var(--space-6) 0;
+}
+
+/* ========================================
+   CODE BLOCK
+   ======================================== */
+.codeBlock,
+.wp-block-kunaal-code {
+  margin: var(--space-5) 0;
+  background: var(--bgAlt);
+  border: 1px solid var(--hair2);
+  overflow: hidden;
+}
+.codeHead {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--hair2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.codeHead span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+.codeHead button {
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--hair);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+.codeHead button:hover { color: var(--ink); }
+.codeBlock pre,
+.wp-block-kunaal-code pre {
+  margin: 0;
+  padding: var(--space-3);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink);
+  border: none;
+  background: transparent;
+}
+.codeBlock .str { color: #5D7A5D; }
+.codeBlock .fn { color: #8B5A7D; }
+
+/* ========================================
+   CANVAS / VISUALIZATION
+   ======================================== */
+
+.wp-block-kunaal-canvas {
+  margin: var(--space-8) 0;
+  position: relative;
+  aspect-ratio: 16/9;
+  background: var(--bgAlt);
+  border: 1px solid var(--hair2);
+  overflow: hidden;
+}
+
+/* ========================================
+   SCROLLY (sticky text + steps)
+   ======================================== */
+.scrolly,
+.wp-block-kunaal-scrolly {
+  margin: var(--space-12) 0;
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--hair2);
+  border-bottom: 1px solid var(--hair2);
+}
+.step {
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid transparent;
+  opacity: 0.5;
+  transition: all 300ms ease;
+}
+.step.active {
+  opacity: 1;
+  border-left-color: var(--blue);
+  background: var(--bgWarm);
+}
+.step h4 { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.step p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
+
+/* ========================================
+   TAKEAWAYS
+   ======================================== */
+.takeaways,
+.wp-block-kunaal-takeaways {
+  margin: var(--space-12) 0 var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--hair2);
+}
+.takeaways h2 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 var(--space-5);
+  position: relative;
+  display: inline-block;
+  border: none;
+  padding: 0;
+}
+.takeaways h2::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 32px;
+  height: 2px;
+  background: var(--blue);
+  animation: none;
+  transform: scaleX(1);
+}
+
+.takeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: take;
+}
+.takeList li {
+  counter-increment: take;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--hair2);
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: var(--space-3);
+}
+.takeList li:last-child { border-bottom: none; }
+.takeList li::before {
+  content: counter(take);
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--warmLight);
+  line-height: 1.3;
+}
+.takeList h4 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.takeList p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
+
+/* ========================================
+   CITATION BLOCK
+   ======================================== */
+.citation,
+.wp-block-kunaal-citation {
+  margin: var(--space-10) 0;
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--hair2);
+  border-bottom: 1px solid var(--hair2);
+  text-align: center;
+}
+.citation blockquote {
+  margin: 0 auto;
+  max-width: 520px;
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  border: none;
+  padding: 0;
+  background: none;
+}
+.citation .author {
+  margin-top: var(--space-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--warm);
+}
+
+/* ========================================
+   ASIDE / CASE STUDY
+   ======================================== */
+.aside,
+.wp-block-kunaal-aside {
+  margin: var(--space-8) 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bgWarm);
+  border-radius: 2px;
+}
+.aside p { margin: 0 0 var(--space-2); font-size: 15px; line-height: 1.75; color: var(--muted); }
+.aside p:last-child { margin-bottom: 0; }
+.aside .outcome {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--hair);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--warm);
+}
+.aside .outcome strong { color: var(--blue); }
+
+/* ========================================
+   SIDE RAIL (On This Page / TOC)
+   ======================================== */
+.rail {
+  position: sticky;
+  top: calc(var(--mastH) + var(--space-4));
+  align-self: start;
+}
+@media (max-width: 860px) { .rail { display: none; } }
+
+.railSection { margin-bottom: var(--space-5); }
+.railSection h5 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+
+.tocList { list-style: none; padding: 0; margin: 0; }
+.tocList a {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--hair2);
+  transition: color 150ms ease;
+}
+.tocList a:hover { color: var(--ink); }
+.tocList a:last-child { border-bottom: none; }
+.tocList .num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--warmLight);
+}
+

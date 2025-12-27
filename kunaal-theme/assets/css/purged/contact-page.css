@@ -436,6 +436,55 @@
     }
 }
 
+/* ========================================
+   CONTACT PAGE - Correspondence Ledger (Bespoke)
+   ======================================== */
+
+/* subtle paper grain + margin rule */
+
+.ledgerHeadline {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.ledgerIntro {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(17,24,39,0.72);
+}
+
+/* ruled baselines behind textarea */
+
+.ledgerResponse {
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: rgba(17,24,39,0.56);
+}
+
+/* Messenger QR tiles */
+
+@media (max-width: 740px) {
+  .ledgerHeadline { font-size: 32px; }
+}
+
+/* Ensure header stays fixed on all screen sizes */
+@media (max-width: 640px) {
+  .mast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100vw;
+  }
+}
+
 
 
 
