@@ -357,7 +357,7 @@ endif;
     <div class="section-inner">
         <div class="section-label" data-reveal="up">Places</div>
         <h2 class="section-title" data-reveal="up"><?php echo esc_html($places_title); ?></h2>
-        <div class="map-container" id="worldMap" data-reveal="up">
+        <div class="map-container" id="world-map" data-reveal="up">
             <!-- Map rendered by D3.js -->
         </div>
         <div class="map-legend" data-reveal="up">

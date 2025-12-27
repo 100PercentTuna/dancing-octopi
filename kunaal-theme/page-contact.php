@@ -174,14 +174,16 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
 <style>
 /* Contact Page Styles - Polished Design */
 .contact-page {
-    min-height: calc(100vh - var(--mastH, 100px));
+    min-height: 100vh;
     padding: var(--space-6) var(--space-4);
+    padding-top: calc(var(--space-6) + var(--mastH, 100px)); /* Account for fixed header */
+    margin-top: calc(-1 * var(--mastH, 100px)); /* Pull up into header space */
     background: 
         radial-gradient(2000px 1500px at 20% 10%, rgba(30,90,255,0.04), transparent 70%),
         radial-gradient(1800px 1400px at 80% 90%, rgba(125,107,93,0.04), transparent 70%),
         var(--bg);
     position: relative;
-    background-attachment: fixed;
+    /* Removed background-attachment: fixed - causes issues on mobile and gaps */
 }
 
 .contact-container {
@@ -512,14 +514,17 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
 }
 
 .contact-social-link svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
+    max-width: 18px;
+    max-height: 18px;
     flex-shrink: 0;
 }
 
 .contact-social-link span {
     font-size: 0.6875rem;
     line-height: 1.2;
+    white-space: nowrap; /* Prevent text wrapping - fixes X/Twitter splitting */
 }
 
 /* Dark mode */
@@ -528,7 +533,7 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
         radial-gradient(2000px 1500px at 20% 10%, rgba(224,122,98,0.06), transparent 70%),
         radial-gradient(1800px 1400px at 80% 90%, rgba(201,184,168,0.06), transparent 70%),
         var(--bg);
-    background-attachment: fixed;
+    /* No background-attachment: fixed */
 }
 
 :root[data-theme="dark"] .contact-card {

@@ -274,8 +274,7 @@ a:focus-visible, button:focus-visible {
   filter: grayscale(100%);
   transition: filter 0.15s ease;
   will-change: transform;
-  position: relative;
-  z-index: 1;
+  /* REMOVED position:relative and z-index:1 - they created stacking context above ::before pseudo-element */
 }
 
 /* First photo: reveal more from left as screen widens */
@@ -403,6 +402,9 @@ a:focus-visible, button:focus-visible {
   transition: opacity 0.5s ease;
   pointer-events: none;
   color: var(--warm);
+  /* Exclude from grid layout - span full grid area but stay absolutely positioned */
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
 }
 .scroll-indicator.hidden { 
   opacity: 0;
@@ -469,10 +471,10 @@ a:focus-visible, button:focus-visible {
     transform: translateY(0);
   }
   
-  /* Mobile: Reorder photos - move dog-ear photo (3rd) to second row to prevent cut-off */
+  /* Mobile: Reorder photos using CSS order - move dog-ear photo (3rd) to second row */
   .hero-photo:nth-child(1) { order: 1; }
   .hero-photo:nth-child(2) { order: 2; }
-  .hero-photo:nth-child(3) { order: 5; } /* Dog-ear: move to after photo 5 */
+  .hero-photo:nth-child(3) { order: 5; } /* Dog-ear: move to second row */
   .hero-photo:nth-child(4) { order: 3; }
   .hero-photo:nth-child(5) { order: 4; }
   .hero-photo:nth-child(6) { order: 6; }
@@ -481,19 +483,20 @@ a:focus-visible, button:focus-visible {
   .hero-photo:nth-child(9) { order: 9; }
   .hero-photo:nth-child(10) { order: 10; }
   
-  /* Alternative: Use grid-row assignment for dog-ear photo */
-  .hero-photo.has-accent {
-    grid-row: 2; /* Force to second row */
-  }
-  
   /* Mobile: ensure hero photos fill width without whitespace */
   .hero-photo {
-    min-height: 150px; /* Increased from 120px for better visibility */
+    min-height: 150px;
   }
   
   /* Optimize object-position for dog-ear photo to preserve accent area */
   .hero-photo.has-accent img {
-    object-position: top center; /* Preserve top area where accent is */
+    object-position: top left; /* Preserve top-left area where accent is */
+  }
+  
+  /* Mobile: Smaller dog-ear accent */
+  .hero-photo.has-accent::before {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -792,7 +795,7 @@ a:focus-visible, button:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns for consistency */
   gap: 1.25rem 1rem;
-  /* Ensure all grid items have same width */
+  /* Align items to start so second row starts at same vertical position */
   align-items: start;
 }
 .media-col:last-child .media-grid {
@@ -896,6 +899,13 @@ a:focus-visible, button:focus-visible {
   font-weight: 500;
   margin-top: 0.5rem;
   line-height: 1.3;
+  /* Ensure space for at least 2 lines - prevents row misalignment */
+  min-height: calc(2 * 11px * 1.3); /* 2 lines × font-size × line-height = ~28.6px */
+  /* Allow wrapping but limit to 2 lines */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 .media-subtitle {
   font-family: var(--mono);
@@ -1128,9 +1138,12 @@ a:focus-visible, button:focus-visible {
   background: var(--blueTint);
   transform: translateY(-2px);
 }
-.say-hello-link svg {
+.say-hello-link svg,
+.say-hello-links svg {
   width: 15px !important; /* Force size to prevent oversized icons */
   height: 15px !important;
+  max-width: 15px !important;
+  max-height: 15px !important;
   display: block;
   flex-shrink: 0;
 }
