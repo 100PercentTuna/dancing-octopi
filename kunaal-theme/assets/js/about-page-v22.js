@@ -145,26 +145,48 @@
         .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
         .from('#scrollIndicator', { 
           opacity: 0,
-          y: 8, /* Only animate on y-axis, not x */
-          x: 0, /* Explicitly set x to 0 to prevent any horizontal movement */
+          y: 8,
+          x: 0,
           duration: 0.35,
-          immediateRender: false, /* Don't render at opacity 0 initially */
+          immediateRender: false,
           onComplete: function() {
-            // Ensure final opacity is 1, not the low value from animation
-            // Clear all transforms to prevent any x movement
             if (scrollIndicator) {
               window.gsap.set(scrollIndicator, { 
                 opacity: 1, 
                 x: 0, 
                 y: 0, 
-                clearProps: 'all',
-                force3D: false
+                clearProps: 'all'
               });
-              // Force CSS override as seatbelt
               scrollIndicator.style.opacity = '1';
             }
           }
         }, '<0.25');
+      
+      // Fade scroll indicator as user scrolls
+      if (scrollIndicator) {
+        var scrollFadeHandler = function() {
+          var scrollY = window.scrollY || window.pageYOffset;
+          var fadeStart = 100; // Start fading after 100px scroll
+          var fadeEnd = 300; // Fully faded at 300px
+          var opacity = 1;
+          
+          if (scrollY > fadeStart) {
+            opacity = Math.max(0, 1 - ((scrollY - fadeStart) / (fadeEnd - fadeStart)));
+          }
+          
+          scrollIndicator.style.opacity = opacity.toString();
+          
+          // Hide completely when scrolled past fadeEnd
+          if (scrollY > fadeEnd) {
+            scrollIndicator.style.display = 'none';
+          } else {
+            scrollIndicator.style.display = 'flex';
+          }
+        };
+        
+        window.addEventListener('scroll', scrollFadeHandler, { passive: true });
+        scrollFadeHandler(); // Initial check
+      }
       
       // #region agent log
       tl.eventCallback('onComplete', function() {

@@ -85,11 +85,11 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 // Row 2: photos 6-10
 $photo_count = count($hero_photos);
 // Row 1 - Photos 1-4
-// Dog-ear accent always on bottom-left photo (index 2, 3rd photo)
-// This is the suit photo position in the grid layout
+// Dog-ear accent always on bottom-left photo (index 2, 3rd photo in first 4)
+// This is the suit photo position in the grid layout (works for both desktop and mobile)
 for ($i = 0; $i < min(4, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
-    $has_accent = ($i === 2); // Bottom-left photo (index 2) always has accent
+    $has_accent = ($i === 2); // Bottom-left photo (index 2) always has accent - desktop: row 1 col 3, mobile: row 2 col 2
     $loading = $i === 0 ? 'eager' : 'lazy';
 ?>
 <div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">
@@ -119,13 +119,10 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
         </div>
     </div>
     
-    <!-- Scroll indicator - positioned within hero-text area, not center of page -->
+    <!-- Scroll indicator - positioned near bottom of viewport, fades on scroll -->
     <div class="scroll-indicator" id="scrollIndicator">
         <span class="scroll-indicator-text">Scroll</span>
         <div class="scroll-indicator-line"></div>
-        <div class="scroll-indicator-chevron-wrapper">
-            <div class="scroll-indicator-chevron"></div>
-        </div>
     </div>
 </div>
 
@@ -330,8 +327,12 @@ kunaal_render_panoramas($panoramas['after_media'] ?? array());
 <?php endif; ?>
 
 <?php
-// Panorama after places
-kunaal_render_panoramas($panoramas['after_places'] ?? array());
+// Panorama after places (also check after_map for backward compatibility)
+$places_panoramas = array_merge(
+    $panoramas['after_places'] ?? array(),
+    $panoramas['after_map'] ?? array()
+);
+kunaal_render_panoramas($places_panoramas);
 ?>
 
 <?php if ($inspirations_show && !empty($inspirations)) : ?>
@@ -388,8 +389,10 @@ kunaal_render_panoramas($panoramas['after_places'] ?? array());
 </main>
 
 <?php
-// Debug logging is now handled in about-page-v22.js and gated behind WP_DEBUG
-// No inline debug scripts in production
+// Panorama after inspirations (if section is shown)
+if ($inspirations_show) {
+    kunaal_render_panoramas($panoramas['after_inspirations'] ?? array());
+}
 ?>
 
 <?php get_footer(); ?>

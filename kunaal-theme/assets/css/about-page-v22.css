@@ -251,6 +251,7 @@ body.page-template-page-about .hero-photo.has-accent,
 .hero-photo.color-active::after { transform: scaleY(1); }
 /* Dog-ear accent - exact original implementation using linear-gradient */
 /* Scoped to About page for higher specificity */
+/* Desktop: Photo at index 2 (3rd photo in first 4) is in column 4, row 1 - this gets the accent */
 body.page-template-page-about .hero-photo.has-accent,
 .page-template-page-about .hero-photo.has-accent {
   position: relative; /* Ensure ::before can be positioned absolutely */
@@ -353,22 +354,22 @@ body.page-template-page-about .hero-photo.has-accent::before,
 
 /* Scroll indicator - positioned absolutely within hero section */
 .scroll-indicator {
-  position: absolute;
+  position: fixed;
   bottom: 2rem;
-  /* Position relative to hero-text, not center of page */
-  left: 50%; /* Center horizontally within hero-text */
-  transform: translateX(-50%); /* Center horizontally */
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
   z-index: 20;
-  opacity: 1 !important; /* Force visibility - GSAP will override but this ensures base state */
-  transition: opacity 0.5s ease;
+  opacity: 1;
+  transition: opacity 0.4s ease;
   pointer-events: none;
   color: var(--warm);
-  /* Position within hero-text container */
-  width: auto; /* Auto width - don't span full width */
+  width: auto;
+  /* Ensure it doesn't overlap hero text - position near bottom of viewport */
+  margin-bottom: 0;
 }
 .scroll-indicator.hidden { 
   opacity: 0;
@@ -390,30 +391,19 @@ body.page-template-page-about .hero-photo.has-accent::before,
   position: relative;
   opacity: 0.6;
 }
-.scroll-indicator-chevron-wrapper {
-  /* Wrapper for pure Y-axis translation - no rotation applied here */
-  animation: scrollBounce 1.8s ease-in-out infinite;
-  will-change: transform;
+/* Scroll indicator line animation - subtle bounce */
+.scroll-indicator-line {
+  animation: scrollLineBounce 2s ease-in-out infinite;
 }
 
-.scroll-indicator-chevron {
-  width: 6px;
-  height: 6px;
-  border-right: 1.5px solid var(--warm);
-  border-bottom: 1.5px solid var(--warm);
-  transform: rotate(45deg); /* Rotation only, no translation */
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-}
-/* Scroll indicator animation - smooth, subtle bounce */
-@keyframes scrollBounce {
+@keyframes scrollLineBounce {
   0%, 100% { 
     transform: translateY(0);
-    opacity: 0.7;
+    opacity: 0.6;
   }
   50% { 
-    transform: translateY(4px);
-    opacity: 1;
+    transform: translateY(3px);
+    opacity: 0.8;
   }
 }
 
@@ -430,10 +420,11 @@ body.page-template-page-about .hero-photo.has-accent::before,
   body.page-template-page-about .hero,
   .page-template-page-about .hero {
     grid-template-columns: 30px 1fr 1fr 30px;
-    grid-template-rows: minmax(150px, 1fr) minmax(150px, 1fr) auto;
+    grid-template-rows: minmax(120px, 1fr) minmax(120px, 1fr) auto;
     height: auto; /* Remove fixed height on mobile */
     max-height: none; /* Remove max-height on mobile */
     padding-top: 0;
+    gap: 0; /* Remove gap between rows - pictures should stick together like collage */
     /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
     grid-auto-rows: 0;
     overflow: visible; /* Allow dog-ear accent to show, prevent clipping */
@@ -515,11 +506,13 @@ body.page-template-page-about .hero-photo.has-accent::before,
     height: 20px;
   }
   
-  /* Mobile: Move scroll indicator to right side to not be obtrusive */
+  /* Mobile: Move scroll indicator to right side, near bottom of viewport */
   .scroll-indicator {
+    position: fixed;
     left: auto;
     right: 1.5rem;
-    transform: none; /* Remove center transform */
+    bottom: 2rem;
+    transform: none;
   }
 }
 
