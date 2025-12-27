@@ -110,7 +110,7 @@ body {
   top: -40px;
   left: 0;
   background: var(--blue);
-  color: #fff;
+  color: var(--bg); /* White text on blue background - use bg variable for contrast */
   padding: 8px 16px;
   text-decoration: none;
   z-index: 10000;
