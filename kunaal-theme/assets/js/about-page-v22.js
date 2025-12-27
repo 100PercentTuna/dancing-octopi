@@ -93,6 +93,11 @@
       var accentPhoto = document.querySelector('.hero-photo.has-accent');
       var scrollIndicator = document.getElementById('scrollIndicator');
       if (accentPhoto) {
+        // Ensure overflow: visible is applied (in case something overrides it)
+        var computedOverflow = window.getComputedStyle(accentPhoto).overflow;
+        if (computedOverflow !== 'visible') {
+          accentPhoto.style.overflow = 'visible';
+        }
         var img = accentPhoto.querySelector('img');
         var before = window.getComputedStyle(accentPhoto, '::before');
         var imgStyles = window.getComputedStyle(img);
@@ -129,11 +134,22 @@
         .from('#scrollIndicator', { 
           opacity: 0,
           y: 8, /* Only animate on y-axis, not x */
+          x: 0, /* Explicitly set x to 0 to prevent any horizontal movement */
           duration: 0.35,
+          immediateRender: false, /* Don't render at opacity 0 initially */
           onComplete: function() {
             // Ensure final opacity is 1, not the low value from animation
+            // Clear all transforms to prevent any x movement
             if (scrollIndicator) {
-              window.gsap.set(scrollIndicator, { opacity: 1, y: 0, clearProps: 'opacity,transform' });
+              window.gsap.set(scrollIndicator, { 
+                opacity: 1, 
+                x: 0, 
+                y: 0, 
+                clearProps: 'all',
+                force3D: false
+              });
+              // Force CSS override as seatbelt
+              scrollIndicator.style.opacity = '1';
             }
           }
         }, '<0.25');
@@ -162,6 +178,16 @@
     var els = document.querySelectorAll('[data-reveal]');
     var isMobile = window.innerWidth < 900;
     
+    // Skip ScrollTrigger animations on mobile - use CSS fallback instead
+    if (isMobile) {
+      window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
+        opacity: 1, 
+        y: 0, 
+        clearProps: 'all'
+      });
+      return; // Don't set up ScrollTrigger on mobile
+    }
+    
     for (var i = 0; i < els.length; i++) {
       (function (el) {
         var dir = el.getAttribute('data-reveal') || 'up';
@@ -170,18 +196,20 @@
         if (dir === 'right') { x = 18; y = 0; }
         if (dir === 'down') { x = 0; y = -14; }
         
+        // Skip scroll indicator - it should not have x transform
+        if (el.id === 'scrollIndicator' || el.closest('#scrollIndicator')) {
+          x = 0; // Force no x transform for scroll indicator
+        }
+        
         // Mobile-specific handling for hero-text elements
         var isHeroText = el.closest('.hero-text') !== null;
         var startPos = 'top 86%';
         var immediateRender = true;
         
-        // On mobile, hero-text is below viewport, so use different start position
-        if (isMobile && isHeroText) {
-          startPos = 'top 100%'; // Trigger when element enters viewport
-          immediateRender = false; // Don't render immediately, wait for trigger
-        }
-        
         try {
+          // Set initial state before animation (progressive enhancement)
+          window.gsap.set(el, { opacity: 0, x: x, y: y });
+          
           var st = window.gsap.from(el, {
             x: x,
             y: y,
@@ -194,7 +222,15 @@
               start: startPos,
               toggleActions: 'play none none reverse',
               refreshPriority: 1,
-              invalidateOnRefresh: true // Recalculate on resize
+              invalidateOnRefresh: true, // Recalculate on resize
+              onEnter: function() {
+                // Ensure final state is always opacity:1, y:0
+                window.gsap.set(el, { opacity: 1, x: 0, y: 0 });
+              },
+              onEnterBack: function() {
+                // Ensure final state when scrolling back
+                window.gsap.set(el, { opacity: 1, x: 0, y: 0 });
+              }
             }
           });
           
@@ -234,14 +270,19 @@
                 if (newIsHeroText && (afterIsInViewport || isActuallyVisible)) {
                   var computed = window.getComputedStyle(el);
                   var currentOpacity = parseFloat(computed.opacity);
-                  if (currentOpacity < 0.5 || isNaN(currentOpacity)) {
-                    // Force visible and reset transforms
+                  var currentY = parseFloat(computed.transform.match(/translateY\(([^)]+)\)/) ? computed.transform.match(/translateY\(([^)]+)\)/)[1] : '0') || 0;
+                  // Force visible if opacity is low OR if there's any Y translation remaining
+                  if (currentOpacity < 0.9 || Math.abs(currentY) > 2 || isNaN(currentOpacity)) {
+                    // Force visible and reset transforms - ensure it finishes at opacity:1, y:0
                     window.gsap.set(el, { 
                       opacity: 1, 
                       x: 0, 
                       y: 0, 
                       clearProps: 'all' 
                     });
+                    // Also set inline style as seatbelt
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
                     // Re-trigger ScrollTrigger to recalculate
                     if (st && st.scrollTrigger) {
                       st.scrollTrigger.refresh();
@@ -251,7 +292,7 @@
                   // For non-hero elements, use existing logic
                   var computed = window.getComputedStyle(el);
                   var currentOpacity = parseFloat(computed.opacity);
-                  if (currentOpacity < 0.5 || isNaN(currentOpacity)) {
+                  if (currentOpacity < 0.9 || isNaN(currentOpacity)) {
                     // Force visible and reset transforms
                     window.gsap.set(el, { 
                       opacity: 1, 
@@ -259,6 +300,8 @@
                       y: 0, 
                       clearProps: 'all' 
                     });
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
                     // Re-trigger ScrollTrigger to recalculate
                     if (st && st.scrollTrigger) {
                       st.scrollTrigger.refresh();
@@ -285,6 +328,30 @@
         }
       })(els[i]);
     }
+    
+    // Handle wide viewport - clear GSAP inline styles that override CSS
+    function handleWideViewport() {
+      if (window.innerWidth > 1600) {
+        window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
+          clearProps: 'all'  // This removes GSAP inline styles
+        });
+      }
+    }
+    
+    // Debounce helper
+    function debounce(func, wait) {
+      var timeout;
+      return function() {
+        var context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+          func.apply(context, args);
+        }, wait);
+      };
+    }
+    
+    window.addEventListener('resize', debounce(handleWideViewport, 250), { passive: true });
+    handleWideViewport(); // Run on load too
   }
 
   // =============================================

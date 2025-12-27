@@ -166,8 +166,9 @@ body {
     var(--bg);
   background-attachment: fixed;
 }
-  
-  /* Chart colors - adjusted for dark mode */
+
+/* Chart colors - adjusted for dark mode */
+:root[data-theme="dark"] {
   --chart-blue: #6BB3C9;
   --chart-blue-light: #8BC9DB;
   --chart-blue-muted: #A5D4E5;
@@ -405,6 +406,7 @@ main {
 
 .mastInner > .theme-toggle {
   margin-left: 16px; /* Fixed gap from menu, not auto */
+  margin-top: 0; /* Remove offset - use same baseline as nav */
   align-self: center;
   display: flex;
   align-items: center;
@@ -412,6 +414,8 @@ main {
   /* Match nav padding-top to ensure exact vertical alignment */
   padding-top: 2px;
   line-height: 1;
+  /* Ensure same vertical baseline as nav items */
+  vertical-align: baseline;
 }
 @media (max-width: 640px) {
   /* Mobile theme toggle: smaller, snug to menu, no box styling */
@@ -1204,6 +1208,7 @@ h2::after {
   font-size: 16.5px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-shadow: 0 2px 22px rgba(0,0,0,.6), 0 1px 3px rgba(0,0,0,.4);
@@ -1295,6 +1300,7 @@ h2::after {
   line-height: 1.65;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-width: 60ch;

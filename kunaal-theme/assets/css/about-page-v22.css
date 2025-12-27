@@ -3,6 +3,8 @@
  * 
  * Extracted from kunaal-about-v22-polished.html
  * Matches reference design exactly including all effects, animations, and styles
+ * 
+ * Scoped to body.page-template-page-about to avoid conflicts with other pages
  *
  * @package Kunaal_Theme
  * @since 4.21.0
@@ -168,7 +170,16 @@ img { display: block; max-width: 100%; }
 .skip-link:focus{ left: 12px; }
 
 /* Scroll-reveal primitives (animated via GSAP) */
-[data-reveal] { will-change: transform, opacity; }
+/* Progressive enhancement: content visible by default, only hide if JS loads */
+body:not(.js) [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+body.js [data-reveal] { 
+  will-change: transform, opacity; 
+  /* Initially visible - JS will animate if available */
+  opacity: 1;
+}
 
 /* Big, faint "gallery label" words drifting behind sections */
 .section-inner { position: relative; }
@@ -249,8 +260,10 @@ a:focus-visible, button:focus-visible {
 
 /* =============================================
    HERO - Exact original layout restored
+   Scoped to about page to avoid conflicts
 ============================================= */
-.hero {
+body.page-template-page-about .hero,
+.page-template-page-about .hero {
   display: grid;
   grid-template-columns: 60px 1fr 1fr 1fr minmax(280px, 400px) 60px;
   grid-template-rows: 1fr 1fr;
@@ -259,7 +272,7 @@ a:focus-visible, button:focus-visible {
   max-height: 100vh; /* Prevent expansion */
   background: var(--bg);
   position: relative;
-  overflow: visible; /* Ensure hero section doesn't clip children (like scroll indicator) */
+  overflow: visible !important; /* Ensure hero section doesn't clip children (like scroll indicator and dog-ear accent) */
 }
 
 .hero-photo {
@@ -268,7 +281,7 @@ a:focus-visible, button:focus-visible {
   background: var(--bgAlt);
 }
 .hero-photo.has-accent {
-  overflow: visible; /* Allow dog-ear accent to show */
+  overflow: visible !important; /* Allow dog-ear accent to show - force override */
 }
 .hero-photo img {
   width: 100%;
@@ -301,8 +314,10 @@ a:focus-visible, button:focus-visible {
 .hero-photo.color-active::after { transform: scaleY(1); }
 /* Dog-ear accent - exact original implementation using linear-gradient */
 .hero-photo.has-accent {
-  position: relative; /* Ensure ::before can be positioned absolutely */
+  position: relative !important; /* Ensure ::before can be positioned absolutely */
   isolation: isolate; /* Create new stacking context to ensure accent is above image */
+  overflow: visible !important; /* Force override - prevent any clipping of accent */
+  z-index: 1; /* Ensure stacking context */
 }
 
 .hero-photo.has-accent::before {
@@ -313,7 +328,7 @@ a:focus-visible, button:focus-visible {
   width: 28px;
   height: 28px;
   background: linear-gradient(135deg, var(--blue, #1E5AFF) 50%, transparent 50%);
-  z-index: 10; /* Above image */
+  z-index: 10 !important; /* Above image - force high z-index */
   pointer-events: none;
   /* Ensure accent is not clipped */
   clip-path: none;
@@ -414,8 +429,6 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
   /* Position within hero-text container */
   width: auto; /* Auto width - don't span full width */
-  left: 50%;
-  transform: translateX(-50%); /* Center horizontally */
 }
 .scroll-indicator.hidden { 
   opacity: 0;
@@ -437,25 +450,27 @@ a:focus-visible, button:focus-visible {
   position: relative;
   opacity: 0.8;
 }
+.scroll-indicator-chevron-wrapper {
+  /* Wrapper for pure Y-axis translation - no rotation applied here */
+  animation: scrollBounce 1.8s ease-in-out infinite;
+  will-change: transform;
+}
+
 .scroll-indicator-chevron {
   width: 8px;
   height: 8px;
   border-right: 2px solid var(--warm);
   border-bottom: 2px solid var(--warm);
-  transform: rotate(45deg);
-  animation: scrollBounce 1.8s ease-in-out infinite !important;
+  transform: rotate(45deg); /* Rotation only, no translation */
   opacity: 0.9;
-  will-change: transform;
 }
-/* Scroll indicator animation - down/up movement (not side) */
+/* Scroll indicator animation - pure Y-axis movement on wrapper, rotation on chevron */
 @keyframes scrollBounce {
   0%, 100% { 
-    transform: rotate(45deg) translateY(0) translateX(0); /* Explicitly set translateX to 0 */
-    opacity: 1; 
+    transform: translateY(0); /* Pure Y translation on wrapper */
   }
   50% { 
-    transform: rotate(45deg) translateY(6px) translateX(0); /* Vertical movement only - no X translation */
-    opacity: 0.5; 
+    transform: translateY(6px); /* Vertical movement only */
   }
 }
 
@@ -474,6 +489,9 @@ a:focus-visible, button:focus-visible {
     height: auto; /* Remove fixed height on mobile */
     max-height: none; /* Remove max-height on mobile */
     padding-top: 0;
+    /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
+    grid-auto-rows: 0;
+    overflow: hidden; /* Prevent photos from overflowing below text */
   }
   .hero-text {
     grid-column: 1 / -1;
@@ -498,36 +516,59 @@ a:focus-visible, button:focus-visible {
     transform: translateY(0);
   }
   
-  /* Mobile: Reorder photos - dog-ear photo should NOT be a corner image */
-  /* Keep dog-ear photo in a prominent position (not corner) */
-  .hero-photo:nth-child(1) { order: 1; }
-  .hero-photo:nth-child(2) { order: 2; }
-  .hero-photo:nth-child(3) { 
-    order: 3; /* Keep dog-ear in first row, not corner */
-    grid-column: 3; /* Place in middle of first row */
-  }
-  .hero-photo:nth-child(4) { order: 4; }
-  .hero-photo:nth-child(5) { order: 5; }
-  .hero-photo:nth-child(6) { order: 6; }
-  .hero-photo:nth-child(7) { order: 7; }
-  .hero-photo:nth-child(8) { order: 8; }
-  .hero-photo:nth-child(9) { order: 9; }
-  .hero-photo:nth-child(10) { order: 10; }
-  
   /* Mobile: ensure hero photos fill width without whitespace */
   .hero-photo {
     min-height: 150px;
   }
   
-  /* Optimize object-position for dog-ear photo to preserve accent area */
+  /* Mobile: Hero photo with dog-ear should be prominently displayed */
+  .hero-photo.has-accent {
+    grid-column: 1 / -1; /* Full width */
+    grid-row: 2; /* Dedicated row */
+    min-height: 300px; /* Ensure adequate height */
+    order: 0; /* Control position in grid */
+  }
+  
+  /* Prevent clipping at top for hero photo */
   .hero-photo.has-accent img {
-    object-position: top left; /* Preserve top-left area where accent is */
+    object-position: center top;
+  }
+  
+  /* Mobile: Ensure all photos stay in first two rows, not below text */
+  /* Explicitly place first 4 photos in grid positions */
+  .hero-photo:nth-child(1) { 
+    grid-column: 2; 
+    grid-row: 1; 
+  }
+  .hero-photo:nth-child(2) { 
+    grid-column: 3; 
+    grid-row: 1; 
+  }
+  .hero-photo:nth-child(3) { 
+    grid-column: 2; 
+    grid-row: 2; 
+  }
+  .hero-photo:nth-child(4) { 
+    grid-column: 3; 
+    grid-row: 2; 
+  }
+  
+  /* Hide all photos beyond the first 4 on mobile to prevent overflow below text */
+  .hero-photo:nth-child(n+5) {
+    display: none !important;
   }
   
   /* Mobile: Smaller dog-ear accent */
   .hero-photo.has-accent::before {
     width: 20px;
     height: 20px;
+  }
+  
+  /* Mobile: Move scroll indicator to right side to not be obtrusive */
+  .scroll-indicator {
+    left: auto;
+    right: 1.5rem;
+    transform: none; /* Remove center transform */
   }
 }
 
@@ -848,6 +889,7 @@ a:focus-visible, button:focus-visible {
   width: 100%;
   min-width: 0; /* Prevent overflow */
   max-width: 100%;
+  height: 100%; /* Ensure consistent height for alignment */
   /* Ensure consistent height for alignment across columns */
   align-self: start; /* Align to start of grid cell */
 }
@@ -942,6 +984,7 @@ a:focus-visible, button:focus-visible {
   word-wrap: break-word; /* Allow long words to wrap */
   word-break: break-word; /* Break long words if needed */
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 .media-subtitle {
@@ -1144,6 +1187,14 @@ a:focus-visible, button:focus-visible {
   text-align: center;
   border-top: 1px solid var(--warmBorder);
 }
+
+/* Ensure say-hello section is properly centered */
+body.page-template-page-about .say-hello .section-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 .say-hello-label {
   font-family: var(--mono);
   font-size: 10px;
@@ -1151,6 +1202,29 @@ a:focus-visible, button:focus-visible {
   letter-spacing: 0.15em;
   color: var(--blue);
   margin-bottom: 0.75rem;
+}
+/* Remove border-bottom line from say-hello section title */
+.say-hello .section-title {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 1rem;
+}
+.say-hello .section-title::after {
+  display: none; /* Remove blue line animation */
+}
+.say-hello-text {
+  margin-bottom: 1.25rem; /* Add spacing between email and social icons */
+}
+.say-hello-text a {
+  font-family: var(--mono);
+  font-size: 11px; /* Smaller, matches theme */
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color var(--transition);
+}
+.say-hello-text a:hover {
+  color: var(--ink);
 }
 .say-hello-links,
 .say-hello-social {
@@ -1176,13 +1250,16 @@ a:focus-visible, button:focus-visible {
   background: var(--blueTint);
   transform: translateY(-2px);
 }
-.say-hello-link svg,
-.say-hello-links svg,
-.say-hello-social-link svg {
+/* Hard-scope SVG sizing for about page - prevent 900px explosion */
+body.page-template-page-about .say-hello-link svg,
+body.page-template-page-about .say-hello-links svg,
+body.page-template-page-about .say-hello-social-link svg {
   width: 15px !important; /* Force size to prevent oversized icons */
   height: 15px !important;
   max-width: 15px !important;
   max-height: 15px !important;
+  min-width: 15px !important;
+  min-height: 15px !important;
   display: block;
   flex-shrink: 0;
 }
@@ -1190,16 +1267,6 @@ a:focus-visible, button:focus-visible {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted2);
-}
-/* Email link in say-hello-text should NOT be a button */
-.say-hello-text a {
-  color: var(--ink);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--transition);
-}
-.say-hello-text a:hover {
-  border-bottom-color: var(--blue);
 }
 .say-hello-email a { color: var(--blue); }
 

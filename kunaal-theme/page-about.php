@@ -1,7 +1,7 @@
 <?php
 /**
  * Template Name: About Page
- * 
+ *
  * V22 Polished Design - About page template
  * Matches kunaal-about-v22-polished.html exactly
  *
@@ -11,9 +11,13 @@
 
 get_header();
 
+// Constants for panorama class prefixes
+define('PANORAMA_CUT_PREFIX', ' cut-');
+define('PANORAMA_BG_WARM', ' bg-warm');
+
 // Generate dynamic CSS for category colors
 $categories = kunaal_get_categories_v22();
-if (!empty($categories)) :
+if (!empty($categories)) {
 ?>
 <style>
 <?php foreach ($categories as $slug => $category) : ?>
@@ -22,7 +26,7 @@ if (!empty($categories)) :
 }
 <?php endforeach; ?>
 </style>
-<?php endif; ?>
+<?php } ?>
 
 <!-- Skip Link handled in header.php for consistency -->
 <!-- Map tooltip (outside sections for proper positioning) -->
@@ -81,13 +85,14 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 // Row 2: photos 6-10
 $photo_count = count($hero_photos);
 // Row 1 - Photos 1-4
+// Photo 1 (index 0) is the "Primary" hero photo per customizer, so it gets the accent
 for ($i = 0; $i < min(4, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
-    $has_accent = ($i === 2); // Third photo (index 2) has accent
+    $has_accent = ($i === 0); // Photo 1 (Primary) has accent, not hardcoded index 2
     $loading = $i === 0 ? 'eager' : 'lazy';
 ?>
 <div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">
-    <img alt="Photo" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
+    <img alt="" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
 
@@ -117,7 +122,9 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
     <div class="scroll-indicator" id="scrollIndicator">
         <span class="scroll-indicator-text">Scroll</span>
         <div class="scroll-indicator-line"></div>
-        <div class="scroll-indicator-chevron"></div>
+        <div class="scroll-indicator-chevron-wrapper">
+            <div class="scroll-indicator-chevron"></div>
+        </div>
     </div>
 </div>
 
@@ -127,7 +134,7 @@ if ($photo_count > 4) :
     $photo_url = $hero_photos[4];
 ?>
 <div class="hero-photo">
-    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endif; ?>
 
@@ -138,7 +145,7 @@ for ($i = 5; $i < min(10, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
 ?>
 <div class="hero-photo">
-    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
 </section>
@@ -148,13 +155,13 @@ for ($i = 5; $i < min(10, $photo_count); $i++) :
 if (!empty($panoramas['after_hero'])) :
     foreach ($panoramas['after_hero'] as $panorama) :
         $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
+        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
+        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
 ?>
 <!-- PANORAMA -->
 <div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
     <div class="panorama-inner">
-        <img alt="Photo" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
+        <img alt="" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
     </div>
 </div>
 <?php
@@ -191,13 +198,13 @@ endif;
 if (!empty($panoramas['after_numbers'])) :
     foreach ($panoramas['after_numbers'] as $panorama) :
         $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
+        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
+        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
 ?>
 <!-- PANORAMA -->
 <div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
     <div class="panorama-inner">
-        <img alt="Photo" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
+        <img alt="" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
     </div>
 </div>
 <?php
@@ -213,14 +220,14 @@ endif;
         <div class="section-label" data-reveal="up">Rabbit Holes</div>
         <h2 class="section-title" data-reveal="up"><?php echo esc_html($rabbit_holes_title); ?></h2>
         <div class="capsules-cloud">
-            <?php foreach ($rabbit_holes as $hole) : 
+            <?php foreach ($rabbit_holes as $hole) :
                 $category_slug = !empty($hole['category']) ? esc_attr($hole['category']) : '';
                 $has_link = !empty($hole['url']);
                 $tag = $has_link ? 'a' : 'span';
             ?>
             <<?php echo $tag; ?> class="capsule" data-cat="<?php echo $category_slug; ?>" data-reveal="left" <?php echo $has_link ? 'href="' . esc_url($hole['url']) . '" target="_blank" rel="noopener"' : ''; ?>>
                 <?php if (!empty($hole['image'])) : ?>
-                <img alt="Photo" class="capsule-img" decoding="async" loading="lazy" src="<?php echo esc_url($hole['image']); ?>"/>
+                <img alt="" class="capsule-img" decoding="async" loading="lazy" src="<?php echo esc_url($hole['image']); ?>"/>
                 <?php endif; ?>
                 <span class="capsule-text"><?php echo esc_html($hole['text']); ?></span>
             </<?php echo $tag; ?>>
@@ -245,14 +252,14 @@ endif;
 if (!empty($panoramas['after_rabbit_holes'])) :
     foreach ($panoramas['after_rabbit_holes'] as $panorama) :
         $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
+        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
+        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
         $squeeze_class = ' squeeze-after-rabbit';
 ?>
 <!-- PANORAMA -->
 <div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class . $squeeze_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
     <div class="panorama-inner">
-        <img alt="Photo" class="panorama-img" decoding="async" fetchpriority="high" loading="eager" src="<?php echo esc_url($panorama['image']); ?>"/>
+        <img alt="" class="panorama-img" decoding="async" fetchpriority="high" loading="eager" src="<?php echo esc_url($panorama['image']); ?>"/>
     </div>
 </div>
 <?php
@@ -275,7 +282,7 @@ endif;
                     <div class="media-item" data-reveal="up">
                         <div class="media-cover book">
                             <?php if (!empty($book['cover'])) : ?>
-                            <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
+                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
                             <?php endif; ?>
                         </div>
                         <div class="media-title"><?php echo esc_html($book['title']); ?></div>
@@ -294,7 +301,7 @@ endif;
                     <h3 class="media-col-title">On repeat</h3>
                 </div>
                 <div class="media-grid">
-                    <?php foreach ($digital as $item) : 
+                    <?php foreach ($digital as $item) :
                         $link_type_label = ucfirst($item['link_type']);
                         if ($item['link_type'] === 'apple') {
                             $link_type_label = 'Apple Podcasts';
@@ -305,7 +312,7 @@ endif;
                     <<?php echo $tag; ?> class="media-item" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
                         <div class="media-cover album">
                             <?php if (!empty($item['cover'])) : ?>
-                            <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
+                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
                             <?php endif; ?>
                             <?php if ($has_link) : ?>
                             <span class="play-icon">▶</span>
@@ -337,13 +344,13 @@ endif;
 if (!empty($panoramas['after_media'])) :
     foreach ($panoramas['after_media'] as $panorama) :
         $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
+        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
+        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
 ?>
 <!-- PANORAMA -->
 <div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
     <div class="panorama-inner">
-        <img alt="Photo" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
+        <img alt="" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
     </div>
 </div>
 <?php
@@ -383,13 +390,13 @@ endif;
 if (!empty($panoramas['after_places'])) :
     foreach ($panoramas['after_places'] as $panorama) :
         $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? ' cut-' . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? ' bg-warm' : '';
+        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
+        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
 ?>
 <!-- PANORAMA -->
 <div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
     <div class="panorama-inner">
-        <img alt="Photo" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
+        <img alt="" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
     </div>
 </div>
 <?php
@@ -430,16 +437,16 @@ endif;
         <div class="say-hello-social" data-reveal="up">
             <?php if ($linkedin_url) : ?>
             <a href="<?php echo esc_url($linkedin_url); ?>" target="_blank" rel="noopener" class="say-hello-social-link">
-                <svg viewBox="0 0 24 24" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                 </svg>
             </a>
             <?php endif; ?>
-            <?php if ($twitter_handle) : 
+            <?php if ($twitter_handle) :
                 $twitter_url = 'https://x.com/' . ltrim($twitter_handle, '@');
             ?>
             <a href="<?php echo esc_url($twitter_url); ?>" target="_blank" rel="noopener" class="say-hello-social-link">
-                <svg viewBox="0 0 24 24" fill="currentColor">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
             </a>
@@ -450,6 +457,10 @@ endif;
 <?php endif; ?>
 </main>
 
+<?php
+// Gate debug logging behind ?debug=1 parameter or WP_DEBUG
+$show_debug = (defined('WP_DEBUG') && WP_DEBUG) || (isset($_GET['debug']) && $_GET['debug'] === '1');
+if ($show_debug) : ?>
 <script>
 // #region agent log - Comprehensive CSS computed styles check
 (function() {
@@ -540,5 +551,6 @@ endif;
 })();
 // #endregion
 </script>
+<?php endif; ?>
 
 <?php get_footer(); ?>
