@@ -254,9 +254,8 @@ function kunaal_enqueue_assets() {
     }
     
     // About page and Contact page assets
-    // Template detection + explicit page selection to avoid slug brittleness
-    $about_page_id = (int) kunaal_mod('kunaal_about_page_id', 0);
-    $is_about_page = is_page_template('page-about.php') || ($about_page_id && is_page($about_page_id)) || is_page('about');
+    // Template detection (page selection removed - no longer used)
+    $is_about_page = is_page_template('page-about.php') || is_page('about');
     $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
     
     if ($is_about_page || $is_contact_page) {
@@ -1190,24 +1189,7 @@ function kunaal_customize_register($wp_customize) {
         'type' => 'url',
     ));
     
-    // =====================================================
-    // ABOUT PAGE - PAGE SELECTION (Reliable Enqueue)
-    // =====================================================
-    $wp_customize->add_section('kunaal_about_page', array(
-        'title' => 'About: Page Selection',
-        'priority' => 49,
-        'description' => 'Select which page is your About page so enhancements load reliably even if the slug changes.',
-    ));
-    
-    $wp_customize->add_setting('kunaal_about_page_id', array(
-        'default' => 0,
-        'sanitize_callback' => 'absint',
-    ));
-    $wp_customize->add_control('kunaal_about_page_id', array(
-        'label' => 'About Page',
-        'section' => 'kunaal_about_page',
-        'type' => 'dropdown-pages',
-    ));
+    // Page selection removed - no longer used in customizations
 
     // =====================================================
     // ABOUT PAGE SETTINGS
@@ -1267,138 +1249,54 @@ function kunaal_customize_register($wp_customize) {
     ));
 
     // =====================================================
-    // CONTACT PAGE - MESSENGER QR TILES
+    // CONTACT PAGE - SOCIAL LINKS
     // =====================================================
-    $wp_customize->add_setting('kunaal_contact_messenger_telegram_enabled', array(
-        'default' => false,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_telegram_enabled', array(
-        'label' => 'Enable Telegram QR',
-        'section' => 'kunaal_contact_page',
-        'type' => 'checkbox',
-    ));
-    $wp_customize->add_setting('kunaal_contact_messenger_telegram_mode', array(
-        'default' => 'redirect',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_telegram_mode', array(
-        'label' => 'Telegram QR Mode',
-        'description' => 'Redirect mode encodes a site URL (privacy). Direct mode encodes your link/handle.',
-        'section' => 'kunaal_contact_page',
-        'type' => 'select',
-        'choices' => array(
-            'redirect' => 'Site redirect (recommended)',
-            'direct' => 'Direct link/handle',
-        ),
-    ));
-    $wp_customize->add_setting('kunaal_contact_messenger_telegram_target', array(
+    // Instagram
+    $wp_customize->add_setting('kunaal_contact_instagram', array(
         'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
+        'sanitize_callback' => 'esc_url_raw',
     ));
-    $wp_customize->add_control('kunaal_contact_messenger_telegram_target', array(
-        'label' => 'Telegram Target (URL or @handle)',
-        'description' => 'Examples: https://t.me/yourname OR @yourname (needed for redirect and for direct mode).',
+    $wp_customize->add_control('kunaal_contact_instagram', array(
+        'label' => 'Instagram URL',
+        'description' => 'Your Instagram profile URL (e.g., https://instagram.com/yourname)',
         'section' => 'kunaal_contact_page',
-        'type' => 'text',
+        'type' => 'url',
     ));
-    $wp_customize->add_setting('kunaal_contact_messenger_telegram_redirect_slug', array(
-        'default' => 'telegram',
-        'sanitize_callback' => 'sanitize_title',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_telegram_redirect_slug', array(
-        'label' => 'Telegram Redirect Slug',
-        'description' => 'Used for site redirect URLs like /connect/telegram',
-        'section' => 'kunaal_contact_page',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('kunaal_contact_messenger_line_enabled', array(
-        'default' => false,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_line_enabled', array(
-        'label' => 'Enable LINE QR',
-        'section' => 'kunaal_contact_page',
-        'type' => 'checkbox',
-    ));
-    $wp_customize->add_setting('kunaal_contact_messenger_line_mode', array(
-        'default' => 'redirect',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_line_mode', array(
-        'label' => 'LINE QR Mode',
-        'description' => 'Redirect mode encodes a site URL (privacy). Direct mode encodes your link.',
-        'section' => 'kunaal_contact_page',
-        'type' => 'select',
-        'choices' => array(
-            'redirect' => 'Site redirect (recommended)',
-            'direct' => 'Direct link',
-        ),
-    ));
-    $wp_customize->add_setting('kunaal_contact_messenger_line_target', array(
+    
+    // WhatsApp (public link, no phone number)
+    $wp_customize->add_setting('kunaal_contact_whatsapp', array(
         'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
+        'sanitize_callback' => 'esc_url_raw',
     ));
-    $wp_customize->add_control('kunaal_contact_messenger_line_target', array(
-        'label' => 'LINE Target (URL)',
-        'description' => 'Example: https://line.me/R/ti/p/@yourname (needed for redirect and direct mode).',
+    $wp_customize->add_control('kunaal_contact_whatsapp', array(
+        'label' => 'WhatsApp Link',
+        'description' => 'Public WhatsApp link (e.g., https://wa.me/yourlink - avoid phone numbers)',
         'section' => 'kunaal_contact_page',
-        'type' => 'text',
+        'type' => 'url',
     ));
-    $wp_customize->add_setting('kunaal_contact_messenger_line_redirect_slug', array(
-        'default' => 'line',
-        'sanitize_callback' => 'sanitize_title',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_line_redirect_slug', array(
-        'label' => 'LINE Redirect Slug',
-        'description' => 'Used for site redirect URLs like /connect/line',
-        'section' => 'kunaal_contact_page',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('kunaal_contact_messenger_viber_enabled', array(
-        'default' => false,
-        'sanitize_callback' => 'wp_validate_boolean',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_viber_enabled', array(
-        'label' => 'Enable Viber QR',
-        'section' => 'kunaal_contact_page',
-        'type' => 'checkbox',
-    ));
-    $wp_customize->add_setting('kunaal_contact_messenger_viber_mode', array(
-        'default' => 'redirect',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_contact_messenger_viber_mode', array(
-        'label' => 'Viber QR Mode',
-        'description' => 'Redirect mode encodes a site URL (privacy). Direct mode encodes your link.',
-        'section' => 'kunaal_contact_page',
-        'type' => 'select',
-        'choices' => array(
-            'redirect' => 'Site redirect (recommended)',
-            'direct' => 'Direct link',
-        ),
-    ));
-    $wp_customize->add_setting('kunaal_contact_messenger_viber_target', array(
+    
+    // Viber (public link, no phone number)
+    $wp_customize->add_setting('kunaal_contact_viber', array(
         'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
+        'sanitize_callback' => 'esc_url_raw',
     ));
-    $wp_customize->add_control('kunaal_contact_messenger_viber_target', array(
-        'label' => 'Viber Target (URL)',
-        'description' => 'Provide a public Viber link (avoid phone numbers). Used for redirect and direct mode.',
+    $wp_customize->add_control('kunaal_contact_viber', array(
+        'label' => 'Viber Link',
+        'description' => 'Public Viber link (e.g., https://chats.viber.com/yourname - avoid phone numbers)',
         'section' => 'kunaal_contact_page',
-        'type' => 'text',
+        'type' => 'url',
     ));
-    $wp_customize->add_setting('kunaal_contact_messenger_viber_redirect_slug', array(
-        'default' => 'viber',
-        'sanitize_callback' => 'sanitize_title',
+    
+    // LINE (public link, no phone number)
+    $wp_customize->add_setting('kunaal_contact_line', array(
+        'default' => '',
+        'sanitize_callback' => 'esc_url_raw',
     ));
-    $wp_customize->add_control('kunaal_contact_messenger_viber_redirect_slug', array(
-        'label' => 'Viber Redirect Slug',
-        'description' => 'Used for site redirect URLs like /connect/viber',
+    $wp_customize->add_control('kunaal_contact_line', array(
+        'label' => 'LINE Link',
+        'description' => 'Public LINE link (e.g., https://line.me/R/ti/p/@yourname - avoid phone numbers)',
         'section' => 'kunaal_contact_page',
-        'type' => 'text',
+        'type' => 'url',
     ));
 }
 add_action('customize_register', 'kunaal_customize_register');

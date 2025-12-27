@@ -211,20 +211,13 @@ img { display: block; max-width: 100%; }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   filter: grayscale(100%);
 }
+/* Remove white overlay - panorama should flow seamlessly */
 .panorama::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 50px;
-  background: var(--bg);
-  clip-path: polygon(0 60%, 100% 0, 100% 100%, 0 100%);
+  display: none;
 }
-.panorama.cut-left::after {
-  clip-path: polygon(0 0, 100% 60%, 100% 100%, 0 100%);
-}
-.panorama.bg-warm::after { background: var(--bgWarm); }
 .panorama.h-140 { height: 140px; }
 .panorama.h-160 { height: 160px; }
 
@@ -804,17 +797,17 @@ a:focus-visible, button:focus-visible {
   height: 100%;
 }
 .country {
-  fill: #E8E4DF;
+  fill: #E8E4DF !important;
   stroke: #F9F7F4;
   stroke-width: 0.3;
   transition: fill var(--transition);
 }
-.country.visited { fill: #B8A99A; }
-.country.lived { fill: #7D6B5D; }
-.country.current { fill: #1E5AFF; }
+.country.visited { fill: #B8A99A !important; }
+.country.lived { fill: #7D6B5D !important; }
+.country.current { fill: #1E5AFF !important; }
 /* Hover: darken warm colors, NOT blue */
-.country.visited:hover { fill: #9A8B7C; }
-.country.lived:hover { fill: #5C4D42; }
+.country.visited:hover { fill: #9A8B7C !important; }
+.country.lived:hover { fill: #5C4D42 !important; }
 
 /* Dark mode map colors */
 :root[data-theme="dark"] .country {

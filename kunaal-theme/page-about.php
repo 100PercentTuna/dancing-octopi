@@ -300,7 +300,7 @@ endif;
                         $has_link = !empty($item['url']);
                         $tag = $has_link ? 'a' : 'div';
                     ?>
-                    <<?php echo $tag; ?> class="media-item" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '"' : ''; ?> data-reveal="up">
+                    <<?php echo $tag; ?> class="media-item" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
                         <div class="media-cover album">
                             <?php if (!empty($item['cover'])) : ?>
                             <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
@@ -439,7 +439,7 @@ endif;
     <div class="say-hello-label">Say Hello</div>
     <div class="say-hello-links">
         <?php if ($contact_email) : ?>
-        <a class="say-hello-link" href="mailto:<?php echo esc_attr($contact_email); ?>">
+        <a class="say-hello-link" href="mailto:<?php echo esc_attr($contact_email); ?>" target="_blank" rel="noopener">
             <svg fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
                 <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>

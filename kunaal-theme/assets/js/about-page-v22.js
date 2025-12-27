@@ -533,10 +533,11 @@
   }
 
   // =============================================
-  // Progress bar (top)
+  // Progress bar (top) and scroll indicator hide
   // =============================================
   function initProgressBar(){
     var fill = document.getElementById('progressFill');
+    var scrollIndicator = document.getElementById('scrollIndicator');
     if(!fill) return;
     var ticking = false;
     function update(){
@@ -550,6 +551,15 @@
       // Header compaction (drives CSS var(--p))
       var hp = Math.min(scrollTop / 120, 1);
       document.body.style.setProperty('--p', hp.toFixed(4));
+      
+      // Hide scroll indicator after scrolling down a bit
+      if (scrollIndicator) {
+        if (scrollTop > 100) {
+          scrollIndicator.classList.add('hidden');
+        } else {
+          scrollIndicator.classList.remove('hidden');
+        }
+      }
     }
     function onScroll(){
       if(ticking) return;
