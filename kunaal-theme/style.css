@@ -440,15 +440,20 @@ main {
     gap: 12px; /* Reduce gap for snug fit */
   }
   
+  .mastInner {
+    justify-content: flex-end; /* Push everything to right */
+  }
+  
   .mastInner > .nav {
-    margin-right: 8px; /* Smaller gap - snug to theme toggle */
-    margin-left: auto; /* Push nav to right */
+    margin-right: 6px; /* Smaller gap - snug to theme toggle */
+    margin-left: 0;
+    order: 2; /* Nav comes before toggle */
   }
   
   .mastInner > .theme-toggle {
     width: 32px;
     height: 32px;
-    margin-left: 8px; /* Closer to menu - reduced gap */
+    margin-left: 0;
     margin-right: 0; /* Rightmost element */
     order: 3; /* Ensure it's last (rightmost) */
     border: none;
@@ -458,10 +463,11 @@ main {
     /* Ensure same vertical alignment as nav */
     align-self: center;
     display: flex;
-    padding-top: 2px; /* Match nav vertical alignment */
-    line-height: 1; /* Match nav line-height */
     align-items: center;
     justify-content: center;
+    /* Match nav vertical alignment exactly */
+    line-height: 1;
+    vertical-align: middle;
   }
   .theme-toggle-icon {
     width: 16px;

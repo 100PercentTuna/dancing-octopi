@@ -119,11 +119,12 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
         </div>
     </div>
     
-    <!-- Scroll indicator - positioned near bottom of viewport, fades on scroll -->
-    <div class="scroll-indicator" id="scrollIndicator">
-        <span class="scroll-indicator-text">Scroll</span>
-        <div class="scroll-indicator-line"></div>
-    </div>
+</div>
+
+<!-- Scroll indicator - positioned outside hero-text to avoid clipping -->
+<div class="scroll-indicator" id="scrollIndicator">
+    <span class="scroll-indicator-text">Scroll</span>
+    <div class="scroll-indicator-line"></div>
 </div>
 
 <?php

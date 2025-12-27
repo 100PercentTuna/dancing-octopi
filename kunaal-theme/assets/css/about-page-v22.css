@@ -147,7 +147,15 @@ body.js:not(.gsap-ready) [data-reveal] {
   box-shadow: 0 14px 40px rgba(0,0,0,0.04);
   background: var(--bg);
 }
-.panorama.cut-left { transform: rotate(0.25deg); }
+/* Panorama slants - subtle skew for visual interest */
+.panorama.cut-left { 
+  transform: rotate(0.25deg) skewY(-0.5deg);
+  transform-origin: center;
+}
+.panorama.cut-right { 
+  transform: rotate(-0.25deg) skewY(0.5deg);
+  transform-origin: center;
+}
 .panorama-inner { 
   width: 100%;
   height: 100%;
@@ -176,8 +184,26 @@ body.js:not(.gsap-ready) [data-reveal] {
 .panorama::after {
   display: none;
 }
+/* Dynamic panorama heights (20px to 200px) */
+.panorama.h-20 { height: 20px; }
+.panorama.h-30 { height: 30px; }
+.panorama.h-40 { height: 40px; }
+.panorama.h-50 { height: 50px; }
+.panorama.h-60 { height: 60px; }
+.panorama.h-70 { height: 70px; }
+.panorama.h-80 { height: 80px; }
+.panorama.h-90 { height: 90px; }
+.panorama.h-100 { height: 100px; }
+.panorama.h-110 { height: 110px; }
+.panorama.h-120 { height: 120px; }
+.panorama.h-130 { height: 130px; }
 .panorama.h-140 { height: 140px; }
+.panorama.h-150 { height: 150px; }
 .panorama.h-160 { height: 160px; }
+.panorama.h-170 { height: 170px; }
+.panorama.h-180 { height: 180px; }
+.panorama.h-190 { height: 190px; }
+.panorama.h-200 { height: 200px; }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
@@ -218,17 +244,17 @@ body.page-template-page-about .hero-photo:nth-child(1),
   grid-row: 1;
 }
 
-/* Photo 2: top-middle (column 3, row 1) */
+/* Photo 2: top-middle (column 4, row 1) - swapped with photo 3 */
 body.page-template-page-about .hero-photo:nth-child(2),
 .page-template-page-about .hero-photo:nth-child(2) {
-  grid-column: 3;
+  grid-column: 4;
   grid-row: 1;
 }
 
-/* Photo 3: top-right (column 4, row 1) - THIS GETS THE ACCENT on desktop */
+/* Photo 3: column 3, row 1 - THIS GETS THE ACCENT on desktop (third picture in first row) */
 body.page-template-page-about .hero-photo:nth-child(3),
 .page-template-page-about .hero-photo:nth-child(3) {
-  grid-column: 4;
+  grid-column: 3;
   grid-row: 1;
 }
 
@@ -455,11 +481,12 @@ body.page-template-page-about .hero-photo.has-accent::before,
   /* Mobile hero - must match scoped selector */
   body.page-template-page-about .hero,
   .page-template-page-about .hero {
-    grid-template-columns: 30px 1fr 1fr 30px;
+    grid-template-columns: 1fr 1fr; /* Remove side margins - photos fill full width */
     grid-template-rows: minmax(180px, 1fr) minmax(180px, 1fr) auto;
     height: auto; /* Remove fixed height on mobile */
     max-height: none; /* Remove max-height on mobile */
-    padding-top: 0;
+    padding: 0; /* Remove all padding */
+    margin: 0; /* Remove all margin */
     gap: 0; /* Remove gap between rows - pictures should stick together like collage */
     row-gap: 0; /* Explicitly remove row gap */
     /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
@@ -523,24 +550,24 @@ body.page-template-page-about .hero-photo.has-accent::before,
   }
   
   /* Mobile: Ensure first 4 photos stay in rows 1-2, not below text */
-  /* Photo 1 - row 1, column 2 */
+  /* Photo 1 - row 1, column 1 */
   .hero-photo:nth-child(1) { 
-    grid-column: 2; 
+    grid-column: 1; 
     grid-row: 1; 
   }
-  /* Photo 2 - row 1, column 3 */
+  /* Photo 2 - row 1, column 2 */
   .hero-photo:nth-child(2) { 
-    grid-column: 3; 
+    grid-column: 2; 
     grid-row: 1; 
   }
-  /* Photo 3 (has accent - bottom-left) - row 2, column 2 */
+  /* Photo 3 (has accent - bottom-left) - row 2, column 1 */
   .hero-photo:nth-child(3) { 
-    grid-column: 2; 
+    grid-column: 1; 
     grid-row: 2; 
   }
-  /* Photo 4 - row 2, column 3 */
+  /* Photo 4 - row 2, column 2 */
   .hero-photo:nth-child(4) { 
-    grid-column: 3; 
+    grid-column: 2; 
     grid-row: 2; 
   }
   

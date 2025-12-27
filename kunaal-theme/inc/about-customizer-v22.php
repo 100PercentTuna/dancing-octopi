@@ -360,19 +360,20 @@ function kunaal_about_customizer_v22($wp_customize) {
             ),
         ));
         
-        // Height
+        // Height (20px to 200px, default 140px)
         $wp_customize->add_setting("kunaal_about_v22_panorama_{$i}_height", array(
-            'default' => '160',
-            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '140',
+            'sanitize_callback' => 'absint',
         ));
+        $height_choices = array();
+        for ($h = 20; $h <= 200; $h += 10) {
+            $height_choices[$h] = $h . 'px';
+        }
         $wp_customize->add_control("kunaal_about_v22_panorama_{$i}_height", array(
             'label' => "Panorama {$i}: Height",
             'section' => 'kunaal_about_v22_panoramas',
             'type' => 'select',
-            'choices' => array(
-                '140' => '140px',
-                '160' => '160px',
-            ),
+            'choices' => $height_choices,
         ));
         
         // Cut Direction
