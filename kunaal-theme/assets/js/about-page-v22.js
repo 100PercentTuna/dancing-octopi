@@ -11,6 +11,29 @@
 (function () {
   'use strict';
 
+  // Debug logging helper - uses WordPress AJAX endpoint
+  function debugLog(location, message, data, hypothesisId) {
+    if (typeof window.kunaalTheme === 'undefined' || !window.kunaalTheme.ajaxUrl) {
+      return; // Skip if not available
+    }
+    var logData = {
+      location: location,
+      message: message,
+      data: data || {},
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId: hypothesisId || ''
+    };
+    var formData = new FormData();
+    formData.append('action', 'kunaal_debug_log');
+    formData.append('log_data', JSON.stringify(logData));
+    fetch(window.kunaalTheme.ajaxUrl, {
+      method: 'POST',
+      body: formData
+    }).catch(function() {}); // Silently fail if logging unavailable
+  }
+
   var reduceMotion = false;
   try {
     reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -32,12 +55,12 @@
 
   function init() {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:33',message:'init() called',data:{viewportWidth:window.innerWidth,viewportHeight:window.innerHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1,H3.1,H4.1'})}).catch(()=>{});
+    debugLog('about-page-v22.js:33', 'init() called', {viewportWidth:window.innerWidth,viewportHeight:window.innerHeight}, 'H2.1,H3.1,H4.1');
     // #endregion
     
     var gsapOk = hasGSAP();
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:36',message:'GSAP check',data:{gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+    debugLog('about-page-v22.js:36', 'GSAP check', {gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger}, 'H2.1');
     // #endregion
     
     if (gsapOk) {
@@ -46,7 +69,7 @@
       } catch (e) {
         console.warn('GSAP ScrollTrigger registration failed:', e);
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:40',message:'GSAP registration error',data:{error:e.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+        debugLog('about-page-v22.js:40', 'GSAP registration error', {error:e.message}, 'H2.1');
         // #endregion
       }
     }
@@ -73,12 +96,12 @@
         var img = accentPhoto.querySelector('img');
         var before = window.getComputedStyle(accentPhoto, '::before');
         var imgStyles = window.getComputedStyle(img);
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:58',message:'Dog-ear styles check',data:{hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H1.1,H1.2,H1.3,H1.5'})}).catch(()=>{});
+        debugLog('about-page-v22.js:58', 'Dog-ear styles check', {hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow}, 'H1.1,H1.2,H1.3,H1.5');
       }
       if (scrollIndicator) {
         var siStyles = window.getComputedStyle(scrollIndicator);
         var rect = scrollIndicator.getBoundingClientRect();
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:65',message:'Scroll indicator check',data:{exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.2,H2.3,H2.5'})}).catch(()=>{});
+        debugLog('about-page-v22.js:65', 'Scroll indicator check', {exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H2.2,H2.3,H2.5');
       }
     }, 1000);
     // #endregion
@@ -89,14 +112,14 @@
   // =============================================
   function initPageLoad(gsapOk) {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:61',message:'initPageLoad called',data:{gsapOk:gsapOk,reduceMotion:reduceMotion},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+    debugLog('about-page-v22.js:113', 'initPageLoad called', {gsapOk:gsapOk,reduceMotion:reduceMotion}, 'H2.1');
     // #endregion
     
     if (reduceMotion || !gsapOk) return;
     try {
       var scrollIndicator = document.getElementById('scrollIndicator');
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:66',message:'Scroll indicator before GSAP',data:{exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+      debugLog('about-page-v22.js:120', 'Scroll indicator before GSAP', {exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null}, 'H2.1');
       // #endregion
       
       var tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
@@ -113,14 +136,14 @@
       tl.eventCallback('onComplete', function() {
         if (scrollIndicator) {
           var finalStyles = window.getComputedStyle(scrollIndicator);
-          fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:78',message:'Scroll indicator after GSAP animation',data:{opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+          debugLog('about-page-v22.js:137', 'Scroll indicator after GSAP animation', {opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility}, 'H2.1');
         }
       });
       // #endregion
     } catch (e) {
       console.warn('Page load animation failed:', e);
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:82',message:'Page load animation error',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+      debugLog('about-page-v22.js:144', 'Page load animation error', {error:e.message,stack:e.stack}, 'H2.1');
       // #endregion
     }
   }
@@ -172,7 +195,7 @@
           // Recalculate on window resize to fix disappearing text
           var resizeHandler = function() {
             // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:123',message:'Resize handler called',data:{viewportWidth:window.innerWidth,isHeroText:el.closest('.hero-text')!==null,elementTag:el.tagName,elementClass:el.className},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.1,H4.2'})}).catch(()=>{});
+            debugLog('about-page-v22.js:196', 'Resize handler called', {viewportWidth:window.innerWidth,isHeroText:el.closest('.hero-text')!==null,elementTag:el.tagName,elementClass:el.className}, 'H4.1,H4.2');
             // #endregion
             
             if (window.gsap && window.ScrollTrigger && st && st.scrollTrigger) {
@@ -181,7 +204,7 @@
               
               // #region agent log
               var beforeRefresh = window.getComputedStyle(el);
-              fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:128',message:'Before ScrollTrigger refresh',data:{opacity:beforeRefresh.opacity,transform:beforeRefresh.transform,display:beforeRefresh.display},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.1,H4.2'})}).catch(()=>{});
+              debugLog('about-page-v22.js:205', 'Before ScrollTrigger refresh', {opacity:beforeRefresh.opacity,transform:beforeRefresh.transform,display:beforeRefresh.display}, 'H4.1,H4.2');
               // #endregion
               
               // If mobile state changed, refresh with new settings
@@ -195,7 +218,7 @@
               setTimeout(function() {
                 var afterRefresh = window.getComputedStyle(el);
                 var rect = el.getBoundingClientRect();
-                fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:193',message:'After ScrollTrigger refresh',data:{opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:rect.top,left:rect.left,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.1,H4.2,H4.3'})}).catch(()=>{});
+                debugLog('about-page-v22.js:219', 'After ScrollTrigger refresh', {opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:rect.top,left:rect.left,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H4.1,H4.2,H4.3');
               }, 100);
               // #endregion
             }
@@ -418,19 +441,19 @@
   // =============================================
   function initWorldMap() {
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:352',message:'initWorldMap called',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.1,H3.2'})}).catch(()=>{});
+    debugLog('about-page-v22.js:442', 'initWorldMap called', {timestamp:Date.now()}, 'H3.1,H3.2');
     // #endregion
     
     var host = document.getElementById('world-map');
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:355',message:'Map element check',data:{hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.2,H3.5'})}).catch(()=>{});
+    debugLog('about-page-v22.js:447', 'Map element check', {hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null}, 'H3.2,H3.5');
     // #endregion
     
     if (!host) return;
 
     // D3 and TopoJSON should already be loaded via WordPress enqueue
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:360',message:'D3/TopoJSON check',data:{hasD3:!!window.d3,hasTopojson:!!window.topojson},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.1'})}).catch(()=>{});
+    debugLog('about-page-v22.js:454', 'D3/TopoJSON check', {hasD3:!!window.d3,hasTopojson:!!window.topojson}, 'H3.1');
     // #endregion
     
     if (!window.d3 || !window.topojson) {
@@ -440,7 +463,7 @@
 
     function draw() {
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:362',message:'Map draw() called',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.3,H3.4'})}).catch(()=>{});
+      debugLog('about-page-v22.js:464', 'Map draw() called', {timestamp:Date.now()}, 'H3.3,H3.4');
       // #endregion
       
       // Get places data from WordPress localization
@@ -456,7 +479,7 @@
       var visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
       
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:373',message:'Places data check',data:{hasKunaalAboutV22:!!window.kunaalAboutV22,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.3'})}).catch(()=>{});
+      debugLog('about-page-v22.js:480', 'Places data check', {hasKunaalAboutV22:!!window.kunaalAboutV22,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited}, 'H3.3');
       // #endregion
       
       // Debug: log if no places data (helpful for troubleshooting)
@@ -539,12 +562,12 @@
       var tooltip = document.getElementById('mapTooltip');
 
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:524',message:'Starting D3.json fetch',data:{width:width,height:height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+      debugLog('about-page-v22.js:563', 'Starting D3.json fetch', {width:width,height:height}, 'H3.4');
       // #endregion
       
       window.d3.json('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then(function (world) {
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:527',message:'D3.json success',data:{hasWorld:!!world,hasObjects:!!world.objects},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+        debugLog('about-page-v22.js:568', 'D3.json success', {hasWorld:!!world,hasObjects:!!world.objects}, 'H3.4');
         // #endregion
         
         var countries = window.topojson.feature(world, world.objects.countries);
@@ -675,12 +698,12 @@
       }).catch(function (err) {
         console.warn('World map data load failed:', err);
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:667',message:'D3.json error',data:{error:err.message,stack:err.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+        debugLog('about-page-v22.js:699', 'D3.json error', {error:err.message,stack:err.stack}, 'H3.4');
         // #endregion
       });
       } catch (drawError) {
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:671',message:'Map draw() error',data:{error:drawError.message,stack:drawError.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+        debugLog('about-page-v22.js:704', 'Map draw() error', {error:drawError.message,stack:drawError.stack}, 'H3.4');
         // #endregion
         console.warn('Map draw() failed:', drawError);
       }

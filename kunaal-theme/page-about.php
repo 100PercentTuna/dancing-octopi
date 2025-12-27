@@ -453,6 +453,29 @@ endif;
 <script>
 // #region agent log - Comprehensive CSS computed styles check
 (function() {
+  // Debug logging helper - uses WordPress AJAX endpoint
+  function debugLog(location, message, data, hypothesisId) {
+    if (typeof window.kunaalTheme === 'undefined' || !window.kunaalTheme.ajaxUrl) {
+      return; // Skip if not available
+    }
+    var logData = {
+      location: location,
+      message: message,
+      data: data || {},
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId: hypothesisId || ''
+    };
+    var formData = new FormData();
+    formData.append('action', 'kunaal_debug_log');
+    formData.append('log_data', JSON.stringify(logData));
+    fetch(window.kunaalTheme.ajaxUrl, {
+      method: 'POST',
+      body: formData
+    }).catch(function() {}); // Silently fail if logging unavailable
+  }
+
   setTimeout(function() {
     // Check dog-ear
     var accentPhoto = document.querySelector('.hero-photo.has-accent');
@@ -463,7 +486,7 @@ endif;
       // Try to get ::before pseudo-element styles (limited support)
       var beforeContent = accentStyles.getPropertyValue('--before-content') || 'N/A';
       
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-about.php:inline',message:'Dog-ear CSS computed styles',data:{hasAccentPhoto:!!accentPhoto,accentIsolation:accentStyles.isolation,accentOverflow:accentStyles.overflow,accentPosition:accentStyles.position,accentZIndex:accentStyles.zIndex,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,imgOpacity:imgStyles.opacity,accentBackground:accentStyles.background,accentWidth:accentStyles.width,accentHeight:accentStyles.height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H1.1,H1.2,H1.3,H1.4,H1.5'})}).catch(()=>{});
+      debugLog('page-about.php:inline', 'Dog-ear CSS computed styles', {hasAccentPhoto:!!accentPhoto,accentIsolation:accentStyles.isolation,accentOverflow:accentStyles.overflow,accentPosition:accentStyles.position,accentZIndex:accentStyles.zIndex,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,imgOpacity:imgStyles.opacity,accentBackground:accentStyles.background,accentWidth:accentStyles.width,accentHeight:accentStyles.height}, 'H1.1,H1.2,H1.3,H1.4,H1.5');
     }
     
     // Check scroll indicator
@@ -471,7 +494,7 @@ endif;
     if (scrollIndicator) {
       var siStyles = window.getComputedStyle(scrollIndicator);
       var rect = scrollIndicator.getBoundingClientRect();
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-about.php:inline',message:'Scroll indicator CSS computed styles',data:{opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,position:siStyles.position,top:siStyles.top,left:siStyles.left,bottom:siStyles.bottom,transform:siStyles.transform,rectTop:rect.top,rectLeft:rect.left,rectWidth:rect.width,rectHeight:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth,animation:siStyles.animation},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.2,H2.3,H2.4,H2.5'})}).catch(()=>{});
+      debugLog('page-about.php:inline', 'Scroll indicator CSS computed styles', {opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,position:siStyles.position,top:siStyles.top,left:siStyles.left,bottom:siStyles.bottom,transform:siStyles.transform,rectTop:rect.top,rectLeft:rect.left,rectWidth:rect.width,rectHeight:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth,animation:siStyles.animation}, 'H2.2,H2.3,H2.4,H2.5');
     }
     
     // Check social icons
@@ -480,7 +503,7 @@ endif;
       var firstSvg = socialLinks[0];
       var svgStyles = window.getComputedStyle(firstSvg);
       var parentStyles = window.getComputedStyle(firstSvg.parentElement);
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-about.php:inline',message:'Social icons CSS computed styles',data:{svgCount:socialLinks.length,svgWidth:svgStyles.width,svgHeight:svgStyles.height,svgMaxWidth:svgStyles.maxWidth,svgMaxHeight:svgStyles.maxHeight,parentWidth:parentStyles.width,parentHeight:parentStyles.height,svgViewBox:firstSvg.getAttribute('viewBox'),svgInlineWidth:firstSvg.getAttribute('width'),svgInlineHeight:firstSvg.getAttribute('height')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H5.1,H5.2,H5.3'})}).catch(()=>{});
+      debugLog('page-about.php:inline', 'Social icons CSS computed styles', {svgCount:socialLinks.length,svgWidth:svgStyles.width,svgHeight:svgStyles.height,svgMaxWidth:svgStyles.maxWidth,svgMaxHeight:svgStyles.maxHeight,parentWidth:parentStyles.width,parentHeight:parentStyles.height,svgViewBox:firstSvg.getAttribute('viewBox'),svgInlineWidth:firstSvg.getAttribute('width'),svgInlineHeight:firstSvg.getAttribute('height')}, 'H5.1,H5.2,H5.3');
     }
     
     // Check hero text elements
@@ -491,7 +514,7 @@ endif;
       if (heroIntro) {
         var introStyles = window.getComputedStyle(heroIntro);
         var introRect = heroIntro.getBoundingClientRect();
-        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-about.php:inline',message:'Hero intro CSS computed styles',data:{opacity:introStyles.opacity,display:introStyles.display,visibility:introStyles.visibility,transform:introStyles.transform,top:introRect.top,left:introRect.left,width:introRect.width,height:introRect.height,inViewport:introRect.top>=0&&introRect.left>=0&&introRect.bottom<=window.innerHeight&&introRect.right<=window.innerWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.2,H4.3'})}).catch(()=>{});
+        debugLog('page-about.php:inline', 'Hero intro CSS computed styles', {opacity:introStyles.opacity,display:introStyles.display,visibility:introStyles.visibility,transform:introStyles.transform,top:introRect.top,left:introRect.left,width:introRect.width,height:introRect.height,inViewport:introRect.top>=0&&introRect.left>=0&&introRect.bottom<=window.innerHeight&&introRect.right<=window.innerWidth}, 'H4.2,H4.3');
       }
     }
     
@@ -502,7 +525,7 @@ endif;
       var toggleRect = themeToggle.getBoundingClientRect();
       var nav = document.querySelector('.nav');
       var navRect = nav ? nav.getBoundingClientRect() : null;
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-about.php:inline',message:'Theme toggle CSS computed styles',data:{marginLeft:toggleStyles.marginLeft,marginRight:toggleStyles.marginRight,alignSelf:toggleStyles.alignSelf,display:toggleStyles.display,alignItems:toggleStyles.alignItems,justifyContent:toggleStyles.justifyContent,toggleTop:toggleRect.top,toggleLeft:toggleRect.left,navTop:navRect?navRect.top:null,navLeft:navRect?navRect.left:null,verticalOffset:toggleRect.top-(navRect?navRect.top:0),viewportWidth:window.innerWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H8.1,H8.2,H8.3'})}).catch(()=>{});
+      debugLog('page-about.php:inline', 'Theme toggle CSS computed styles', {marginLeft:toggleStyles.marginLeft,marginRight:toggleStyles.marginRight,alignSelf:toggleStyles.alignSelf,display:toggleStyles.display,alignItems:toggleStyles.alignItems,justifyContent:toggleStyles.justifyContent,toggleTop:toggleRect.top,toggleLeft:toggleRect.left,navTop:navRect?navRect.top:null,navLeft:navRect?navRect.left:null,verticalOffset:toggleRect.top-(navRect?navRect.top:0),viewportWidth:window.innerWidth}, 'H8.1,H8.2,H8.3');
     }
     
     // Check map container
@@ -511,7 +534,7 @@ endif;
       var mapStyles = window.getComputedStyle(mapContainer);
       var mapRect = mapContainer.getBoundingClientRect();
       var mapInnerHTML = mapContainer.innerHTML.trim();
-      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-about.php:inline',message:'Map container CSS computed styles',data:{exists:!!mapContainer,width:mapRect.width,height:mapRect.height,display:mapStyles.display,visibility:mapStyles.visibility,opacity:mapStyles.opacity,hasContent:mapInnerHTML.length>0,innerHTMLLength:mapInnerHTML.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.2,H3.5'})}).catch(()=>{});
+      debugLog('page-about.php:inline', 'Map container CSS computed styles', {exists:!!mapContainer,width:mapRect.width,height:mapRect.height,display:mapStyles.display,visibility:mapStyles.visibility,opacity:mapStyles.opacity,hasContent:mapInnerHTML.length>0,innerHTMLLength:mapInnerHTML.length}, 'H3.2,H3.5');
     }
   }, 2000);
 })();

@@ -2263,6 +2263,44 @@ add_action('wp_ajax_kunaal_contact_form', 'kunaal_handle_contact_form');
 add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
 
 /**
+ * Debug log handler - receives logs from JavaScript and writes to theme debug.log
+ * Only active during debug sessions
+ */
+function kunaal_handle_debug_log() {
+    // Security: Only allow during development/debugging
+    // In production, you might want to add additional checks
+    
+    // WordPress AJAX sends data as form-encoded, so we need to get it from POST
+    $log_json = isset($_POST['log_data']) ? stripslashes($_POST['log_data']) : '';
+    if (empty($log_json)) {
+        // Try reading from raw input as fallback
+        $raw_input = file_get_contents('php://input');
+        if (!empty($raw_input)) {
+            $log_json = $raw_input;
+        }
+    }
+    
+    $log_data = json_decode($log_json, true);
+    
+    if (!$log_data || !isset($log_data['location']) || !isset($log_data['message'])) {
+        wp_send_json_error(array('message' => 'Invalid log data'));
+        wp_die();
+    }
+    
+    // Write to theme directory debug.log (will be deployed with theme)
+    $log_file = get_template_directory() . '/debug.log';
+    $log_line = json_encode($log_data) . "\n";
+    
+    // Append to log file (creates if doesn't exist)
+    @file_put_contents($log_file, $log_line, FILE_APPEND | LOCK_EX);
+    
+    wp_send_json_success(array('logged' => true));
+    wp_die();
+}
+add_action('wp_ajax_kunaal_debug_log', 'kunaal_handle_debug_log');
+add_action('wp_ajax_nopriv_kunaal_debug_log', 'kunaal_handle_debug_log');
+
+/**
  * Register Inline Formats for Gutenberg Editor
  */
 function kunaal_register_inline_formats() {
