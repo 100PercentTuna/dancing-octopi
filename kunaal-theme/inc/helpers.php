@@ -171,33 +171,5 @@ function kunaal_mod($key, $default = '') {
     return isset($mods[$key]) ? $mods[$key] : $default;
 }
 
-/**
- * Helper: Build messenger target URL
- */
-function kunaal_build_messenger_target_url($platform, $raw_target) {
-    $raw_target = is_string($raw_target) ? trim($raw_target) : '';
-    if ($raw_target === '') return '';
-
-    // If looks like a URL/protocol, trust it (we'll validate protocol later when redirecting)
-    if (preg_match('#^[a-zA-Z][a-zA-Z0-9+.-]*://#', $raw_target)) {
-        return $raw_target;
-    }
-
-    // Handle-based convenience (Telegram only)
-    if ($platform === 'telegram') {
-        $handle = ltrim($raw_target, '@');
-        return $handle ? ('https://t.me/' . $handle) : '';
-    }
-
-    // For LINE/Viber, require an explicit URL for safety/clarity
-    return '';
-}
-
-/**
- * Helper: QR image source
- */
-function kunaal_qr_img_src($text, $size = 220) {
-    $size = max(120, min(512, (int) $size));
-    return 'https://chart.googleapis.com/chart?cht=qr&chs=' . $size . 'x' . $size . '&chld=M|0&chl=' . rawurlencode($text);
-}
+// Removed: kunaal_build_messenger_target_url and kunaal_qr_img_src - no longer used (messenger QR codes removed)
 

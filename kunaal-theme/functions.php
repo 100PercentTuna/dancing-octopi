@@ -1318,113 +1318,9 @@ function kunaal_customizer_preview_js() {
 }
 add_action('customize_preview_init', 'kunaal_customizer_preview_js');
 
-/**
- * Build a messenger URL from a platform + target (URL or handle).
- */
-function kunaal_build_messenger_target_url($platform, $raw_target) {
-    $raw_target = is_string($raw_target) ? trim($raw_target) : '';
-    if ($raw_target === '') return '';
+// Removed: kunaal_build_messenger_target_url and kunaal_qr_img_src - no longer used (messenger QR codes removed)
 
-    // If looks like a URL/protocol, trust it (we'll validate protocol later when redirecting)
-    if (preg_match('#^[a-zA-Z][a-zA-Z0-9+.-]*://#', $raw_target)) {
-        return $raw_target;
-    }
-
-    // Handle-based convenience (Telegram only)
-    if ($platform === 'telegram') {
-        $handle = ltrim($raw_target, '@');
-        return $handle ? ('https://t.me/' . $handle) : '';
-    }
-
-    // For LINE/Viber, require an explicit URL for safety/clarity
-    return '';
-}
-
-/**
- * QR image URL (Google Chart fallback).
- */
-function kunaal_qr_img_src($text, $size = 220) {
-    $size = max(120, min(512, (int) $size));
-    return 'https://chart.googleapis.com/chart?cht=qr&chs=' . $size . 'x' . $size . '&chld=M|0&chl=' . rawurlencode($text);
-}
-
-/**
- * /connect/<slug> redirects (privacy-friendly QR codes)
- */
-function kunaal_register_connect_rewrite() {
-    add_rewrite_rule('^connect/([^/]+)/?$', 'index.php?kunaal_connect=$matches[1]', 'top');
-}
-add_action('init', 'kunaal_register_connect_rewrite');
-
-function kunaal_connect_query_vars($vars) {
-    $vars[] = 'kunaal_connect';
-    return $vars;
-}
-add_filter('query_vars', 'kunaal_connect_query_vars');
-
-function kunaal_connect_template_redirect() {
-    $slug = get_query_var('kunaal_connect');
-    if (!$slug) return;
-
-    $slug = sanitize_title($slug);
-
-    $platforms = array(
-        'telegram' => array(
-            'enabled' => (bool) kunaal_mod('kunaal_contact_messenger_telegram_enabled', false),
-            'mode' => kunaal_mod('kunaal_contact_messenger_telegram_mode', 'redirect'),
-            'target' => kunaal_mod('kunaal_contact_messenger_telegram_target', ''),
-            'slug' => sanitize_title(kunaal_mod('kunaal_contact_messenger_telegram_redirect_slug', 'telegram')),
-        ),
-        'line' => array(
-            'enabled' => (bool) kunaal_mod('kunaal_contact_messenger_line_enabled', false),
-            'mode' => kunaal_mod('kunaal_contact_messenger_line_mode', 'redirect'),
-            'target' => kunaal_mod('kunaal_contact_messenger_line_target', ''),
-            'slug' => sanitize_title(kunaal_mod('kunaal_contact_messenger_line_redirect_slug', 'line')),
-        ),
-        'viber' => array(
-            'enabled' => (bool) kunaal_mod('kunaal_contact_messenger_viber_enabled', false),
-            'mode' => kunaal_mod('kunaal_contact_messenger_viber_mode', 'redirect'),
-            'target' => kunaal_mod('kunaal_contact_messenger_viber_target', ''),
-            'slug' => sanitize_title(kunaal_mod('kunaal_contact_messenger_viber_redirect_slug', 'viber')),
-        ),
-    );
-
-    $platform_key = '';
-    foreach ($platforms as $key => $cfg) {
-        if ($cfg['slug'] === $slug) {
-            $platform_key = $key;
-            break;
-        }
-    }
-    if (!$platform_key) {
-        status_header(404);
-        exit;
-    }
-
-    $cfg = $platforms[$platform_key];
-    if (empty($cfg['enabled'])) {
-        status_header(404);
-        exit;
-    }
-
-    $target = kunaal_build_messenger_target_url($platform_key, $cfg['target']);
-    if (!$target) {
-        status_header(404);
-        exit;
-    }
-
-    // Only allow safe protocols for redirect
-    $allowed = array('https', 'http', 'tg', 'line', 'viber');
-    $scheme = wp_parse_url($target, PHP_URL_SCHEME);
-    if (!$scheme || !in_array($scheme, $allowed, true)) {
-        status_header(404);
-        exit;
-    }
-
-    wp_redirect($target, 302);
-    exit;
-}
-add_action('template_redirect', 'kunaal_connect_template_redirect');
+// Removed: /connect/<slug> redirects - no longer used (messenger QR codes removed)
 
 /**
  * Consolidated theme activation handler
@@ -1433,7 +1329,6 @@ add_action('template_redirect', 'kunaal_connect_template_redirect');
 function kunaal_theme_activation_handler() {
     // 1. Register post types and rewrite rules
     kunaal_register_post_types();
-    kunaal_register_connect_rewrite();
     flush_rewrite_rules();
     
     // 2. Create default pages

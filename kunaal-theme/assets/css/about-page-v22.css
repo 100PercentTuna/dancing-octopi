@@ -204,8 +204,9 @@ img { display: block; max-width: 100%; }
 .panorama.cut-left { transform: rotate(0.25deg); }
 .panorama-inner { 
   width: 100%;
-  height: 160%; 
+  height: 220%; 
   will-change: transform;
+  position: relative;
 }
 .panorama-img {
   width: 100%;
@@ -378,8 +379,13 @@ a:focus-visible, button:focus-visible {
   gap: 0.4rem;
   z-index: 20;
   transition: opacity 0.5s;
+  opacity: 1;
+  pointer-events: auto;
 }
-.scroll-indicator.hidden { opacity: 0; pointer-events: none; }
+.scroll-indicator.hidden { 
+  opacity: 0; 
+  pointer-events: none; 
+}
 .scroll-indicator-text {
   font-family: var(--mono);
   font-size: 8px;
@@ -702,7 +708,13 @@ a:focus-visible, button:focus-visible {
   margin-bottom: 0;
 }
 
-.media-item { position: relative; }
+.media-item { 
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: block;
+}
 .media-cover {
   position: relative;
   overflow: hidden;
@@ -885,6 +897,14 @@ a:focus-visible, button:focus-visible {
   transition: transform var(--transition), box-shadow var(--transition);
   position: relative;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.person-card a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 .person-card::before {
   content: '';

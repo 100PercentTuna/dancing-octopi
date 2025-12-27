@@ -2,8 +2,8 @@
 /**
  * Template Name: Contact Page
  * 
- * Simple, elegant note-taking interface with optional name/email
- * Follows the site's design language
+ * Elegant note-taking interface with optional name/email
+ * Polished design matching site aesthetic
  *
  * @package Kunaal_Theme
  */
@@ -27,9 +27,10 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     <div class="contact-container">
         <div class="contact-card">
             <header class="contact-header">
-                <h1 class="contact-title"><?php echo esc_html($contact_headline); ?></h1>
+                <div class="contact-label" data-reveal="up">Note</div>
+                <h1 class="contact-title" data-reveal="up"><?php echo esc_html($contact_headline); ?></h1>
                 <?php if ($contact_intro) : ?>
-                <p class="contact-intro"><?php echo esc_html($contact_intro); ?></p>
+                <p class="contact-intro" data-reveal="up"><?php echo esc_html($contact_intro); ?></p>
                 <?php endif; ?>
             </header>
             
@@ -46,23 +47,25 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                     <textarea 
                         id="contact-message" 
                         name="contact_message" 
-                        rows="6" 
+                        rows="5" 
                         required 
                         placeholder="<?php esc_attr_e('Leave a note...', 'kunaal-theme'); ?>"
+                        data-reveal="up"
                     ></textarea>
                 </div>
                 
                 <!-- Optional name/email checkbox -->
-                <div class="contact-optional">
+                <div class="contact-optional" data-reveal="up">
                     <label class="contact-checkbox-label">
                         <input type="checkbox" id="contact-include-info" class="contact-checkbox">
-                        <span><?php esc_html_e('Include my name and email', 'kunaal-theme'); ?></span>
+                        <span class="contact-checkbox-custom"></span>
+                        <span class="contact-checkbox-text"><?php esc_html_e('Include my name and email', 'kunaal-theme'); ?></span>
                     </label>
                 </div>
                 
-                <!-- Name and email fields (hidden by default) -->
+                <!-- Name and email fields (hidden by default, animated reveal) -->
                 <div class="contact-optional-fields" id="contact-optional-fields" style="display: none;">
-                    <div class="contact-field">
+                    <div class="contact-field" data-reveal="up">
                         <input 
                             type="text" 
                             id="contact-name" 
@@ -70,7 +73,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                             placeholder="<?php esc_attr_e('Your name', 'kunaal-theme'); ?>"
                         >
                     </div>
-                    <div class="contact-field">
+                    <div class="contact-field" data-reveal="up">
                         <input 
                             type="email" 
                             id="contact-email" 
@@ -81,7 +84,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                 </div>
                 
                 <!-- Submit button with paper airplane icon -->
-                <button type="submit" class="contact-submit" id="contact-submit">
+                <button type="submit" class="contact-submit" id="contact-submit" data-reveal="up">
                     <svg class="contact-submit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -96,7 +99,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
             
             <!-- Social Links -->
             <?php if ($email || $linkedin || $twitter || $instagram || $whatsapp || $viber || $line) : ?>
-            <div class="contact-social">
+            <div class="contact-social" data-reveal="up">
                 <p class="contact-social-label"><?php esc_html_e('Or reach out via', 'kunaal-theme'); ?></p>
                 <div class="contact-social-links">
                     <?php if ($email) : ?>
@@ -121,9 +124,7 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
                     <?php if ($instagram) : ?>
                     <a href="<?php echo esc_url($instagram); ?>" class="contact-social-link" target="_blank" rel="noopener" aria-label="<?php esc_attr_e('Instagram', 'kunaal-theme'); ?>">
                         <svg viewBox="0 0 24 24" fill="currentColor">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                         </svg>
                         <span>Instagram</span>
                     </a>
@@ -174,48 +175,78 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
 </main>
 
 <style>
-/* Contact Page Styles */
+/* Contact Page Styles - Polished Design */
 .contact-page {
     min-height: calc(100vh - var(--mastH, 100px));
-    padding: var(--space-8) var(--space-4);
-    background: var(--bg);
+    padding: var(--space-6) var(--space-4);
+    background: 
+        radial-gradient(1200px 800px at 20% 10%, rgba(30,90,255,0.04), transparent 55%),
+        radial-gradient(900px 700px at 80% 90%, rgba(125,107,93,0.04), transparent 60%),
+        var(--bg);
+    position: relative;
 }
 
 .contact-container {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
 }
 
 .contact-card {
     background: var(--bg);
     border: 1px solid var(--hair);
-    border-radius: 8px;
-    padding: var(--space-6);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: 12px;
+    padding: var(--space-5);
+    box-shadow: 
+        0 2px 6px rgba(0,0,0,0.04),
+        0 18px 50px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,0.015) 0, transparent 35%),
+        radial-gradient(circle at 80% 70%, rgba(0,0,0,0.012) 0, transparent 40%);
+    pointer-events: none;
 }
 
 .contact-header {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-5);
     text-align: center;
+    position: relative;
+}
+
+.contact-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted2);
+    margin-bottom: var(--space-2);
 }
 
 .contact-title {
     font-family: var(--serif);
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
     font-weight: 400;
     color: var(--ink);
     margin-bottom: var(--space-2);
+    line-height: 1.2;
 }
 
 .contact-intro {
     font-family: var(--serif);
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     color: var(--muted);
     line-height: 1.6;
 }
 
 .contact-form {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-5);
+    position: relative;
 }
 
 .contact-honeypot {
@@ -232,17 +263,17 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
 
 .contact-message-field textarea {
     width: 100%;
-    min-height: 150px;
+    min-height: 120px;
     padding: var(--space-3);
     font-family: var(--serif);
-    font-size: 1rem;
+    font-size: 0.9375rem;
     line-height: 1.6;
     color: var(--ink);
     background: var(--bg);
     border: 1px solid var(--hair);
-    border-radius: 4px;
+    border-radius: 6px;
     resize: vertical;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .contact-message-field textarea:focus {
@@ -260,30 +291,74 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     align-items: center;
     gap: var(--space-2);
     font-family: var(--sans);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--muted);
     cursor: pointer;
+    position: relative;
 }
 
 .contact-checkbox {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.contact-checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--hair);
+    border-radius: 4px;
+    background: var(--bg);
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.contact-checkbox:checked + .contact-checkbox-custom {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+.contact-checkbox:checked + .contact-checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--bg);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.contact-checkbox-label:hover .contact-checkbox-custom {
+    border-color: var(--blue);
+}
+
+.contact-checkbox-text {
+    flex: 1;
 }
 
 .contact-optional-fields {
     margin-bottom: var(--space-3);
-    animation: slideDown 0.2s ease;
+    overflow: hidden;
 }
 
-@keyframes slideDown {
+.contact-optional-fields[style*="display: block"] {
+    animation: slideDownFade 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDownFade {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-12px);
+        max-height: 0;
     }
     to {
         opacity: 1;
         transform: translateY(0);
+        max-height: 200px;
     }
 }
 
@@ -291,13 +366,13 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     width: 100%;
     padding: var(--space-2) var(--space-3);
     font-family: var(--sans);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--ink);
     background: var(--bg);
     border: 1px solid var(--hair);
-    border-radius: 4px;
+    border-radius: 6px;
     margin-bottom: var(--space-2);
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .contact-optional-fields input:focus {
@@ -312,14 +387,14 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     justify-content: center;
     gap: var(--space-2);
     width: 100%;
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-4);
     font-family: var(--sans);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--bg);
     background: var(--blue);
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(30,90,255,0.2);
@@ -342,8 +417,8 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
 }
 
 .contact-submit-icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     stroke: currentColor;
 }
 
@@ -376,11 +451,11 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
 }
 
 .contact-status {
-    margin-top: var(--space-3);
+    margin-top: var(--space-2);
     font-family: var(--sans);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     text-align: center;
-    min-height: 20px;
+    min-height: 18px;
 }
 
 .contact-status.is-error {
@@ -388,42 +463,46 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
 }
 
 .contact-social {
-    margin-top: var(--space-8);
-    padding-top: var(--space-6);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
     border-top: 1px solid var(--hair);
     text-align: center;
+    position: relative;
 }
 
 .contact-social-label {
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     color: var(--muted2);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
 }
 
 .contact-social-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
 }
 
 .contact-social-link {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: var(--space-1);
-    padding: var(--space-3);
+    padding: var(--space-2) var(--space-3);
     font-family: var(--sans);
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--muted);
     text-decoration: none;
     border: 1px solid var(--hair);
-    border-radius: 4px;
+    border-radius: 6px;
     transition: all 0.2s ease;
-    min-width: 80px;
+    width: 72px;
+    height: 72px;
+    background: var(--bg);
 }
 
 .contact-social-link:hover {
@@ -431,14 +510,28 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     border-color: var(--blue);
     background: var(--blueTint);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30,90,255,0.15);
 }
 
 .contact-social-link svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.contact-social-link span {
+    font-size: 0.6875rem;
+    line-height: 1.2;
 }
 
 /* Dark mode */
+:root[data-theme="dark"] .contact-page {
+    background: 
+        radial-gradient(1200px 800px at 20% 10%, rgba(224,122,98,0.06), transparent 55%),
+        radial-gradient(900px 700px at 80% 90%, rgba(201,184,168,0.06), transparent 60%),
+        var(--bg);
+}
+
 :root[data-theme="dark"] .contact-card {
     background: var(--bg);
     border-color: var(--hair);
@@ -451,14 +544,37 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     color: var(--ink);
 }
 
+:root[data-theme="dark"] .contact-checkbox-custom {
+    background: var(--bg);
+    border-color: var(--hair);
+}
+
+:root[data-theme="dark"] .contact-checkbox:checked + .contact-checkbox-custom {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
 :root[data-theme="dark"] .contact-social-link {
     border-color: var(--hair);
+    background: var(--bg);
     color: var(--muted);
 }
 
 :root[data-theme="dark"] .contact-social-link:hover {
     border-color: var(--blue);
     background: var(--blueTint);
+}
+
+/* Scroll reveal animations */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Responsive */
@@ -476,14 +592,42 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     }
     
     .contact-social-link {
-        min-width: 70px;
+        width: 68px;
+        height: 68px;
         padding: var(--space-2);
+    }
+    
+    .contact-social-link svg {
+        width: 20px;
+        height: 20px;
     }
 }
 </style>
 
 <script>
 (function() {
+    // Scroll reveal animations
+    function initScrollReveals() {
+        var elements = document.querySelectorAll('[data-reveal]');
+        if (!elements.length) return;
+        
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        elements.forEach(function(el) {
+            observer.observe(el);
+        });
+    }
+    
     function initContactForm() {
         var form = document.getElementById('contact-form');
         if (!form) {
@@ -498,13 +642,23 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
         var submitBtn = document.getElementById('contact-submit');
         var status = document.getElementById('contact-status');
         
-        // Toggle optional fields
+        // Toggle optional fields with animation
         if (checkbox && optionalFields) {
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
                     optionalFields.style.display = 'block';
+                    // Trigger reflow for animation
+                    optionalFields.offsetHeight;
                     nameField.setAttribute('required', 'required');
                     emailField.setAttribute('required', 'required');
+                    
+                    // Trigger scroll reveals for new fields
+                    setTimeout(function() {
+                        var revealEls = optionalFields.querySelectorAll('[data-reveal]');
+                        revealEls.forEach(function(el) {
+                            el.classList.add('is-visible');
+                        });
+                    }, 50);
                 } else {
                     optionalFields.style.display = 'none';
                     nameField.removeAttribute('required');
@@ -590,8 +744,12 @@ $contact_intro = kunaal_mod('kunaal_contact_intro', __("I'd love to hear from yo
     }
     
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initContactForm);
+        document.addEventListener('DOMContentLoaded', function() {
+            initScrollReveals();
+            initContactForm();
+        });
     } else {
+        initScrollReveals();
         initContactForm();
     }
 })();

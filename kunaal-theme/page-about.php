@@ -172,7 +172,7 @@ endif;
                 <?php if ($number['value'] === 'infinity') : ?>
                     <div class="number-item" data-reveal="up">
                         <div class="number-value infinity-value" style="opacity:0;transform:scale(0.5)">∞</div>
-                        <div class="number-label"><?php echo esc_html($number['label']); ?></div>
+                        <!-- Label removed for infinity - symbol is self-explanatory -->
                     </div>
                 <?php else : ?>
                     <div class="number-item" data-reveal="up">
@@ -397,7 +397,7 @@ endif;
                 $has_link = !empty($person['url']);
                 $tag = $has_link ? 'a' : 'div';
             ?>
-            <<?php echo $tag; ?> class="person-card" <?php echo $has_link ? 'href="' . esc_url($person['url']) . '" target="_blank"' : ''; ?> data-reveal="up">
+            <<?php echo $tag; ?> class="person-card" <?php echo $has_link ? 'href="' . esc_url($person['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
                 <div class="person-avatar">
                     <?php if (!empty($person['photo'])) : ?>
                     <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($person['photo']); ?>"/>

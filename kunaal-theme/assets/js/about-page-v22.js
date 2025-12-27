@@ -116,19 +116,19 @@
         if (!img) return;
         var speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
-        var y = 40 * speed; // intentionally punchy
+        var y = 80 * speed; // Increased for more visible parallax effect
         try {
           window.gsap.fromTo(img,
-            { y: -y, scale: 1.05 },
+            { y: -y, scale: 1.08 },
             {
               y: y,
-              scale: 1.05,
+              scale: 1.08,
               ease: 'none',
               scrollTrigger: {
                 trigger: band,
                 start: 'top bottom',
                 end: 'bottom top',
-                scrub: true
+                scrub: 1
               }
             }
           );
