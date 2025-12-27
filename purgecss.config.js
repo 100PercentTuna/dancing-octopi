@@ -20,6 +20,7 @@ module.exports = {
   css: [
     './kunaal-theme/style.css',
     './kunaal-theme/assets/css/*.css',
+    './kunaal-theme/blocks/**/*.css',
   ],
   output: './kunaal-theme/assets/css/purged/',
   defaultExtractor: content => {

@@ -39,6 +39,9 @@ GODADDY-CLEANUP-INSTRUCTIONS.md
 local-notes/
 .cursor/
 
+# Purged CSS (generated files)
+kunaal-theme/assets/css/purged/
+
 # GitHub Actions will deploy automatically - see .github/SETUP-DEPLOYMENT.md
 
 # Reference files (user requested to keep in repo but ignore)

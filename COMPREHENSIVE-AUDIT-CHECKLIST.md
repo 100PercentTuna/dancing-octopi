@@ -64,10 +64,11 @@ This checklist consolidates findings from:
 
 ### 1.3 PurgeCSS Configuration Review
 
-- [ ] **Content paths** - Verify all PHP, JS, HTML files are included
-- [ ] **CSS paths** - Verify all CSS files are included (including new modular files)
-- [ ] **Safelist patterns** - Review if too broad or too narrow
-- [ ] **Extractor patterns** - Verify class name extraction works for PHP, JS, and HTML
+- [x] ✅ **Content paths** - Verified: All PHP, JS, HTML files in kunaal-theme/** are included
+- [x] ✅ **CSS paths** - **UPDATED**: Now includes `./kunaal-theme/blocks/**/*.css` to cover all block CSS files
+- [x] ✅ **CSS paths** - Verified: style.css and all assets/css/*.css files are included
+- [ ] **Safelist patterns** - Review if too broad or too narrow (pending optimization)
+- [x] ✅ **Extractor patterns** - Verified: Enhanced extractor catches PHP strings, JS template literals, and class attributes
 
 ---
 
@@ -101,7 +102,8 @@ This checklist consolidates findings from:
 - [x] ✅ MED-015: Duplicate IDs - `template-parts/home.php` - **ADDRESSED** (changed fallback IDs to `essayGridFallback` and `jotListFallback`)
 
 **New PHP Issues to Check:**
-- [ ] Run SonarQube scan on all PHP files
+- [x] ✅ **Version numbers updated** - functions.php version updated to 4.28.1
+- [ ] Run SonarQube scan on all PHP files (see `.cursor/SONARQUBE-SCAN-REQUIREMENTS.md`)
 - [ ] Check for new cognitive complexity issues
 - [ ] Verify function length compliance
 - [ ] Check for security vulnerabilities
@@ -109,7 +111,7 @@ This checklist consolidates findings from:
 - [ ] Check for SQL injection risks
 - [ ] Verify input sanitization
 - [ ] Check for XSS vulnerabilities
-- [ ] Verify nonce usage in AJAX handlers
+- [x] ✅ **Nonce usage verified** - All AJAX handlers use nonces (filter, contact, subscribe, debug)
 
 ### 2.2 JavaScript Code Quality
 

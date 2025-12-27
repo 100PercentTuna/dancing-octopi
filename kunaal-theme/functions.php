@@ -17,7 +17,7 @@
  *
  * @package Kunaal_Theme
  * @since 1.0.0
- * @version 4.20.8
+ * @version 4.28.1
  */
 
 if (!defined('ABSPATH')) {
@@ -96,7 +96,7 @@ function kunaal_theme_safe_require_once($absolute_path) {
 // 1. CONSTANTS & INCLUDES
 // ========================================
 
-define('KUNAAL_THEME_VERSION', '4.20.8');
+define('KUNAAL_THEME_VERSION', '4.28.1');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
