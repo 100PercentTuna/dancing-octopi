@@ -755,6 +755,28 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
         initContactForm();
     }
 })();
+
+// #region agent log - Contact page background check
+(function() {
+  setTimeout(function() {
+    var contactPage = document.querySelector('.contact-page');
+    if (contactPage) {
+      var pageStyles = window.getComputedStyle(contactPage);
+      var pageRect = contactPage.getBoundingClientRect();
+      var bodyRect = document.body.getBoundingClientRect();
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-contact.php:inline',message:'Contact page background CSS computed styles',data:{minHeight:pageStyles.minHeight,height:pageRect.height,viewportHeight:window.innerHeight,paddingTop:pageStyles.paddingTop,marginTop:pageStyles.marginTop,background:pageStyles.background,backgroundAttachment:pageStyles.backgroundAttachment,backgroundSize:pageStyles.backgroundSize,pageTop:pageRect.top,bodyTop:bodyRect.top,gapAbove:pageRect.top-bodyRect.top},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H6.1,H6.2,H6.3'})}).catch(()=>{});
+    }
+    
+    // Check X/Twitter text wrapping
+    var twitterLink = document.querySelector('.contact-social-link span');
+    if (twitterLink) {
+      var linkStyles = window.getComputedStyle(twitterLink);
+      var linkRect = twitterLink.getBoundingClientRect();
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'page-contact.php:inline',message:'X/Twitter text wrapping check',data:{whiteSpace:linkStyles.whiteSpace,width:linkRect.width,height:linkRect.height,textContent:twitterLink.textContent.trim(),lineCount:Math.ceil(linkRect.height/parseFloat(linkStyles.lineHeight)||16)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H7.1,H7.2'})}).catch(()=>{});
+    }
+  }, 1000);
+})();
+// #endregion
 </script>
 
 <?php get_footer(); ?>

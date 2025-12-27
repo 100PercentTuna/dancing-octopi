@@ -31,12 +31,23 @@
   }
 
   function init() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:33',message:'init() called',data:{viewportWidth:window.innerWidth,viewportHeight:window.innerHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1,H3.1,H4.1'})}).catch(()=>{});
+    // #endregion
+    
     var gsapOk = hasGSAP();
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:36',message:'GSAP check',data:{gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+    // #endregion
+    
     if (gsapOk) {
       try { 
         window.gsap.registerPlugin(window.ScrollTrigger); 
       } catch (e) {
         console.warn('GSAP ScrollTrigger registration failed:', e);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:40',message:'GSAP registration error',data:{error:e.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+        // #endregion
       }
     }
 
@@ -53,14 +64,41 @@
     initHeroMosaicCycle();
     initCapsuleLife();
     initFooterYear();
+    
+    // #region agent log - Check dog-ear and scroll indicator after init
+    setTimeout(function() {
+      var accentPhoto = document.querySelector('.hero-photo.has-accent');
+      var scrollIndicator = document.getElementById('scrollIndicator');
+      if (accentPhoto) {
+        var img = accentPhoto.querySelector('img');
+        var before = window.getComputedStyle(accentPhoto, '::before');
+        var imgStyles = window.getComputedStyle(img);
+        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:58',message:'Dog-ear styles check',data:{hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H1.1,H1.2,H1.3,H1.5'})}).catch(()=>{});
+      }
+      if (scrollIndicator) {
+        var siStyles = window.getComputedStyle(scrollIndicator);
+        var rect = scrollIndicator.getBoundingClientRect();
+        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:65',message:'Scroll indicator check',data:{exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.2,H2.3,H2.5'})}).catch(()=>{});
+      }
+    }, 1000);
+    // #endregion
   }
 
   // =============================================
   // PAGE LOAD - quiet editorial entrance
   // =============================================
   function initPageLoad(gsapOk) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:61',message:'initPageLoad called',data:{gsapOk:gsapOk,reduceMotion:reduceMotion},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+    // #endregion
+    
     if (reduceMotion || !gsapOk) return;
     try {
+      var scrollIndicator = document.getElementById('scrollIndicator');
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:66',message:'Scroll indicator before GSAP',data:{exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+      // #endregion
+      
       var tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
         .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
@@ -70,8 +108,20 @@
           duration: 0.35,
           clearProps: 'transform' // Clear any transforms after fade-in to avoid conflict with CSS animation
         }, '<0.25');
+      
+      // #region agent log
+      tl.eventCallback('onComplete', function() {
+        if (scrollIndicator) {
+          var finalStyles = window.getComputedStyle(scrollIndicator);
+          fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:78',message:'Scroll indicator after GSAP animation',data:{opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+        }
+      });
+      // #endregion
     } catch (e) {
       console.warn('Page load animation failed:', e);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:82',message:'Page load animation error',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2.1'})}).catch(()=>{});
+      // #endregion
     }
   }
 
@@ -121,9 +171,18 @@
           
           // Recalculate on window resize to fix disappearing text
           var resizeHandler = function() {
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:123',message:'Resize handler called',data:{viewportWidth:window.innerWidth,isHeroText:el.closest('.hero-text')!==null,elementTag:el.tagName,elementClass:el.className},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.1,H4.2'})}).catch(()=>{});
+            // #endregion
+            
             if (window.gsap && window.ScrollTrigger && st && st.scrollTrigger) {
               var newIsMobile = window.innerWidth < 900;
               var newIsHeroText = el.closest('.hero-text') !== null;
+              
+              // #region agent log
+              var beforeRefresh = window.getComputedStyle(el);
+              fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:128',message:'Before ScrollTrigger refresh',data:{opacity:beforeRefresh.opacity,transform:beforeRefresh.transform,display:beforeRefresh.display},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.1,H4.2'})}).catch(()=>{});
+              // #endregion
               
               // If mobile state changed, refresh with new settings
               if (newIsMobile !== isMobile && newIsHeroText) {
@@ -131,6 +190,14 @@
               } else {
                 st.scrollTrigger.refresh();
               }
+              
+              // #region agent log
+              setTimeout(function() {
+                var afterRefresh = window.getComputedStyle(el);
+                var rect = el.getBoundingClientRect();
+                fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:193',message:'After ScrollTrigger refresh',data:{opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:rect.top,left:rect.left,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4.1,H4.2,H4.3'})}).catch(()=>{});
+              }, 100);
+              // #endregion
             }
           };
           
@@ -350,16 +417,32 @@
   // World map (D3) - uses WordPress localized data
   // =============================================
   function initWorldMap() {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:352',message:'initWorldMap called',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.1,H3.2'})}).catch(()=>{});
+    // #endregion
+    
     var host = document.getElementById('world-map');
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:355',message:'Map element check',data:{hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.2,H3.5'})}).catch(()=>{});
+    // #endregion
+    
     if (!host) return;
 
     // D3 and TopoJSON should already be loaded via WordPress enqueue
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:360',message:'D3/TopoJSON check',data:{hasD3:!!window.d3,hasTopojson:!!window.topojson},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.1'})}).catch(()=>{});
+    // #endregion
+    
     if (!window.d3 || !window.topojson) {
       console.warn('D3.js or TopoJSON not loaded');
       return;
     }
 
     function draw() {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:362',message:'Map draw() called',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.3,H3.4'})}).catch(()=>{});
+      // #endregion
+      
       // Get places data from WordPress localization
       var placesData = (window.kunaalAboutV22 && window.kunaalAboutV22.places) || {
         current: [],
@@ -372,10 +455,16 @@
       var lived = Array.isArray(placesData.lived) ? placesData.lived : (placesData.lived ? [placesData.lived] : []);
       var visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
       
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:373',message:'Places data check',data:{hasKunaalAboutV22:!!window.kunaalAboutV22,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.3'})}).catch(()=>{});
+      // #endregion
+      
       // Debug: log if no places data (helpful for troubleshooting)
       if (current.length === 0 && lived.length === 0 && visited.length === 0) {
         console.warn('About page map: No places data found. Check Customizer settings for Places section.');
       }
+      
+      try {
 
       // Country name mapping (expandable)
       var countryNames = {
@@ -449,7 +538,15 @@
 
       var tooltip = document.getElementById('mapTooltip');
 
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:524',message:'Starting D3.json fetch',data:{width:width,height:height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+      // #endregion
+      
       window.d3.json('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then(function (world) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:527',message:'D3.json success',data:{hasWorld:!!world,hasObjects:!!world.objects},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+        // #endregion
+        
         var countries = window.topojson.feature(world, world.objects.countries);
 
         svg.selectAll('path')
@@ -577,7 +674,16 @@
         }
       }).catch(function (err) {
         console.warn('World map data load failed:', err);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:667',message:'D3.json error',data:{error:err.message,stack:err.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+        // #endregion
       });
+      } catch (drawError) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/e3e8dd77-ee5b-448b-9061-0c1518ee7491',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'about-page-v22.js:671',message:'Map draw() error',data:{error:drawError.message,stack:drawError.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H3.4'})}).catch(()=>{});
+        // #endregion
+        console.warn('Map draw() failed:', drawError);
+      }
     }
 
     // Wait for D3, TopoJSON, and places data to be ready
