@@ -424,7 +424,7 @@ endif;
         <h2 class="section-title" data-reveal="up">Let's connect</h2>
         <p class="say-hello-text" data-reveal="up">
             <?php if ($contact_email) : ?>
-            <a href="mailto:<?php echo esc_attr($contact_email); ?>" class="say-hello-link"><?php echo esc_html($contact_email); ?></a>
+            <a href="mailto:<?php echo esc_attr($contact_email); ?>"><?php echo esc_html($contact_email); ?></a>
             <?php endif; ?>
         </p>
         <div class="say-hello-social" data-reveal="up">

@@ -255,7 +255,8 @@ a:focus-visible, button:focus-visible {
   grid-template-columns: 60px 1fr 1fr 1fr minmax(280px, 400px) 60px;
   grid-template-rows: 1fr 1fr;
   gap: 2px;
-  min-height: 100vh;
+  height: 100vh; /* Fixed height - don't expand */
+  max-height: 100vh; /* Prevent expansion */
   background: var(--bg);
   position: relative;
   overflow: visible; /* Ensure hero section doesn't clip children (like scroll indicator) */
@@ -309,10 +310,14 @@ a:focus-visible, button:focus-visible {
   width: 28px;
   height: 28px;
   background: linear-gradient(135deg, var(--blue, #1E5AFF) 50%, transparent 50%);
-  z-index: 2; /* Match reference HTML - z-index: 2 */
+  z-index: 10; /* Above image */
   pointer-events: none;
   /* Ensure accent is not clipped */
   clip-path: none;
+}
+.hero-photo.has-accent img {
+  position: relative;
+  z-index: 1; /* Ensure image is below accent */
 }
 
 .hero-text {
@@ -329,7 +334,7 @@ a:focus-visible, button:focus-visible {
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 10px; /* Increased from 9px - mono font too small */
+  font-size: 11px; /* Increased from 10px - mono font too small */
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--warm);
@@ -405,7 +410,9 @@ a:focus-visible, button:focus-visible {
   pointer-events: none;
   color: var(--warm);
   /* Position within hero-text container */
-  width: 100%; /* Full width of hero-text for centering */
+  width: auto; /* Auto width - don't span full width */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
 }
 .scroll-indicator.hidden { 
   opacity: 0;
@@ -440,11 +447,11 @@ a:focus-visible, button:focus-visible {
 /* Scroll indicator animation - down/up movement (not side) */
 @keyframes scrollBounce {
   0%, 100% { 
-    transform: rotate(45deg) translateY(0); 
+    transform: rotate(45deg) translateY(0) translateX(0); /* Explicitly set translateX to 0 */
     opacity: 1; 
   }
   50% { 
-    transform: rotate(45deg) translateY(6px); /* Vertical movement only */
+    transform: rotate(45deg) translateY(6px) translateX(0); /* Vertical movement only - no X translation */
     opacity: 0.5; 
   }
 }
@@ -453,7 +460,8 @@ a:focus-visible, button:focus-visible {
   .hero {
     grid-template-columns: 30px 1fr 1fr 30px;
     grid-template-rows: minmax(150px, 1fr) minmax(150px, 1fr) auto;
-    min-height: auto;
+    height: auto; /* Remove fixed height on mobile */
+    max-height: none; /* Remove max-height on mobile */
     padding-top: 0;
   }
   .hero-text {
@@ -528,7 +536,7 @@ a:focus-visible, button:focus-visible {
 }
 .section-label {
   font-family: var(--mono);
-  font-size: 10px; /* Increased from 9px - mono font too small */
+  font-size: 11px; /* Increased from 10px - mono font too small */
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--warm);
@@ -549,14 +557,14 @@ a:focus-visible, button:focus-visible {
   content:"";
   position:absolute;
   left:0;
-  bottom:0; /* Position exactly on the border-bottom (thin line) */
+  bottom:-1px; /* Position to overlap the border-bottom (thin line) - 1px to sit on top */
   width:40px;
   height:2px;
   background:var(--blue);
   transform-origin:left;
   transform:scaleX(0);
   animation:growLine 600ms ease 350ms forwards;
-  z-index: 1; /* Ensure blue line is above the border */
+  z-index: 2; /* Ensure blue line is above the border */
 }
 
 /* =============================================
@@ -591,7 +599,7 @@ a:focus-visible, button:focus-visible {
 }
 .number-label {
   font-family: var(--mono);
-  font-size: 9px; /* Increased from 8px - mono font too small */
+  font-size: 10px; /* Increased from 9px - mono font too small */
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted2);
@@ -829,6 +837,8 @@ a:focus-visible, button:focus-visible {
   width: 100%;
   min-width: 0; /* Prevent overflow */
   max-width: 100%;
+  /* Ensure consistent height for alignment across columns */
+  align-self: start; /* Align to start of grid cell */
 }
 .media-cover {
   position: relative;
@@ -925,7 +935,7 @@ a:focus-visible, button:focus-visible {
 }
 .media-subtitle {
   font-family: var(--mono);
-  font-size: 9px; /* Increased from 8px - mono font too small */
+  font-size: 10px; /* Increased from 9px - mono font too small */
   color: var(--muted2);
 }
 .media-link {
@@ -1169,6 +1179,16 @@ a:focus-visible, button:focus-visible {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted2);
+}
+/* Email link in say-hello-text should NOT be a button */
+.say-hello-text a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition);
+}
+.say-hello-text a:hover {
+  border-bottom-color: var(--blue);
 }
 .say-hello-email a { color: var(--blue); }
 
