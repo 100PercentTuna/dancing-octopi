@@ -85,10 +85,11 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 // Row 2: photos 6-10
 $photo_count = count($hero_photos);
 // Row 1 - Photos 1-4
-// Photo 1 (index 0) is the "Primary" hero photo per customizer, so it gets the accent
+// Dog-ear accent always on bottom-left photo (index 2, 3rd photo)
+// This is the suit photo position in the grid layout
 for ($i = 0; $i < min(4, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
-    $has_accent = ($i === 0); // Photo 1 (Primary) has accent, not hardcoded index 2
+    $has_accent = ($i === 2); // Bottom-left photo (index 2) always has accent
     $loading = $i === 0 ? 'eager' : 'lazy';
 ?>
 <div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">

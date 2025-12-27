@@ -20,11 +20,16 @@ if (!defined('ABSPATH')) {
  * @return void Outputs HTML
  */
 function kunaal_render_panoramas($panoramas, $extra_class = '') {
-    if (empty($panoramas)) {
+    // Ensure we have a valid array and it's not empty
+    if (!is_array($panoramas) || empty($panoramas)) {
         return;
     }
     
     foreach ($panoramas as $panorama) {
+        // Validate panorama data structure
+        if (!is_array($panorama) || empty($panorama['image'])) {
+            continue; // Skip invalid panorama entries
+        }
         $height_class = 'h-' . esc_attr($panorama['height']);
         $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
         $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';

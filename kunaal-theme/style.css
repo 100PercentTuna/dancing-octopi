@@ -375,6 +375,22 @@ main.container,
   border-bottom: 1px solid var(--hair2);
   transform: translateZ(0);
   isolation: isolate;
+  /* Ensure header stays fixed even on very narrow screens */
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Ensure header stays fixed on all screen sizes */
+@media (max-width: 640px) {
+  .mast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100vw;
+  }
 }
 
 :root[data-theme="dark"] .mast {
@@ -4622,3 +4638,14 @@ main {
   }
 }
 
+/* Ensure header stays fixed on all screen sizes */
+@media (max-width: 640px) {
+  .mast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100vw;
+  }
+}

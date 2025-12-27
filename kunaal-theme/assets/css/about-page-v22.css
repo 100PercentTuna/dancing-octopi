@@ -376,19 +376,19 @@ body.page-template-page-about .hero-photo.has-accent::before,
 }
 .scroll-indicator-text {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 7px;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.15em;
   color: var(--warm);
-  opacity: 0.9;
-  font-weight: 500;
+  opacity: 0.65;
+  font-weight: 400;
 }
 .scroll-indicator-line {
-  width: 1.5px;
-  height: 35px;
-  background: linear-gradient(to bottom, var(--warm), rgba(125,107,93,0.3));
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
   position: relative;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 .scroll-indicator-chevron-wrapper {
   /* Wrapper for pure Y-axis translation - no rotation applied here */
@@ -397,20 +397,23 @@ body.page-template-page-about .hero-photo.has-accent::before,
 }
 
 .scroll-indicator-chevron {
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--warm);
-  border-bottom: 2px solid var(--warm);
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid var(--warm);
+  border-bottom: 1.5px solid var(--warm);
   transform: rotate(45deg); /* Rotation only, no translation */
-  opacity: 0.9;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
 }
-/* Scroll indicator animation - pure Y-axis movement on wrapper, rotation on chevron */
+/* Scroll indicator animation - smooth, subtle bounce */
 @keyframes scrollBounce {
   0%, 100% { 
-    transform: translateY(0); /* Pure Y translation on wrapper */
+    transform: translateY(0);
+    opacity: 0.7;
   }
   50% { 
-    transform: translateY(6px); /* Vertical movement only */
+    transform: translateY(4px);
+    opacity: 1;
   }
 }
 
@@ -459,8 +462,10 @@ body.page-template-page-about .hero-photo.has-accent::before,
   }
   
   /* Mobile: ensure hero photos fill width without whitespace */
+  /* Reduced height to prevent pushing text down */
   .hero-photo {
-    min-height: 150px;
+    min-height: 120px;
+    max-height: 140px;
   }
   
   /* Mobile: Hero photo with dog-ear (first photo) - keep in grid but ensure accent shows */
@@ -477,7 +482,7 @@ body.page-template-page-about .hero-photo.has-accent::before,
   }
   
   /* Mobile: Ensure first 4 photos stay in rows 1-2, not below text */
-  /* Photo 1 (has accent) - row 1, column 2 */
+  /* Photo 1 - row 1, column 2 */
   .hero-photo:nth-child(1) { 
     grid-column: 2; 
     grid-row: 1; 
@@ -487,7 +492,7 @@ body.page-template-page-about .hero-photo.has-accent::before,
     grid-column: 3; 
     grid-row: 1; 
   }
-  /* Photo 3 - row 2, column 2 */
+  /* Photo 3 (has accent - bottom-left) - row 2, column 2 */
   .hero-photo:nth-child(3) { 
     grid-column: 2; 
     grid-row: 2; 
