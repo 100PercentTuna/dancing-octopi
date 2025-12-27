@@ -266,7 +266,7 @@ a:focus-visible, button:focus-visible {
 
 .hero-photo {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background: var(--bgAlt);
 }
 .hero-photo img {
@@ -276,6 +276,8 @@ a:focus-visible, button:focus-visible {
   filter: grayscale(100%);
   transition: filter 0.15s ease;
   will-change: transform;
+  position: relative;
+  z-index: 1;
 }
 .hero-photo.color-active img { filter: none; }
 .hero-photo:hover img { filter: none; }
@@ -287,6 +289,7 @@ a:focus-visible, button:focus-visible {
   background: var(--blue);
   transform: scaleY(0);
   transition: transform 0.2s ease;
+  z-index: 2;
 }
 .hero-photo:hover::after { transform: scaleY(1); }
 .hero-photo.color-active::after { transform: scaleY(1); }
@@ -297,8 +300,9 @@ a:focus-visible, button:focus-visible {
   width: 28px; height: 28px;
   background: var(--blue);
   clip-path: polygon(0 0, 100% 0, 0 100%);
-  z-index: 10;
+  z-index: 20;
   pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(30,90,255,0);
 }
 
 .hero-text {
@@ -385,12 +389,14 @@ a:focus-visible, button:focus-visible {
   gap: 0.4rem;
   z-index: 20;
   opacity: 1 !important;
-  transition: opacity 0.5s;
+  transition: opacity 0.5s ease;
   pointer-events: none;
   color: var(--warm);
+  visibility: visible !important;
 }
 .scroll-indicator.hidden { 
-  opacity: 0; 
+  opacity: 0 !important;
+  visibility: hidden !important;
   pointer-events: none; 
 }
 .scroll-indicator-text {
@@ -398,21 +404,25 @@ a:focus-visible, button:focus-visible {
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--muted2);
+  color: var(--warm);
+  opacity: 0.9;
+  font-weight: 500;
 }
 .scroll-indicator-line {
-  width: 1px;
+  width: 1.5px;
   height: 35px;
-  background: linear-gradient(to bottom, var(--warm), transparent);
+  background: linear-gradient(to bottom, var(--warm), rgba(125,107,93,0.3));
   position: relative;
+  opacity: 0.8;
 }
 .scroll-indicator-chevron {
   width: 8px;
   height: 8px;
-  border-right: 1.5px solid var(--warm);
-  border-bottom: 1.5px solid var(--warm);
+  border-right: 2px solid var(--warm);
+  border-bottom: 2px solid var(--warm);
   transform: rotate(45deg);
   animation: bounce 1.8s ease-in-out infinite;
+  opacity: 0.9;
 }
 @keyframes bounce {
   0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
@@ -768,15 +778,19 @@ a:focus-visible, button:focus-visible {
   background: transparent !important;
   box-shadow: none !important;
   width: 100% !important;
-  min-height: 0;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: auto !important;
   position: relative;
   display: block;
+  overflow: hidden;
 }
 .media-cover.album::before {
   content: '';
   display: block;
   padding-bottom: 100%; /* 1:1 aspect ratio */
   width: 100%;
+  height: 0;
 }
 .media-cover.album img {
   position: absolute;
@@ -787,6 +801,18 @@ a:focus-visible, button:focus-visible {
   border-radius: 3px !important;
   object-fit: cover !important;
   display: block;
+  margin: 0 !important;
+}
+/* Ensure all album covers are same size - override any first-child or nth-child rules */
+.media-item:first-child .media-cover.album,
+.media-item:nth-child(1) .media-cover.album,
+.media-item:nth-child(2) .media-cover.album,
+.media-item:nth-child(3) .media-cover.album,
+.media-item:nth-child(4) .media-cover.album,
+.media-item:nth-child(5) .media-cover.album,
+.media-item:nth-child(6) .media-cover.album {
+  aspect-ratio: 1 !important;
+  width: 100% !important;
 }
 .media-cover .play-icon {
   position: absolute;

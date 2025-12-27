@@ -1319,8 +1319,7 @@ h2::after {
 .jRow:hover,
 .jRow:focus-visible { 
   background: var(--blueTint); 
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
+  outline: none;
 }
 
 /* Blue accent on hover */

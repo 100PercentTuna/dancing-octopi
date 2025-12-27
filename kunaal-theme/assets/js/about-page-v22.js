@@ -592,7 +592,9 @@
       
       // Hide scroll indicator after scrolling down a bit
       if (scrollIndicator) {
-        if (scrollTop > 100) {
+        // Only hide after user has scrolled significantly (200px instead of 100px)
+        // This ensures it's visible on page load
+        if (scrollTop > 200) {
           scrollIndicator.classList.add('hidden');
         } else {
           scrollIndicator.classList.remove('hidden');
