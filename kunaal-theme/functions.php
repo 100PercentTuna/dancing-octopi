@@ -1562,119 +1562,163 @@ add_action('template_redirect', 'kunaal_handle_subscribe_confirmation_request');
 // Helper functions are now defined in inc/helpers.php
 
 /**
+ * Helper: Validate filter request nonce
+ */
+function kunaal_validate_filter_request() {
+    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+        wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
+        wp_die();
+    }
+}
+
+/**
+ * Helper: Parse and sanitize topics from POST data
+ */
+function kunaal_parse_filter_topics() {
+    $topics = array();
+    if (isset($_POST['topics'])) {
+        $topics_raw = $_POST['topics'];
+        if (is_array($topics_raw)) {
+            $topics = array_filter(array_map('sanitize_text_field', $topics_raw));
+        } elseif (is_string($topics_raw) && !empty($topics_raw)) {
+            $topics = array_filter(array_map('sanitize_text_field', explode(',', $topics_raw)));
+        }
+    }
+    return $topics;
+}
+
+/**
+ * Helper: Build WP_Query args for filter
+ */
+function kunaal_build_filter_query_args($post_type, $topics, $sort, $search, $page, $per_page) {
+    $args = array(
+        'post_type' => $post_type,
+        'posts_per_page' => min($per_page, 100), // Limit to prevent DoS
+        'paged' => $page,
+        'post_status' => 'publish',
+    );
+    
+    // Topics filter
+    if (!empty($topics)) {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => 'topic',
+                'field' => 'slug',
+                'terms' => $topics,
+            ),
+        );
+    }
+    
+    // Sort
+    switch ($sort) {
+        case 'old':
+            $args['orderby'] = 'date';
+            $args['order'] = 'ASC';
+            break;
+        case 'title':
+            $args['orderby'] = 'title';
+            $args['order'] = 'ASC';
+            break;
+        default: // new (newest first)
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+    }
+    
+    // Search
+    if (!empty($search)) {
+        $args['s'] = $search;
+    }
+    
+    return $args;
+}
+
+/**
+ * Helper: Prime caches to prevent N+1 queries
+ */
+function kunaal_prime_post_caches($post_ids) {
+    if (empty($post_ids)) {
+        return;
+    }
+    
+    // Ensure WordPress functions are available
+    if (!function_exists('update_post_meta_cache')) {
+        require_once(ABSPATH . 'wp-admin/includes/post.php');
+    }
+    if (!function_exists('update_object_term_cache')) {
+        require_once(ABSPATH . 'wp-includes/taxonomy.php');
+    }
+    
+    if (function_exists('update_post_meta_cache')) {
+        update_post_meta_cache($post_ids);
+    }
+    if (function_exists('update_object_term_cache')) {
+        update_object_term_cache($post_ids, array('essay', 'jotting'));
+    }
+}
+
+/**
+ * Helper: Extract topics from post
+ */
+function kunaal_extract_post_topics($post_id) {
+    $topics_list = get_the_terms($post_id, 'topic');
+    $tags = array();
+    $tag_slugs = array();
+    
+    if ($topics_list && !is_wp_error($topics_list)) {
+        foreach ($topics_list as $topic) {
+            $tags[] = $topic->name;
+            $tag_slugs[] = $topic->slug;
+        }
+    }
+    
+    return array('tags' => $tags, 'tagSlugs' => $tag_slugs);
+}
+
+/**
+ * Helper: Build post data array for JSON response
+ */
+function kunaal_build_post_data($post_id) {
+    $topics = kunaal_extract_post_topics($post_id);
+    
+    return array(
+        'id' => $post_id,
+        'title' => get_the_title(),
+        'url' => get_permalink(),
+        'date' => get_the_date('j F Y'),
+        'dateShort' => get_the_date('j M Y'),
+        'subtitle' => get_post_meta($post_id, 'kunaal_subtitle', true),
+        'readTime' => get_post_meta($post_id, 'kunaal_read_time', true),
+        'image' => kunaal_get_card_image_url($post_id),
+        'tags' => $topics['tags'],
+        'tagSlugs' => $topics['tagSlugs'],
+    );
+}
+
+/**
  * AJAX: Filter content
  */
 function kunaal_filter_content() {
     try {
-        // Verify nonce for CSRF protection - enforce nonce requirement
-        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
-            wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
-            wp_die();
-        }
+        kunaal_validate_filter_request();
         
         $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
-        
-        // Handle topics - can be string, array, or empty
-        $topics = array();
-        if (isset($_POST['topics'])) {
-            $topics_raw = $_POST['topics'];
-            if (is_array($topics_raw)) {
-                $topics = array_filter(array_map('sanitize_text_field', $topics_raw));
-            } elseif (is_string($topics_raw) && !empty($topics_raw)) {
-                $topics = array_filter(array_map('sanitize_text_field', explode(',', $topics_raw)));
-            }
-        }
-        
+        $topics = kunaal_parse_filter_topics();
         $sort = isset($_POST['sort']) ? sanitize_text_field($_POST['sort']) : 'new';
         $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
         $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
         $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
-        // Limit per_page to prevent DoS via massive queries
-        $per_page = min($per_page, 100);
         
-        $args = array(
-            'post_type' => $post_type,
-            'posts_per_page' => $per_page,
-            'paged' => $page,
-            'post_status' => 'publish',
-        );
-        
-        // Topics filter - only if topics selected
-        if (!empty($topics)) {
-            $args['tax_query'] = array(
-                array(
-                    'taxonomy' => 'topic',
-                    'field' => 'slug',
-                    'terms' => $topics,
-                ),
-            );
-        }
-        
-        // Sort
-        switch ($sort) {
-            case 'old':
-                $args['orderby'] = 'date';
-                $args['order'] = 'ASC';
-                break;
-            case 'title':
-                $args['orderby'] = 'title';
-                $args['order'] = 'ASC';
-                break;
-            default: // new (newest first)
-                $args['orderby'] = 'date';
-                $args['order'] = 'DESC';
-        }
-        
-        // Search
-        if (!empty($search)) {
-            $args['s'] = $search;
-        }
-        
+        $args = kunaal_build_filter_query_args($post_type, $topics, $sort, $search, $page, $per_page);
         $query = new WP_Query($args);
         $posts_data = array();
         
         if ($query->have_posts()) {
-            // Prime caches to prevent N+1 queries
-            // Ensure WordPress functions are available
-            if (!function_exists('update_post_meta_cache')) {
-                require_once(ABSPATH . 'wp-admin/includes/post.php');
-            }
-            if (!function_exists('update_object_term_cache')) {
-                require_once(ABSPATH . 'wp-includes/taxonomy.php');
-            }
             $post_ids = wp_list_pluck($query->posts, 'ID');
-            if (function_exists('update_post_meta_cache')) {
-                update_post_meta_cache($post_ids);
-            }
-            if (function_exists('update_object_term_cache')) {
-                update_object_term_cache($post_ids, array('essay', 'jotting'));
-            }
+            kunaal_prime_post_caches($post_ids);
             
             while ($query->have_posts()) {
                 $query->the_post();
-                $post_id = get_the_ID();
-                $topics_list = get_the_terms($post_id, 'topic');
-                $tags = array();
-                $tag_slugs = array();
-                if ($topics_list && !is_wp_error($topics_list)) {
-                    foreach ($topics_list as $topic) {
-                        $tags[] = $topic->name;
-                        $tag_slugs[] = $topic->slug;
-                    }
-                }
-                
-                $posts_data[] = array(
-                    'id' => $post_id,
-                    'title' => get_the_title(),
-                    'url' => get_permalink(),
-                    'date' => get_the_date('j F Y'),
-                    'dateShort' => get_the_date('j M Y'),
-                    'subtitle' => get_post_meta($post_id, 'kunaal_subtitle', true),
-                    'readTime' => get_post_meta($post_id, 'kunaal_read_time', true),
-                    'image' => kunaal_get_card_image_url($post_id),
-                    'tags' => $tags,
-                    'tagSlugs' => $tag_slugs,
-                );
+                $posts_data[] = kunaal_build_post_data(get_the_ID());
             }
         }
         wp_reset_postdata();
@@ -1685,7 +1729,7 @@ function kunaal_filter_content() {
             'pages' => $query->max_num_pages,
             'page' => $page,
         ));
-        wp_die(); // Prevent code execution after JSON response
+        wp_die();
     } catch (Exception $e) {
         kunaal_theme_log('AJAX filter error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
         wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
@@ -1787,102 +1831,166 @@ function kunaal_add_open_graph_tags() {
 add_action('wp_head', 'kunaal_add_open_graph_tags', 5);
 
 /**
+ * Helper: Validate contact form request
+ */
+function kunaal_validate_contact_request() {
+    if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
+        wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
+        wp_die();
+    }
+}
+
+/**
+ * Helper: Sanitize contact form inputs
+ */
+function kunaal_sanitize_contact_inputs() {
+    return array(
+        'name' => isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '',
+        'email' => isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '',
+        'message' => isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '',
+        'honeypot' => isset($_POST['contact_company']) ? sanitize_text_field($_POST['contact_company']) : '',
+    );
+}
+
+/**
+ * Helper: Check honeypot (bot detection)
+ */
+function kunaal_check_contact_honeypot($honeypot) {
+    if (!empty($honeypot)) {
+        wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
+        wp_die();
+    }
+}
+
+/**
+ * Helper: Get client IP address
+ */
+function kunaal_get_client_ip() {
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $forwarded = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return sanitize_text_field(trim($forwarded[0]));
+    } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+        return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+    }
+    return '';
+}
+
+/**
+ * Helper: Check rate limit for contact form
+ */
+function kunaal_check_contact_rate_limit() {
+    $ip = kunaal_get_client_ip();
+    if (empty($ip)) {
+        return; // Can't rate limit without IP
+    }
+    
+    $rate_key = 'kunaal_contact_rl_' . wp_hash($ip);
+    $count = (int) get_transient($rate_key);
+    if ($count >= 5) {
+        wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
+        wp_die();
+    }
+    set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
+}
+
+/**
+ * Helper: Validate contact form data
+ */
+function kunaal_validate_contact_data($message, $email) {
+    if (empty($message)) {
+        wp_send_json_error(array('message' => 'Please enter a message.'));
+        wp_die();
+    }
+    
+    if (!empty($email) && !is_email($email)) {
+        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+        wp_die();
+    }
+}
+
+/**
+ * Helper: Get contact form recipient email
+ */
+function kunaal_get_contact_recipient() {
+    $to_email = kunaal_mod('kunaal_contact_recipient_email', get_option('admin_email'));
+    if (!is_email($to_email)) {
+        $to_email = get_option('admin_email');
+    }
+    return $to_email;
+}
+
+/**
+ * Helper: Build contact form email
+ */
+function kunaal_build_contact_email($name, $email, $message) {
+    $site_name = get_bloginfo('name');
+    $sender_name = !empty($name) ? $name : 'Anonymous';
+    $email_subject = '[' . $site_name . '] New note' . (!empty($name) ? ' from ' . $name : '');
+    
+    $email_body = "You received a new message from your site contact form.\n\n";
+    if (!empty($name)) {
+        $email_body .= "Name: {$name}\n";
+    }
+    if (!empty($email)) {
+        $email_body .= "Email: {$email}\n";
+    }
+    $email_body .= "Page: " . esc_url_raw(wp_get_referer()) . "\n";
+    $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
+    $email_body .= "Message:\n{$message}\n";
+    
+    $headers = array(
+        'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
+    );
+    if (!empty($email)) {
+        $headers[] = 'Reply-To: ' . $sender_name . ' <' . $email . '>';
+    }
+    
+    return array(
+        'to' => kunaal_get_contact_recipient(),
+        'subject' => $email_subject,
+        'body' => $email_body,
+        'headers' => $headers,
+    );
+}
+
+/**
+ * Helper: Handle contact form email error
+ */
+function kunaal_handle_contact_email_error($to_email, $email_subject) {
+    global $phpmailer;
+    $error_message = 'Sorry, there was an error sending your message.';
+    
+    if (isset($phpmailer) && is_object($phpmailer) && isset($phpmailer->ErrorInfo)) {
+        kunaal_theme_log('Contact form wp_mail error', array('error' => $phpmailer->ErrorInfo, 'to' => $to_email));
+        $error_message .= ' Please check your email configuration or try emailing directly.';
+    } else {
+        kunaal_theme_log('Contact form wp_mail failed', array('to' => $to_email, 'subject' => $email_subject));
+    }
+    
+    wp_send_json_error(array('message' => $error_message));
+    wp_die();
+}
+
+/**
  * Contact Form AJAX Handler
  */
 function kunaal_handle_contact_form() {
     try {
-        // Verify nonce
-        if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
-            wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
-            wp_die();
-        }
+        kunaal_validate_contact_request();
         
-        // Sanitize inputs
-        $name = isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '';
-        $email = isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '';
-        $message = isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '';
-        $honeypot = isset($_POST['contact_company']) ? sanitize_text_field($_POST['contact_company']) : '';
-
-        // Honeypot check (bots)
-        if (!empty($honeypot)) {
-            wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
-            wp_die();
-        }
-
-        // Basic rate limiting by IP (check X-Forwarded-For for proxies)
-        $ip = '';
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $forwarded = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-            $ip = sanitize_text_field(trim($forwarded[0]));
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ip = sanitize_text_field($_SERVER['REMOTE_ADDR']);
-        }
-        $rate_key = 'kunaal_contact_rl_' . wp_hash($ip);
-        $count = (int) get_transient($rate_key);
-        if ($count >= 5) {
-            wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
-            wp_die();
-        }
-        set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
+        $inputs = kunaal_sanitize_contact_inputs();
+        kunaal_check_contact_honeypot($inputs['honeypot']);
+        kunaal_check_contact_rate_limit();
+        kunaal_validate_contact_data($inputs['message'], $inputs['email']);
         
-        // Validate - message is required, name and email are optional
-        if (empty($message)) {
-            wp_send_json_error(array('message' => 'Please enter a message.'));
-            wp_die();
-        }
-        
-        // If email is provided, validate it
-        if (!empty($email) && !is_email($email)) {
-            wp_send_json_error(array('message' => 'Please enter a valid email address.'));
-            wp_die();
-        }
-        
-        // Get recipient email
-        $to_email = kunaal_mod('kunaal_contact_recipient_email', get_option('admin_email'));
-        if (!is_email($to_email)) {
-            $to_email = get_option('admin_email');
-        }
-        
-        // Build email
-        $site_name = get_bloginfo('name');
-        $sender_name = !empty($name) ? $name : 'Anonymous';
-        $email_subject = '[' . $site_name . '] New note' . (!empty($name) ? ' from ' . $name : '');
-        $email_body = "You received a new message from your site contact form.\n\n";
-        if (!empty($name)) {
-            $email_body .= "Name: {$name}\n";
-        }
-        if (!empty($email)) {
-            $email_body .= "Email: {$email}\n";
-        }
-        $email_body .= "Page: " . esc_url_raw(wp_get_referer()) . "\n";
-        $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
-        $email_body .= "Message:\n{$message}\n";
-        
-        $headers = array(
-            'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
-        );
-        if (!empty($email)) {
-            $headers[] = 'Reply-To: ' . $sender_name . ' <' . $email . '>';
-        }
-        
-        // Send email
-        $sent = wp_mail($to_email, $email_subject, $email_body, $headers);
+        $email_data = kunaal_build_contact_email($inputs['name'], $inputs['email'], $inputs['message']);
+        $sent = wp_mail($email_data['to'], $email_data['subject'], $email_data['body'], $email_data['headers']);
         
         if ($sent) {
             wp_send_json_success(array('message' => 'Thank you! Your message has been sent.'));
             wp_die();
         } else {
-            // Log the error for debugging
-            global $phpmailer;
-            $error_message = 'Sorry, there was an error sending your message.';
-            if (isset($phpmailer) && is_object($phpmailer) && isset($phpmailer->ErrorInfo)) {
-                kunaal_theme_log('Contact form wp_mail error', array('error' => $phpmailer->ErrorInfo, 'to' => $to_email));
-                $error_message .= ' Please check your email configuration or try emailing directly.';
-            } else {
-                kunaal_theme_log('Contact form wp_mail failed', array('to' => $to_email, 'subject' => $email_subject));
-            }
-            wp_send_json_error(array('message' => $error_message));
-            wp_die();
+            kunaal_handle_contact_email_error($email_data['to'], $email_data['subject']);
         }
     } catch (Exception $e) {
         kunaal_theme_log('Contact form error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
@@ -1894,52 +2002,71 @@ add_action('wp_ajax_kunaal_contact_form', 'kunaal_handle_contact_form');
 add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
 
 /**
- * Debug log handler - receives logs from JavaScript and writes to theme debug.log
- * Only active during development/debugging (WP_DEBUG must be true)
- * Nonce-protected and capability-checked for security
+ * Helper: Validate debug log request
  */
-function kunaal_handle_debug_log() {
-    // Security: Only allow during development/debugging
+function kunaal_validate_debug_log_request() {
     if (!defined('WP_DEBUG') || !WP_DEBUG) {
         wp_send_json_error(array('message' => 'Debug logging disabled'));
         wp_die();
     }
     
-    // Verify nonce
     if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_debug_log_nonce')) {
         wp_send_json_error(array('message' => 'Invalid nonce'));
         wp_die();
     }
     
-    // Capability check: require edit_posts capability (logged-in users with edit permissions)
     if (!current_user_can('edit_posts')) {
         wp_send_json_error(array('message' => 'Insufficient permissions'));
         wp_die();
     }
-    
-    // WordPress AJAX sends data as form-encoded, so we need to get it from POST
+}
+
+/**
+ * Helper: Get log data from POST
+ */
+function kunaal_get_debug_log_data() {
     $log_json = isset($_POST['log_data']) ? stripslashes($_POST['log_data']) : '';
     if (empty($log_json)) {
-        // Try reading from raw input as fallback
         $raw_input = file_get_contents('php://input');
         if (!empty($raw_input)) {
             $log_json = $raw_input;
         }
     }
-    
-    $log_data = json_decode($log_json, true);
-    
+    return $log_json;
+}
+
+/**
+ * Helper: Validate log data structure
+ */
+function kunaal_validate_debug_log_data($log_data) {
     if (!$log_data || !isset($log_data['location']) || !isset($log_data['message'])) {
         wp_send_json_error(array('message' => 'Invalid log data'));
         wp_die();
     }
-    
-    // Write to theme directory debug.log (will be deployed with theme)
+}
+
+/**
+ * Helper: Write log to file
+ */
+function kunaal_write_debug_log($log_data) {
     $log_file = get_template_directory() . '/debug.log';
     $log_line = json_encode($log_data) . "\n";
-    
-    // Append to log file (creates if doesn't exist)
     @file_put_contents($log_file, $log_line, FILE_APPEND | LOCK_EX);
+}
+
+/**
+ * Debug log handler - receives logs from JavaScript and writes to theme debug.log
+ * Only active during development/debugging (WP_DEBUG must be true)
+ * Nonce-protected and capability-checked for security
+ */
+function kunaal_handle_debug_log() {
+    kunaal_validate_debug_log_request();
+    
+    $log_json = kunaal_get_debug_log_data();
+    $log_data = json_decode($log_json, true);
+    
+    kunaal_validate_debug_log_data($log_data);
+    kunaal_write_debug_log($log_data);
     
     wp_send_json_success(array('logged' => true));
     wp_die();

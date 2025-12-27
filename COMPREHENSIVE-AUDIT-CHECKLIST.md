@@ -92,13 +92,13 @@ This checklist consolidates findings from:
 - [x] ✅ HIGH-008: Missing 'use strict' - **ADDRESSED**
 
 **Medium Priority Issues (Still Pending):**
-- [ ] ⚠️ MED-003: Large Monolithic CSS - **NOW ADDRESSED** (CSS breakdown complete)
-- [ ] ⚠️ MED-006: Cognitive Complexity (24) - `kunaal_ajax_filter_handler()` - **PENDING**
-- [ ] ⚠️ MED-007: Cognitive Complexity (28) - `kunaal_contact_form_handler()` - **PENDING**
-- [ ] ⚠️ MED-008: Cognitive Complexity (35) - `kunaal_subscribe_handler()` - **PARTIALLY ADDRESSED** (refactored but needs verification)
-- [ ] ⚠️ MED-009: Cognitive Complexity (26) - `kunaal_ajax_debug_log()` - **PENDING**
-- [ ] ⚠️ MED-011: Large Function (379 lines) - `kunaal_customize_register()` - **ADDRESSED** (split into sections)
-- [ ] ⚠️ MED-015: Accessibility Issues (HTML) - `template-parts/home.php` - **PENDING**
+- [x] ✅ MED-003: Large Monolithic CSS - **ADDRESSED** (CSS breakdown complete)
+- [x] ✅ MED-006: Cognitive Complexity (24) - `kunaal_filter_content()` - **ADDRESSED** (refactored into helper functions)
+- [x] ✅ MED-007: Cognitive Complexity (28) - `kunaal_handle_contact_form()` - **ADDRESSED** (refactored into helper functions)
+- [x] ✅ MED-008: Cognitive Complexity (35) - `kunaal_handle_subscribe()` - **ADDRESSED** (refactored into helper functions)
+- [x] ✅ MED-009: Cognitive Complexity (26) - `kunaal_handle_debug_log()` - **ADDRESSED** (refactored into helper functions)
+- [x] ✅ MED-011: Large Function (379 lines) - `kunaal_customize_register()` - **ADDRESSED** (split into sections in `inc/customizer-sections.php`)
+- [x] ✅ MED-015: Duplicate IDs - `template-parts/home.php` - **ADDRESSED** (changed fallback IDs to `essayGridFallback` and `jotListFallback`)
 
 **New PHP Issues to Check:**
 - [ ] Run SonarQube scan on all PHP files

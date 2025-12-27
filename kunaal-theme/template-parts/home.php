@@ -217,7 +217,7 @@ $kunaal_home_used_fallback_jottings = false;
       $essay_ids = kunaal_home_recent_ids('essay', 6);
       ?>
       <?php if (!empty($essay_ids)) : ?>
-      <div class="grid" id="essayGrid" role="list" data-post-type="essay">
+      <div class="grid" id="essayGridFallback" role="list" data-post-type="essay">
         <?php foreach ($essay_ids as $post_id) : ?>
           <?php
           $post_obj = get_post($post_id);
@@ -348,7 +348,7 @@ $kunaal_home_used_fallback_jottings = false;
       $jotting_ids = kunaal_home_recent_ids('jotting', $home_posts_limit);
       ?>
       <?php if (!empty($jotting_ids)) : ?>
-      <div class="ledger" id="jotList" role="list" data-post-type="jotting">
+      <div class="ledger" id="jotListFallback" role="list" data-post-type="jotting">
         <?php foreach ($jotting_ids as $post_id) : ?>
           <?php
           $post_obj = get_post($post_id);
