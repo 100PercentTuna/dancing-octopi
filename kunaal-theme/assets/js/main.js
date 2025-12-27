@@ -4,7 +4,6 @@
  */
 (function() {
   'use strict';
-  'use strict';
 
   // Only enable "hide until revealed" animations once this script is actually running.
   // If this JS fails to load/parse on a client, we want server-rendered content visible.

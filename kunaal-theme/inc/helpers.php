@@ -195,5 +195,206 @@ if (!function_exists('kunaal_mod')) {
     }
 }
 
+/**
+ * Home page query with fallback for managed hosts
+ * 
+ * Some managed hosts/plugins hook query filters differently on the front page.
+ * We do a normal query first, and if it returns empty, we retry with
+ * suppress_filters to bypass third-party query mutations.
+ * 
+ * @param string $post_type Post type to query
+ * @param int    $limit     Number of posts to retrieve
+ * @return WP_Query Query object
+ */
+if (!function_exists('kunaal_home_query')) {
+    function kunaal_home_query($post_type, $limit = 6) {
+        $base = array(
+            'post_type' => $post_type,
+            'posts_per_page' => (int) $limit,
+            'post_status' => 'publish',
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'ignore_sticky_posts' => true,
+            'no_found_rows' => true,
+            'update_post_meta_cache' => true,
+            'update_post_term_cache' => true,
+        );
+
+        $q = new WP_Query($base);
+        if ($q->have_posts()) {
+            return $q;
+        }
+
+        // Fallback: bypass third-party filters
+        $base['suppress_filters'] = true;
+        return new WP_Query($base);
+    }
+}
+
+/**
+ * Last-resort fallback: bypass WP_Query (and any pre_get_posts interference) by
+ * selecting IDs directly from the posts table.
+ * 
+ * WARNING: This bypasses WordPress query system. Only use when WP_Query fails
+ * due to third-party interference. Uses prepared statements for security.
+ * 
+ * @param string $post_type Post type to query
+ * @param int    $limit     Number of posts to retrieve
+ * @return array Array of post IDs
+ */
+if (!function_exists('kunaal_home_recent_ids')) {
+    function kunaal_home_recent_ids($post_type, $limit = 6) {
+        global $wpdb;
+        $limit = max(1, (int) $limit);
+        $sql = $wpdb->prepare(
+            "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status = 'publish' ORDER BY post_date DESC LIMIT %d",
+            $post_type,
+            $limit
+        );
+        $ids = $wpdb->get_col($sql);
+        return array_map('intval', is_array($ids) ? $ids : array());
+    }
+}
+
+/**
+ * Helper: Render essay card markup
+ * 
+ * @param int|WP_Post $post Post ID or post object
+ * @return void Outputs HTML
+ */
+if (!function_exists('kunaal_render_essay_card')) {
+    function kunaal_render_essay_card($post) {
+        $post_id = is_object($post) ? $post->ID : (int) $post;
+        $post_obj = is_object($post) ? $post : get_post($post_id);
+        
+        if (!$post_obj) {
+            return;
+        }
+        
+        // Get post data directly (don't modify global $post)
+        $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
+        $read_time = get_post_meta($post_id, 'kunaal_read_time', true);
+        $topics = get_the_terms($post_id, 'topic');
+        $card_image = function_exists('kunaal_get_card_image_url') ? kunaal_get_card_image_url($post_id) : '';
+        $topic_slugs = array();
+        
+        if ($topics && !is_wp_error($topics)) {
+            foreach ($topics as $t) {
+                $topic_slugs[] = $t->slug;
+            }
+        }
+        
+        // Get post data using direct function calls (safer, no global state)
+        $title = get_the_title($post_id);
+        $permalink = get_permalink($post_id);
+        $date = get_the_date('Y-m-d', $post_id);
+        $date_display = get_the_date('j F Y', $post_id);
+        $title_attr = esc_attr(get_the_title($post_id));
+        ?>
+        <a href="<?php echo esc_url($permalink); ?>" class="card" role="listitem"
+           data-title="<?php echo esc_attr($title); ?>"
+           data-dek="<?php echo esc_attr($subtitle); ?>"
+           data-date="<?php echo esc_attr($date); ?>"
+           data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
+          <div class="media" data-parallax="true">
+            <?php if ($card_image) : ?>
+              <img src="<?php echo esc_url($card_image); ?>" alt="<?php echo esc_attr($title_attr); ?>" loading="lazy" />
+            <?php else : ?>
+              <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect width="400" height="500" fill="url(#grad<?php echo (int) $post_id; ?>)"/>
+                <defs>
+                  <linearGradient id="grad<?php echo (int) $post_id; ?>" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgba(30,90,255,0.08)"/>
+                    <stop offset="100%" style="stop-color:rgba(11,18,32,0.02)"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            <?php endif; ?>
+            <div class="scrim"></div>
+          </div>
+          <div class="overlay">
+            <h3 class="tTitle"><?php echo esc_html($title); ?></h3>
+            <div class="details">
+              <p class="meta">
+                <span><?php echo esc_html($date_display); ?></span>
+                <?php if ($read_time) : ?>
+                  <span class="dot"></span>
+                  <span><?php echo esc_html($read_time); ?> min</span>
+                <?php endif; ?>
+              </p>
+              <?php if ($topics && !is_wp_error($topics)) : ?>
+              <p class="metaTags">
+                <?php foreach (array_slice($topics, 0, 2) as $index => $topic) : ?>
+                  <?php if ($index > 0) : ?><span class="dot"></span><?php endif; ?>
+                  <span class="tag">#<?php echo esc_html($topic->name); ?></span>
+                <?php endforeach; ?>
+              </p>
+              <?php endif; ?>
+              <?php if ($subtitle) : ?>
+                <p class="dek"><?php echo esc_html($subtitle); ?></p>
+              <?php endif; ?>
+            </div>
+          </div>
+        </a>
+        <?php
+    }
+}
+
+/**
+ * Helper: Render jotting row markup
+ * 
+ * @param int|WP_Post $post Post ID or post object
+ * @return void Outputs HTML
+ */
+if (!function_exists('kunaal_render_jotting_row')) {
+    function kunaal_render_jotting_row($post) {
+        $post_id = is_object($post) ? $post->ID : (int) $post;
+        $post_obj = is_object($post) ? $post : get_post($post_id);
+        
+        if (!$post_obj) {
+            return;
+        }
+        
+        // Get post data directly (don't modify global $post)
+        $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
+        $topics = get_the_terms($post_id, 'topic');
+        $topic_slugs = array();
+        
+        if ($topics && !is_wp_error($topics)) {
+            foreach ($topics as $t) {
+                $topic_slugs[] = $t->slug;
+            }
+        }
+        
+        // Get post data using direct function calls (safer, no global state)
+        $title = get_the_title($post_id);
+        $permalink = get_permalink($post_id);
+        $date = get_the_date('Y-m-d', $post_id);
+        $date_display = get_the_date('j M Y', $post_id);
+        ?>
+        <a href="<?php echo esc_url($permalink); ?>" class="jRow" role="listitem"
+           data-title="<?php echo esc_attr($title); ?>"
+           data-text="<?php echo esc_attr($subtitle); ?>"
+           data-date="<?php echo esc_attr($date); ?>"
+           data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
+          <span class="jDate"><?php echo esc_html($date_display); ?></span>
+          <div class="jContent">
+            <h3 class="jTitle"><?php echo esc_html($title); ?></h3>
+            <?php if ($subtitle) : ?>
+              <p class="jText"><?php echo esc_html($subtitle); ?></p>
+            <?php endif; ?>
+            <?php if ($topics && !is_wp_error($topics)) : ?>
+              <div class="jTags">
+                <?php foreach ($topics as $topic) : ?>
+                  <span class="tag">#<?php echo esc_html($topic->name); ?></span>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </a>
+        <?php
+    }
+}
+
 // Removed: kunaal_build_messenger_target_url and kunaal_qr_img_src - no longer used (messenger QR codes removed)
 

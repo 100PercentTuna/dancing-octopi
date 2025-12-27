@@ -317,5 +317,69 @@ Before committing changes:
 1. Run SonarQube scans (see `.cursor/SONARQUBE-SCAN-REQUIREMENTS.md`)
 2. Performance testing (N+1 queries, asset loading)
 3. Browser compatibility testing
-4. Review !important usage for non-critical cases
+4. Review !important usage for non-critical cases (see `.cursor/IMPORTANT-ANALYSIS.md`)
+5. Review best practices findings (see `.cursor/BEST-PRACTICES-ANALYSIS.md`)
+
+---
+
+## 9. Best Practices & Code Quality Review
+
+### 9.1 Critical Issues Fixed ✅
+
+- [x] ✅ **Functions in template file** - Moved `kunaal_home_query()` and `kunaal_home_recent_ids()` to `inc/helpers.php`
+- [x] ✅ **Code duplication** - Extracted essay/jotting rendering to `kunaal_render_essay_card()` and `kunaal_render_jotting_row()`
+- [x] ✅ **Error suppression** - Removed `@` operator from `kunaal_get_card_image_url()` call
+- [x] ✅ **GLOBALS usage** - Removed debugging flags from `$GLOBALS`
+- [x] ✅ **Helper functions calling wp_die()** - Refactored to return status instead
+- [x] ✅ **Anonymous filter functions** - Extracted to named functions (`kunaal_filter_wp_mail_from`, `kunaal_filter_wp_mail_from_name`, `kunaal_action_phpmailer_init`)
+- [x] ✅ **Anonymous shutdown handler** - Extracted to `kunaal_theme_shutdown_handler()`
+- [x] ✅ **Duplicate 'use strict'** - Removed duplicate in `main.js`
+
+### 9.2 Remaining Issues to Address
+
+- [ ] ⚠️ **Direct $wpdb queries** - `kunaal_theme_deactivation_handler()` uses direct SQL (lines 1278-1289)
+  - **Impact:** WordPress best practices
+  - **Fix:** Use `delete_transient()` in loop or WordPress API
+  - **Priority:** Medium
+
+- [ ] ⚠️ **Error suppression in logging** - `@error_log()` and `@file_put_contents()` (lines 46, 51, 55)
+  - **Impact:** Silent failures, debugging difficulty
+  - **Note:** Intentional for "crash-safe" logging, but could be improved
+  - **Priority:** Low (acceptable for logging function)
+
+- [ ] ⚠️ **!important overuse** - 17 questionable instances (see `.cursor/IMPORTANT-ANALYSIS.md`)
+  - **Impact:** CSS maintainability
+  - **Priority:** Medium
+
+- [ ] ⚠️ **Empty catch blocks** - JavaScript silent failures (`about-page-v22.js` line 43, 50)
+  - **Impact:** Hidden errors
+  - **Priority:** Low
+
+- [ ] ⚠️ **Large JavaScript functions** - `initFilterSystem()` likely 200+ lines
+  - **Impact:** Maintainability
+  - **Priority:** Low
+
+### 9.3 Code Quality Improvements Made
+
+1. **Helper Functions Refactored:**
+   - `kunaal_validate_filter_request()` - Returns bool instead of calling wp_die()
+   - `kunaal_validate_contact_request()` - Returns bool instead of calling wp_die()
+   - `kunaal_check_contact_honeypot()` - Returns bool instead of calling wp_die()
+   - `kunaal_check_contact_rate_limit()` - Returns bool instead of calling wp_die()
+   - `kunaal_validate_contact_data()` - Returns array with status instead of calling wp_die()
+   - `kunaal_validate_debug_log_request()` - Returns array with status instead of calling wp_die()
+   - `kunaal_validate_debug_log_data()` - Returns bool instead of calling wp_die()
+
+2. **Template Code Refactored:**
+   - Extracted essay card rendering to `kunaal_render_essay_card()`
+   - Extracted jotting row rendering to `kunaal_render_jotting_row()`
+   - Removed ~150 lines of duplicate code
+
+3. **Filter/Action Functions:**
+   - Extracted anonymous functions to named functions for better testability
+
+### 9.4 Documentation
+
+- ✅ Created `.cursor/IMPORTANT-ANALYSIS.md` - Complete analysis of all 75 !important instances
+- ✅ Created `.cursor/BEST-PRACTICES-ANALYSIS.md` - File-by-file best practices review
 

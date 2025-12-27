@@ -57,25 +57,30 @@ function kunaal_theme_log($message, $context = array()) {
 }
 
 /**
+ * Shutdown handler callback for fatal errors
+ */
+function kunaal_theme_shutdown_handler() {
+    $err = error_get_last();
+    if (!$err || !isset($err['type'])) {
+        return;
+    }
+    $fatal_types = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
+    if (in_array($err['type'], $fatal_types, true)) {
+        kunaal_theme_log('FATAL', array(
+            'type' => $err['type'],
+            'message' => $err['message'] ?? '',
+            'file' => $err['file'] ?? '',
+            'line' => $err['line'] ?? 0,
+            'uri' => $_SERVER['REQUEST_URI'] ?? '',
+        ));
+    }
+}
+
+/**
  * Capture fatal errors that result in white-screen/500 without wp-content/debug.log.
  */
 function kunaal_theme_register_shutdown_handler() {
-    register_shutdown_function(function () {
-        $err = error_get_last();
-        if (!$err || !isset($err['type'])) {
-            return;
-        }
-        $fatal_types = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
-        if (in_array($err['type'], $fatal_types, true)) {
-            kunaal_theme_log('FATAL', array(
-                'type' => $err['type'],
-                'message' => $err['message'] ?? '',
-                'file' => $err['file'] ?? '',
-                'line' => $err['line'] ?? 0,
-                'uri' => $_SERVER['REQUEST_URI'] ?? '',
-            ));
-        }
-    });
+    register_shutdown_function('kunaal_theme_shutdown_handler');
 }
 kunaal_theme_register_shutdown_handler();
 
@@ -1300,23 +1305,34 @@ function kunaal_smtp_is_enabled() {
     return (bool) kunaal_mod('kunaal_smtp_enabled', false);
 }
 
-add_filter('wp_mail_from', function ($from_email) {
+/**
+ * Filter: Set SMTP from email
+ */
+function kunaal_filter_wp_mail_from($from_email) {
     if (!kunaal_smtp_is_enabled()) {
         return $from_email;
     }
     $custom = kunaal_mod('kunaal_smtp_from_email', '');
     return is_email($custom) ? $custom : $from_email;
-});
+}
+add_filter('wp_mail_from', 'kunaal_filter_wp_mail_from');
 
-add_filter('wp_mail_from_name', function ($from_name) {
+/**
+ * Filter: Set SMTP from name
+ */
+function kunaal_filter_wp_mail_from_name($from_name) {
     if (!kunaal_smtp_is_enabled()) {
         return $from_name;
     }
     $custom = kunaal_mod('kunaal_smtp_from_name', '');
     return !empty($custom) ? $custom : $from_name;
-});
+}
+add_filter('wp_mail_from_name', 'kunaal_filter_wp_mail_from_name');
 
-add_action('phpmailer_init', function ($phpmailer) {
+/**
+ * Action: Configure PHPMailer for SMTP
+ */
+function kunaal_action_phpmailer_init($phpmailer) {
     if (!kunaal_smtp_is_enabled()) {
         return;
     }
@@ -1347,7 +1363,8 @@ add_action('phpmailer_init', function ($phpmailer) {
     } else {
         $phpmailer->SMTPSecure = '';
     }
-});
+}
+add_action('phpmailer_init', 'kunaal_action_phpmailer_init');
 
 /**
  * Built-in Subscribe Flow
@@ -1563,12 +1580,14 @@ add_action('template_redirect', 'kunaal_handle_subscribe_confirmation_request');
 
 /**
  * Helper: Validate filter request nonce
+ * 
+ * @return bool True if valid, false otherwise
  */
 function kunaal_validate_filter_request() {
     if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
-        wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
-        wp_die();
+        return false;
     }
+    return true;
 }
 
 /**
@@ -1699,7 +1718,10 @@ function kunaal_build_post_data($post_id) {
  */
 function kunaal_filter_content() {
     try {
-        kunaal_validate_filter_request();
+        if (!kunaal_validate_filter_request()) {
+            wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));
+            wp_die();
+        }
         
         $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
         $topics = kunaal_parse_filter_topics();
@@ -1832,12 +1854,14 @@ add_action('wp_head', 'kunaal_add_open_graph_tags', 5);
 
 /**
  * Helper: Validate contact form request
+ * 
+ * @return bool True if valid, false otherwise
  */
 function kunaal_validate_contact_request() {
     if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
-        wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
-        wp_die();
+        return false;
     }
+    return true;
 }
 
 /**
@@ -1854,12 +1878,12 @@ function kunaal_sanitize_contact_inputs() {
 
 /**
  * Helper: Check honeypot (bot detection)
+ * 
+ * @param string $honeypot Honeypot field value
+ * @return bool True if honeypot is empty (valid), false if filled (bot)
  */
 function kunaal_check_contact_honeypot($honeypot) {
-    if (!empty($honeypot)) {
-        wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
-        wp_die();
-    }
+    return empty($honeypot);
 }
 
 /**
@@ -1877,35 +1901,41 @@ function kunaal_get_client_ip() {
 
 /**
  * Helper: Check rate limit for contact form
+ * 
+ * @return bool True if within rate limit, false if rate limited
  */
 function kunaal_check_contact_rate_limit() {
     $ip = kunaal_get_client_ip();
     if (empty($ip)) {
-        return; // Can't rate limit without IP
+        return true; // Can't rate limit without IP, allow request
     }
     
     $rate_key = 'kunaal_contact_rl_' . wp_hash($ip);
     $count = (int) get_transient($rate_key);
     if ($count >= 5) {
-        wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
-        wp_die();
+        return false; // Rate limited
     }
     set_transient($rate_key, $count + 1, 10 * MINUTE_IN_SECONDS);
+    return true;
 }
 
 /**
  * Helper: Validate contact form data
+ * 
+ * @param string $message Message content
+ * @param string $email Email address
+ * @return array Array with 'valid' (bool) and 'error' (string) keys
  */
 function kunaal_validate_contact_data($message, $email) {
     if (empty($message)) {
-        wp_send_json_error(array('message' => 'Please enter a message.'));
-        wp_die();
+        return array('valid' => false, 'error' => 'Please enter a message.');
     }
     
     if (!empty($email) && !is_email($email)) {
-        wp_send_json_error(array('message' => 'Please enter a valid email address.'));
-        wp_die();
+        return array('valid' => false, 'error' => 'Please enter a valid email address.');
     }
+    
+    return array('valid' => true, 'error' => '');
 }
 
 /**
@@ -1976,12 +2006,28 @@ function kunaal_handle_contact_email_error($to_email, $email_subject) {
  */
 function kunaal_handle_contact_form() {
     try {
-        kunaal_validate_contact_request();
+        if (!kunaal_validate_contact_request()) {
+            wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
+            wp_die();
+        }
         
         $inputs = kunaal_sanitize_contact_inputs();
-        kunaal_check_contact_honeypot($inputs['honeypot']);
-        kunaal_check_contact_rate_limit();
-        kunaal_validate_contact_data($inputs['message'], $inputs['email']);
+        
+        if (!kunaal_check_contact_honeypot($inputs['honeypot'])) {
+            wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
+            wp_die();
+        }
+        
+        if (!kunaal_check_contact_rate_limit()) {
+            wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
+            wp_die();
+        }
+        
+        $validation = kunaal_validate_contact_data($inputs['message'], $inputs['email']);
+        if (!$validation['valid']) {
+            wp_send_json_error(array('message' => $validation['error']));
+            wp_die();
+        }
         
         $email_data = kunaal_build_contact_email($inputs['name'], $inputs['email'], $inputs['message']);
         $sent = wp_mail($email_data['to'], $email_data['subject'], $email_data['body'], $email_data['headers']);
@@ -2003,22 +2049,23 @@ add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
 
 /**
  * Helper: Validate debug log request
+ * 
+ * @return array Array with 'valid' (bool) and 'error' (string) keys
  */
 function kunaal_validate_debug_log_request() {
     if (!defined('WP_DEBUG') || !WP_DEBUG) {
-        wp_send_json_error(array('message' => 'Debug logging disabled'));
-        wp_die();
+        return array('valid' => false, 'error' => 'Debug logging disabled');
     }
     
     if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_debug_log_nonce')) {
-        wp_send_json_error(array('message' => 'Invalid nonce'));
-        wp_die();
+        return array('valid' => false, 'error' => 'Invalid nonce');
     }
     
     if (!current_user_can('edit_posts')) {
-        wp_send_json_error(array('message' => 'Insufficient permissions'));
-        wp_die();
+        return array('valid' => false, 'error' => 'Insufficient permissions');
     }
+    
+    return array('valid' => true, 'error' => '');
 }
 
 /**
@@ -2037,12 +2084,15 @@ function kunaal_get_debug_log_data() {
 
 /**
  * Helper: Validate log data structure
+ * 
+ * @param mixed $log_data Log data to validate
+ * @return bool True if valid, false otherwise
  */
 function kunaal_validate_debug_log_data($log_data) {
     if (!$log_data || !isset($log_data['location']) || !isset($log_data['message'])) {
-        wp_send_json_error(array('message' => 'Invalid log data'));
-        wp_die();
+        return false;
     }
+    return true;
 }
 
 /**
@@ -2060,12 +2110,20 @@ function kunaal_write_debug_log($log_data) {
  * Nonce-protected and capability-checked for security
  */
 function kunaal_handle_debug_log() {
-    kunaal_validate_debug_log_request();
+    $validation = kunaal_validate_debug_log_request();
+    if (!$validation['valid']) {
+        wp_send_json_error(array('message' => $validation['error']));
+        wp_die();
+    }
     
     $log_json = kunaal_get_debug_log_data();
     $log_data = json_decode($log_json, true);
     
-    kunaal_validate_debug_log_data($log_data);
+    if (!kunaal_validate_debug_log_data($log_data)) {
+        wp_send_json_error(array('message' => 'Invalid log data'));
+        wp_die();
+    }
+    
     kunaal_write_debug_log($log_data);
     
     wp_send_json_success(array('logged' => true));

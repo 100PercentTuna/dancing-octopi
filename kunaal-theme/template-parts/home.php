@@ -12,35 +12,6 @@ if (!defined('ABSPATH')) {
 // Get all topics for filter
 $all_topics = function_exists('kunaal_get_all_topics') ? kunaal_get_all_topics() : array();
 
-/**
- * Some managed hosts/plugins hook query filters differently on the front page.
- * We do a normal query first, and if it returns empty, we retry with
- * suppress_filters to bypass third-party query mutations.
- */
-if (!function_exists('kunaal_home_query')) {
-    function kunaal_home_query($post_type, $limit = 6) {
-        $base = array(
-            'post_type' => $post_type,
-            'posts_per_page' => (int) $limit,
-            'post_status' => 'publish',
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'ignore_sticky_posts' => true,
-            'no_found_rows' => true,
-            'update_post_meta_cache' => true,
-            'update_post_term_cache' => true,
-        );
-
-        $q = new WP_Query($base);
-        if ($q->have_posts()) {
-            return $q;
-        }
-
-        $base['suppress_filters'] = true;
-        return new WP_Query($base);
-    }
-}
-
 $home_posts_limit = defined('KUNAAL_HOME_POSTS_LIMIT') ? KUNAAL_HOME_POSTS_LIMIT : 6;
 $essays_query = kunaal_home_query('essay', $home_posts_limit);
 $jottings_query = kunaal_home_query('jotting', $home_posts_limit);
@@ -49,25 +20,6 @@ $total_essays = wp_count_posts('essay')->publish;
 $total_jottings = wp_count_posts('jotting')->publish;
 $shown_essays = $essays_query->post_count;
 $shown_jottings = $jottings_query->post_count;
-
-/**
- * Last-resort fallback: bypass WP_Query (and any pre_get_posts interference) by
- * selecting IDs directly from the posts table.
- */
-function kunaal_home_recent_ids($post_type, $limit = 6) {
-    global $wpdb;
-    $limit = max(1, (int) $limit);
-    $sql = $wpdb->prepare(
-        "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status = 'publish' ORDER BY post_date DESC LIMIT %d",
-        $post_type,
-        $limit
-    );
-    $ids = $wpdb->get_col($sql);
-    return array_map('intval', is_array($ids) ? $ids : array());
-}
-
-$kunaal_home_used_fallback_essays = false;
-$kunaal_home_used_fallback_jottings = false;
 ?>
 
 <main class="container" id="main">
@@ -148,138 +100,17 @@ $kunaal_home_used_fallback_jottings = false;
     <?php if ($essays_query->have_posts()) : ?>
       <div class="grid" id="essayGrid" role="list" data-post-type="essay">
         <?php while ($essays_query->have_posts()) : $essays_query->the_post(); ?>
-          <?php
-          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
-          $read_time = get_post_meta(get_the_ID(), 'kunaal_read_time', true);
-          $topics = get_the_terms(get_the_ID(), 'topic');
-          $card_image = '';
-          if (function_exists('kunaal_get_card_image_url')) {
-              $card_image = @kunaal_get_card_image_url(get_the_ID());
-          }
-          $topic_slugs = array();
-          if ($topics && !is_wp_error($topics)) {
-              foreach ($topics as $t) {
-                  $topic_slugs[] = $t->slug;
-              }
-          }
-          ?>
-          <a href="<?php the_permalink(); ?>" class="card" role="listitem"
-             data-title="<?php echo esc_attr(get_the_title()); ?>"
-             data-dek="<?php echo esc_attr($subtitle); ?>"
-             data-date="<?php echo esc_attr(get_the_date('Y-m-d')); ?>"
-             data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
-            <div class="media" data-parallax="true">
-              <?php if ($card_image) : ?>
-                <img src="<?php echo esc_url($card_image); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy" />
-              <?php else : ?>
-                <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <rect width="400" height="500" fill="url(#grad<?php echo get_the_ID(); ?>)"/>
-                  <defs>
-                    <linearGradient id="grad<?php echo get_the_ID(); ?>" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style="stop-color:rgba(30,90,255,0.08)"/>
-                      <stop offset="100%" style="stop-color:rgba(11,18,32,0.02)"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              <?php endif; ?>
-              <div class="scrim"></div>
-            </div>
-            <div class="overlay">
-              <h3 class="tTitle"><?php the_title(); ?></h3>
-              <div class="details">
-                <p class="meta">
-                  <span><?php echo esc_html(get_the_date('j F Y')); ?></span>
-                  <?php if ($read_time) : ?>
-                    <span class="dot"></span>
-                    <span><?php echo esc_html($read_time); ?> min</span>
-                  <?php endif; ?>
-                </p>
-                <?php if ($topics && !is_wp_error($topics)) : ?>
-                <p class="metaTags">
-                  <?php foreach (array_slice($topics, 0, 2) as $index => $topic) : ?>
-                    <?php if ($index > 0) : ?><span class="dot"></span><?php endif; ?>
-                    <span class="tag">#<?php echo esc_html($topic->name); ?></span>
-                  <?php endforeach; ?>
-                </p>
-                <?php endif; ?>
-                <?php if ($subtitle) : ?>
-                  <p class="dek"><?php echo esc_html($subtitle); ?></p>
-                <?php endif; ?>
-              </div>
-            </div>
-          </a>
+          <?php kunaal_render_essay_card(get_the_ID()); ?>
         <?php endwhile; ?>
       </div>
     <?php elseif (!empty($total_essays)) : ?>
       <?php
-      $kunaal_home_used_fallback_essays = true;
-      $GLOBALS['kunaal_home_used_fallback_essays'] = true;
       $essay_ids = kunaal_home_recent_ids('essay', 6);
       ?>
       <?php if (!empty($essay_ids)) : ?>
       <div class="grid" id="essayGridFallback" role="list" data-post-type="essay">
         <?php foreach ($essay_ids as $post_id) : ?>
-          <?php
-          $post_obj = get_post($post_id);
-          if (!$post_obj) continue;
-          setup_postdata($post_obj);
-
-          $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
-          $read_time = get_post_meta($post_id, 'kunaal_read_time', true);
-          $topics = get_the_terms($post_id, 'topic');
-          $card_image = function_exists('kunaal_get_card_image_url') ? kunaal_get_card_image_url($post_id) : '';
-          $topic_slugs = array();
-          if ($topics && !is_wp_error($topics)) {
-              foreach ($topics as $t) {
-                  $topic_slugs[] = $t->slug;
-              }
-          }
-          ?>
-          <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="card" role="listitem"
-             data-title="<?php echo esc_attr(get_the_title($post_id)); ?>"
-             data-dek="<?php echo esc_attr($subtitle); ?>"
-             data-date="<?php echo esc_attr(get_the_date('Y-m-d', $post_id)); ?>"
-             data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
-            <div class="media" data-parallax="true">
-              <?php if ($card_image) : ?>
-                <img src="<?php echo esc_url($card_image); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>" loading="lazy" />
-              <?php else : ?>
-                <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <rect width="400" height="500" fill="url(#grad<?php echo (int) $post_id; ?>)"/>
-                  <defs>
-                    <linearGradient id="grad<?php echo (int) $post_id; ?>" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style="stop-color:rgba(30,90,255,0.08)"/>
-                      <stop offset="100%" style="stop-color:rgba(11,18,32,0.02)"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              <?php endif; ?>
-              <div class="scrim"></div>
-            </div>
-            <div class="overlay">
-              <h3 class="tTitle"><?php echo esc_html(get_the_title($post_id)); ?></h3>
-              <div class="details">
-                <p class="meta">
-                  <span><?php echo esc_html(get_the_date('j F Y', $post_id)); ?></span>
-                  <?php if ($read_time) : ?>
-                    <span class="dot"></span>
-                    <span><?php echo esc_html($read_time); ?> min</span>
-                  <?php endif; ?>
-                </p>
-                <?php if ($topics && !is_wp_error($topics)) : ?>
-                <p class="metaTags">
-                  <?php foreach (array_slice($topics, 0, 2) as $index => $topic) : ?>
-                    <?php if ($index > 0) : ?><span class="dot"></span><?php endif; ?>
-                    <span class="tag">#<?php echo esc_html($topic->name); ?></span>
-                  <?php endforeach; ?>
-                </p>
-                <?php endif; ?>
-                <?php if ($subtitle) : ?>
-                  <p class="dek"><?php echo esc_html($subtitle); ?></p>
-                <?php endif; ?>
-              </div>
-            </div>
-          </a>
+          <?php kunaal_render_essay_card($post_id); ?>
         <?php endforeach; ?>
       </div>
       <?php wp_reset_postdata(); ?>
@@ -309,81 +140,17 @@ $kunaal_home_used_fallback_jottings = false;
     <?php if ($jottings_query->have_posts()) : ?>
       <div class="ledger" id="jotList" role="list" data-post-type="jotting">
         <?php while ($jottings_query->have_posts()) : $jottings_query->the_post(); ?>
-          <?php
-          $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
-          $topics = get_the_terms(get_the_ID(), 'topic');
-          $topic_slugs = array();
-          if ($topics && !is_wp_error($topics)) {
-              foreach ($topics as $t) {
-                  $topic_slugs[] = $t->slug;
-              }
-          }
-          ?>
-          <a href="<?php the_permalink(); ?>" class="jRow" role="listitem"
-             data-title="<?php echo esc_attr(get_the_title()); ?>"
-             data-text="<?php echo esc_attr($subtitle); ?>"
-             data-date="<?php echo esc_attr(get_the_date('Y-m-d')); ?>"
-             data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
-            <span class="jDate"><?php echo esc_html(get_the_date('j M Y')); ?></span>
-            <div class="jContent">
-              <h3 class="jTitle"><?php the_title(); ?></h3>
-              <?php if ($subtitle) : ?>
-                <p class="jText"><?php echo esc_html($subtitle); ?></p>
-              <?php endif; ?>
-              <?php if ($topics && !is_wp_error($topics)) : ?>
-                <div class="jTags">
-                  <?php foreach ($topics as $topic) : ?>
-                    <span class="tag">#<?php echo esc_html($topic->name); ?></span>
-                  <?php endforeach; ?>
-                </div>
-              <?php endif; ?>
-            </div>
-          </a>
+          <?php kunaal_render_jotting_row(get_the_ID()); ?>
         <?php endwhile; ?>
       </div>
     <?php elseif (!empty($total_jottings)) : ?>
       <?php
-      $kunaal_home_used_fallback_jottings = true;
-      $GLOBALS['kunaal_home_used_fallback_jottings'] = true;
       $jotting_ids = kunaal_home_recent_ids('jotting', $home_posts_limit);
       ?>
       <?php if (!empty($jotting_ids)) : ?>
       <div class="ledger" id="jotListFallback" role="list" data-post-type="jotting">
         <?php foreach ($jotting_ids as $post_id) : ?>
-          <?php
-          $post_obj = get_post($post_id);
-          if (!$post_obj) continue;
-          setup_postdata($post_obj);
-
-          $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
-          $topics = get_the_terms($post_id, 'topic');
-          $topic_slugs = array();
-          if ($topics && !is_wp_error($topics)) {
-              foreach ($topics as $t) {
-                  $topic_slugs[] = $t->slug;
-              }
-          }
-          ?>
-          <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="jRow" role="listitem"
-             data-title="<?php echo esc_attr(get_the_title($post_id)); ?>"
-             data-text="<?php echo esc_attr($subtitle); ?>"
-             data-date="<?php echo esc_attr(get_the_date('Y-m-d', $post_id)); ?>"
-             data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
-            <span class="jDate"><?php echo esc_html(get_the_date('j M Y', $post_id)); ?></span>
-            <div class="jContent">
-              <h3 class="jTitle"><?php echo esc_html(get_the_title($post_id)); ?></h3>
-              <?php if ($subtitle) : ?>
-                <p class="jText"><?php echo esc_html($subtitle); ?></p>
-              <?php endif; ?>
-              <?php if ($topics && !is_wp_error($topics)) : ?>
-                <div class="jTags">
-                  <?php foreach ($topics as $topic) : ?>
-                    <span class="tag">#<?php echo esc_html($topic->name); ?></span>
-                  <?php endforeach; ?>
-                </div>
-              <?php endif; ?>
-            </div>
-          </a>
+          <?php kunaal_render_jotting_row($post_id); ?>
         <?php endforeach; ?>
       </div>
       <?php wp_reset_postdata(); ?>
@@ -396,8 +163,3 @@ $kunaal_home_used_fallback_jottings = false;
     <?php wp_reset_postdata(); ?>
   </section>
 </main>
-
-<?php
-// Mark successful completion for debugging.
-$GLOBALS['kunaal_home_layout_loaded'] = true;
-?>
