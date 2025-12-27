@@ -116,13 +116,12 @@
         if (!img) return;
         var speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
-        var y = 80 * speed; // Increased for more visible parallax effect
+        var y = 100 * speed; // Increased for more visible parallax effect
         try {
           window.gsap.fromTo(img,
-            { y: -y, scale: 1.08 },
+            { y: -y },
             {
               y: y,
-              scale: 1.08,
               ease: 'none',
               scrollTrigger: {
                 trigger: band,
