@@ -15,16 +15,16 @@ get_header();
 define('PANORAMA_CUT_PREFIX', ' cut-');
 define('PANORAMA_BG_WARM', ' bg-warm');
 
-// Generate dynamic CSS for category colors
+// Generate CSS variables for category colors (single source of truth)
 $categories = kunaal_get_categories_v22();
 if (!empty($categories)) {
 ?>
 <style>
+body.page-template-page-about {
 <?php foreach ($categories as $slug => $category) : ?>
-.capsule[data-cat="<?php echo esc_attr($slug); ?>"] .capsule-dot {
-  background: <?php echo esc_attr($category['color']); ?> !important;
-}
+  --cat-<?php echo esc_attr($slug); ?>: <?php echo esc_attr($category['color']); ?>;
 <?php endforeach; ?>
+}
 </style>
 <?php } ?>
 
@@ -237,7 +237,7 @@ endif;
         <div class="capsules-legend">
             <?php foreach ($categories as $slug => $category) : ?>
             <div class="legend-item">
-                <div class="legend-dot" style="background:<?php echo esc_attr($category['color']); ?>"></div>
+                <div class="legend-dot" data-cat="<?php echo esc_attr($slug); ?>"></div>
                 <?php echo esc_html($category['name']); ?>
             </div>
             <?php endforeach; ?>

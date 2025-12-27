@@ -19,7 +19,8 @@ body.page-template-page-about {
   --warmBorder: rgba(125,107,93,0.12);
   --transition: 0.25s ease;
   
-  /* Category colors for About page */
+  /* Category colors are set dynamically from customizer via inline <style> in page-about.php */
+  /* Fallback colors for when customizer hasn't set them yet */
   --cat-media: #C4715B;
   --cat-knowledge: #5B8A72;
   --cat-craft: #8B7355;
@@ -717,18 +718,48 @@ body.page-template-page-about .capsule::after,
   flex-shrink:0;
   background:var(--cat-tech);
 }
-.capsule[data-cat="media"] .capsule-dot{background:var(--cat-media)}
-.capsule[data-cat="knowledge"] .capsule-dot{background:var(--cat-knowledge)}
-.capsule[data-cat="craft"] .capsule-dot{background:var(--cat-craft)}
-.capsule[data-cat="culture"] .capsule-dot{background:var(--cat-culture)}
-.capsule[data-cat="tech"] .capsule-dot{background:var(--cat-tech)}
+/* Category colors use CSS variables (set from customizer) */
+/* Dynamic selector - works for any category slug */
+body.page-template-page-about .capsule[data-cat] .capsule-dot {
+  background: var(--cat-var, var(--warm));
+}
+/* Set variable per category slug */
+body.page-template-page-about .capsule[data-cat="media"] .capsule-dot {
+  background: var(--cat-media, #C4715B);
+}
+body.page-template-page-about .capsule[data-cat="knowledge"] .capsule-dot {
+  background: var(--cat-knowledge, #5B8A72);
+}
+body.page-template-page-about .capsule[data-cat="craft"] .capsule-dot {
+  background: var(--cat-craft, #8B7355);
+}
+body.page-template-page-about .capsule[data-cat="culture"] .capsule-dot {
+  background: var(--cat-culture, #7A6B99);
+}
+body.page-template-page-about .capsule[data-cat="tech"] .capsule-dot {
+  background: var(--cat-tech, #5A7FA8);
+}
 
-/* Dark mode category colors - brighter for visibility */
-:root[data-theme="dark"] .capsule[data-cat="media"] .capsule-dot { background: #E08B7A; }
-:root[data-theme="dark"] .capsule[data-cat="knowledge"] .capsule-dot { background: #7BAE8F; }
-:root[data-theme="dark"] .capsule[data-cat="craft"] .capsule-dot { background: #A88F6F; }
-:root[data-theme="dark"] .capsule[data-cat="culture"] .capsule-dot { background: #9A8BB5; }
-:root[data-theme="dark"] .capsule[data-cat="tech"] .capsule-dot { background: #7A9FC4; }
+/* Dark mode category colors - auto-brighten for visibility */
+/* Use CSS color-mix to brighten customizer colors in dark mode */
+:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-var, var(--warm)) 100%, white 20%);
+}
+:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="media"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-media, #C4715B) 100%, white 20%);
+}
+:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="knowledge"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-knowledge, #5B8A72) 100%, white 20%);
+}
+:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="craft"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-craft, #8B7355) 100%, white 20%);
+}
+:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="culture"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-culture, #7A6B99) 100%, white 20%);
+}
+:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="tech"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-tech, #5A7FA8) 100%, white 20%);
+}
 
 .capsule-text {
   white-space: nowrap;
@@ -1044,9 +1075,29 @@ body.page-template-page-about .country.lived:hover,
   fill: #A89585;
 }
 
-/* Dark mode category colors - auto-invert for better visibility */
-:root[data-theme="dark"] .legend-dot,
-:root[data-theme="dark"] .capsule-dot {
+/* Legend dots use same category variables as capsule dots */
+body.page-template-page-about .legend-dot[data-cat] {
+  background: var(--cat-var, var(--warm));
+}
+body.page-template-page-about .legend-dot[data-cat="media"] {
+  background: var(--cat-media, #C4715B);
+}
+body.page-template-page-about .legend-dot[data-cat="knowledge"] {
+  background: var(--cat-knowledge, #5B8A72);
+}
+body.page-template-page-about .legend-dot[data-cat="craft"] {
+  background: var(--cat-craft, #8B7355);
+}
+body.page-template-page-about .legend-dot[data-cat="culture"] {
+  background: var(--cat-culture, #7A6B99);
+}
+body.page-template-page-about .legend-dot[data-cat="tech"] {
+  background: var(--cat-tech, #5A7FA8);
+}
+
+/* Dark mode category colors - auto-brighten for better visibility */
+:root[data-theme="dark"] body.page-template-page-about .legend-dot[data-cat],
+:root[data-theme="dark"] body.page-template-page-about .capsule-dot {
   filter: brightness(1.3) saturate(1.1);
 }
 
