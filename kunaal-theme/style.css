@@ -448,13 +448,12 @@ main {
   .mastInner > .theme-toggle {
     width: 32px;
     height: 32px;
-    margin-left: 0; /* Remove left margin - snug to nav */
+    margin-left: 8px; /* Closer to menu - reduced gap */
     margin-right: 0; /* Rightmost element */
     order: 3; /* Ensure it's last (rightmost) */
     border: none;
     background: transparent;
     box-shadow: none;
-    margin-left: 8px; /* Closer to menu - reduced gap */
     padding: 0;
     /* Ensure same vertical alignment as nav */
     align-self: center;
