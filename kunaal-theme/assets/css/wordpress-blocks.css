@@ -108,13 +108,16 @@
 }
 
 /* Social icons - match theme */
-.wp-block-social-links .wp-social-link {
-  background: transparent !important;
-  color: var(--muted) !important;
+/* Use higher specificity to override WordPress core styles without !important */
+.wp-block-social-links:not(.is-style-logos-only) .wp-social-link,
+.wp-block-social-links .wp-social-link:not(.has-icon-color) {
+  background: transparent;
+  color: var(--muted);
   transition: color 200ms ease;
 }
-.wp-block-social-links .wp-social-link:hover {
-  color: var(--blue) !important;
+.wp-block-social-links:not(.is-style-logos-only) .wp-social-link:hover,
+.wp-block-social-links .wp-social-link:not(.has-icon-color):hover {
+  color: var(--blue);
 }
 .wp-block-social-links.is-style-logos-only .wp-social-link svg {
   width: 20px;

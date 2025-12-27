@@ -40,14 +40,23 @@
     fetch(window.kunaalAboutV22.ajaxUrl, {
       method: 'POST',
       body: formData
-    }).catch(function() {}); // Silently fail if logging unavailable
+    }).catch(function(error) {
+      // Silently fail if logging unavailable - debug logging should never break the page
+      if (window.console && window.console.warn) {
+        window.console.warn('[kunaal-theme] Debug log failed:', error);
+      }
+    });
   }
 
   var reduceMotion = false;
   try {
     reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  } catch (e) { 
-    reduceMotion = false; 
+  } catch (e) {
+    // Fallback if matchMedia is not supported
+    reduceMotion = false;
+    if (window.console && window.console.warn) {
+      window.console.warn('[kunaal-theme] matchMedia not supported:', e);
+    }
   }
 
   function ready(fn) {

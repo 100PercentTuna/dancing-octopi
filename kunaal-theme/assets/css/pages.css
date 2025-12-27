@@ -130,19 +130,20 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
 .prose strong { font-weight: 600; color: var(--ink); }
 
 /* Inline links - blue underline animation */
-.prose a {
-  color: var(--ink) !important;
-  text-decoration: none !important;
-  background-image: linear-gradient(var(--blue), var(--blue)) !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-  background-size: 0% 2px !important;
-  padding-bottom: 2px !important;
-  transition: background-size 280ms cubic-bezier(0.4,0,0.2,1) 40ms !important;
+/* Use higher specificity to override base link styles without !important */
+.prose a:not([class*="button"]):not([class*="btn"]) {
+  color: var(--ink);
+  text-decoration: none;
+  background-image: linear-gradient(var(--blue), var(--blue));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  padding-bottom: 2px;
+  transition: background-size 280ms cubic-bezier(0.4,0,0.2,1) 40ms;
 }
-.prose a:hover {
-  background-size: 100% 2px !important;
-  color: var(--ink) !important;
+.prose a:not([class*="button"]):not([class*="btn"]):hover {
+  background-size: 100% 2px;
+  color: var(--ink);
 }
 
 /* Section headers in prose */

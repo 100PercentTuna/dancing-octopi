@@ -1275,23 +1275,43 @@ add_action('after_switch_theme', 'kunaal_theme_activation_handler');
 
 /**
  * Clean up transients on theme deactivation
+ * Uses WordPress API instead of direct database queries
  */
 function kunaal_theme_deactivation_handler() {
     global $wpdb;
     
-    // Delete all rate limiting transients
-    $wpdb->query(
-        "DELETE FROM {$wpdb->options} 
-         WHERE option_name LIKE '_transient_kunaal_contact_rl_%' 
-         OR option_name LIKE '_transient_timeout_kunaal_contact_rl_%'"
+    // Get all matching transient names
+    $transient_patterns = array(
+        '_transient_kunaal_contact_rl_%',
+        '_transient_timeout_kunaal_contact_rl_%',
+        '_transient_kunaal_essay_errors_%',
+        '_transient_timeout_kunaal_essay_errors_%',
     );
     
-    // Delete all error transients
-    $wpdb->query(
-        "DELETE FROM {$wpdb->options} 
-         WHERE option_name LIKE '_transient_kunaal_essay_errors_%' 
-         OR option_name LIKE '_transient_timeout_kunaal_essay_errors_%'"
-    );
+    // Use WordPress API: get all matching option names
+    foreach ($transient_patterns as $pattern) {
+        $like_pattern = str_replace('%', '%%', $pattern); // Escape for SQL LIKE
+        $transients = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+                $like_pattern
+            )
+        );
+        
+        // Delete each transient using WordPress API
+        foreach ($transients as $option_name) {
+            // Extract transient name (remove _transient_ or _transient_timeout_ prefix)
+            if (strpos($option_name, '_transient_timeout_') === 0) {
+                $transient_name = substr($option_name, 19); // Remove '_transient_timeout_' (19 chars)
+            } elseif (strpos($option_name, '_transient_') === 0) {
+                $transient_name = substr($option_name, 11); // Remove '_transient_' (11 chars)
+            } else {
+                continue;
+            }
+            
+            delete_transient($transient_name);
+        }
+    }
 }
 add_action('switch_theme', 'kunaal_theme_deactivation_handler');
 

@@ -137,8 +137,10 @@
   --ps: 1;
   transform: scale(var(--ps));
 }
-.avatar:hover img {
-  filter: grayscale(0) !important;
+/* Override grayscale on hover - use higher specificity */
+.avatar:hover img,
+.avatar[data-hover="true"] img {
+  filter: grayscale(0);
   --ps: 1.06;
   cursor: pointer;
 }

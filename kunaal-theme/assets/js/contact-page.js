@@ -183,7 +183,12 @@
           fetch(window.kunaalTheme.ajaxUrl, {
             method: 'POST',
             body: formData
-          }).catch(function() {});
+          }).catch(function(error) {
+            // Silently fail - form submission error handling is done in main handler
+            if (window.console && window.console.warn) {
+              window.console.warn('[kunaal-theme] Contact form fetch failed:', error);
+            }
+          });
         }
         
         debugLog('contact-page.js', 'Contact page background CSS computed styles', {
