@@ -195,21 +195,7 @@ endif;
 
 <?php
 // Panorama after numbers
-if (!empty($panoramas['after_numbers'])) :
-    foreach ($panoramas['after_numbers'] as $panorama) :
-        $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
-?>
-<!-- PANORAMA -->
-<div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
-    <div class="panorama-inner">
-        <img alt="" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
-    </div>
-</div>
-<?php
-    endforeach;
-endif;
+kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
 ?>
 
 <?php if ($rabbit_holes_show && !empty($rabbit_holes)) : ?>
@@ -249,22 +235,7 @@ endif;
 
 <?php
 // Panorama after rabbit holes
-if (!empty($panoramas['after_rabbit_holes'])) :
-    foreach ($panoramas['after_rabbit_holes'] as $panorama) :
-        $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
-        $squeeze_class = ' squeeze-after-rabbit';
-?>
-<!-- PANORAMA -->
-<div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class . $squeeze_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
-    <div class="panorama-inner">
-        <img alt="" class="panorama-img" decoding="async" fetchpriority="high" loading="eager" src="<?php echo esc_url($panorama['image']); ?>"/>
-    </div>
-</div>
-<?php
-    endforeach;
-endif;
+kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-after-rabbit after-rabbit-holes');
 ?>
 
 <?php if (($books_show && !empty($books)) || ($digital_show && !empty($digital))) : ?>
@@ -387,21 +358,7 @@ endif;
 
 <?php
 // Panorama after places
-if (!empty($panoramas['after_places'])) :
-    foreach ($panoramas['after_places'] as $panorama) :
-        $height_class = 'h-' . esc_attr($panorama['height']);
-        $cut_class = $panorama['cut'] !== 'none' ? PANORAMA_CUT_PREFIX . esc_attr($panorama['cut']) : '';
-        $bg_class = $panorama['bg'] === 'warm' ? PANORAMA_BG_WARM : '';
-?>
-<!-- PANORAMA -->
-<div class="panorama <?php echo esc_attr($height_class . $cut_class . $bg_class); ?>" data-speed="<?php echo esc_attr($panorama['speed']); ?>">
-    <div class="panorama-inner">
-        <img alt="" class="panorama-img" decoding="async" loading="lazy" src="<?php echo esc_url($panorama['image']); ?>"/>
-    </div>
-</div>
-<?php
-    endforeach;
-endif;
+kunaal_render_panoramas($panoramas['after_places'] ?? array());
 ?>
 
 <?php if ($inspirations_show && !empty($inspirations)) : ?>

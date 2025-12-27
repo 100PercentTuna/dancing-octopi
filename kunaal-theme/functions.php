@@ -117,6 +117,7 @@ kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/pdf-generator.php');
 
 // About Page Customizer V22 (new polished design)
 kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/about-customizer-v22.php');
+kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/about-helpers.php');
 
 // Block Registration
 kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/blocks.php');
