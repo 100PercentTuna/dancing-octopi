@@ -58,8 +58,44 @@ If you prefer using the Deployer for Git WordPress plugin:
 ## Troubleshooting
 
 ### Deployment fails with "Permission denied"
-- Verify FTP credentials are correct
-- Check that FTP user has write permissions to `/wp-content/themes/`
+
+**Common causes and solutions:**
+
+1. **Incorrect credentials**
+   - Double-check `FTP_USERNAME` and `FTP_PASSWORD` in GitHub Secrets
+   - Ensure no extra spaces or special characters
+   - Try logging in manually with an SFTP client (FileZilla, WinSCP) to verify credentials
+
+2. **Wrong port**
+   - Default SFTP port is 22, but some hosts use different ports (2222, 22222, etc.)
+   - Add `FTP_PORT` secret if your server uses a non-standard port
+   - Check your hosting provider's documentation
+
+3. **SSH key authentication required**
+   - Some servers disable password authentication and require SSH keys
+   - If your server requires keys, you'll need to:
+     - Generate an SSH key pair
+     - Add the public key to your server's `~/.ssh/authorized_keys`
+     - Add the private key as a GitHub secret `SSH_PRIVATE_KEY`
+     - Update the workflow to use key-based auth (see alternative workflow below)
+
+4. **Incorrect remote path**
+   - Verify the path exists: `/html/wp-content/themes/` or `/wp-content/themes/`
+   - Add `FTP_REMOTE_PATH` secret if your path is different
+   - Ensure the FTP user has write permissions to that directory
+
+5. **Server restrictions**
+   - Some hosts block automated deployments
+   - Check if your hosting provider allows SFTP from GitHub Actions IPs
+   - Contact hosting support if needed
+
+**Quick test:**
+```bash
+# Test SFTP connection manually
+sftp -P 22 username@your-server.com
+# Enter password when prompted
+# If this works, credentials are correct
+```
 
 ### Theme not updating on site
 - Clear WordPress cache (WP Super Cache, W3 Total Cache, etc.)

@@ -170,15 +170,20 @@ img { display: block; max-width: 100%; }
 .skip-link:focus{ left: 12px; }
 
 /* Scroll-reveal primitives (animated via GSAP) */
-/* Progressive enhancement: content visible by default, only hide if JS loads */
-body:not(.js) [data-reveal] {
+/* Progressive enhancement: content visible by default */
+/* Only hide if JS successfully loads AND GSAP is available */
+[data-reveal] {
+  /* Default: visible - let JS hide if needed */
+  opacity: 1;
+  transform: none;
+  will-change: transform, opacity;
+}
+
+/* If JS fails or GSAP doesn't load, keep everything visible */
+body:not(.js) [data-reveal],
+body.js:not(.gsap-ready) [data-reveal] {
   opacity: 1 !important;
   transform: none !important;
-}
-body.js [data-reveal] { 
-  will-change: transform, opacity; 
-  /* Initially visible - JS will animate if available */
-  opacity: 1;
 }
 
 /* Big, faint "gallery label" words drifting behind sections */
@@ -483,7 +488,9 @@ body.page-template-page-about .hero,
 }
 
 @media (max-width: 900px) {
-  .hero {
+  /* Mobile hero - must match scoped selector */
+  body.page-template-page-about .hero,
+  .page-template-page-about .hero {
     grid-template-columns: 30px 1fr 1fr 30px;
     grid-template-rows: minmax(150px, 1fr) minmax(150px, 1fr) auto;
     height: auto; /* Remove fixed height on mobile */
@@ -491,7 +498,7 @@ body.page-template-page-about .hero,
     padding-top: 0;
     /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
     grid-auto-rows: 0;
-    overflow: hidden; /* Prevent photos from overflowing below text */
+    overflow: visible !important; /* Allow dog-ear accent to show, prevent clipping */
   }
   .hero-text {
     grid-column: 1 / -1;
@@ -512,8 +519,8 @@ body.page-template-page-about .hero,
   /* Explicitly ensure hero intro and meta are visible on mobile */
   .hero-text .hero-intro,
   .hero-text .hero-meta {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1 !important;
+    transform: translateY(0) !important;
   }
   
   /* Mobile: ensure hero photos fill width without whitespace */
@@ -521,12 +528,11 @@ body.page-template-page-about .hero,
     min-height: 150px;
   }
   
-  /* Mobile: Hero photo with dog-ear should be prominently displayed */
+  /* Mobile: Hero photo with dog-ear (first photo) - keep in grid but ensure accent shows */
   .hero-photo.has-accent {
-    grid-column: 1 / -1; /* Full width */
-    grid-row: 2; /* Dedicated row */
-    min-height: 300px; /* Ensure adequate height */
-    order: 0; /* Control position in grid */
+    /* Keep in normal grid flow - don't force full width */
+    overflow: visible !important; /* Ensure accent shows */
+    z-index: 2; /* Ensure accent is above other elements */
   }
   
   /* Prevent clipping at top for hero photo */
@@ -534,20 +540,23 @@ body.page-template-page-about .hero,
     object-position: center top;
   }
   
-  /* Mobile: Ensure all photos stay in first two rows, not below text */
-  /* Explicitly place first 4 photos in grid positions */
+  /* Mobile: Ensure first 4 photos stay in rows 1-2, not below text */
+  /* Photo 1 (has accent) - row 1, column 2 */
   .hero-photo:nth-child(1) { 
     grid-column: 2; 
     grid-row: 1; 
   }
+  /* Photo 2 - row 1, column 3 */
   .hero-photo:nth-child(2) { 
     grid-column: 3; 
     grid-row: 1; 
   }
+  /* Photo 3 - row 2, column 2 */
   .hero-photo:nth-child(3) { 
     grid-column: 2; 
     grid-row: 2; 
   }
+  /* Photo 4 - row 2, column 3 */
   .hero-photo:nth-child(4) { 
     grid-column: 3; 
     grid-row: 2; 

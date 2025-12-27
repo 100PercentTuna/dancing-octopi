@@ -63,7 +63,10 @@
     debugLog('about-page-v22.js:36', 'GSAP check', {gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger}, 'H2.1');
     // #endregion
     
+    // Mark elements as GSAP-ready only if GSAP is available
     if (gsapOk) {
+      // Add class to body so CSS knows GSAP is ready
+      document.body.classList.add('gsap-ready');
       try { 
         window.gsap.registerPlugin(window.ScrollTrigger); 
       } catch (e) {
@@ -207,7 +210,7 @@
         var immediateRender = true;
         
         try {
-          // Set initial state before animation (progressive enhancement)
+          // Set initial state for animation
           window.gsap.set(el, { opacity: 0, x: x, y: y });
           
           var st = window.gsap.from(el, {
@@ -224,12 +227,20 @@
               refreshPriority: 1,
               invalidateOnRefresh: true, // Recalculate on resize
               onEnter: function() {
-                // Ensure final state is always opacity:1, y:0
-                window.gsap.set(el, { opacity: 1, x: 0, y: 0 });
+                // Ensure final state is always opacity:1, y:0 - use clearProps to remove all GSAP styles
+                window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
+                el.style.opacity = '1';
+                el.style.transform = 'none';
               },
               onEnterBack: function() {
                 // Ensure final state when scrolling back
-                window.gsap.set(el, { opacity: 1, x: 0, y: 0 });
+                window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
+                el.style.opacity = '1';
+                el.style.transform = 'none';
+              },
+              onLeave: function() {
+                // Keep visible when scrolling past
+                window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
               }
             }
           });

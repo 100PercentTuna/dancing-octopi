@@ -4618,6 +4618,8 @@ main {
   .ledgerForm { grid-template-columns: 1fr; }
   .ledgerLines { inset: 52px 10px 14px 14px; }
   .ledgerTextarea textarea { padding-left: 14px; }
-  .ledgerQrGrid { grid-template-columns: 1fr; }
+  .ledgerQrGrid { 
+    grid-template-columns: 1fr; 
+  }
 }
 
