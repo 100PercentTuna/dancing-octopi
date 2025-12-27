@@ -112,6 +112,13 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
             <span class="value"><?php echo esc_html($hero_reading); ?></span>
         </div>
     </div>
+    
+    <!-- Scroll indicator - positioned within hero-text area, not center of page -->
+    <div class="scroll-indicator" id="scrollIndicator">
+        <span class="scroll-indicator-text">Scroll</span>
+        <div class="scroll-indicator-line"></div>
+        <div class="scroll-indicator-chevron"></div>
+    </div>
 </div>
 
 <?php
@@ -134,13 +141,6 @@ for ($i = 5; $i < min(10, $photo_count); $i++) :
     <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
-
-<!-- Scroll indicator - positioned absolutely within hero section -->
-<div class="scroll-indicator" id="scrollIndicator">
-    <span class="scroll-indicator-text">Scroll</span>
-    <div class="scroll-indicator-line"></div>
-    <div class="scroll-indicator-chevron"></div>
-</div>
 </section>
 
 <?php

@@ -309,7 +309,7 @@ a:focus-visible, button:focus-visible {
   width: 28px;
   height: 28px;
   background: linear-gradient(135deg, var(--blue, #1E5AFF) 50%, transparent 50%);
-  z-index: 20; /* Increased from 10 to 20 to ensure it's above image (z-index: 1) */
+  z-index: 2; /* Match reference HTML - z-index: 2 */
   pointer-events: none;
   /* Ensure accent is not clipped */
   clip-path: none;
@@ -329,7 +329,7 @@ a:focus-visible, button:focus-visible {
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px; /* Increased from 9px - mono font too small */
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--warm);
@@ -392,8 +392,9 @@ a:focus-visible, button:focus-visible {
 .scroll-indicator {
   position: absolute;
   bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  /* Position relative to hero-text, not center of page */
+  left: 50%; /* Center horizontally within hero-text */
+  transform: translateX(-50%); /* Center horizontally */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -403,11 +404,8 @@ a:focus-visible, button:focus-visible {
   transition: opacity 0.5s ease;
   pointer-events: none;
   color: var(--warm);
-  /* Exclude from grid layout - span full grid area but stay absolutely positioned */
-  grid-column: 1 / -1;
-  grid-row: 1 / -1;
-  /* Ensure it stays within viewport bounds */
-  max-height: calc(100vh - 4rem);
+  /* Position within hero-text container */
+  width: 100%; /* Full width of hero-text for centering */
 }
 .scroll-indicator.hidden { 
   opacity: 0;
@@ -441,8 +439,14 @@ a:focus-visible, button:focus-visible {
 }
 /* Scroll indicator animation - down/up movement (not side) */
 @keyframes scrollBounce {
-  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
-  50% { transform: rotate(45deg) translateY(6px); opacity: 0.5; }
+  0%, 100% { 
+    transform: rotate(45deg) translateY(0); 
+    opacity: 1; 
+  }
+  50% { 
+    transform: rotate(45deg) translateY(6px); /* Vertical movement only */
+    opacity: 0.5; 
+  }
 }
 
 @media (max-width: 900px) {
@@ -475,12 +479,16 @@ a:focus-visible, button:focus-visible {
     transform: translateY(0);
   }
   
-  /* Mobile: Reorder photos using CSS order - move dog-ear photo (3rd) to second row */
+  /* Mobile: Reorder photos - dog-ear photo should NOT be a corner image */
+  /* Keep dog-ear photo in a prominent position (not corner) */
   .hero-photo:nth-child(1) { order: 1; }
   .hero-photo:nth-child(2) { order: 2; }
-  .hero-photo:nth-child(3) { order: 5; } /* Dog-ear: move to second row */
-  .hero-photo:nth-child(4) { order: 3; }
-  .hero-photo:nth-child(5) { order: 4; }
+  .hero-photo:nth-child(3) { 
+    order: 3; /* Keep dog-ear in first row, not corner */
+    grid-column: 3; /* Place in middle of first row */
+  }
+  .hero-photo:nth-child(4) { order: 4; }
+  .hero-photo:nth-child(5) { order: 5; }
   .hero-photo:nth-child(6) { order: 6; }
   .hero-photo:nth-child(7) { order: 7; }
   .hero-photo:nth-child(8) { order: 8; }
@@ -520,7 +528,7 @@ a:focus-visible, button:focus-visible {
 }
 .section-label {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px; /* Increased from 9px - mono font too small */
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--warm);
@@ -529,6 +537,7 @@ a:focus-visible, button:focus-visible {
 .section-title {
   position: relative;
   padding-bottom: 10px;
+  border-bottom: 1px solid var(--warmBorder); /* Thin line */
   font-family: var(--serif);
   font-size: clamp(1.25rem, 2.5vw, 1.5rem);
   font-weight: 400;
@@ -540,13 +549,14 @@ a:focus-visible, button:focus-visible {
   content:"";
   position:absolute;
   left:0;
-  bottom:2px;
+  bottom:0; /* Position exactly on the border-bottom (thin line) */
   width:40px;
   height:2px;
   background:var(--blue);
   transform-origin:left;
   transform:scaleX(0);
   animation:growLine 600ms ease 350ms forwards;
+  z-index: 1; /* Ensure blue line is above the border */
 }
 
 /* =============================================
@@ -581,7 +591,7 @@ a:focus-visible, button:focus-visible {
 }
 .number-label {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px; /* Increased from 8px - mono font too small */
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted2);
@@ -906,14 +916,16 @@ a:focus-visible, button:focus-visible {
   /* Ensure space for at least 2 lines - prevents row misalignment */
   min-height: calc(2 * 11px * 1.3); /* 2 lines × font-size × line-height = ~28.6px */
   /* Allow wrapping but limit to 2 lines */
-  overflow: hidden;
-  display: -webkit-box;
+  overflow: visible; /* Changed from hidden to visible to allow wrapping */
+  display: block; /* Changed from -webkit-box to block for proper wrapping */
+  word-wrap: break-word; /* Allow long words to wrap */
+  word-break: break-word; /* Break long words if needed */
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 .media-subtitle {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 9px; /* Increased from 8px - mono font too small */
   color: var(--muted2);
 }
 .media-link {
@@ -1119,7 +1131,8 @@ a:focus-visible, button:focus-visible {
   color: var(--blue);
   margin-bottom: 0.75rem;
 }
-.say-hello-links {
+.say-hello-links,
+.say-hello-social {
   display: flex;
   justify-content: center;
   gap: 0.5rem;

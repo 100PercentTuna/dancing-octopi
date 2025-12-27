@@ -228,8 +228,26 @@
                 // Check if element is actually visible in viewport (accounting for negative positions)
                 var isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
                 
-                if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
-                  // Element should be visible - force it if ScrollTrigger left it hidden
+                // For hero text elements, always check if they're in viewport and force visible if needed
+                // This fixes the issue where hero text disappears on wide screens
+                if (newIsHeroText && (afterIsInViewport || isActuallyVisible)) {
+                  var computed = window.getComputedStyle(el);
+                  var currentOpacity = parseFloat(computed.opacity);
+                  if (currentOpacity < 0.5 || isNaN(currentOpacity)) {
+                    // Force visible and reset transforms
+                    window.gsap.set(el, { 
+                      opacity: 1, 
+                      x: 0, 
+                      y: 0, 
+                      clearProps: 'all' 
+                    });
+                    // Re-trigger ScrollTrigger to recalculate
+                    if (st && st.scrollTrigger) {
+                      st.scrollTrigger.refresh();
+                    }
+                  }
+                } else if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
+                  // For non-hero elements, use existing logic
                   var computed = window.getComputedStyle(el);
                   var currentOpacity = parseFloat(computed.opacity);
                   if (currentOpacity < 0.5 || isNaN(currentOpacity)) {

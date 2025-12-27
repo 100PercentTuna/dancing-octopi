@@ -431,11 +431,13 @@ main {
     border: none;
     background: transparent;
     box-shadow: none;
-    margin-left: 4px; /* Snugger to menu */
+    margin-left: 8px; /* Closer to menu - reduced gap */
     padding: 0;
     /* Ensure same vertical alignment as nav */
     align-self: center;
     display: flex;
+    padding-top: 2px; /* Match nav vertical alignment */
+    line-height: 1; /* Match nav line-height */
     align-items: center;
     justify-content: center;
   }
@@ -1280,7 +1282,7 @@ h2::after {
   align-self: center;
 }
 .tag {
-  color: rgba(255,255,255,.88);
+  color: var(--ink); /* Use CSS variable instead of white */
   font-size: 11px;
   font-family: var(--mono);
 }
