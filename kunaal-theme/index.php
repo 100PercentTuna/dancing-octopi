@@ -44,7 +44,7 @@ get_header();
                 <span><?php echo esc_html(get_the_date('j F Y')); ?></span>
                 <?php if ($read_time) : ?>
                   <span class="dot"></span>
-                  <span><?php echo esc_html($read_time); ?> min</span>
+                  <span><?php echo esc_html($read_time); ?> <?php esc_html_e('min', 'kunaal-theme'); ?></span>
                 <?php endif; ?>
               </p>
               <?php if ($subtitle) : ?>
@@ -57,7 +57,7 @@ get_header();
     </div>
     <?php the_posts_navigation(); ?>
   <?php else : ?>
-    <p class="no-posts">No content found.</p>
+    <p class="no-posts"><?php esc_html_e('No content found.', 'kunaal-theme'); ?></p>
   <?php endif; ?>
 
 <?php get_footer(); ?>

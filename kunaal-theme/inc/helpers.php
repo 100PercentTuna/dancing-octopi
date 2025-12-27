@@ -12,17 +12,24 @@ if (!defined('ABSPATH')) {
 
 /**
  * Helper: Get initials
+ * 
+ * @return string Uppercase initials from author first and last name
  */
-function kunaal_get_initials() {
-    $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
-    $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
-    return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
+if (!function_exists('kunaal_get_initials')) {
+    function kunaal_get_initials() {
+        $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
+        $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
+        return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
+    }
 }
 
 /**
  * Helper: Output Subscribe Section
+ * 
+ * @return void
  */
-function kunaal_subscribe_section() {
+if (!function_exists('kunaal_subscribe_section')) {
+    function kunaal_subscribe_section() {
     if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
         return;
     }
@@ -36,23 +43,29 @@ function kunaal_subscribe_section() {
     $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
     $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
     $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
+    $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
     
     ?>
     <section class="subscribe-section reveal">
         <h3><?php echo esc_html($heading); ?></h3>
         <p><?php echo esc_html($description); ?></p>
-        <form class="subscribe-form" action="<?php echo esc_url($form_action); ?>" method="post">
-            <input type="email" name="email" placeholder="Your email address" required />
-            <button type="submit">Subscribe</button>
+        <form class="subscribe-form" data-subscribe-form="bottom" data-subscribe-mode="<?php echo esc_attr($mode); ?>" action="<?php echo $mode === 'external' ? esc_url($form_action) : ''; ?>" method="post" novalidate>
+            <input type="email" name="email" placeholder="<?php echo esc_attr__('Your email address', 'kunaal-theme'); ?>" required />
+            <button type="submit"><?php echo esc_html__('Subscribe', 'kunaal-theme'); ?></button>
         </form>
+        <div class="subscribe-status" aria-live="polite"></div>
     </section>
     <?php
+    }
 }
 
 /**
  * Helper: Get all topics with counts
+ * 
+ * @return array Array of topic data with slug, name, and count
  */
-function kunaal_get_all_topics() {
+if (!function_exists('kunaal_get_all_topics')) {
+    function kunaal_get_all_topics() {
     $topics = get_terms(array(
         'taxonomy' => 'topic',
         'hide_empty' => false,
@@ -71,12 +84,18 @@ function kunaal_get_all_topics() {
         );
     }
     return $result;
+    }
 }
 
 /**
  * Helper: Get card image URL
+ * 
+ * @param int    $post_id Post ID
+ * @param string $size    Image size
+ * @return string Image URL or empty string
  */
-function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
+if (!function_exists('kunaal_get_card_image_url')) {
+    function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
     $card_image = get_post_meta($post_id, 'kunaal_card_image', true);
     if ($card_image) {
         return wp_get_attachment_image_url($card_image, $size);
@@ -85,6 +104,7 @@ function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
         return get_the_post_thumbnail_url($post_id, $size);
     }
     return '';
+    }
 }
 
 /**
@@ -151,24 +171,28 @@ if (!function_exists('kunaal_render_atmo_images')) {
  * 
  * @return array All theme modification values
  */
-function kunaal_get_theme_mods() {
+if (!function_exists('kunaal_get_theme_mods')) {
+    function kunaal_get_theme_mods() {
     static $mods = null;
     if ($mods === null) {
         $mods = get_theme_mods();
     }
     return $mods;
+    }
 }
 
 /**
  * Get theme mod with caching
  * 
- * @param string $key Theme mod key
- * @param mixed $default Default value if not set
+ * @param string $key     Theme mod key
+ * @param mixed  $default Default value if not set
  * @return mixed Theme mod value or default
  */
-function kunaal_mod($key, $default = '') {
+if (!function_exists('kunaal_mod')) {
+    function kunaal_mod($key, $default = '') {
     $mods = kunaal_get_theme_mods();
     return isset($mods[$key]) ? $mods[$key] : $default;
+    }
 }
 
 // Removed: kunaal_build_messenger_target_url and kunaal_qr_img_src - no longer used (messenger QR codes removed)

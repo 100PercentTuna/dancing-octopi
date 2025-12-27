@@ -321,31 +321,8 @@ add_action('init', 'kunaal_register_blocks', 10);
 // EDITOR ASSETS
 // ========================================
 
-/**
- * Enqueue Block Editor Assets
- * 
- * Loads fonts and styles needed for block previews
- * to match the frontend appearance.
- */
-function kunaal_enqueue_block_editor_assets() {
-    // Caveat font for sidenote block preview
-    wp_enqueue_style(
-        'kunaal-caveat-editor',
-        'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&display=swap',
-        array(),
-        null
-    );
-    
-    // Theme's main stylesheet for block previews
-    wp_enqueue_style(
-        'kunaal-blocks-editor',
-        KUNAAL_THEME_URI . '/style.css',
-        array(),
-        KUNAAL_THEME_VERSION
-    );
-}
-// Consolidated into kunaal_enqueue_editor_assets in functions.php to avoid conflicts
-// Hook removed - assets enqueued in consolidated function
+// Block editor assets are now enqueued in functions.php via kunaal_enqueue_editor_assets()
+// This consolidation avoids conflicts and centralizes asset management
 
 // ========================================
 // REVEAL ANIMATIONS

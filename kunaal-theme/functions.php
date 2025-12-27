@@ -1,9 +1,9 @@
 ﻿<?php
 /**
  * Kunaal Theme Functions
- * 
+ *
  * Main theme functions file. This file is organized into sections:
- * 
+ *
  * 1. CONSTANTS & INCLUDES
  * 2. THEME SETUP
  * 3. ASSET ENQUEUING
@@ -100,6 +100,25 @@ define('KUNAAL_THEME_VERSION', '4.20.8');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
+// Theme constants for configurable values
+if (!defined('KUNAAL_READING_SPEED_WPM')) {
+    define('KUNAAL_READING_SPEED_WPM', 200); // Words per minute for read time calculation
+}
+if (!defined('KUNAAL_HOME_POSTS_LIMIT')) {
+    define('KUNAAL_HOME_POSTS_LIMIT', 6); // Default number of posts to show on home page
+}
+
+// Panorama constants for About page
+if (!defined('PANORAMA_CUT_PREFIX')) {
+    define('PANORAMA_CUT_PREFIX', ' cut-'); // CSS class prefix for panorama cut styles (with leading space)
+}
+if (!defined('PANORAMA_BG_WARM')) {
+    define('PANORAMA_BG_WARM', ' bg-warm'); // CSS class for warm background panorama (with leading space)
+}
+if (!defined('KUNAAL_ERROR_MESSAGE_GENERIC')) {
+    define('KUNAAL_ERROR_MESSAGE_GENERIC', 'An error occurred. Please try again.'); // Generic error message for AJAX responses
+}
+
 /**
  * Asset version helper (cache-bust on managed hosts/CDNs).
  */
@@ -122,9 +141,9 @@ kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/about-helpers.php');
 // Block Registration
 kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/blocks.php');
 
-// Note: Helper functions currently live in this file.
-// Do NOT include `inc/helpers.php` here unless the duplicates in this file are removed,
-// otherwise it can cause "Cannot redeclare ..." fatal errors on boot.
+// Helper Functions
+// All helper functions are defined in inc/helpers.php to avoid duplication.
+kunaal_theme_safe_require_once(KUNAAL_THEME_DIR . '/inc/helpers.php');
 
 /**
  * Theme Setup
@@ -244,11 +263,11 @@ function kunaal_enqueue_assets() {
         'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
         'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
     ));
-    
+
     // For contact page, also add inline script to ensure kunaalTheme is available
     // even if main.js loads late or fails
     if (is_page_template('page-contact.php') || (is_page() && get_page_template_slug() === 'page-contact.php')) {
-        wp_add_inline_script('kunaal-theme-main', 
+        wp_add_inline_script('kunaal-theme-main',
             'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(admin_url('admin-ajax.php')) . '" }; }',
             'before'
         );
@@ -267,7 +286,26 @@ function kunaal_enqueue_assets() {
             array(),
             null
         );
+    }
+    
+    // Contact page specific assets
+    if ($is_contact_page) {
+        // Contact page CSS
+        wp_enqueue_style(
+            'kunaal-contact-page',
+            KUNAAL_THEME_URI . '/assets/css/contact-page.css',
+            array('kunaal-theme-style'),
+            kunaal_asset_version('assets/css/contact-page.css')
+        );
         
+        // Contact page JavaScript
+        wp_enqueue_script(
+            'kunaal-contact-page',
+            KUNAAL_THEME_URI . '/assets/js/contact-page.js',
+            array('kunaal-theme-main'),
+            kunaal_asset_version('assets/js/contact-page.js'),
+            true
+        );
     }
     
     // About page specific assets (heavier libraries)
@@ -388,6 +426,11 @@ function kunaal_enqueue_editor_assets() {
             KUNAAL_THEME_VERSION,
             true
         );
+        
+        // Localize editor sidebar script with constants
+        wp_localize_script('kunaal-editor-sidebar', 'kunaalEditor', array(
+            'readingSpeedWpm' => defined('KUNAAL_READING_SPEED_WPM') ? KUNAAL_READING_SPEED_WPM : 200,
+        ));
         
         // Add some CSS for the sidebar
         wp_add_inline_style('wp-edit-post', '
@@ -624,8 +667,8 @@ function kunaal_jotting_meta_box_callback($post) {
     $subtitle = get_post_meta($post->ID, 'kunaal_subtitle', true);
     ?>
     <p>
-        <label for="kunaal_subtitle"><strong>Subtitle/Description</strong></label><br>
-        <input type="text" id="kunaal_subtitle" name="kunaal_subtitle" value="<?php echo esc_attr($subtitle); ?>" style="width:100%;" />
+        <label for="kunaal_jotting_subtitle"><strong>Subtitle/Description</strong></label><br>
+        <input type="text" id="kunaal_jotting_subtitle" name="kunaal_subtitle" value="<?php echo esc_attr($subtitle); ?>" style="width:100%;" />
         <span style="font-size:11px;color:#666;">Short description shown in the jottings list</span>
     </p>
     <?php
@@ -640,7 +683,7 @@ function kunaal_card_image_meta_box_callback($post) {
     ?>
     <div id="kunaal-card-image-container">
         <?php if ($card_image_url) : ?>
-            <img src="<?php echo esc_url($card_image_url); ?>" style="max-width:100%;margin-bottom:10px;" />
+            <img src="<?php echo esc_url($card_image_url); ?>" alt="<?php echo esc_attr__('Card preview', 'kunaal-theme'); ?>" style="max-width:100%;margin-bottom:10px;" />
         <?php endif; ?>
     </div>
     <input type="hidden" id="kunaal_card_image" name="kunaal_card_image" value="<?php echo esc_attr($card_image); ?>" />
@@ -686,7 +729,10 @@ function kunaal_card_image_meta_box_callback($post) {
 
 /**
  * Calculate Reading Time Automatically
- * Based on word count at 200 words per minute
+ * Based on word count at configurable words per minute
+ *
+ * @param int $post_id Post ID
+ * @return int Reading time in minutes
  */
 function kunaal_calculate_reading_time($post_id) {
     $content = get_post_field('post_content', $post_id);
@@ -698,10 +744,9 @@ function kunaal_calculate_reading_time($post_id) {
     // Count words
     $word_count = str_word_count($content);
     
-    // Calculate reading time (200 words per minute)
-    $reading_time = max(1, ceil($word_count / 200));
-    
-    return $reading_time;
+    // Calculate reading time using constant
+    $wpm = defined('KUNAAL_READING_SPEED_WPM') ? KUNAAL_READING_SPEED_WPM : 200;
+    return max(1, ceil($word_count / $wpm));
 }
 
 /**
@@ -1478,7 +1523,7 @@ add_action('customize_register', 'kunaal_customize_register');
 
 /**
  * Enqueue Customizer Preview Script
- * 
+ *
  * Loads JavaScript that handles live preview updates without page refresh.
  * Uses debouncing to prevent excessive updates while typing.
  */
@@ -1543,64 +1588,21 @@ function kunaal_theme_deactivation_handler() {
     
     // Delete all rate limiting transients
     $wpdb->query(
-        "DELETE FROM {$wpdb->options} 
-         WHERE option_name LIKE '_transient_kunaal_contact_rl_%' 
+        "DELETE FROM {$wpdb->options}
+         WHERE option_name LIKE '_transient_kunaal_contact_rl_%'
          OR option_name LIKE '_transient_timeout_kunaal_contact_rl_%'"
     );
     
     // Delete all error transients
     $wpdb->query(
-        "DELETE FROM {$wpdb->options} 
-         WHERE option_name LIKE '_transient_kunaal_essay_errors_%' 
+        "DELETE FROM {$wpdb->options}
+         WHERE option_name LIKE '_transient_kunaal_essay_errors_%'
          OR option_name LIKE '_transient_timeout_kunaal_essay_errors_%'"
     );
 }
 add_action('switch_theme', 'kunaal_theme_deactivation_handler');
 
-/**
- * Helper: Get initials
- */
-if (!function_exists('kunaal_get_initials')) {
-    function kunaal_get_initials() {
-        $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
-        $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
-        return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
-    }
-}
-
-/**
- * Helper: Output Subscribe Section
- */
-if (!function_exists('kunaal_subscribe_section')) {
-    function kunaal_subscribe_section() {
-        if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
-            return;
-        }
-        
-        // Check location setting - only show bottom if 'bottom' or 'both'
-        $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
-        if (!in_array($sub_location, array('bottom', 'both'))) {
-            return;
-        }
-        
-        $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
-        $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
-        $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
-        $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
-        
-        ?>
-    <section class="subscribe-section reveal">
-        <h3><?php echo esc_html($heading); ?></h3>
-        <p><?php echo esc_html($description); ?></p>
-        <form class="subscribe-form" data-subscribe-form="bottom" data-subscribe-mode="<?php echo esc_attr($mode); ?>" action="<?php echo $mode === 'external' ? esc_url($form_action) : ''; ?>" method="post" novalidate>
-            <input type="email" name="email" placeholder="Your email address" required />
-            <button type="submit">Subscribe</button>
-        </form>
-        <div class="subscribe-status" aria-live="polite"></div>
-    </section>
-    <?php
-    }
-}
+// Helper functions are now defined in inc/helpers.php
 
 /**
  * Email delivery (SMTP)
@@ -1758,7 +1760,7 @@ function kunaal_handle_subscribe() {
         wp_die();
     } catch (Exception $e) {
         kunaal_theme_log('Subscribe error', array('error' => $e->getMessage()));
-        wp_send_json_error(array('message' => 'An error occurred. Please try again.'));
+        wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
         wp_die();
     }
 }
@@ -1808,131 +1810,7 @@ function kunaal_handle_subscribe_confirmation_request() {
 }
 add_action('template_redirect', 'kunaal_handle_subscribe_confirmation_request');
 
-/**
- * Helper: Get all topics with counts
- */
-if (!function_exists('kunaal_get_all_topics')) {
-    function kunaal_get_all_topics() {
-    $topics = get_terms(array(
-        'taxonomy' => 'topic',
-        'hide_empty' => false,
-    ));
-
-    if (is_wp_error($topics) || empty($topics)) {
-        return array();
-    }
-
-    $result = array();
-    foreach ($topics as $topic) {
-        $result[] = array(
-            'slug' => $topic->slug,
-            'name' => $topic->name,
-            'count' => $topic->count,
-        );
-    }
-    return $result;
-    }
-}
-
-/**
- * Helper: Get card image URL
- */
-if (!function_exists('kunaal_get_card_image_url')) {
-    function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
-        $card_image = get_post_meta($post_id, 'kunaal_card_image', true);
-        if ($card_image) {
-            return wp_get_attachment_image_url($card_image, $size);
-        }
-        if (has_post_thumbnail($post_id)) {
-            return get_the_post_thumbnail_url($post_id, $size);
-        }
-        return '';
-    }
-}
-
-/**
- * Helper: Render atmosphere images for About page
- * Moved from page-about.php template to prevent side effects
- */
-if (!function_exists('kunaal_render_atmo_images')) {
-    function kunaal_render_atmo_images($position, $images) {
-        if (empty($images)) {
-            return;
-        }
-        
-        foreach ($images as $img) {
-            if ($img['position'] !== $position && $img['position'] !== 'auto') {
-                continue;
-            }
-            if ($img['type'] === 'hidden') {
-                continue;
-            }
-            
-            $clip_class = '';
-            switch ($img['clip']) {
-                case 'angle_bottom':
-                    $clip_class = 'clip-angle-bottom';
-                    break;
-                case 'angle_top':
-                    $clip_class = 'clip-angle-top';
-                    break;
-                case 'angle_both':
-                    $clip_class = 'clip-angle-both';
-                    break;
-            }
-            
-            if ($img['has_quote'] && !empty($img['quote'])) {
-                ?>
-                <section class="about-quote-image about-layer-image">
-                    <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
-                        <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image">
-                    </div>
-                    <div class="about-quote-content reveal-up">
-                        <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
-                        <?php if (!empty($img['quote_attr'])) : ?>
-                        <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                </section>
-                <?php
-            } else {
-                ?>
-                <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
-                    <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
-                    <?php if (!empty($img['caption'])) : ?>
-                    <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
-                    <?php endif; ?>
-                </div>
-                <?php
-            }
-        }
-    }
-}
-
-/**
- * Get all theme mods (cached for request lifetime)
- * 
- * @return array All theme modification values
- */
-function kunaal_get_theme_mods() {
-    static $mods = null;
-    if ($mods === null) {
-        $mods = get_theme_mods();
-    }
-    return $mods;
-}
-
-/**
- * Get theme mod with caching
- * 
- * @param string $key Theme mod key
- * @param mixed $default Default value if not set
- * @return mixed Theme mod value or default
- */
-function kunaal_mod($key, $default = '') {
-    $mods = kunaal_get_theme_mods();
-    return isset($mods[$key]) ? $mods[$key] : $default;
-}
+// Helper functions are now defined in inc/helpers.php
 
 /**
  * AJAX: Filter content
@@ -2061,7 +1939,7 @@ function kunaal_filter_content() {
         wp_die(); // Prevent code execution after JSON response
     } catch (Exception $e) {
         kunaal_theme_log('AJAX filter error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
-        wp_send_json_error(array('message' => 'An error occurred. Please try again.'));
+        wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
         wp_die();
     }
 }
@@ -2259,7 +2137,7 @@ function kunaal_handle_contact_form() {
         }
     } catch (Exception $e) {
         kunaal_theme_log('Contact form error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
-        wp_send_json_error(array('message' => 'An error occurred. Please try again.'));
+        wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
         wp_die();
     }
 }

@@ -247,13 +247,5 @@ function kunaal_get_interest_icon($interest) {
 }
 endif;
 
-/**
- * Get initials from name
- */
-if (!function_exists('kunaal_get_initials')) :
-function kunaal_get_initials() {
-    $first = kunaal_mod('kunaal_author_first_name', 'K');
-    $last = kunaal_mod('kunaal_author_last_name', 'W');
-    return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
-}
-endif;
+// kunaal_get_initials() is now defined in inc/helpers.php
+// This duplicate has been removed to prevent conflicts

@@ -47,16 +47,24 @@
 
     try {
       // Dynamic import based on block type
-      // Note: In production, these will be code-split chunks
+      // 
+      // NOTE: Currently, all blocks resolve to empty init functions because:
+      // 1. Block-specific JavaScript is loaded via view.js files (enqueued in blocks.php)
+      // 2. view.js files run automatically when enqueued and handle their own initialization
+      // 3. This lazy-loading system primarily handles the IntersectionObserver logic
+      //    and loading states, while actual block functionality is handled by view.js
+      //
+      // Future enhancement: If code-splitting is needed, actual dynamic imports
+      // can be implemented here to load block-specific chunks on demand.
       const moduleMap = {
-        'heatmap': () => Promise.resolve({ init: () => {} }), // Already initialized by view.js
-        'dumbbell-chart': () => Promise.resolve({ init: () => {} }),
-        'slopegraph': () => Promise.resolve({ init: () => {} }),
-        'small-multiples': () => Promise.resolve({ init: () => {} }),
-        'statistical-distribution': () => Promise.resolve({ init: () => {} }),
-        'flow-diagram': () => Promise.resolve({ init: () => {} }),
-        'network-graph': () => Promise.resolve({ init: () => {} }),
-        'data-map': () => Promise.resolve({ init: () => {} }),
+        'heatmap': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/heatmap/view.js
+        'dumbbell-chart': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/dumbbell-chart/view.js
+        'slopegraph': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/slopegraph/view.js
+        'small-multiples': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/small-multiples/view.js
+        'statistical-distribution': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/statistical-distribution/view.js
+        'flow-diagram': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/flow-diagram/view.js
+        'network-graph': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/network-graph/view.js
+        'data-map': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/data-map/view.js
       };
 
       const loader = moduleMap[blockType];

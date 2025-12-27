@@ -11,9 +11,7 @@
 
 get_header();
 
-// Constants for panorama class prefixes
-define('PANORAMA_CUT_PREFIX', ' cut-');
-define('PANORAMA_BG_WARM', ' bg-warm');
+// Panorama constants are now defined in functions.php
 
 // Generate CSS variables for category colors (single source of truth)
 $categories = kunaal_get_categories_v22();

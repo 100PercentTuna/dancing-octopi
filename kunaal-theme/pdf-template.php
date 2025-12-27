@@ -11,14 +11,14 @@
       <p class="pdf-subtitle"><?php echo esc_html($subtitle); ?></p>
     <?php endif; ?>
     
-    <div class="pdf-byline">
-      <strong>by <?php echo esc_html($author_name); ?></strong>
+      <div class="pdf-byline">
+      <strong><?php echo esc_html(sprintf(__('by %s', 'kunaal-theme'), $author_name)); ?></strong>
     </div>
     
     <div class="pdf-meta">
       <p><?php echo esc_html($date); ?></p>
       <?php if ($read_time) : ?>
-        <p><?php echo esc_html($read_time); ?> minute read</p>
+        <p><?php echo esc_html($read_time); ?> <?php esc_html_e('minute read', 'kunaal-theme'); ?></p>
       <?php endif; ?>
       <?php if ($topics && !is_wp_error($topics)) : ?>
         <p class="pdf-topics">
@@ -55,12 +55,12 @@
   <div class="pdf-footer-info">
     <hr />
     <div class="pdf-author-box">
-      <h4>About the Author</h4>
+      <h4><?php esc_html_e('About the Author', 'kunaal-theme'); ?></h4>
       <p><strong><?php echo esc_html($author_name); ?></strong></p>
       <?php if ($author_email) : ?>
-        <p>Email: <?php echo esc_html($author_email); ?></p>
+        <p><?php esc_html_e('Email:', 'kunaal-theme'); ?> <?php echo esc_html($author_email); ?></p>
       <?php endif; ?>
-      <p>Website: <?php echo esc_html($site_url); ?></p>
+      <p><?php esc_html_e('Website:', 'kunaal-theme'); ?> <?php echo esc_html($site_url); ?></p>
     </div>
   </div>
 </div>

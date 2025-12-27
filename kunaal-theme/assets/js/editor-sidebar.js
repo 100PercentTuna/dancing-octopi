@@ -16,9 +16,10 @@
         if (!content) return 0;
         // Strip HTML tags
         const text = content.replace(/<[^>]*>/g, '');
-        // Count words (average reading speed: 200 words per minute)
+        // Count words (use localized reading speed or default to 200)
+        const wpm = (window.kunaalEditor && window.kunaalEditor.readingSpeedWpm) ? window.kunaalEditor.readingSpeedWpm : 200;
         const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-        const minutes = Math.ceil(words / 200);
+        const minutes = Math.ceil(words / wpm);
         return Math.max(1, minutes);
     };
 
@@ -195,7 +196,7 @@
                     wp.element.createElement(
                         'p',
                         { style: { fontSize: '12px', color: '#666', marginTop: '4px' } },
-                        'Click Auto to calculate from content (~200 words/min)'
+                        'Click Auto to calculate from content (~' + ((window.kunaalEditor && window.kunaalEditor.readingSpeedWpm) ? window.kunaalEditor.readingSpeedWpm : 200) + ' words/min)'
                     )
                 ),
                 wp.element.createElement(TextareaControl, {

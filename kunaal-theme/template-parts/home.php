@@ -41,8 +41,9 @@ if (!function_exists('kunaal_home_query')) {
     }
 }
 
-$essays_query = kunaal_home_query('essay', 6);
-$jottings_query = kunaal_home_query('jotting', 6);
+$home_posts_limit = defined('KUNAAL_HOME_POSTS_LIMIT') ? KUNAAL_HOME_POSTS_LIMIT : 6;
+$essays_query = kunaal_home_query('essay', $home_posts_limit);
+$jottings_query = kunaal_home_query('jotting', $home_posts_limit);
 
 $total_essays = wp_count_posts('essay')->publish;
 $total_jottings = wp_count_posts('jotting')->publish;
@@ -135,9 +136,9 @@ $kunaal_home_used_fallback_jottings = false;
     <div class="sectionHead">
       <h2><?php esc_html_e('Essays', 'kunaal-theme'); ?></h2>
       <span class="sectionCount">
-        <span id="essayCountShown"><?php echo esc_html($shown_essays); ?></span> 
+        <span id="essayCountShown"><?php echo esc_html($shown_essays); ?></span>
         <span id="essayLabel"><?php echo $shown_essays === 1 ? esc_html__('essay', 'kunaal-theme') : esc_html__('essays', 'kunaal-theme'); ?></span>
-        <?php if ($total_essays > 6) : ?>
+        <?php if ($total_essays > $home_posts_limit) : ?>
           &nbsp;&middot;&nbsp;
           <a href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>" class="uBlue"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
         <?php endif; ?>
@@ -162,7 +163,7 @@ $kunaal_home_used_fallback_jottings = false;
               }
           }
           ?>
-          <a href="<?php the_permalink(); ?>" class="card" role="listitem" 
+          <a href="<?php the_permalink(); ?>" class="card" role="listitem"
              data-title="<?php echo esc_attr(get_the_title()); ?>"
              data-dek="<?php echo esc_attr($subtitle); ?>"
              data-date="<?php echo esc_attr(get_the_date('Y-m-d')); ?>"
@@ -298,7 +299,7 @@ $kunaal_home_used_fallback_jottings = false;
       <span class="sectionCount">
         <span id="jotCountShown"><?php echo esc_html($shown_jottings); ?></span>
         <span id="jotLabel"><?php echo $shown_jottings === 1 ? esc_html__('quick jotted-down rough idea', 'kunaal-theme') : esc_html__('quick jotted-down rough ideas', 'kunaal-theme'); ?></span>
-        <?php if ($total_jottings > 6) : ?>
+        <?php if ($total_jottings > $home_posts_limit) : ?>
           &nbsp;&middot;&nbsp;
           <a href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>" class="uBlue"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
         <?php endif; ?>
@@ -344,7 +345,7 @@ $kunaal_home_used_fallback_jottings = false;
       <?php
       $kunaal_home_used_fallback_jottings = true;
       $GLOBALS['kunaal_home_used_fallback_jottings'] = true;
-      $jotting_ids = kunaal_home_recent_ids('jotting', 6);
+      $jotting_ids = kunaal_home_recent_ids('jotting', $home_posts_limit);
       ?>
       <?php if (!empty($jotting_ids)) : ?>
       <div class="ledger" id="jotList" role="list" data-post-type="jotting">

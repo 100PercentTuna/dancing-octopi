@@ -4,6 +4,7 @@
  */
 (function() {
   'use strict';
+  'use strict';
 
   // Only enable "hide until revealed" animations once this script is actually running.
   // If this JS fails to load/parse on a client, we want server-rendered content visible.
@@ -1033,7 +1034,7 @@
       initCodeBlocks();
       initAccordions();
       initInlineFormatTouch();
-      // About page functionality is handled by about-page.js
+      // About page functionality is handled by about-page-v22.js
 
       // Initial scroll effect
       lastY = window.scrollY || 0;
