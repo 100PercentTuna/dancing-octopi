@@ -13,8 +13,7 @@ Text Domain: kunaal-theme
 
 /* ========================================
    CUSTOM FONTS
-   Note: Garfield Signature font is loaded via PHP (functions.php)
-   to ensure correct URL path across all WordPress installations
+   Note: Custom fonts are loaded via Google Fonts API in functions.php
    ======================================== */
 
 /* ========================================
