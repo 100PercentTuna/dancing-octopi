@@ -1,0 +1,21 @@
+{
+  "name": "kunaal-theme",
+  "version": "4.28.0",
+  "description": "WordPress theme with modular CSS architecture",
+  "scripts": {
+    "purgecss": "purgecss --config ./purgecss.config.js",
+    "purgecss:watch": "purgecss --config ./purgecss.config.js --watch"
+  },
+  "devDependencies": {
+    "@fullhuman/purgecss": "^5.0.0"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "css",
+    "purgecss"
+  ],
+  "author": "Kunaal Wadhwa",
+  "license": "GPL-2.0-or-later"
+}
+

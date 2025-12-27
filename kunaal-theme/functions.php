@@ -1,9 +1,9 @@
 ﻿<?php
 /**
  * Kunaal Theme Functions
- *
+ * 
  * Main theme functions file. This file is organized into sections:
- *
+ * 
  * 1. CONSTANTS & INCLUDES
  * 2. THEME SETUP
  * 3. ASSET ENQUEUING
@@ -199,7 +199,8 @@ function kunaal_enqueue_assets() {
         null
     );
 
-    // CSS Variables (loaded first, before main stylesheet)
+    // Modular CSS files (loaded in order for proper cascade)
+    // 1. Variables (must load first)
     wp_enqueue_style(
         'kunaal-theme-variables',
         KUNAAL_THEME_URI . '/assets/css/variables.css',
@@ -207,11 +208,44 @@ function kunaal_enqueue_assets() {
         kunaal_asset_version('assets/css/variables.css')
     );
 
-    // Main stylesheet
+    // 2. Base styles (resets, typography)
+    wp_enqueue_style(
+        'kunaal-theme-base',
+        KUNAAL_THEME_URI . '/assets/css/base.css',
+        array('kunaal-theme-variables'),
+        kunaal_asset_version('assets/css/base.css')
+    );
+
+    // 3. Dark mode (must load after base)
+    wp_enqueue_style(
+        'kunaal-theme-dark-mode',
+        KUNAAL_THEME_URI . '/assets/css/dark-mode.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/dark-mode.css')
+    );
+
+    // 4. Layout
+    wp_enqueue_style(
+        'kunaal-theme-layout',
+        KUNAAL_THEME_URI . '/assets/css/layout.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/layout.css')
+    );
+
+    // 5. Header
+    wp_enqueue_style(
+        'kunaal-theme-header',
+        KUNAAL_THEME_URI . '/assets/css/header.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/header.css')
+    );
+
+    // 6. Main stylesheet (legacy - contains remaining styles)
+    // Will be gradually reduced as more modules are extracted
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts', 'kunaal-theme-variables'),
+        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header'),
         kunaal_asset_version('style.css')
     );
     
@@ -274,11 +308,11 @@ function kunaal_enqueue_assets() {
         'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
         'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
     ));
-
+    
     // For contact page, also add inline script to ensure kunaalTheme is available
     // even if main.js loads late or fails
     if (is_page_template('page-contact.php') || (is_page() && get_page_template_slug() === 'page-contact.php')) {
-        wp_add_inline_script('kunaal-theme-main',
+        wp_add_inline_script('kunaal-theme-main', 
             'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(admin_url('admin-ajax.php')) . '" }; }',
             'before'
         );
@@ -1098,7 +1132,7 @@ add_action('customize_register', 'kunaal_customize_register');
 
 /**
  * Enqueue Customizer Preview Script
- *
+ * 
  * Loads JavaScript that handles live preview updates without page refresh.
  * Uses debouncing to prevent excessive updates while typing.
  */
@@ -1163,15 +1197,15 @@ function kunaal_theme_deactivation_handler() {
     
     // Delete all rate limiting transients
     $wpdb->query(
-        "DELETE FROM {$wpdb->options}
-         WHERE option_name LIKE '_transient_kunaal_contact_rl_%'
+        "DELETE FROM {$wpdb->options} 
+         WHERE option_name LIKE '_transient_kunaal_contact_rl_%' 
          OR option_name LIKE '_transient_timeout_kunaal_contact_rl_%'"
     );
     
     // Delete all error transients
     $wpdb->query(
-        "DELETE FROM {$wpdb->options}
-         WHERE option_name LIKE '_transient_kunaal_essay_errors_%'
+        "DELETE FROM {$wpdb->options} 
+         WHERE option_name LIKE '_transient_kunaal_essay_errors_%' 
          OR option_name LIKE '_transient_timeout_kunaal_essay_errors_%'"
     );
 }
@@ -1283,12 +1317,12 @@ function kunaal_send_subscribe_confirmation($email, $token) {
  * @return array|WP_Error Returns error array on failure, null on success
  */
 function kunaal_validate_subscribe_request() {
-    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
         return array('message' => 'Security check failed. Please refresh and try again.');
-    }
+        }
 
-    $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
-    if ($mode === 'external') {
+        $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
+        if ($mode === 'external') {
         return array('message' => 'Subscribe is configured for an external provider.');
     }
 
@@ -1301,8 +1335,8 @@ function kunaal_validate_subscribe_request() {
  * @return string|WP_Error Valid email address or error
  */
 function kunaal_validate_subscribe_email() {
-    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
-    if (!is_email($email)) {
+        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+        if (!is_email($email)) {
         return new WP_Error('invalid_email', 'Please enter a valid email address.');
     }
     return strtolower(trim($email));
@@ -1316,12 +1350,12 @@ function kunaal_validate_subscribe_email() {
  */
 function kunaal_handle_existing_subscriber($subscriber_id) {
     $status = get_post_meta($subscriber_id, 'kunaal_status', true);
-    if ($status === 'confirmed') {
-        wp_send_json_success(array('message' => 'You are already subscribed.'));
-    } else {
-        wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription.'));
-    }
-    wp_die();
+            if ($status === 'confirmed') {
+                wp_send_json_success(array('message' => 'You are already subscribed.'));
+            } else {
+                wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription.'));
+            }
+            wp_die();
     return true;
 }
 
@@ -1333,20 +1367,20 @@ function kunaal_handle_existing_subscriber($subscriber_id) {
  * @return int|WP_Error Subscriber post ID or error
  */
 function kunaal_create_subscriber_post($email, $token) {
-    $subscriber_id = wp_insert_post(array(
-        'post_type' => 'kunaal_subscriber',
-        'post_status' => 'private',
-        'post_title' => $email,
-    ), true);
+        $subscriber_id = wp_insert_post(array(
+            'post_type' => 'kunaal_subscriber',
+            'post_status' => 'private',
+            'post_title' => $email,
+        ), true);
 
-    if (is_wp_error($subscriber_id) || empty($subscriber_id)) {
+        if (is_wp_error($subscriber_id) || empty($subscriber_id)) {
         return new WP_Error('create_failed', 'Unable to create subscription. Please try again.');
-    }
+        }
 
-    update_post_meta($subscriber_id, 'kunaal_email', $email);
-    update_post_meta($subscriber_id, 'kunaal_status', 'pending');
-    update_post_meta($subscriber_id, 'kunaal_token', $token);
-    update_post_meta($subscriber_id, 'kunaal_created_gmt', gmdate('c'));
+        update_post_meta($subscriber_id, 'kunaal_email', $email);
+        update_post_meta($subscriber_id, 'kunaal_status', 'pending');
+        update_post_meta($subscriber_id, 'kunaal_token', $token);
+        update_post_meta($subscriber_id, 'kunaal_created_gmt', gmdate('c'));
 
     return $subscriber_id;
 }
