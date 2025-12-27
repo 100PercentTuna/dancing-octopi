@@ -12,19 +12,7 @@
 get_header();
 
 // Panorama constants are now defined in functions.php
-
-// Generate CSS variables for category colors (single source of truth)
-$categories = kunaal_get_categories_v22();
-if (!empty($categories)) {
-?>
-<style>
-body.page-template-page-about {
-<?php foreach ($categories as $slug => $category) : ?>
-  --cat-<?php echo esc_attr($slug); ?>: <?php echo esc_attr($category['color']); ?>;
-<?php endforeach; ?>
-}
-</style>
-<?php } ?>
+// CSS variables for category colors are enqueued in functions.php
 
 <!-- Skip Link handled in header.php for consistency -->
 <!-- Map tooltip (outside sections for proper positioning) -->
