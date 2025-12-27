@@ -39,3 +39,6 @@ DEPLOYMENT.md
 
 # Reference files (user requested to keep in repo but ignore)
 reference-files/
+
+# Local notes (kept on developer machine only)
+local-notes/

@@ -64,8 +64,7 @@
       var tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
         .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
-        .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
-        .from('#scrollIndicator', { opacity: 0, duration: 0.35 }, '<0.25');
+        .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15');
     } catch (e) {
       console.warn('Page load animation failed:', e);
     }
@@ -116,13 +115,14 @@
         if (!img) return;
         var speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
-        // Parallax movement - image starts at -50% (top), moves to +50% (bottom)
-        var y = 50 * speed; // Movement amount
+        // Parallax movement (safe): small yPercent range + oversized image in CSS
+        // This prevents "running out of picture" while still feeling alive.
+        var amp = 10 * speed; // percent of the IMAGE height
         try {
           window.gsap.fromTo(img,
-            { y: '-50%' }, // Start at -50% (image starts lower, more visible at bottom)
+            { yPercent: -amp },
             {
-              y: '50%', // End at +50% (image moves up as we scroll)
+              yPercent: amp,
               ease: 'none',
               scrollTrigger: {
                 trigger: band,
@@ -575,7 +575,6 @@
   // =============================================
   function initProgressBar(){
     var fill = document.getElementById('progressFill');
-    var scrollIndicator = document.getElementById('scrollIndicator');
     if(!fill) return;
     var ticking = false;
     function update(){
@@ -589,17 +588,6 @@
       // Header compaction (drives CSS var(--p))
       var hp = Math.min(scrollTop / 120, 1);
       document.body.style.setProperty('--p', hp.toFixed(4));
-      
-      // Hide scroll indicator after scrolling down a bit
-      if (scrollIndicator) {
-        // Only hide after user has scrolled significantly (200px instead of 100px)
-        // This ensures it's visible on page load
-        if (scrollTop > 200) {
-          scrollIndicator.classList.add('hidden');
-        } else {
-          scrollIndicator.classList.remove('hidden');
-        }
-      }
     }
     function onScroll(){
       if(ticking) return;

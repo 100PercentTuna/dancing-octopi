@@ -73,74 +73,67 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 
 <main id="main">
 <!-- HERO -->
-<section class="hero">
-<!-- Row 1 -->
-<?php
-// Render 10 hero photos in grid layout matching reference exactly
-// Row 1: photos 1-4, then hero-text, then photo 5
-// Row 2: photos 6-10
-$photo_count = count($hero_photos);
-// Row 1 - Photos 1-4
-for ($i = 0; $i < min(4, $photo_count); $i++) :
-    $photo_url = $hero_photos[$i];
-    $has_accent = ($i === 2); // Third photo (index 2) has accent
-    $loading = $i === 0 ? 'eager' : 'lazy';
-?>
-<div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">
-    <img alt="Photo" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
-</div>
-<?php endfor; ?>
-
-<!-- Hero Text (positioned in grid, spans both rows) -->
-<div class="hero-text">
-    <div class="hero-label" data-reveal="up">About</div>
-    <h1 class="hero-title" data-reveal="up">Hi, I'm <span class="name"><?php echo esc_html($first_name); ?></span></h1>
-    <p class="hero-intro" data-reveal="up">
-        <?php echo esc_html($hero_intro); ?> <span class="hand-note"><?php echo esc_html($hero_hand_note); ?></span>
-    </p>
-    <div class="hero-meta" data-reveal="up">
-        <div class="hero-meta-row">
-            <span class="label">Location</span>
-            <span class="value"><?php echo esc_html($hero_location); ?></span>
-        </div>
-        <div class="hero-meta-row">
-            <span class="label">Listening</span>
-            <span class="value"><?php echo esc_html($hero_listening); ?></span>
-        </div>
-        <div class="hero-meta-row">
-            <span class="label">Reading</span>
-            <span class="value"><?php echo esc_html($hero_reading); ?></span>
-        </div>
+<section class="hero about-hero">
+  <?php $photo_count = count($hero_photos); ?>
+  <div class="about-hero-inner">
+    <!-- Collage -->
+    <div class="hero-collage" aria-hidden="true">
+      <?php
+      // Robust rendering: always output up to 10 tiles in a dedicated collage grid.
+      // This avoids mobile/width breakage caused by auto-placing 10 items into a desktop-only grid.
+      for ($i = 0; $i < min(10, $photo_count); $i++) :
+          $photo_url = $hero_photos[$i];
+          $is_accent = ($i === 2); // Third photo (index 2) is the accent tile (dog-ear).
+          $loading = $i < 2 ? 'eager' : 'lazy';
+          $tile_classes = array('hero-photo', 'hero-photo--' . ($i + 1));
+          if ($is_accent) { $tile_classes[] = 'has-accent'; }
+      ?>
+      <div class="<?php echo esc_attr(implode(' ', $tile_classes)); ?>" data-idx="<?php echo esc_attr($i + 1); ?>">
+        <?php if ($is_accent) : ?>
+          <span class="hero-accent" aria-hidden="true"></span>
+        <?php endif; ?>
+        <img alt="Photo" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
+      </div>
+      <?php endfor; ?>
     </div>
-</div>
 
-<?php
-// Row 1 - Photo 5 (after hero-text)
-if ($photo_count > 4) :
-    $photo_url = $hero_photos[4];
-?>
-<div class="hero-photo">
-    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
-</div>
-<?php endif; ?>
+    <!-- Text -->
+    <div class="hero-text">
+      <div class="hero-label" data-reveal="up">About</div>
+      <h1 class="hero-title" data-reveal="up">Hi, I'm <span class="name"><?php echo esc_html($first_name); ?></span></h1>
+      <p class="hero-intro" data-reveal="up">
+        <?php echo esc_html($hero_intro); ?> <span class="hand-note"><?php echo esc_html($hero_hand_note); ?></span>
+      </p>
+      <div class="hero-meta" data-reveal="up">
+        <div class="hero-meta-row">
+          <span class="label">Location</span>
+          <span class="value"><?php echo esc_html($hero_location); ?></span>
+        </div>
+        <div class="hero-meta-row">
+          <span class="label">Listening</span>
+          <span class="value"><?php echo esc_html($hero_listening); ?></span>
+        </div>
+        <div class="hero-meta-row">
+          <span class="label">Reading</span>
+          <span class="value"><?php echo esc_html($hero_reading); ?></span>
+        </div>
+      </div>
 
-<!-- Row 2 -->
-<?php
-// Row 2 - Photos 6-10
-for ($i = 5; $i < min(10, $photo_count); $i++) :
-    $photo_url = $hero_photos[$i];
-?>
-<div class="hero-photo">
-    <img alt="Photo" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
-</div>
-<?php endfor; ?>
+      <!-- Mobile-only scroll hint (kept inside the text column so it can't be pushed off-screen) -->
+      <div class="scroll-indicator scroll-indicator--inline" aria-hidden="true">
+        <span class="scroll-indicator-text">Scroll</span>
+        <div class="scroll-indicator-line"></div>
+        <div class="scroll-indicator-chevron"></div>
+      </div>
+    </div>
+  </div>
 
-<!-- Scroll indicator -->
-<div class="scroll-indicator" id="scrollIndicator">
+  <!-- Desktop scroll indicator -->
+  <div class="scroll-indicator scroll-indicator--abs" id="scrollIndicator" aria-hidden="true">
     <span class="scroll-indicator-text">Scroll</span>
     <div class="scroll-indicator-line"></div>
     <div class="scroll-indicator-chevron"></div>
-</div>
+  </div>
 </section>
 
 <?php

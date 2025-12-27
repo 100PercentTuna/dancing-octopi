@@ -499,6 +499,28 @@ function kunaal_register_post_types() {
         'show_in_rest' => true,
     ));
 
+    /**
+     * Subscriber (private)
+     * Built-in subscribe flow stores subscribers as private posts for easy export and admin visibility,
+     * without exposing anything publicly.
+     */
+    register_post_type('kunaal_subscriber', array(
+        'labels' => array(
+            'name' => 'Subscribers',
+            'singular_name' => 'Subscriber',
+        ),
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => 'options-general.php',
+        'supports' => array('title'),
+        'capability_type' => 'post',
+        'map_meta_cap' => true,
+        'rewrite' => false,
+        'query_var' => false,
+        'show_in_rest' => false,
+        'menu_icon' => 'dashicons-email',
+    ));
+
     // Topic Taxonomy
     register_taxonomy('topic', array('essay', 'jotting'), array(
         'labels' => array(
@@ -1184,9 +1206,40 @@ function kunaal_customize_register($wp_customize) {
     ));
     $wp_customize->add_control('kunaal_subscribe_form_action', array(
         'label' => 'Form Action URL',
-        'description' => 'Enter Mailchimp, ConvertKit, or other form action URL',
+        'description' => 'Optional: external provider form action URL (Mailchimp/ConvertKit/etc). If empty, the theme will use its built-in subscribe flow.',
         'section' => 'kunaal_subscribe',
         'type' => 'url',
+    ));
+
+    // Subscribe mode (built-in vs external)
+    $wp_customize->add_setting('kunaal_subscribe_mode', array(
+        'default' => 'builtin',
+        'sanitize_callback' => function ($value) {
+            $allowed = array('builtin', 'external');
+            return in_array($value, $allowed, true) ? $value : 'builtin';
+        },
+    ));
+    $wp_customize->add_control('kunaal_subscribe_mode', array(
+        'label' => 'Subscribe Mode',
+        'description' => 'Built-in: stores subscribers in WordPress (private) and sends confirmation emails. External: posts to your provider form action URL.',
+        'section' => 'kunaal_subscribe',
+        'type' => 'radio',
+        'choices' => array(
+            'builtin' => 'Built-in (recommended)',
+            'external' => 'External provider (form action URL)',
+        ),
+    ));
+
+    // Where subscription notifications go (built-in mode)
+    $wp_customize->add_setting('kunaal_subscribe_notify_email', array(
+        'default' => get_option('admin_email'),
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_notify_email', array(
+        'label' => 'Subscribe Notifications Email',
+        'description' => 'Built-in mode: confirmations and admin notifications use this email.',
+        'section' => 'kunaal_subscribe',
+        'type' => 'email',
     ));
     
     // Page selection removed - no longer used in customizations
@@ -1247,6 +1300,110 @@ function kunaal_customize_register($wp_customize) {
         'label' => 'Response Time Note',
         'section' => 'kunaal_contact_page',
         'type' => 'text',
+    ));
+
+    // =====================================================
+    // EMAIL DELIVERY (SMTP)
+    // =====================================================
+    $wp_customize->add_section('kunaal_email_delivery', array(
+        'title' => 'Email Delivery (SMTP)',
+        'priority' => 52,
+        'description' => 'Configure SMTP so contact + subscribe emails deliver reliably on shared hosts.',
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_enabled', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_smtp_enabled', array(
+        'label' => 'Enable SMTP',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_from_email', array(
+        'default' => get_option('admin_email'),
+        'sanitize_callback' => 'sanitize_email',
+    ));
+    $wp_customize->add_control('kunaal_smtp_from_email', array(
+        'label' => 'From Email',
+        'description' => 'Use an address that matches your domain if possible.',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'email',
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_from_name', array(
+        'default' => get_bloginfo('name'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_from_name', array(
+        'label' => 'From Name',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_host', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_host', array(
+        'label' => 'SMTP Host',
+        'description' => 'Example (Brevo): smtp-relay.brevo.com',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_port', array(
+        'default' => 587,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('kunaal_smtp_port', array(
+        'label' => 'SMTP Port',
+        'description' => '587 (TLS) is typical; 465 for SSL.',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 65535),
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_encryption', array(
+        'default' => 'tls',
+        'sanitize_callback' => function ($value) {
+            $allowed = array('none', 'tls', 'ssl');
+            return in_array($value, $allowed, true) ? $value : 'tls';
+        },
+    ));
+    $wp_customize->add_control('kunaal_smtp_encryption', array(
+        'label' => 'Encryption',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'select',
+        'choices' => array(
+            'none' => 'None',
+            'tls'  => 'TLS',
+            'ssl'  => 'SSL',
+        ),
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_username', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_username', array(
+        'label' => 'SMTP Username',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_smtp_password', array(
+        'default' => '',
+        'sanitize_callback' => function ($value) {
+            // Allow most characters; keep as plain text (shared-host reality). Avoid stripping symbols.
+            return is_string($value) ? $value : '';
+        },
+    ));
+    $wp_customize->add_control('kunaal_smtp_password', array(
+        'label' => 'SMTP Password / Key',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'password',
     ));
 
     // =====================================================
@@ -1412,19 +1569,227 @@ if (!function_exists('kunaal_subscribe_section')) {
         $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
         $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
         $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
+        $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
         
         ?>
     <section class="subscribe-section reveal">
         <h3><?php echo esc_html($heading); ?></h3>
         <p><?php echo esc_html($description); ?></p>
-        <form class="subscribe-form" action="<?php echo esc_url($form_action); ?>" method="post">
+        <form class="subscribe-form" data-subscribe-form="bottom" data-subscribe-mode="<?php echo esc_attr($mode); ?>" action="<?php echo $mode === 'external' ? esc_url($form_action) : ''; ?>" method="post" novalidate>
             <input type="email" name="email" placeholder="Your email address" required />
             <button type="submit">Subscribe</button>
         </form>
+        <div class="subscribe-status" aria-live="polite"></div>
     </section>
     <?php
     }
 }
+
+/**
+ * Email delivery (SMTP)
+ * Configures PHPMailer if enabled in Customizer.
+ */
+function kunaal_smtp_is_enabled() {
+    return (bool) kunaal_mod('kunaal_smtp_enabled', false);
+}
+
+add_filter('wp_mail_from', function ($from_email) {
+    if (!kunaal_smtp_is_enabled()) {
+        return $from_email;
+    }
+    $custom = kunaal_mod('kunaal_smtp_from_email', '');
+    return is_email($custom) ? $custom : $from_email;
+});
+
+add_filter('wp_mail_from_name', function ($from_name) {
+    if (!kunaal_smtp_is_enabled()) {
+        return $from_name;
+    }
+    $custom = kunaal_mod('kunaal_smtp_from_name', '');
+    return !empty($custom) ? $custom : $from_name;
+});
+
+add_action('phpmailer_init', function ($phpmailer) {
+    if (!kunaal_smtp_is_enabled()) {
+        return;
+    }
+
+    $host = trim((string) kunaal_mod('kunaal_smtp_host', ''));
+    $user = (string) kunaal_mod('kunaal_smtp_username', '');
+    $pass = (string) kunaal_mod('kunaal_smtp_password', '');
+    $port = (int) kunaal_mod('kunaal_smtp_port', 587);
+    $enc  = (string) kunaal_mod('kunaal_smtp_encryption', 'tls');
+
+    if (empty($host) || empty($user) || empty($pass) || $port <= 0) {
+        // Fail-safe: do not partially configure SMTP.
+        return;
+    }
+
+    $phpmailer->isSMTP();
+    $phpmailer->Host = $host;
+    $phpmailer->Port = $port;
+    $phpmailer->SMTPAuth = true;
+    $phpmailer->Username = $user;
+    $phpmailer->Password = $pass;
+    $phpmailer->SMTPAutoTLS = true;
+
+    if ($enc === 'ssl') {
+        $phpmailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+    } elseif ($enc === 'tls') {
+        $phpmailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+    } else {
+        $phpmailer->SMTPSecure = '';
+    }
+});
+
+/**
+ * Built-in Subscribe Flow
+ * - Stores subscriber as private post
+ * - Sends confirmation email with one-time token
+ * - Confirmation endpoint: ?kunaal_sub_confirm=<token>
+ */
+function kunaal_find_subscriber_by_email($email) {
+    $email = strtolower(trim($email));
+    if (!is_email($email)) {
+        return 0;
+    }
+    $q = new WP_Query(array(
+        'post_type' => 'kunaal_subscriber',
+        'post_status' => 'private',
+        'fields' => 'ids',
+        'posts_per_page' => 1,
+        'meta_query' => array(
+            array(
+                'key' => 'kunaal_email',
+                'value' => $email,
+                'compare' => '=',
+            ),
+        ),
+        'no_found_rows' => true,
+    ));
+    return !empty($q->posts) ? (int) $q->posts[0] : 0;
+}
+
+function kunaal_generate_subscribe_token() {
+    return wp_generate_password(32, false, false);
+}
+
+function kunaal_send_subscribe_confirmation($email, $token) {
+    $to = $email;
+    $site = get_bloginfo('name');
+    $confirm_url = add_query_arg(array('kunaal_sub_confirm' => $token), home_url('/'));
+    $subject = '[' . $site . '] Confirm your subscription';
+    $body = "Hi!\n\nPlease confirm your subscription by clicking the link below:\n\n" . esc_url_raw($confirm_url) . "\n\nIf you didn't request this, you can ignore this email.\n";
+    return wp_mail($to, $subject, $body);
+}
+
+function kunaal_handle_subscribe() {
+    try {
+        if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+            wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));
+            wp_die();
+        }
+
+        $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
+        if ($mode === 'external') {
+            wp_send_json_error(array('message' => 'Subscribe is configured for an external provider.'));
+            wp_die();
+        }
+
+        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+        if (!is_email($email)) {
+            wp_send_json_error(array('message' => 'Please enter a valid email address.'));
+            wp_die();
+        }
+
+        $email = strtolower(trim($email));
+        $existing_id = kunaal_find_subscriber_by_email($email);
+        if ($existing_id) {
+            $status = get_post_meta($existing_id, 'kunaal_status', true);
+            if ($status === 'confirmed') {
+                wp_send_json_success(array('message' => 'You are already subscribed.'));
+            } else {
+                wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription.'));
+            }
+            wp_die();
+        }
+
+        $token = kunaal_generate_subscribe_token();
+        $subscriber_id = wp_insert_post(array(
+            'post_type' => 'kunaal_subscriber',
+            'post_status' => 'private',
+            'post_title' => $email,
+        ), true);
+
+        if (is_wp_error($subscriber_id) || empty($subscriber_id)) {
+            wp_send_json_error(array('message' => 'Unable to create subscription. Please try again.'));
+            wp_die();
+        }
+
+        update_post_meta($subscriber_id, 'kunaal_email', $email);
+        update_post_meta($subscriber_id, 'kunaal_status', 'pending');
+        update_post_meta($subscriber_id, 'kunaal_token', $token);
+        update_post_meta($subscriber_id, 'kunaal_created_gmt', gmdate('c'));
+
+        $sent = kunaal_send_subscribe_confirmation($email, $token);
+        if (!$sent) {
+            wp_send_json_error(array('message' => 'Unable to send confirmation email. Please try again later.'));
+            wp_die();
+        }
+
+        wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription.'));
+        wp_die();
+    } catch (Exception $e) {
+        kunaal_theme_log('Subscribe error', array('error' => $e->getMessage()));
+        wp_send_json_error(array('message' => 'An error occurred. Please try again.'));
+        wp_die();
+    }
+}
+add_action('wp_ajax_kunaal_subscribe', 'kunaal_handle_subscribe');
+add_action('wp_ajax_nopriv_kunaal_subscribe', 'kunaal_handle_subscribe');
+
+function kunaal_handle_subscribe_confirmation_request() {
+    if (empty($_GET['kunaal_sub_confirm'])) {
+        return;
+    }
+    $token = sanitize_text_field(wp_unslash($_GET['kunaal_sub_confirm']));
+    if (empty($token)) {
+        return;
+    }
+
+    $q = new WP_Query(array(
+        'post_type' => 'kunaal_subscriber',
+        'post_status' => 'private',
+        'posts_per_page' => 1,
+        'no_found_rows' => true,
+        'meta_query' => array(
+            array(
+                'key' => 'kunaal_token',
+                'value' => $token,
+                'compare' => '=',
+            ),
+        ),
+    ));
+
+    if (empty($q->posts)) {
+        wp_die('Invalid or expired confirmation link.', 'Subscription', array('response' => 400));
+    }
+
+    $post = $q->posts[0];
+    update_post_meta($post->ID, 'kunaal_status', 'confirmed');
+    delete_post_meta($post->ID, 'kunaal_token');
+
+    // Notify admin (optional)
+    $notify = kunaal_mod('kunaal_subscribe_notify_email', get_option('admin_email'));
+    if (is_email($notify)) {
+        $site = get_bloginfo('name');
+        $email = get_post_meta($post->ID, 'kunaal_email', true);
+        wp_mail($notify, '[' . $site . '] New subscriber', "New subscriber confirmed:\n\n" . $email . "\n");
+    }
+
+    wp_die('Subscription confirmed. Thank you!', 'Subscription', array('response' => 200));
+}
+add_action('template_redirect', 'kunaal_handle_subscribe_confirmation_request');
 
 /**
  * Helper: Get all topics with counts

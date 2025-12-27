@@ -49,6 +49,74 @@
   let hasMore = true;
   let ajaxDisabled = false;
 
+  // ========================================
+  // SUBSCRIBE (built-in mode)
+  // ========================================
+  function initSubscribeForms() {
+    const forms = Array.from(document.querySelectorAll('form[data-subscribe-form]'));
+    if (!forms.length) return;
+
+    forms.forEach((form) => {
+      const mode = form.dataset.subscribeMode || 'builtin';
+      if (mode === 'external') return; // allow normal provider POST
+
+      const statusEl = form.parentElement?.querySelector('.subscribe-status') || form.querySelector('.subscribe-status');
+      const input = form.querySelector('input[type="email"]');
+      const btn = form.querySelector('button[type="submit"]');
+      if (!input || !btn) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const ajaxUrl = window.kunaalTheme?.ajaxUrl;
+        const nonce = window.kunaalTheme?.nonce;
+        if (!ajaxUrl || !nonce) {
+          if (statusEl) statusEl.textContent = 'Subscribe is not configured correctly.';
+          return;
+        }
+
+        const email = (input.value || '').trim();
+        if (!email) {
+          if (statusEl) statusEl.textContent = 'Please enter an email address.';
+          return;
+        }
+
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Working…';
+        if (statusEl) statusEl.textContent = '';
+
+        try {
+          const body = new URLSearchParams();
+          body.set('action', 'kunaal_subscribe');
+          body.set('nonce', nonce);
+          body.set('email', email);
+          body.set('source', form.dataset.subscribeForm || 'unknown');
+
+          const res = await fetch(ajaxUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            credentials: 'same-origin',
+            body: body.toString()
+          });
+
+          const data = await res.json();
+          if (data && data.success) {
+            if (statusEl) statusEl.textContent = (data.data && data.data.message) ? data.data.message : 'Check your inbox to confirm your subscription.';
+            form.reset();
+          } else {
+            if (statusEl) statusEl.textContent = (data && data.data && data.data.message) ? data.data.message : 'Unable to subscribe right now.';
+          }
+        } catch (err) {
+          if (statusEl) statusEl.textContent = 'Network error. Please try again.';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = originalText;
+        }
+      });
+    });
+  }
+
   // Preserve initial server-rendered items for client-side filtering fallback
   const initialEssayItems = essayGrid ? Array.from(essayGrid.children) : null;
   const initialJotItems = jotList ? Array.from(jotList.children) : null;
@@ -748,6 +816,9 @@
                 setTimeout(() => { tip.textContent = originalText; }, 1500);
               }
             });
+
+  // Initialize built-in subscribe flow if subscribe forms are present
+  initSubscribeForms();
             return;
         }
 

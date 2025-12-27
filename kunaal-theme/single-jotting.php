@@ -83,16 +83,18 @@ get_header();
 <!-- Subscribe Panel (slides out when subscribe button clicked) -->
 <?php 
 $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
+$sub_mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
 if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) : 
 ?>
 <div class="subscribePanel" id="subscribePanel">
   <div class="subscribePanelContent">
     <h4><?php echo esc_html(kunaal_mod('kunaal_subscribe_heading', 'Stay updated')); ?></h4>
     <p><?php echo esc_html(kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays are published.')); ?></p>
-    <form class="subscribe-form-dock" action="<?php echo esc_url(kunaal_mod('kunaal_subscribe_form_action', '')); ?>" method="post">
+    <form class="subscribe-form-dock" data-subscribe-form="dock" data-subscribe-mode="<?php echo esc_attr($sub_mode); ?>" action="<?php echo $sub_mode === 'external' ? esc_url(kunaal_mod('kunaal_subscribe_form_action', '')) : ''; ?>" method="post" novalidate>
       <input type="email" name="email" placeholder="Your email" required />
       <button type="submit">Subscribe</button>
     </form>
+    <div class="subscribe-status" aria-live="polite"></div>
   </div>
 </div>
 <?php endif; ?>
