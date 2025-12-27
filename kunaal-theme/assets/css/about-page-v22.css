@@ -218,24 +218,24 @@ body.page-template-page-about .hero-photo:nth-child(1),
   grid-row: 1;
 }
 
-/* Photo 2: top-right (column 3, row 1) */
+/* Photo 2: top-middle (column 3, row 1) */
 body.page-template-page-about .hero-photo:nth-child(2),
 .page-template-page-about .hero-photo:nth-child(2) {
   grid-column: 3;
   grid-row: 1;
 }
 
-/* Photo 3: bottom-left (column 2, row 2) - THIS GETS THE ACCENT */
+/* Photo 3: top-right (column 4, row 1) - THIS GETS THE ACCENT on desktop */
 body.page-template-page-about .hero-photo:nth-child(3),
 .page-template-page-about .hero-photo:nth-child(3) {
-  grid-column: 2;
-  grid-row: 2;
+  grid-column: 4;
+  grid-row: 1;
 }
 
-/* Photo 4: bottom-right (column 3, row 2) */
+/* Photo 4: bottom-left (column 2, row 2) */
 body.page-template-page-about .hero-photo:nth-child(4),
 .page-template-page-about .hero-photo:nth-child(4) {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 2;
 }
 
@@ -456,11 +456,12 @@ body.page-template-page-about .hero-photo.has-accent::before,
   body.page-template-page-about .hero,
   .page-template-page-about .hero {
     grid-template-columns: 30px 1fr 1fr 30px;
-    grid-template-rows: minmax(120px, 1fr) minmax(120px, 1fr) auto;
+    grid-template-rows: minmax(180px, 1fr) minmax(180px, 1fr) auto;
     height: auto; /* Remove fixed height on mobile */
     max-height: none; /* Remove max-height on mobile */
     padding-top: 0;
     gap: 0; /* Remove gap between rows - pictures should stick together like collage */
+    row-gap: 0; /* Explicitly remove row gap */
     /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
     grid-auto-rows: 0;
     overflow: visible; /* Allow dog-ear accent to show, prevent clipping */
@@ -489,10 +490,23 @@ body.page-template-page-about .hero-photo.has-accent::before,
   }
   
   /* Mobile: ensure hero photos fill width without whitespace */
-  /* Reduced height to prevent pushing text down */
+  /* Increased height to reduce cropping, maintain aspect ratio */
   .hero-photo {
-    min-height: 120px;
-    max-height: 140px;
+    min-height: 180px;
+    max-height: 200px;
+    height: 100%; /* Fill grid cell */
+  }
+  
+  /* Top row photos: center crop to preserve important content */
+  .hero-photo:nth-child(1) img,
+  .hero-photo:nth-child(2) img {
+    object-position: center center;
+  }
+  
+  /* Bottom row photos: can use default center crop */
+  .hero-photo:nth-child(3) img,
+  .hero-photo:nth-child(4) img {
+    object-position: center center;
   }
   
   /* Mobile: Hero photo with dog-ear (first photo) - keep in grid but ensure accent shows */

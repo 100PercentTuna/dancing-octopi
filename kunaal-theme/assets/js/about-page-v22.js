@@ -379,9 +379,9 @@
         if (!img) return;
         var speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
-        // Parallax movement (safe): small yPercent range + oversized image in CSS
-        // This prevents "running out of picture" while still feeling alive.
-        var amp = 10 * speed; // percent of the IMAGE height
+        // Parallax movement: increased amplitude for more dramatic scrollytelling effect
+        // Image is 220% height in CSS, so we have plenty of room for movement
+        var amp = 25 * speed; // percent of the IMAGE height (increased from 10 for more movement)
         try {
           window.gsap.fromTo(img,
             { yPercent: -amp },

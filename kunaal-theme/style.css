@@ -441,12 +441,16 @@ main {
   }
   
   .mastInner > .nav {
-    margin-right: var(--space-1); /* Reduce from space-3 to space-1 */
+    margin-right: 8px; /* Smaller gap - snug to theme toggle */
+    margin-left: auto; /* Push nav to right */
   }
   
   .mastInner > .theme-toggle {
     width: 32px;
     height: 32px;
+    margin-left: 0; /* Remove left margin - snug to nav */
+    margin-right: 0; /* Rightmost element */
+    order: 3; /* Ensure it's last (rightmost) */
     border: none;
     background: transparent;
     box-shadow: none;

@@ -85,11 +85,11 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 // Row 2: photos 6-10
 $photo_count = count($hero_photos);
 // Row 1 - Photos 1-4
-// Dog-ear accent always on bottom-left photo (index 2, 3rd photo in first 4)
-// This is the suit photo position in the grid layout (works for both desktop and mobile)
+// Dog-ear accent: Desktop = first row, third picture (index 2, column 4). Mobile = second row, second picture (index 2, column 2, row 2)
 for ($i = 0; $i < min(4, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
-    $has_accent = ($i === 2); // Bottom-left photo (index 2) always has accent - desktop: row 1 col 3, mobile: row 2 col 2
+    // Index 2 (3rd photo) gets accent - desktop: column 4 row 1, mobile: column 2 row 2
+    $has_accent = ($i === 2);
     $loading = $i === 0 ? 'eager' : 'lazy';
 ?>
 <div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">
