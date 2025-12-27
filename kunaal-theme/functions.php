@@ -2493,7 +2493,7 @@ function kunaal_get_panoramas_v22() {
                 if ($image_url) {
                     $panoramas_by_position[$position][] = array(
                         'image' => $image_url,
-                        'height' => kunaal_mod("kunaal_about_v22_panorama_{$i}_height", '160'),
+                        'height' => kunaal_mod("kunaal_about_v22_panorama_{$i}_height", '140'),
                         'cut' => kunaal_mod("kunaal_about_v22_panorama_{$i}_cut", 'none'),
                         'bg' => kunaal_mod("kunaal_about_v22_panorama_{$i}_bg", 'default'),
                         'speed' => kunaal_mod("kunaal_about_v22_panorama_{$i}_speed", '2.0'),

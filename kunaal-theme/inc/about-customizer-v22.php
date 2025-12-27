@@ -376,19 +376,19 @@ function kunaal_about_customizer_v22($wp_customize) {
             'choices' => $height_choices,
         ));
         
-        // Cut Direction
+        // Cut Direction (slant)
         $wp_customize->add_setting("kunaal_about_v22_panorama_{$i}_cut", array(
             'default' => 'none',
             'sanitize_callback' => 'sanitize_text_field',
         ));
         $wp_customize->add_control("kunaal_about_v22_panorama_{$i}_cut", array(
-            'label' => "Panorama {$i}: Cut Direction",
+            'label' => "Panorama {$i}: Slant Direction",
             'section' => 'kunaal_about_v22_panoramas',
             'type' => 'select',
             'choices' => array(
-                'none' => 'None',
-                'left' => 'Left',
-                'right' => 'Right',
+                'none' => 'None (straight)',
+                'left' => 'Left slant',
+                'right' => 'Right slant',
             ),
         ));
         
