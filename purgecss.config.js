@@ -22,7 +22,14 @@ module.exports = {
     './kunaal-theme/assets/css/*.css',
   ],
   output: './kunaal-theme/assets/css/purged/',
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+  defaultExtractor: content => {
+    // Enhanced extractor to catch more class patterns
+    const broadMatch = content.match(/[\w-/:]+(?<!:)/g) || [];
+    // Also match class names in PHP strings and JS template literals
+    const phpClasses = content.match(/class=["']([^"']+)["']/g) || [];
+    const jsClasses = content.match(/className=["']([^"']+)["']/g) || [];
+    return [...broadMatch, ...phpClasses, ...jsClasses];
+  },
   safelist: [
     // Dynamic classes that might be added via JavaScript
     /^is-/,
@@ -54,7 +61,7 @@ module.exports = {
     // Animation classes
     /^animate-/,
     /^@keyframes/,
-    // CSS variables
+    // CSS variables (must be preserved)
     /^--/,
     // Pseudo-classes and pseudo-elements
     /::before/,
@@ -66,12 +73,16 @@ module.exports = {
     /:first-child/,
     /:last-child/,
     /:nth-child/,
+    // Preserve important utility classes that might be dynamically added
+    /^hidden$/,
+    /^visible$/,
+    /^sr-only$/,
   ],
   fontFace: true,
   keyframes: true,
   variables: true,
-  rejected: true, // Log rejected selectors
-  rejectedCss: true, // Generate file with rejected CSS
+  rejected: true, // Log rejected selectors to console
+  rejectedCss: true, // Generate file with rejected CSS for analysis
 }
 
 
