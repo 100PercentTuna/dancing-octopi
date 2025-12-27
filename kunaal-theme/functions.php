@@ -326,10 +326,13 @@ function kunaal_enqueue_assets() {
             true
         );
         
-        // Localize script with places data for map
+        // Localize script with places data for map and debug config
         $places = kunaal_get_places_v22();
         wp_localize_script('kunaal-about-page-v22', 'kunaalAboutV22', array(
             'places' => $places,
+            'debug' => defined('WP_DEBUG') && WP_DEBUG, // Gate debug logging behind WP_DEBUG
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('kunaal_debug_log_nonce'),
         ));
         
         // GSAP registration is handled inside about-page-v22.js after checking if GSAP is available
@@ -349,7 +352,7 @@ function kunaal_add_defer_to_scripts($tag, $handle) {
         'kunaal-lib-loader',
         'gsap-core',
         'gsap-scrolltrigger',
-        'kunaal-about-page',
+        'kunaal-about-page-v22', // Fixed: match actual script handle
     );
     
     if (in_array($handle, $defer_scripts)) {
@@ -2264,11 +2267,27 @@ add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
 
 /**
  * Debug log handler - receives logs from JavaScript and writes to theme debug.log
- * Only active during debug sessions
+ * Only active during development/debugging (WP_DEBUG must be true)
+ * Nonce-protected and capability-checked for security
  */
 function kunaal_handle_debug_log() {
     // Security: Only allow during development/debugging
-    // In production, you might want to add additional checks
+    if (!defined('WP_DEBUG') || !WP_DEBUG) {
+        wp_send_json_error(array('message' => 'Debug logging disabled'));
+        wp_die();
+    }
+    
+    // Verify nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_debug_log_nonce')) {
+        wp_send_json_error(array('message' => 'Invalid nonce'));
+        wp_die();
+    }
+    
+    // Capability check: require edit_posts capability (logged-in users with edit permissions)
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error(array('message' => 'Insufficient permissions'));
+        wp_die();
+    }
     
     // WordPress AJAX sends data as form-encoded, so we need to get it from POST
     $log_json = isset($_POST['log_data']) ? stripslashes($_POST['log_data']) : '';
@@ -2297,8 +2316,11 @@ function kunaal_handle_debug_log() {
     wp_send_json_success(array('logged' => true));
     wp_die();
 }
-add_action('wp_ajax_kunaal_debug_log', 'kunaal_handle_debug_log');
-add_action('wp_ajax_nopriv_kunaal_debug_log', 'kunaal_handle_debug_log');
+// Only register handlers if WP_DEBUG is enabled
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    add_action('wp_ajax_kunaal_debug_log', 'kunaal_handle_debug_log');
+    // Note: Removed nopriv handler - debug logging requires authentication
+}
 
 /**
  * Register Inline Formats for Gutenberg Editor

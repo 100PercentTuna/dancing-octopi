@@ -12,10 +12,18 @@
   'use strict';
 
   // Debug logging helper - uses WordPress AJAX endpoint
+  // Only active when debug is enabled via localized config
   function debugLog(location, message, data, hypothesisId) {
-    if (typeof window.kunaalTheme === 'undefined' || !window.kunaalTheme.ajaxUrl) {
-      return; // Skip if not available
+    // Gate behind debug config - no-op if debug is false
+    if (!window.kunaalAboutV22 || !window.kunaalAboutV22.debug) {
+      return; // Debug logging disabled by default
     }
+    
+    // Verify required config is available
+    if (!window.kunaalAboutV22.ajaxUrl || !window.kunaalAboutV22.nonce) {
+      return; // Skip if config incomplete
+    }
+    
     var logData = {
       location: location,
       message: message,
@@ -28,7 +36,8 @@
     var formData = new FormData();
     formData.append('action', 'kunaal_debug_log');
     formData.append('log_data', JSON.stringify(logData));
-    fetch(window.kunaalTheme.ajaxUrl, {
+    formData.append('nonce', window.kunaalAboutV22.nonce);
+    fetch(window.kunaalAboutV22.ajaxUrl, {
       method: 'POST',
       body: formData
     }).catch(function() {}); // Silently fail if logging unavailable
