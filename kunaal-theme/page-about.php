@@ -13,6 +13,7 @@ get_header();
 
 // Panorama constants are now defined in functions.php
 // CSS variables for category colors are enqueued in functions.php
+?>
 
 <!-- Skip Link handled in header.php for consistency -->
 <!-- Map tooltip (outside sections for proper positioning) -->
