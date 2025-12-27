@@ -95,6 +95,35 @@ video {
   }
 }
 
+/* ========================================
+   TITLE CASE FIXES
+   ======================================== */
+/* CRITICAL FIX: Force titles to display in their natural case */
+.tTitle, .jTitle, 
+.parallax-split-text h3,
+.split-label,
+.subscribe-section h3,
+.subscribePanelContent h4 {
+  text-transform: none !important;
+}
+
+/* EXPLICIT: Titles display exactly as typed by author */
+.tTitle {
+  text-transform: none !important;
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
+}
+
+.jTitle {
+  text-transform: none !important;
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
+}
+
+h3.tTitle, h3.jTitle {
+  text-transform: none !important;
+}
+
 
 
 

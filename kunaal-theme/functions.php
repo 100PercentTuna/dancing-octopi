@@ -272,12 +272,59 @@ function kunaal_enqueue_assets() {
         kunaal_asset_version('assets/css/sections.css')
     );
 
-    // 10. Main stylesheet (legacy - contains remaining styles)
-    // Will be gradually reduced as more modules are extracted
+    // 10. Pages (archive, article, prose, page utilities)
+    wp_enqueue_style(
+        'kunaal-theme-pages',
+        KUNAAL_THEME_URI . '/assets/css/pages.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/pages.css')
+    );
+
+    // 11. Custom Blocks
+    wp_enqueue_style(
+        'kunaal-theme-blocks',
+        KUNAAL_THEME_URI . '/assets/css/blocks.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/blocks.css')
+    );
+
+    // 12. WordPress Core Block Overrides
+    wp_enqueue_style(
+        'kunaal-theme-wordpress-blocks',
+        KUNAAL_THEME_URI . '/assets/css/wordpress-blocks.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/wordpress-blocks.css')
+    );
+
+    // 13. Motion Primitives
+    wp_enqueue_style(
+        'kunaal-theme-motion',
+        KUNAAL_THEME_URI . '/assets/css/motion.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/motion.css')
+    );
+
+    // 14. Compatibility (print, reduced motion, cross-browser, parallax)
+    wp_enqueue_style(
+        'kunaal-theme-compatibility',
+        KUNAAL_THEME_URI . '/assets/css/compatibility.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/compatibility.css')
+    );
+
+    // 15. About Page V2
+    wp_enqueue_style(
+        'kunaal-theme-about-page',
+        KUNAAL_THEME_URI . '/assets/css/about-page.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/about-page.css')
+    );
+
+    // 16. Main stylesheet (now minimal - only contains theme header and any remaining styles)
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections'),
+        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections', 'kunaal-theme-pages', 'kunaal-theme-blocks', 'kunaal-theme-wordpress-blocks', 'kunaal-theme-motion', 'kunaal-theme-compatibility', 'kunaal-theme-about-page'),
         kunaal_asset_version('style.css')
     );
     

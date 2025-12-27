@@ -68,6 +68,102 @@ Text Domain: kunaal-theme
 
 /* ========================================
    ARCHIVE HEADER
+   Extracted to assets/css/pages.css
+   ======================================== */
+
+/* ========================================
+   SINGLE ARTICLE
+   Extracted to assets/css/pages.css
+   ======================================== */
+
+/* ========================================
+   PROSE CONTENT
+   Extracted to assets/css/pages.css
+   ======================================== */
+
+/* ========================================
+   CUSTOM BLOCKS (pullquote, insightBox, accordion, split, chart, codeBlock, canvas, scrolly, takeaways, citation, aside, rail, tocList)
+   Extracted to assets/css/blocks.css
+   ======================================== */
+
+/* ========================================
+   PAGE UTILITIES (no-posts, notFound, infiniteLoader, pageContent, contactInfo)
+   Extracted to assets/css/pages.css
+   ======================================== */
+
+/* ========================================
+   REDUCED MOTION
+   Extracted to assets/css/compatibility.css
+   ======================================== */
+
+/* ========================================
+   PRINT STYLES
+   Extracted to assets/css/compatibility.css
+   ======================================== */
+
+/* ========================================
+   GUTENBERG BLOCK EDITOR STYLES
+   Extracted to assets/css/compatibility.css
+   ======================================== */
+
+/* ========================================
+   CROSS-BROWSER COMPATIBILITY
+   Extracted to assets/css/compatibility.css
+   ======================================== */
+
+/* ========================================
+   PARALLAX SECTIONS
+   Extracted to assets/css/compatibility.css
+   ======================================== */
+
+/* ========================================
+   WORDPRESS CORE BLOCK OVERRIDES
+   Extracted to assets/css/wordpress-blocks.css
+   ======================================== */
+
+/* ========================================
+   SUBSCRIBE FORM
+   Extracted to assets/css/components.css
+   ======================================== */
+
+/* ========================================
+   FILTER ICON
+   Extracted to assets/css/components.css
+   ======================================== */
+
+/* ========================================
+   YOAST HOW-TO BLOCK
+   Extracted to assets/css/wordpress-blocks.css
+   ======================================== */
+
+/* ========================================
+   IMPROVED PROSE LINK UNDERLINES
+   Extracted to assets/css/components.css
+   ======================================== */
+
+/* ========================================
+   TITLE CASE FIXES
+   Extracted to assets/css/base.css
+   ======================================== */
+
+/* ========================================
+   CONTENT CONTAINER & MAIN POSITIONING
+   Extracted to assets/css/layout.css
+   ======================================== */
+
+/* ========================================
+   MOTION PRIMITIVES
+   Extracted to assets/css/motion.css
+   ======================================== */
+
+/* ========================================
+   ABOUT PAGE V2
+   Extracted to assets/css/about-page.css
+   ======================================== */
+
+/* ========================================
+   CONTACT PAGE - CORRESPONDENCE LEDGER
+   Extracted to assets/css/contact-page.css
    ======================================== */
 .archiveHeader {
   padding: var(--space-6) 0 var(--space-4);

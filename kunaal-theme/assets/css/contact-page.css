@@ -443,6 +443,378 @@
     }
 }
 
+/* ========================================
+   CONTACT PAGE - Correspondence Ledger (Bespoke)
+   ======================================== */
+
+.contact-ledger {
+  min-height: 100vh;
+  padding: 96px 24px;
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(30,90,255,0.06), transparent 55%),
+    radial-gradient(900px 700px at 80% 90%, rgba(125,107,93,0.06), transparent 60%),
+    linear-gradient(180deg, #FDFCFB 0%, #F8F5F1 100%);
+}
+
+.contact-ledgerWrap {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.ledgerCard {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid rgba(17,24,39,0.08);
+  border-radius: 14px;
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.04),
+    0 18px 50px rgba(0,0,0,0.06);
+  padding: 56px 56px 44px;
+  overflow: hidden;
+}
+
+/* subtle paper grain + margin rule */
+.ledgerCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(0,0,0,0.02) 0, transparent 35%),
+    radial-gradient(circle at 80% 70%, rgba(0,0,0,0.018) 0, transparent 40%),
+    linear-gradient(90deg, rgba(30,90,255,0.08), rgba(30,90,255,0.08)) 84px 0 / 1px 100% no-repeat;
+  pointer-events: none;
+}
+
+.ledgerHeader {
+  position: relative;
+  margin-bottom: 34px;
+}
+
+.ledgerMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  color: rgba(17,24,39,0.55);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ledgerMetaRule {
+  flex: 1;
+  height: 1px;
+  background: rgba(17,24,39,0.10);
+}
+
+.ledgerHeadline {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.ledgerIntro {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(17,24,39,0.72);
+}
+
+.ledgerForm {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 26px;
+}
+
+.ledgerField {
+  position: relative;
+}
+
+.ledgerField input,
+.ledgerField textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid rgba(17,24,39,0.18);
+  transition: border-color 180ms ease;
+}
+
+.ledgerField input:focus,
+.ledgerField textarea:focus {
+  outline: none;
+  border-bottom-color: rgba(30,90,255,0.8);
+}
+
+.ledgerField label {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  font-size: 14px;
+  color: rgba(17,24,39,0.45);
+  pointer-events: none;
+  transition: transform 180ms ease, color 180ms ease, opacity 180ms ease;
+  transform-origin: left;
+}
+
+.ledgerField input:focus ~ label,
+.ledgerField input:not(:placeholder-shown) ~ label,
+.ledgerField textarea:focus ~ label,
+.ledgerField textarea:not(:placeholder-shown) ~ label {
+  transform: translateY(-18px) scale(0.92);
+  color: rgba(30,90,255,0.9);
+}
+
+.ledgerTextarea {
+  grid-column: 1 / -1;
+  padding-top: 10px;
+}
+
+.ledgerTextarea textarea {
+  min-height: 220px;
+  padding: 16px 16px 16px 0;
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 10px;
+  background: rgba(253,252,251,0.85);
+  line-height: 1.8;
+  resize: vertical;
+}
+
+.ledgerTextarea textarea:focus {
+  border-color: rgba(30,90,255,0.45);
+  box-shadow: 0 0 0 4px rgba(30,90,255,0.08);
+}
+
+/* ruled baselines behind textarea */
+.ledgerLines {
+  position: absolute;
+  inset: 52px 12px 14px 86px;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    rgba(17,24,39,0.06) 28px
+  );
+  pointer-events: none;
+  border-radius: 8px;
+  opacity: 0.85;
+}
+
+.ledgerSend {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(17,24,39,0.12);
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.ledgerSend:hover:not(:disabled) {
+  background: var(--blue);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(30,90,255,0.18);
+}
+
+.ledgerSend:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.ledgerSend .btn-text,
+.ledgerSend .btn-loading,
+.ledgerSend .btn-success {
+  display: inline-block;
+}
+
+.ledgerSend .btn-loading,
+.ledgerSend .btn-success { 
+  display: none; 
+}
+
+.ledgerSend.is-loading .btn-text { 
+  display: none; 
+}
+.ledgerSend.is-loading .btn-loading { 
+  display: inline-block; 
+}
+.ledgerSend.is-success { 
+  background: #0E7A3A; 
+}
+.ledgerSend.is-success .btn-text,
+.ledgerSend.is-success .btn-loading { 
+  display: none; 
+}
+.ledgerSend.is-success .btn-success { 
+  display: inline-block; 
+}
+
+.contact-ledger .form-status {
+  grid-column: 1 / -1;
+  margin-top: -6px;
+  font-size: 13px;
+  color: rgba(17,24,39,0.70);
+}
+
+.contact-ledger .form-status.is-error {
+  color: #8B1A1A;
+}
+
+.ledgerResponse {
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: rgba(17,24,39,0.56);
+}
+
+.ledgerAlternatives {
+  margin-top: 22px;
+  text-align: center;
+}
+
+.ledgerAltDivider {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(17,24,39,0.55);
+  margin-bottom: 14px;
+}
+
+.ledgerAltIcons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.ledgerAltIcon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(17,24,39,0.12);
+  background: rgba(255,255,255,0.75);
+  color: rgba(17,24,39,0.70);
+  transition: transform 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.ledgerAltIcon:hover {
+  transform: translateY(-1px);
+  border-color: rgba(30,90,255,0.45);
+  color: var(--blue);
+  box-shadow: 0 12px 26px rgba(30,90,255,0.10);
+}
+
+/* Messenger QR tiles */
+.ledgerMessengers {
+  margin-top: 34px;
+}
+
+.ledgerMessengersHeader {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.ledgerMessengersSub {
+  margin: 8px auto 0;
+  max-width: 60ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(17,24,39,0.62);
+}
+
+.ledgerQrGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.ledgerQrTile {
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.7);
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+.ledgerQrLabel {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(17,24,39,0.62);
+  margin-bottom: 12px;
+}
+
+.ledgerQrImageLink {
+  display: inline-block;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(17,24,39,0.10);
+  background: #fff;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.ledgerQrImageLink:hover {
+  transform: translateY(-1px);
+  border-color: rgba(30,90,255,0.35);
+  box-shadow: 0 16px 34px rgba(30,90,255,0.10);
+}
+
+.ledgerQrImage {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+}
+
+.ledgerQrOpen {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.ledgerQrOpen:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 740px) {
+  .contact-ledger { padding: 64px 18px; }
+  .ledgerCard { padding: 42px 22px 34px; }
+  .ledgerHeadline { font-size: 32px; }
+  .ledgerForm { grid-template-columns: 1fr; }
+  .ledgerLines { inset: 52px 10px 14px 14px; }
+  .ledgerTextarea textarea { padding-left: 14px; }
+  .ledgerQrGrid { 
+    grid-template-columns: 1fr; 
+  }
+}
+
+/* Ensure header stays fixed on all screen sizes */
+@media (max-width: 640px) {
+  .mast {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100vw;
+  }
+}
+
 
 
 
