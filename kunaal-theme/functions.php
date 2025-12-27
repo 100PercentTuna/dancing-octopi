@@ -264,12 +264,20 @@ function kunaal_enqueue_assets() {
         kunaal_asset_version('assets/css/filters.css')
     );
 
-    // 9. Main stylesheet (legacy - contains remaining styles)
+    // 9. Sections & Grid
+    wp_enqueue_style(
+        'kunaal-theme-sections',
+        KUNAAL_THEME_URI . '/assets/css/sections.css',
+        array('kunaal-theme-base'),
+        kunaal_asset_version('assets/css/sections.css')
+    );
+
+    // 10. Main stylesheet (legacy - contains remaining styles)
     // Will be gradually reduced as more modules are extracted
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters'),
+        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections'),
         kunaal_asset_version('style.css')
     );
     
