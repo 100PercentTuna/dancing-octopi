@@ -65,7 +65,11 @@
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
         .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
         .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
-        .from('#scrollIndicator', { y: 8, opacity: 0, duration: 0.35 }, '<0.25');
+        .from('#scrollIndicator', { 
+          opacity: 0, 
+          duration: 0.35,
+          clearProps: 'transform' // Clear any transforms after fade-in to avoid conflict with CSS animation
+        }, '<0.25');
     } catch (e) {
       console.warn('Page load animation failed:', e);
     }
@@ -77,6 +81,8 @@
   function initScrollReveals(gsapOk) {
     if (reduceMotion || !gsapOk) return;
     var els = document.querySelectorAll('[data-reveal]');
+    var isMobile = window.innerWidth < 900;
+    
     for (var i = 0; i < els.length; i++) {
       (function (el) {
         var dir = el.getAttribute('data-reveal') || 'up';
@@ -84,6 +90,18 @@
         if (dir === 'left') { x = -18; y = 0; }
         if (dir === 'right') { x = 18; y = 0; }
         if (dir === 'down') { x = 0; y = -14; }
+        
+        // Mobile-specific handling for hero-text elements
+        var isHeroText = el.closest('.hero-text') !== null;
+        var startPos = 'top 86%';
+        var immediateRender = true;
+        
+        // On mobile, hero-text is below viewport, so use different start position
+        if (isMobile && isHeroText) {
+          startPos = 'top 100%'; // Trigger when element enters viewport
+          immediateRender = false; // Don't render immediately, wait for trigger
+        }
+        
         try {
           var st = window.gsap.from(el, {
             x: x,
@@ -91,19 +109,36 @@
             opacity: 0,
             duration: 0.55,
             ease: 'power2.out',
+            immediateRender: immediateRender,
             scrollTrigger: {
               trigger: el,
-              start: 'top 86%',
+              start: startPos,
               toggleActions: 'play none none reverse',
-              // Refresh on resize to prevent disappearing text
-              refreshPriority: 1
+              refreshPriority: 1,
+              invalidateOnRefresh: true // Recalculate on resize
             }
           });
+          
           // Recalculate on window resize to fix disappearing text
-          window.addEventListener('resize', function() {
-            if (st && st.scrollTrigger) {
-              st.scrollTrigger.refresh();
+          var resizeHandler = function() {
+            if (window.gsap && window.ScrollTrigger && st && st.scrollTrigger) {
+              var newIsMobile = window.innerWidth < 900;
+              var newIsHeroText = el.closest('.hero-text') !== null;
+              
+              // If mobile state changed, refresh with new settings
+              if (newIsMobile !== isMobile && newIsHeroText) {
+                st.scrollTrigger.refresh();
+              } else {
+                st.scrollTrigger.refresh();
+              }
             }
+          };
+          
+          // Use debounced resize for better performance
+          var resizeTimeout;
+          window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(resizeHandler, 150);
           }, { passive: true });
         } catch (e) {
           console.warn('Scroll reveal failed for element:', e);
@@ -133,11 +168,12 @@
             {
               yPercent: amp,
               ease: 'none',
+              force3D: true, // Force hardware acceleration for smooth performance
               scrollTrigger: {
                 trigger: band,
                 start: 'top bottom',
                 end: 'bottom top',
-                scrub: 1
+                scrub: true // Changed from scrub: 1 to scrub: true for smooth, lag-free parallax
               }
             }
           );

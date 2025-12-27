@@ -3,7 +3,7 @@ Theme Name: Kunaal's Theme
 Theme URI: https://kunaalwadhwa.com
 Author: Kunaal Wadhwa
 Description: A sophisticated personal writing theme with gallery-grade editorial design. Minimalistic art-gallery aesthetic with strong typography and blue as the statement color.
-Version: 4.25.0
+Version: 4.26.0
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 8.0
@@ -408,14 +408,29 @@ main {
 }
 @media (max-width: 640px) {
   /* Mobile theme toggle: smaller, snug to menu, no box styling */
+  .mastInner {
+    /* Ensure proper alignment */
+    align-items: center;
+    gap: 12px; /* Reduce gap for snug fit */
+  }
+  
+  .mastInner > .nav {
+    margin-right: var(--space-1); /* Reduce from space-3 to space-1 */
+  }
+  
   .mastInner > .theme-toggle {
     width: 32px;
     height: 32px;
     border: none;
     background: transparent;
     box-shadow: none;
-    margin-left: var(--space-2);
+    margin-left: var(--space-1); /* Reduce gap - make it snug */
     padding: 0;
+    /* Ensure same vertical alignment as nav */
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .theme-toggle-icon {
     width: 16px;
@@ -2311,15 +2326,15 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   .actionDock {
     right: var(--space-2);
     bottom: var(--space-2);
-    gap: 8px;
+    gap: 6px; /* Reduced from 8px for tighter spacing */
   }
   .dockButton {
-    width: 32px;
-    height: 32px;
+    width: 28px; /* Reduced from 32px for less obstruction */
+    height: 28px;
   }
   .dockButton svg {
-    width: 14px;
-    height: 14px;
+    width: 12px; /* Reduced from 14px to match smaller button */
+    height: 12px;
   }
 }
 

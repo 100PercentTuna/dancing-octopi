@@ -220,6 +220,11 @@ img { display: block; max-width: 100%; }
   position: absolute;
   top: -60%;
   left: 0;
+  /* Performance optimizations for smooth parallax */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Improve rendering performance */
+  contain: layout style paint; /* Isolate rendering context */
 }
 /* Remove white overlay - panorama should flow seamlessly */
 .panorama::after {
@@ -253,22 +258,29 @@ a:focus-visible, button:focus-visible {
   min-height: 100vh;
   background: var(--bg);
   position: relative;
+  overflow: visible; /* Ensure hero section doesn't clip children (like scroll indicator) */
 }
 
 .hero-photo {
   position: relative;
-  overflow: visible;
+  overflow: hidden; /* Match reference - ensures proper clipping while allowing accent to show */
   background: var(--bgAlt);
 }
 .hero-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center; /* Default - optimized for wider screens */
   filter: grayscale(100%);
   transition: filter 0.15s ease;
   will-change: transform;
   position: relative;
   z-index: 1;
+}
+
+/* First photo: reveal more from left as screen widens */
+.hero-photo:first-child img {
+  object-position: left center;
 }
 .hero-photo.color-active img { filter: none; }
 .hero-photo:hover img { filter: none; }
@@ -285,6 +297,10 @@ a:focus-visible, button:focus-visible {
 .hero-photo:hover::after { transform: scaleY(1); }
 .hero-photo.color-active::after { transform: scaleY(1); }
 /* Dog-ear accent - exact original implementation using linear-gradient */
+.hero-photo.has-accent {
+  isolation: isolate; /* Create new stacking context to ensure accent is above image */
+}
+
 .hero-photo.has-accent::before {
   content: '';
   position: absolute;
@@ -292,9 +308,11 @@ a:focus-visible, button:focus-visible {
   left: 0;
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, var(--blue) 50%, transparent 50%);
-  z-index: 10;
+  background: linear-gradient(135deg, var(--blue, #1E5AFF) 50%, transparent 50%);
+  z-index: 20; /* Increased from 10 to 20 to ensure it's above image (z-index: 1) */
   pointer-events: none;
+  /* Ensure accent is not clipped */
+  clip-path: none;
 }
 
 .hero-text {
@@ -370,13 +388,17 @@ a:focus-visible, button:focus-visible {
   color: var(--ink);
 }
 
-/* Scroll indicator - positioned inside hero text, below meta */
+/* Scroll indicator - positioned absolutely within hero section */
 .scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 1.5rem;
+  z-index: 20;
   opacity: 1;
   transition: opacity 0.5s ease;
   pointer-events: none;
@@ -420,7 +442,7 @@ a:focus-visible, button:focus-visible {
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 30px 1fr 1fr 30px;
-    grid-template-rows: 1fr 1fr auto;
+    grid-template-rows: minmax(150px, 1fr) minmax(150px, 1fr) auto;
     min-height: auto;
     padding-top: 0;
   }
@@ -432,9 +454,46 @@ a:focus-visible, button:focus-visible {
     border: 1px solid var(--hair2);
     border-radius: 8px;
   }
+  
+  /* Mobile: Ensure hero text is visible even if GSAP doesn't load or ScrollTrigger doesn't fire */
+  /* This is a critical fallback for content visibility */
+  .hero-text [data-reveal] {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Explicitly ensure hero intro and meta are visible on mobile */
+  .hero-text .hero-intro,
+  .hero-text .hero-meta {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Mobile: Reorder photos - move dog-ear photo (3rd) to second row to prevent cut-off */
+  .hero-photo:nth-child(1) { order: 1; }
+  .hero-photo:nth-child(2) { order: 2; }
+  .hero-photo:nth-child(3) { order: 5; } /* Dog-ear: move to after photo 5 */
+  .hero-photo:nth-child(4) { order: 3; }
+  .hero-photo:nth-child(5) { order: 4; }
+  .hero-photo:nth-child(6) { order: 6; }
+  .hero-photo:nth-child(7) { order: 7; }
+  .hero-photo:nth-child(8) { order: 8; }
+  .hero-photo:nth-child(9) { order: 9; }
+  .hero-photo:nth-child(10) { order: 10; }
+  
+  /* Alternative: Use grid-row assignment for dog-ear photo */
+  .hero-photo.has-accent {
+    grid-row: 2; /* Force to second row */
+  }
+  
   /* Mobile: ensure hero photos fill width without whitespace */
   .hero-photo {
-    min-height: 120px;
+    min-height: 150px; /* Increased from 120px for better visibility */
+  }
+  
+  /* Optimize object-position for dog-ear photo to preserve accent area */
+  .hero-photo.has-accent img {
+    object-position: top center; /* Preserve top area where accent is */
   }
 }
 
@@ -731,8 +790,10 @@ a:focus-visible, button:focus-visible {
 
 .media-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns for consistency */
   gap: 1.25rem 1rem;
+  /* Ensure all grid items have same width */
+  align-items: start;
 }
 .media-col:last-child .media-grid {
   gap: 1rem;
@@ -746,8 +807,11 @@ a:focus-visible, button:focus-visible {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  min-width: 0; /* Prevent overflow */
+  max-width: 100%;
 }
 .media-cover {
   position: relative;
@@ -756,6 +820,7 @@ a:focus-visible, button:focus-visible {
   border-radius: 2px;
   transition: transform var(--transition), box-shadow var(--transition);
   width: 100%;
+  flex-shrink: 0; /* Prevent shrinking to ensure consistent sizing */
 }
 .media-item:hover .media-cover {
   transform: translateY(-4px) rotate(-1deg);
@@ -789,6 +854,9 @@ a:focus-visible, button:focus-visible {
   background: var(--bgAlt);
   border: 1px solid var(--hair2);
   aspect-ratio: 1;
+  /* Add explicit height constraint for older browsers */
+  height: 0;
+  padding-bottom: 100%; /* Fallback for browsers without aspect-ratio support */
 }
 .media-cover.album::before{
   content: '';
@@ -807,17 +875,7 @@ a:focus-visible, button:focus-visible {
   margin: 0;
   border-radius: 0;
 }
-/* Override any nth-child rules that might affect sizing */
-.media-item:first-child .media-cover.album,
-.media-item:nth-child(1) .media-cover.album,
-.media-item:nth-child(2) .media-cover.album,
-.media-item:nth-child(3) .media-cover.album,
-.media-item:nth-child(4) .media-cover.album,
-.media-item:nth-child(5) .media-cover.album,
-.media-item:nth-child(6) .media-cover.album {
-  aspect-ratio: 1 !important;
-  width: 100% !important;
-}
+/* Remove nth-child overrides - not needed if grid is consistent */
 .media-cover .play-icon {
   position: absolute;
   inset: 0;
@@ -848,6 +906,17 @@ a:focus-visible, button:focus-visible {
   font-family: var(--mono);
   font-size: 8px;
   color: var(--blue);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Add explicit SVG sizing for media links */
+.media-link svg {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  display: block;
 }
 
 /* =============================================
@@ -1041,6 +1110,7 @@ a:focus-visible, button:focus-visible {
   justify-content: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  align-items: center; /* Ensure vertical alignment */
 }
 .say-hello-link {
   width: 36px; height: 36px;
@@ -1058,7 +1128,12 @@ a:focus-visible, button:focus-visible {
   background: var(--blueTint);
   transform: translateY(-2px);
 }
-.say-hello-link svg { width: 15px; height: 15px; }
+.say-hello-link svg {
+  width: 15px !important; /* Force size to prevent oversized icons */
+  height: 15px !important;
+  display: block;
+  flex-shrink: 0;
+}
 .say-hello-email {
   font-family: var(--mono);
   font-size: 10px;
