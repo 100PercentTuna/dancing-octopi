@@ -200,6 +200,10 @@
       return; // Don't set up ScrollTrigger on mobile
     }
     
+    // Store all ScrollTrigger instances for global resize handler
+    var scrollTriggers = [];
+    var revealElements = [];
+    
     for (var i = 0; i < els.length; i++) {
       (function (el) {
         var dir = el.getAttribute('data-reveal') || 'up';
@@ -254,108 +258,62 @@
             }
           });
           
-          // Recalculate on window resize to fix disappearing text
-          var resizeHandler = function() {
-            // #region agent log
-            debugLog('about-page-v22.js:196', 'Resize handler called', {viewportWidth:window.innerWidth,isHeroText:el.closest('.hero-text')!==null,elementTag:el.tagName,elementClass:el.className}, 'H4.1,H4.2');
-            // #endregion
-            
-            if (window.gsap && window.ScrollTrigger && st && st.scrollTrigger) {
-              var newIsMobile = window.innerWidth < 900;
-              var newIsHeroText = el.closest('.hero-text') !== null;
-              
-              // #region agent log
-              var beforeRefresh = window.getComputedStyle(el);
-              debugLog('about-page-v22.js:205', 'Before ScrollTrigger refresh', {opacity:beforeRefresh.opacity,transform:beforeRefresh.transform,display:beforeRefresh.display}, 'H4.1,H4.2');
-              // #endregion
-              
-              // Check if element is in viewport before refresh
-              var rect = el.getBoundingClientRect();
-              var isInViewport = rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
-              
-              // Refresh ScrollTrigger
-              st.scrollTrigger.refresh();
-              
-              // If element is in viewport after resize, force it to be visible
-              // This fixes the issue where elements get stuck at opacity 0
-              setTimeout(function() {
-                var afterRect = el.getBoundingClientRect();
-                var afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
-                
-                // Check if element is actually visible in viewport (accounting for negative positions)
-                var isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
-                
-                // For hero text elements, always check if they're in viewport and force visible if needed
-                // This fixes the issue where hero text disappears on wide screens
-                if (newIsHeroText && (afterIsInViewport || isActuallyVisible)) {
-                  var computed = window.getComputedStyle(el);
-                  var currentOpacity = parseFloat(computed.opacity);
-                  var currentY = parseFloat(computed.transform.match(/translateY\(([^)]+)\)/) ? computed.transform.match(/translateY\(([^)]+)\)/)[1] : '0') || 0;
-                  // Force visible if opacity is low OR if there's any Y translation remaining
-                  if (currentOpacity < 0.9 || Math.abs(currentY) > 2 || isNaN(currentOpacity)) {
-                    // Force visible and reset transforms - ensure it finishes at opacity:1, y:0
-                    window.gsap.set(el, { 
-                      opacity: 1, 
-                      x: 0, 
-                      y: 0, 
-                      clearProps: 'all' 
-                    });
-                    // Also set inline style as seatbelt
-                    el.style.opacity = '1';
-                    el.style.transform = 'none';
-                    // Re-trigger ScrollTrigger to recalculate
-                    if (st && st.scrollTrigger) {
-                      st.scrollTrigger.refresh();
-                    }
-                  }
-                } else if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
-                  // For non-hero elements, use existing logic
-                  var computed = window.getComputedStyle(el);
-                  var currentOpacity = parseFloat(computed.opacity);
-                  if (currentOpacity < 0.9 || isNaN(currentOpacity)) {
-                    // Force visible and reset transforms
-                    window.gsap.set(el, { 
-                      opacity: 1, 
-                      x: 0, 
-                      y: 0, 
-                      clearProps: 'all' 
-                    });
-                    el.style.opacity = '1';
-                    el.style.transform = 'none';
-                    // Re-trigger ScrollTrigger to recalculate
-                    if (st && st.scrollTrigger) {
-                      st.scrollTrigger.refresh();
-                    }
-                  }
-                }
-                
-                // #region agent log
-                var afterRefresh = window.getComputedStyle(el);
-                debugLog('about-page-v22.js:219', 'After ScrollTrigger refresh', {opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:afterRect.top,left:afterRect.left,inViewport:afterIsInViewport,isActuallyVisible:isActuallyVisible}, 'H4.1,H4.2,H4.3');
-                // #endregion
-              }, 150);
-            }
-          };
-          
-          // Use debounced resize for better performance
-          var resizeTimeout;
-          window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resizeHandler, 150);
-          }, { passive: true });
+          // Store for global resize handler
+          scrollTriggers.push({ st: st, el: el, isHeroText: isHeroText });
+          revealElements.push(el);
         } catch (e) {
           console.warn('Scroll reveal failed for element:', e);
         }
       })(els[i]);
     }
     
-    // Handle wide viewport - clear GSAP inline styles that override CSS
-    function handleWideViewport() {
-      if (window.innerWidth > 1600) {
-        window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
-          clearProps: 'all'  // This removes GSAP inline styles
-        });
-      }
+    // Single global debounced resize handler for all elements
+    function handleGlobalResize() {
+      if (!window.gsap || !window.ScrollTrigger) return;
+      
+      var newIsMobile = window.innerWidth < 900;
+      
+      // Refresh all ScrollTriggers
+      window.ScrollTrigger.refresh();
+      
+      // Check all elements after refresh
+      setTimeout(function() {
+        for (var j = 0; j < scrollTriggers.length; j++) {
+          var item = scrollTriggers[j];
+          var el = item.el;
+          var st = item.st;
+          var isHeroText = item.isHeroText;
+          
+          if (!st || !st.scrollTrigger) continue;
+          
+          var afterRect = el.getBoundingClientRect();
+          var afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
+          var isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
+          
+          // For hero text elements, always check if they're in viewport and force visible if needed
+          if (isHeroText && (afterIsInViewport || isActuallyVisible)) {
+            var computed = window.getComputedStyle(el);
+            var currentOpacity = parseFloat(computed.opacity);
+            var currentY = parseFloat(computed.transform.match(/translateY\(([^)]+)\)/) ? computed.transform.match(/translateY\(([^)]+)\)/)[1] : '0') || 0;
+            if (currentOpacity < 0.9 || Math.abs(currentY) > 2 || isNaN(currentOpacity)) {
+              window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
+              el.style.opacity = '1';
+              el.style.transform = 'none';
+              st.scrollTrigger.refresh();
+            }
+          } else if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
+            // For non-hero elements
+            var computed = window.getComputedStyle(el);
+            var currentOpacity = parseFloat(computed.opacity);
+            if (currentOpacity < 0.9 || isNaN(currentOpacity)) {
+              window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
+              el.style.opacity = '1';
+              el.style.transform = 'none';
+              st.scrollTrigger.refresh();
+            }
+          }
+        }
+      }, 150);
     }
     
     // Debounce helper
@@ -368,6 +326,19 @@
           func.apply(context, args);
         }, wait);
       };
+    }
+    
+    // Single global resize listener (replaces per-element listeners)
+    var debouncedResize = debounce(handleGlobalResize, 150);
+    window.addEventListener('resize', debouncedResize, { passive: true });
+    
+    // Handle wide viewport - clear GSAP inline styles that override CSS
+    function handleWideViewport() {
+      if (window.innerWidth > 1600) {
+        window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
+          clearProps: 'all'  // This removes GSAP inline styles
+        });
+      }
     }
     
     window.addEventListener('resize', debounce(handleWideViewport, 250), { passive: true });
