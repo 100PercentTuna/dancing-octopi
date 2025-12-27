@@ -1,7 +1,7 @@
 <?php
 /**
  * Gutenberg Block Registration
- * 
+ *
  * Registers all custom blocks, block categories, and editor assets.
  * Patterns have been removed in favor of proper Gutenberg blocks
  * which provide a better editing experience.
@@ -29,7 +29,7 @@ function kunaal_blocks_api_available() {
 
 /**
  * Register Custom Block Categories
- * 
+ *
  * These categories organize blocks in the editor inserter.
  * Categories are ordered by usage frequency.
  */
@@ -68,7 +68,7 @@ add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
 
 /**
  * Unregister Core Blocks We Replace
- * 
+ *
  * We have custom versions of these blocks that better match
  * the theme's design language.
  */
@@ -94,13 +94,13 @@ add_action('init', 'kunaal_unregister_core_blocks', 100);
 
 /**
  * All available blocks organized by category.
- * 
+ *
  * Each block requires:
  * - block.json (metadata)
  * - edit.js (editor component)
  * - render.php (frontend output)
  * - style.css (styles)
- * 
+ *
  * Some blocks also have:
  * - view.js (frontend JavaScript)
  */
@@ -201,7 +201,7 @@ function kunaal_get_view_script_blocks() {
 
 /**
  * Register Block Editor Scripts
- * 
+ *
  * Registers edit.js for each block and view.js for blocks
  * that need frontend JavaScript.
  */
@@ -267,7 +267,7 @@ add_action('init', 'kunaal_register_block_scripts', 5);
 
 /**
  * Register Custom Gutenberg Blocks
- * 
+ *
  * Registers all blocks from the /blocks directory.
  * Each block must have a valid block.json file.
  */
@@ -330,7 +330,7 @@ add_action('init', 'kunaal_register_blocks', 10);
 
 /**
  * Add Reveal Class to Core Blocks
- * 
+ *
  * Adds scroll-triggered reveal animation class to core blocks
  * when viewing essays or jottings.
  */

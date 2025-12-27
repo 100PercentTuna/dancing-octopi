@@ -108,8 +108,8 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
 }
 ?>
 
-<figure class="wp-block-kunaal-heatmap heatmap-<?php echo esc_attr($cell_size); ?>" 
-        role="img" 
+<figure class="wp-block-kunaal-heatmap heatmap-<?php echo esc_attr($cell_size); ?>"
+        role="img"
         aria-labelledby="<?php echo esc_attr($block_id); ?>-title"
         aria-describedby="<?php echo esc_attr($block_id); ?>-desc">
     
@@ -127,7 +127,7 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
     <?php endif; ?>
     
     <div id="<?php echo esc_attr($block_id); ?>-desc" class="sr-only">
-        <?php 
+        <?php
         printf(
             esc_html__('Heatmap showing %d rows and %d columns. Values range from %s to %s.', 'kunaal-theme'),
             count($row_labels),
@@ -154,15 +154,15 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
                 <?php foreach ($row_labels as $i => $row_label) : ?>
                 <tr>
                     <th class="heatmap-row-header"><?php echo esc_html($row_label); ?></th>
-                    <?php 
+                    <?php
                     $row_data = $data[$i] ?? [];
-                    foreach ($column_labels as $j => $col_label) : 
+                    foreach ($column_labels as $j => $col_label) :
                         $value = isset($row_data[$j]) && is_numeric($row_data[$j]) ? floatval($row_data[$j]) : 0;
                         $cell_color = kunaal_get_cell_color($value, $min_value, $max_value, $color_scale, $custom_color_low, $custom_color_high, $custom_color_mid);
                         $normalized = $max_value > $min_value ? (($value - $min_value) / ($max_value - $min_value)) : 0;
                     ?>
-                    <td class="heatmap-cell" 
-                        role="gridcell" 
+                    <td class="heatmap-cell"
+                        role="gridcell"
                         tabindex="0"
                         style="--cell-value: <?php echo esc_attr($normalized); ?>; background-color: <?php echo esc_attr($cell_color); ?>;"
                         aria-label="<?php printf(esc_attr__('%s, %s: %s', 'kunaal-theme'), esc_attr($row_label), esc_attr($col_label), kunaal_format_value($value, $value_format)); ?>">
@@ -181,9 +181,9 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
     <footer class="heatmap-footer">
         <div class="heatmap-legend heatmap-legend--<?php echo esc_attr($legend_position); ?>">
             <span class="legend-min"><?php echo esc_html(kunaal_format_value($min_value, $value_format)); ?></span>
-            <div class="legend-gradient" 
-                 style="background: linear-gradient(to right, 
-                    <?php echo esc_attr(kunaal_get_cell_color($min_value, $min_value, $max_value, $color_scale, $custom_color_low, $custom_color_high, $custom_color_mid)); ?>, 
+            <div class="legend-gradient"
+                 style="background: linear-gradient(to right,
+                    <?php echo esc_attr(kunaal_get_cell_color($min_value, $min_value, $max_value, $color_scale, $custom_color_low, $custom_color_high, $custom_color_mid)); ?>,
                     <?php echo esc_attr(kunaal_get_cell_color($max_value, $min_value, $max_value, $color_scale, $custom_color_low, $custom_color_high, $custom_color_mid)); ?>);">
             </div>
             <span class="legend-max"><?php echo esc_html(kunaal_format_value($max_value, $value_format)); ?></span>
@@ -210,9 +210,9 @@ function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '
                 <?php foreach ($row_labels as $i => $row_label) : ?>
                 <tr>
                     <th><?php echo esc_html($row_label); ?></th>
-                    <?php 
+                    <?php
                     $row_data = $data[$i] ?? [];
-                    foreach ($column_labels as $j => $col_label) : 
+                    foreach ($column_labels as $j => $col_label) :
                         $value = isset($row_data[$j]) && is_numeric($row_data[$j]) ? floatval($row_data[$j]) : 0;
                     ?>
                     <td><?php echo esc_html(kunaal_format_value($value, $value_format)); ?></td>

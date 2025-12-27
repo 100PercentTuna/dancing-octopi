@@ -32,19 +32,7 @@ main.container,
   }
 }
 
-/* Ensure main content stays below header */
-main {
-  position: relative;
-  z-index: 1; /* Below header */
-}
-
-/* Content container - slightly more padding than header/footer */
-main.container,
-.article.container {
-  /* Styles defined above */
-}
-
-/* Ensure content never overlaps header on any screen size */
+/* Ensure main content stays below header and never overlaps */
 main {
   position: relative;
   z-index: 1; /* Below header */

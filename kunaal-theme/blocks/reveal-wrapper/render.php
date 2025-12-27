@@ -18,7 +18,7 @@ $style = sprintf(
     (int) $duration
 );
 ?>
-<div<?php echo $anchor; ?> 
+<div<?php echo $anchor; ?>
     class="wp-block-kunaal-reveal-wrapper reveal-wrapper reveal-<?php echo esc_attr($animation_type); ?><?php echo $class_name; ?>"
     style="<?php echo esc_attr($style); ?>"
     data-reveal-threshold="<?php echo esc_attr($threshold); ?>"

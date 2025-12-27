@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 /**
  * Get emoji icon for an interest
- * 
+ *
  * @param string $interest The interest name
  * @return string The emoji icon
  */

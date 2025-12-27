@@ -3,14 +3,14 @@
 <head>
   <meta charset="<?php bloginfo('charset'); ?>" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <?php 
+  <?php
   // Custom favicon
   $favicon = kunaal_mod('kunaal_favicon', '');
   if ($favicon) : ?>
     <link rel="icon" type="image/png" href="<?php echo esc_url($favicon); ?>">
     <link rel="apple-touch-icon" href="<?php echo esc_url($favicon); ?>">
   <?php endif; ?>
-  <?php 
+  <?php
   // Inline script to set theme before render (prevents flash)
   ?>
   <script>
@@ -62,20 +62,31 @@ $initials = kunaal_get_initials();
     </a>
 
     <nav class="nav" id="nav" role="navigation">
-      <a class="uBlue<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? ' current' : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
-      <a class="uBlue<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? ' current' : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>
+      <?php
+      // Constant for current navigation class
+      if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
+          define('KUNAAL_NAV_CURRENT_CLASS', ' current');
+      }
+      $current_class = KUNAAL_NAV_CURRENT_CLASS;
+      ?>
+      <a class="uBlue<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
+      <a class="uBlue<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>
       <?php
       $about_page = get_page_by_path('about');
-      if ($about_page) :
+      if ($about_page) {
       ?>
-        <a class="uBlue<?php echo is_page('about') ? ' current' : ''; ?>" href="<?php echo esc_url(get_permalink($about_page)); ?>"><?php esc_html_e('About', 'kunaal-theme'); ?></a>
-      <?php endif; ?>
+        <a class="uBlue<?php echo is_page('about') ? $current_class : ''; ?>" href="<?php echo esc_url(get_permalink($about_page)); ?>"><?php esc_html_e('About', 'kunaal-theme'); ?></a>
+      <?php
+      }
+      ?>
       <?php
       $contact_page = get_page_by_path('contact');
-      if ($contact_page) :
+      if ($contact_page) {
       ?>
-        <a class="uBlue<?php echo is_page('contact') ? ' current' : ''; ?>" href="<?php echo esc_url(get_permalink($contact_page)); ?>"><?php esc_html_e('Contact', 'kunaal-theme'); ?></a>
-      <?php endif; ?>
+        <a class="uBlue<?php echo is_page('contact') ? $current_class : ''; ?>" href="<?php echo esc_url(get_permalink($contact_page)); ?>"><?php esc_html_e('Contact', 'kunaal-theme'); ?></a>
+      <?php
+      }
+      ?>
     </nav>
 
     <button class="theme-toggle" type="button" aria-label="<?php esc_attr_e('Toggle dark mode', 'kunaal-theme'); ?>" aria-pressed="false">

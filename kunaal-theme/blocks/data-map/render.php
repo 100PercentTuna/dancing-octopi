@@ -2,7 +2,9 @@
 /**
  * Data Map Block - Frontend Render
  */
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 $title = $attributes['title'] ?? '';
 $subtitle = $attributes['subtitle'] ?? '';
@@ -36,16 +38,36 @@ $source_note = $attributes['sourceNote'] ?? '';
 $region_data = $attributes['regionData'] ?? [];
 $point_data = $attributes['pointData'] ?? [];
 
+/**
+ * Format compact number (M/K suffixes)
+ * 
+ * @param float $value Value to format
+ * @param string $currency Currency symbol
+ * @param string $suffix Optional suffix
+ * @return string Formatted value
+ */
+function kunaal_format_compact_value($value, $currency, $suffix) {
+    if ($value >= 1000000) {
+        return $currency . round($value / 1000000, 1) . 'M' . ($suffix ? ' ' . $suffix : '');
+    }
+    if ($value >= 1000) {
+        return $currency . round($value / 1000, 1) . 'K' . ($suffix ? ' ' . $suffix : '');
+    }
+    return $currency . round($value) . ($suffix ? ' ' . $suffix : '');
+}
+
 function kunaal_format_map_value($value, $format, $currency = '$', $suffix = '') {
     switch ($format) {
-        case 'percent': return round($value, 1) . '%';
-        case 'currency': return $currency . number_format($value) . ($suffix ? ' ' . $suffix : '');
+        case 'percent':
+            return round($value, 1) . '%';
+        case 'currency':
+            return $currency . number_format($value) . ($suffix ? ' ' . $suffix : '');
         case 'compact':
-            if ($value >= 1000000) return $currency . round($value / 1000000, 1) . 'M' . ($suffix ? ' ' . $suffix : '');
-            if ($value >= 1000) return $currency . round($value / 1000, 1) . 'K' . ($suffix ? ' ' . $suffix : '');
-            return $currency . round($value) . ($suffix ? ' ' . $suffix : '');
-        case 'decimal1': return number_format($value, 1) . ($suffix ? ' ' . $suffix : '');
-        default: return round($value) . ($suffix ? ' ' . $suffix : '');
+            return kunaal_format_compact_value($value, $currency, $suffix);
+        case 'decimal1':
+            return number_format($value, 1) . ($suffix ? ' ' . $suffix : '');
+        default:
+            return round($value) . ($suffix ? ' ' . $suffix : '');
     }
 }
 

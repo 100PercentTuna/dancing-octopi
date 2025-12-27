@@ -2,7 +2,7 @@
 /**
  * Custom PDF Generator for Kunaal Theme
  * Creates clean journal-paper style PDFs using DOMPDF
- * 
+ *
  * @package Kunaal_Theme
  */
 
@@ -133,11 +133,11 @@ function kunaal_generate_pdf() {
     @media print {
         @page { margin: 2cm; }
     }
-    .print-notice { 
-        background: #fffbeb; 
-        border: 1px solid #f59e0b; 
-        padding: 1rem; 
-        margin-bottom: 2rem; 
+    .print-notice {
+        background: #fffbeb;
+        border: 1px solid #f59e0b;
+        padding: 1rem;
+        margin-bottom: 2rem;
         border-radius: 6px;
         font-family: system-ui, sans-serif;
         font-size: 14px;

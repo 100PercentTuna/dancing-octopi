@@ -7,7 +7,7 @@
       
       <?php
       $contact_email = kunaal_mod('kunaal_contact_email', '');
-      if (!empty($contact_email)) :
+      if (!empty($contact_email)) {
       ?>
         <a class="mailWrap uBlue" href="mailto:<?php echo esc_attr($contact_email); ?>" aria-label="Email <?php echo esc_attr(kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa')); ?>">
           <svg class="env" viewBox="0 0 24 24" aria-hidden="true">
@@ -16,13 +16,13 @@
           </svg>
           <span><?php echo esc_html($contact_email); ?></span>
         </a>
-      <?php else : ?>
+      <?php } else { ?>
         <span></span>
-      <?php endif; ?>
+      <?php } ?>
       
       <div class="footerRight">
         &copy; <span id="footerYear"><?php echo esc_html(date('Y')); ?></span>
-        <?php 
+        <?php
         $first_name = kunaal_mod('kunaal_author_first_name', 'Kunaal');
         $last_name = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
         echo esc_html($first_name . ' ' . $last_name);

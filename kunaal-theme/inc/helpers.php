@@ -1,7 +1,7 @@
 <?php
 /**
  * Helper Functions
- * 
+ *
  * @package Kunaal_Theme
  * @version 4.20.0
  */
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 /**
  * Helper: Get initials
- * 
+ *
  * @return string Uppercase initials from author first and last name
  */
 if (!function_exists('kunaal_get_initials')) {
@@ -25,7 +25,7 @@ if (!function_exists('kunaal_get_initials')) {
 
 /**
  * Helper: Output Subscribe Section
- * 
+ *
  * @return void
  */
 if (!function_exists('kunaal_subscribe_section')) {
@@ -61,7 +61,7 @@ if (!function_exists('kunaal_subscribe_section')) {
 
 /**
  * Helper: Get all topics with counts
- * 
+ *
  * @return array Array of topic data with slug, name, and count
  */
 if (!function_exists('kunaal_get_all_topics')) {
@@ -89,7 +89,7 @@ if (!function_exists('kunaal_get_all_topics')) {
 
 /**
  * Helper: Get card image URL
- * 
+ *
  * @param int    $post_id Post ID
  * @param string $size    Image size
  * @return string Image URL or empty string
@@ -104,6 +104,72 @@ if (!function_exists('kunaal_get_card_image_url')) {
         return get_the_post_thumbnail_url($post_id, $size);
     }
     return '';
+    }
+}
+
+/**
+ * Helper: Get clip class from image clip value
+ * 
+ * @param string $clip Clip value
+ * @return string CSS class
+ */
+if (!function_exists('kunaal_get_clip_class')) {
+    function kunaal_get_clip_class($clip) {
+        switch ($clip) {
+            case 'angle_bottom':
+                return 'clip-angle-bottom';
+            case 'angle_top':
+                return 'clip-angle-top';
+            case 'angle_both':
+                return 'clip-angle-both';
+            default:
+                return '';
+        }
+    }
+}
+
+/**
+ * Helper: Render quote image section
+ * 
+ * @param array $img Image data
+ * @param string $clip_class CSS class for clipping
+ * @return void Outputs HTML
+ */
+if (!function_exists('kunaal_render_quote_image')) {
+    function kunaal_render_quote_image($img, $clip_class) {
+        ?>
+        <section class="about-quote-image about-layer-image">
+            <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
+                <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image">
+            </div>
+            <div class="about-quote-content reveal-up">
+                <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
+                <?php if (!empty($img['quote_attr'])) : ?>
+                <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
+                <?php endif; ?>
+            </div>
+        </section>
+        <?php
+    }
+}
+
+/**
+ * Helper: Render regular atmosphere image
+ * 
+ * @param array $img Image data
+ * @param string $clip_class CSS class for clipping
+ * @return void Outputs HTML
+ */
+if (!function_exists('kunaal_render_atmo_image')) {
+    function kunaal_render_atmo_image($img, $clip_class) {
+        ?>
+        <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
+            <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
+            <?php if (!empty($img['caption'])) : ?>
+            <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
+            <?php endif; ?>
+        </div>
+        <?php
     }
 }
 
@@ -125,42 +191,12 @@ if (!function_exists('kunaal_render_atmo_images')) {
                 continue;
             }
             
-            $clip_class = '';
-            switch ($img['clip']) {
-                case 'angle_bottom':
-                    $clip_class = 'clip-angle-bottom';
-                    break;
-                case 'angle_top':
-                    $clip_class = 'clip-angle-top';
-                    break;
-                case 'angle_both':
-                    $clip_class = 'clip-angle-both';
-                    break;
-            }
+            $clip_class = kunaal_get_clip_class($img['clip'] ?? '');
             
             if ($img['has_quote'] && !empty($img['quote'])) {
-                ?>
-                <section class="about-quote-image about-layer-image">
-                    <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
-                        <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image">
-                    </div>
-                    <div class="about-quote-content reveal-up">
-                        <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
-                        <?php if (!empty($img['quote_attr'])) : ?>
-                        <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
-                        <?php endif; ?>
-                    </div>
-                </section>
-                <?php
+                kunaal_render_quote_image($img, $clip_class);
             } else {
-                ?>
-                <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
-                    <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
-                    <?php if (!empty($img['caption'])) : ?>
-                    <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
-                    <?php endif; ?>
-                </div>
-                <?php
+                kunaal_render_atmo_image($img, $clip_class);
             }
         }
     }
@@ -234,7 +270,7 @@ if (!function_exists('kunaal_home_query')) {
 /**
  * Last-resort fallback: bypass WP_Query (and any pre_get_posts interference) by
  * selecting IDs directly from the posts table.
- * 
+ *
  * WARNING: This bypasses WordPress query system. Only use when WP_Query fails
  * due to third-party interference. Uses prepared statements for security.
  * 
@@ -291,7 +327,8 @@ if (!function_exists('kunaal_render_essay_card')) {
         $date_display = get_the_date('j F Y', $post_id);
         $title_attr = esc_attr(get_the_title($post_id));
         ?>
-        <a href="<?php echo esc_url($permalink); ?>" class="card" role="listitem"
+        <li>
+        <a href="<?php echo esc_url($permalink); ?>" class="card"
            data-title="<?php echo esc_attr($title); ?>"
            data-dek="<?php echo esc_attr($subtitle); ?>"
            data-date="<?php echo esc_attr($date); ?>"
@@ -336,6 +373,7 @@ if (!function_exists('kunaal_render_essay_card')) {
             </div>
           </div>
         </a>
+        </li>
         <?php
     }
 }
@@ -372,7 +410,8 @@ if (!function_exists('kunaal_render_jotting_row')) {
         $date = get_the_date('Y-m-d', $post_id);
         $date_display = get_the_date('j M Y', $post_id);
         ?>
-        <a href="<?php echo esc_url($permalink); ?>" class="jRow" role="listitem"
+        <li>
+        <a href="<?php echo esc_url($permalink); ?>" class="jRow"
            data-title="<?php echo esc_attr($title); ?>"
            data-text="<?php echo esc_attr($subtitle); ?>"
            data-date="<?php echo esc_attr($date); ?>"
@@ -392,6 +431,7 @@ if (!function_exists('kunaal_render_jotting_row')) {
             <?php endif; ?>
           </div>
         </a>
+        </li>
         <?php
     }
 }

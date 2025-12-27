@@ -30,8 +30,8 @@ $kunaal_footnotes[] = array(
 // Render inline reference
 ?>
 <sup class="footnote-ref<?php echo $class_name; ?>">
-    <a 
-        href="#<?php echo esc_attr($footnote_id); ?>" 
+    <a
+        href="#<?php echo esc_attr($footnote_id); ?>"
         id="<?php echo esc_attr($footnote_id); ?>-ref"
         aria-describedby="<?php echo esc_attr($footnote_id); ?>"
         data-footnote-ref="<?php echo esc_attr($footnote_number); ?>"

@@ -1,9 +1,9 @@
 ﻿<?php
 /**
  * Kunaal Theme Functions
- * 
+ *
  * Main theme functions file. This file is organized into sections:
- * 
+ *
  * 1. CONSTANTS & INCLUDES
  * 2. THEME SETUP
  * 3. ASSET ENQUEUING
@@ -101,7 +101,7 @@ function kunaal_theme_safe_require_once($absolute_path) {
 // 1. CONSTANTS & INCLUDES
 // ========================================
 
-define('KUNAAL_THEME_VERSION', '4.28.1');
+define('KUNAAL_THEME_VERSION', '4.29.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -396,7 +396,7 @@ function kunaal_enqueue_assets() {
     // For contact page, also add inline script to ensure kunaalTheme is available
     // even if main.js loads late or fails
     if (is_page_template('page-contact.php') || (is_page() && get_page_template_slug() === 'page-contact.php')) {
-        wp_add_inline_script('kunaal-theme-main', 
+        wp_add_inline_script('kunaal-theme-main',
             'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(admin_url('admin-ajax.php')) . '" }; }',
             'before'
         );
@@ -1216,7 +1216,7 @@ add_action('customize_register', 'kunaal_customize_register');
 
 /**
  * Enqueue Customizer Preview Script
- * 
+ *
  * Loads JavaScript that handles live preview updates without page refresh.
  * Uses debouncing to prevent excessive updates while typing.
  */
@@ -1600,7 +1600,7 @@ add_action('template_redirect', 'kunaal_handle_subscribe_confirmation_request');
 
 /**
  * Helper: Validate filter request nonce
- * 
+ *
  * @return bool True if valid, false otherwise
  */
 function kunaal_validate_filter_request() {
@@ -1681,10 +1681,10 @@ function kunaal_prime_post_caches($post_ids) {
     
     // Ensure WordPress functions are available
     if (!function_exists('update_post_meta_cache')) {
-        require_once(ABSPATH . 'wp-admin/includes/post.php');
+        require_once ABSPATH . 'wp-admin/includes/post.php';
     }
     if (!function_exists('update_object_term_cache')) {
-        require_once(ABSPATH . 'wp-includes/taxonomy.php');
+        require_once ABSPATH . 'wp-includes/taxonomy.php';
     }
     
     if (function_exists('update_post_meta_cache')) {
@@ -1874,7 +1874,7 @@ add_action('wp_head', 'kunaal_add_open_graph_tags', 5);
 
 /**
  * Helper: Validate contact form request
- * 
+ *
  * @return bool True if valid, false otherwise
  */
 function kunaal_validate_contact_request() {
@@ -1898,7 +1898,7 @@ function kunaal_sanitize_contact_inputs() {
 
 /**
  * Helper: Check honeypot (bot detection)
- * 
+ *
  * @param string $honeypot Honeypot field value
  * @return bool True if honeypot is empty (valid), false if filled (bot)
  */
@@ -1921,7 +1921,7 @@ function kunaal_get_client_ip() {
 
 /**
  * Helper: Check rate limit for contact form
- * 
+ *
  * @return bool True if within rate limit, false if rate limited
  */
 function kunaal_check_contact_rate_limit() {
@@ -1941,7 +1941,7 @@ function kunaal_check_contact_rate_limit() {
 
 /**
  * Helper: Validate contact form data
- * 
+ *
  * @param string $message Message content
  * @param string $email Email address
  * @return array Array with 'valid' (bool) and 'error' (string) keys
@@ -2069,23 +2069,21 @@ add_action('wp_ajax_nopriv_kunaal_contact_form', 'kunaal_handle_contact_form');
 
 /**
  * Helper: Validate debug log request
- * 
+ *
  * @return array Array with 'valid' (bool) and 'error' (string) keys
  */
 function kunaal_validate_debug_log_request() {
+    $result = array('valid' => true, 'error' => '');
+    
     if (!defined('WP_DEBUG') || !WP_DEBUG) {
-        return array('valid' => false, 'error' => 'Debug logging disabled');
+        $result = array('valid' => false, 'error' => 'Debug logging disabled');
+    } elseif (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_debug_log_nonce')) {
+        $result = array('valid' => false, 'error' => 'Invalid nonce');
+    } elseif (!current_user_can('edit_posts')) {
+        $result = array('valid' => false, 'error' => 'Insufficient permissions');
     }
     
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_debug_log_nonce')) {
-        return array('valid' => false, 'error' => 'Invalid nonce');
-    }
-    
-    if (!current_user_can('edit_posts')) {
-        return array('valid' => false, 'error' => 'Insufficient permissions');
-    }
-    
-    return array('valid' => true, 'error' => '');
+    return $result;
 }
 
 /**
@@ -2104,7 +2102,7 @@ function kunaal_get_debug_log_data() {
 
 /**
  * Helper: Validate log data structure
- * 
+ *
  * @param mixed $log_data Log data to validate
  * @return bool True if valid, false otherwise
  */

@@ -27,7 +27,7 @@ if (is_front_page()) {
       <div class="prose reveal">
         <?php the_content(); ?>
         
-        <?php 
+        <?php
         // If this is the Contact page, show contact info from Customizer
         if (is_page('contact')) :
           $email = kunaal_mod('kunaal_contact_email', '');
@@ -42,9 +42,9 @@ if (is_front_page()) {
               <span><?php echo esc_html($email); ?></span>
             </a>
           </div>
-        <?php 
+        <?php
           endif;
-        endif; 
+        endif;
         ?>
       </div>
     </article>

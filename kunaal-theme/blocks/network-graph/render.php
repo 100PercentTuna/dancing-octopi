@@ -24,8 +24,8 @@ $edges = $attributes['edges'] ?? [];
 $block_id = 'network-' . wp_unique_id();
 ?>
 
-<figure class="wp-block-kunaal-network-graph" 
-        role="img" 
+<figure class="wp-block-kunaal-network-graph"
+        role="img"
         aria-labelledby="<?php echo esc_attr($block_id); ?>-title"
         data-lazy-block="network-graph"
         data-layout="<?php echo esc_attr($layout); ?>"
@@ -74,13 +74,13 @@ $block_id = 'network-' . wp_unique_id();
         </div>
     </div>
     
-    <?php if ($show_legend && $color_by_group) : 
+    <?php if ($show_legend && $color_by_group) :
         $groups = array_unique(array_column($nodes, 'group'));
         $theme_colors = ['#7D6B5D', '#B8A99A', '#C9553D', '#8B7355', '#D4C4B5', '#6B5B4F', '#A08B7A'];
     ?>
     <footer class="network-footer">
         <div class="network-legend">
-            <?php foreach ($groups as $i => $group) : 
+            <?php foreach ($groups as $i => $group) :
                 if (empty($group)) continue;
                 $color = $group_colors[$group] ?? $theme_colors[$i % count($theme_colors)];
             ?>
@@ -99,12 +99,12 @@ $block_id = 'network-' . wp_unique_id();
     <details class="network-list-fallback">
         <summary><?php esc_html_e('View as list', 'kunaal-theme'); ?></summary>
         <ul>
-            <?php 
+            <?php
             $node_map = [];
             foreach ($nodes as $node) {
                 $node_map[$node['id']] = $node;
             }
-            foreach ($nodes as $node) : 
+            foreach ($nodes as $node) :
                 $connections = array_filter($edges, function($e) use ($node) {
                     return $e['source'] === $node['id'] || $e['target'] === $node['id'];
                 });
@@ -116,12 +116,12 @@ $block_id = 'network-' . wp_unique_id();
                 <?php endif; ?>
                 <?php if (!empty($connections)) : ?>
                 <ul>
-                    <?php foreach ($connections as $edge) : 
+                    <?php foreach ($connections as $edge) :
                         $other_id = $edge['source'] === $node['id'] ? $edge['target'] : $edge['source'];
                         $other_node = $node_map[$other_id] ?? null;
                     ?>
                     <li>
-                        <?php esc_html_e('Connected to:', 'kunaal-theme'); ?> 
+                        <?php esc_html_e('Connected to:', 'kunaal-theme'); ?>
                         <?php echo esc_html($other_node['label'] ?? $other_id); ?>
                         <?php if (!empty($edge['label'])) : ?>
                         (<?php echo esc_html($edge['label']); ?>)

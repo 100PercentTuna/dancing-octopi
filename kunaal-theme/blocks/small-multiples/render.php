@@ -31,7 +31,7 @@ $block_id = 'sm-' . wp_unique_id();
     <?php endif; ?>
     
     <div class="small-multiples-grid" style="--columns: <?php echo esc_attr($columns); ?>; --aspect-ratio: <?php echo esc_attr($aspect_ratio); ?>;">
-        <?php foreach ($data_rows as $i => $row) : 
+        <?php foreach ($data_rows as $i => $row) :
             $label = $row['label'] ?? '';
             $values = $row['values'] ?? [];
         ?>

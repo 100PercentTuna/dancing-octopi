@@ -1,7 +1,7 @@
 <?php
 /**
  * About Page Customizer
- * 
+ *
  * Comprehensive Customizer implementation for the About page design.
  * All fields use native WordPress controls - no JSON editing required.
  *
@@ -11,6 +11,11 @@
 
 if (!defined('ABSPATH')) {
     exit;
+}
+
+// Constants for repeated literals
+if (!defined('KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL')) {
+    define('KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL', 'Section Title');
 }
 
 /**
@@ -259,7 +264,7 @@ function kunaal_about_customizer_v22($wp_customize) {
         'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_v22_rabbit_holes_title', array(
-        'label' => 'Section Title',
+        'label' => KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL,
         'section' => 'kunaal_about_v22_rabbit_holes',
         'type' => 'text',
     ));
@@ -599,7 +604,7 @@ function kunaal_about_customizer_v22($wp_customize) {
         'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_v22_places_title', array(
-        'label' => 'Section Title',
+        'label' => KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL,
         'section' => 'kunaal_about_v22_places',
         'type' => 'text',
     ));
@@ -668,7 +673,7 @@ function kunaal_about_customizer_v22($wp_customize) {
         'transport' => 'postMessage',
     ));
     $wp_customize->add_control('kunaal_about_v22_inspirations_title', array(
-        'label' => 'Section Title',
+        'label' => KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL,
         'section' => 'kunaal_about_v22_inspirations',
         'type' => 'text',
     ));

@@ -37,8 +37,8 @@ $content_style = sprintf(
     esc_attr($content_alignment)
 );
 ?>
-<section<?php echo $anchor; ?> 
-    class="wp-block-kunaal-parallax-section parallax-section<?php echo $align_class . $class_name; ?>" 
+<section<?php echo $anchor; ?>
+    class="wp-block-kunaal-parallax-section parallax-section<?php echo $align_class . $class_name; ?>"
     style="<?php echo $wrapper_style; ?>"
     data-parallax-intensity="<?php echo esc_attr($parallax_intensity); ?>"
 >

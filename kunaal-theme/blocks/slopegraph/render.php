@@ -48,7 +48,7 @@ $block_id = 'slope-' . wp_unique_id();
         </div>
         
         <svg class="slopegraph-lines" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
-            <?php foreach ($data_rows as $i => $row) : 
+            <?php foreach ($data_rows as $i => $row) :
                 $label = $row['label'] ?? '';
                 $left_val = floatval($row['leftValue'] ?? 0);
                 $right_val = floatval($row['rightValue'] ?? 0);
@@ -61,7 +61,7 @@ $block_id = 'slope-' . wp_unique_id();
             ?>
             <g class="slopegraph-row" data-change="<?php echo $is_positive ? 'positive' : ($is_negative ? 'negative' : 'neutral'); ?>" tabindex="0">
                 <circle class="dot dot-left" cx="120" cy="<?php echo $y; ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
-                <line class="slope-line" x1="120" y1="<?php echo $y; ?>" x2="480" y2="<?php echo $y + ($is_positive ? -10 : ($is_negative ? 10 : 0)); ?>" 
+                <line class="slope-line" x1="120" y1="<?php echo $y; ?>" x2="480" y2="<?php echo $y + ($is_positive ? -10 : ($is_negative ? 10 : 0)); ?>"
                       stroke="<?php echo esc_attr($color); ?>" stroke-width="2"/>
                 <circle class="dot dot-right" cx="480" cy="<?php echo $y + ($is_positive ? -10 : ($is_negative ? 10 : 0)); ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
                 <text class="label label-left" x="10" y="<?php echo $y + 5; ?>"><?php echo esc_html($label); ?></text>
@@ -95,7 +95,7 @@ $block_id = 'slope-' . wp_unique_id();
                 <tr><th><?php esc_html_e('Label', 'kunaal-theme'); ?></th><th><?php echo esc_html($left_label); ?></th><th><?php echo esc_html($right_label); ?></th><th><?php esc_html_e('Change', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
-                <?php foreach ($data_rows as $row) : 
+                <?php foreach ($data_rows as $row) :
                     $change = floatval($row['rightValue'] ?? 0) - floatval($row['leftValue'] ?? 0);
                 ?>
                 <tr>

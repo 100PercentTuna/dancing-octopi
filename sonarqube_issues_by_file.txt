@@ -1,0 +1,905 @@
+
+================================================================================
+kunaal-theme/archive-essay.php
+================================================================================
+
+Web:S6819 (5 issues):
+  Line 29 [MAJOR]: Use <datalist> or <select> instead of the listbox role to ensure accessibility across all devices.
+  Line 30 [MAJOR]: Use <option> instead of the option role to ensure accessibility across all devices.
+  Line 36 [MAJOR]: Use <option> instead of the option role to ensure accessibility across all devices.
+  Line 78 [MAJOR]: Use <menu> or <ol> or <ul> instead of the list role to ensure accessibility across all devices.
+  Line 92 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+
+Web:S6843 (1 issues):
+  Line 92 [MAJOR]: Interactive elements should not be assigned non-interactive roles.
+
+php:S1131 (1 issues):
+  Line 72 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/archive-jotting.php
+================================================================================
+
+Web:S6819 (5 issues):
+  Line 29 [MAJOR]: Use <datalist> or <select> instead of the listbox role to ensure accessibility across all devices.
+  Line 30 [MAJOR]: Use <option> instead of the option role to ensure accessibility across all devices.
+  Line 36 [MAJOR]: Use <option> instead of the option role to ensure accessibility across all devices.
+  Line 78 [MAJOR]: Use <menu> or <ol> or <ul> instead of the list role to ensure accessibility across all devices.
+  Line 90 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+
+Web:S6843 (1 issues):
+  Line 90 [MAJOR]: Interactive elements should not be assigned non-interactive roles.
+
+================================================================================
+kunaal-theme/assets/css/about-page-v22.css
+================================================================================
+
+css:S4666 (4 issues):
+  Line 457 [MAJOR]: Unexpected duplicate selector ".scroll-indicator-line", first used at line 449
+  Line 317 [MAJOR]: Unexpected duplicate selector "body.page-template-page-about .hero-photo.has-accent,
+.page-template-
+  Line 226 [MAJOR]: Unexpected duplicate selector "body.page-template-page-about .hero,
+.page-template-page-about .hero"
+  Line 606 [MAJOR]: Unexpected duplicate selector ".section-inner", first used at line 120
+
+================================================================================
+kunaal-theme/assets/css/components.css
+================================================================================
+
+css:S4666 (1 issues):
+  Line 689 [MAJOR]: Unexpected duplicate selector ".mailWrap", first used at line 685
+
+================================================================================
+kunaal-theme/assets/css/dark-mode.css
+================================================================================
+
+css:S4666 (1 issues):
+  Line 46 [MAJOR]: Unexpected duplicate selector ":root[data-theme="dark"]", first used at line 5
+
+================================================================================
+kunaal-theme/assets/css/header.css
+================================================================================
+
+css:S4666 (1 issues):
+  Line 71 [MAJOR]: Unexpected duplicate selector ".mastInner", first used at line 65
+
+================================================================================
+kunaal-theme/assets/css/layout.css
+================================================================================
+
+css:S4666 (2 issues):
+  Line 42 [MAJOR]: Unexpected duplicate selector "main.container,
+.article.container", first used at line 14 (no-duplic
+  Line 48 [MAJOR]: Unexpected duplicate selector "main", first used at line 36
+
+================================================================================
+kunaal-theme/assets/css/pdf-ebook.css
+================================================================================
+
+css:S7924 (2 issues):
+  Line 424 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 435 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/annotation/render.php
+================================================================================
+
+Web:S6845 (1 issues):
+  Line 15 [MAJOR]: "tabIndex" should only be declared on interactive elements.
+
+php:S121 (1 issues):
+  Line 10 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/argument-map/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 11 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 13 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 4-statement bloc
+
+================================================================================
+kunaal-theme/blocks/assumptions-register/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 10 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/assumptions-register/style.css
+================================================================================
+
+css:S7924 (3 issues):
+  Line 91 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 96 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 101 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/causal-loop/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 11 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/causal-loop/style.css
+================================================================================
+
+css:S7924 (1 issues):
+  Line 56 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/chart/render.php
+================================================================================
+
+php:S100 (2 issues):
+  Line 28 [MINOR]: Rename function "kunaal_parse_data" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 47 [MINOR]: Rename function "kunaal_format_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1192 (10 issues):
+  Line 113 [CRITICAL]: Define a constant instead of duplicating this literal "" y="" 33 times.
+  Line 57 [CRITICAL]: Define a constant instead of duplicating this literal "#3B82F6" 3 times.
+  Line 60 [CRITICAL]: Define a constant instead of duplicating this literal "#10B981" 3 times.
+  Line 104 [CRITICAL]: Define a constant instead of duplicating this literal "" y1="" 11 times.
+  Line 104 [CRITICAL]: Define a constant instead of duplicating this literal "" y2="" 11 times.
+  ... and 5 more
+
+php:S121 (6 issues):
+  Line 29 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 39 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 163 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 164 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 300 [CRITICAL]: Add curly braces around the nested statement(s).
+  ... and 1 more
+
+php:S3358 (1 issues):
+  Line 535 [MAJOR]: Extract this nested ternary operation into an independent statement.
+
+================================================================================
+kunaal-theme/blocks/confidence-meter/render.php
+================================================================================
+
+php:S121 (3 issues):
+  Line 12 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 16 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 17 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S3358 (1 issues):
+  Line 19 [MAJOR]: Extract this nested ternary operation into an independent statement.
+
+================================================================================
+kunaal-theme/blocks/data-map/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 70 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+Web:S6845 (1 issues):
+  Line 109 [MAJOR]: "tabIndex" should only be declared on interactive elements.
+
+Web:S6850 (1 issues):
+  Line 134 [MAJOR]: Headings must have content and the content must be accessible by a screen reader.
+
+Web:TableHeaderHasIdOrScopeCheck (4 issues):
+  Line 151 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 151 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 164 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 164 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+
+php:S100 (1 issues):
+  Line 39 [MINOR]: Rename function "kunaal_format_map_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (4 issues):
+  Line 70 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 71 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 109 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 125 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S1142 (1 issues):
+  Line 39 [MAJOR]: This function has 7 returns, which is more than the 3 allowed.
+
+php:S121 (3 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 44 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 45 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S3776 (1 issues):
+  Line 39 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+
+================================================================================
+kunaal-theme/blocks/debate-side/style.css
+================================================================================
+
+css:S7924 (2 issues):
+  Line 31 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 36 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/decision-entry/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 12 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/decision-entry/style.css
+================================================================================
+
+css:S7924 (1 issues):
+  Line 98 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/dumbbell-chart/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 51 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+php:S100 (1 issues):
+  Line 36 [MINOR]: Rename function "kunaal_format_dumbbell_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (9 issues):
+  Line 40 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 51 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 52 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 78 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 91 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 4 more
+
+php:S1142 (1 issues):
+  Line 36 [MAJOR]: This function has 6 returns, which is more than the 3 allowed.
+
+php:S121 (3 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 41 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 42 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/flow-diagram/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 38 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+php:S100 (1 issues):
+  Line 25 [MINOR]: Rename function "kunaal_format_flow_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (5 issues):
+  Line 29 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 38 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 39 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 88 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 93 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S1142 (1 issues):
+  Line 25 [MAJOR]: This function has 6 returns, which is more than the 3 allowed.
+
+php:S121 (3 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 30 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 31 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S3776 (1 issues):
+  Line 25 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+
+php:S3973 (1 issues):
+  Line 93 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "foreach".
+
+================================================================================
+kunaal-theme/blocks/flowchart-step/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 10 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 12 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 4-statement bloc
+
+================================================================================
+kunaal-theme/blocks/footnote/render.php
+================================================================================
+
+php:S1131 (2 issues):
+  Line 33 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 34 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/blocks/framework-matrix/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 16 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 18 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 4-statement bloc
+
+================================================================================
+kunaal-theme/blocks/glossary-term/render.php
+================================================================================
+
+Web:ItemTagNotWithinContainerTagCheck (1 issues):
+  Line 12 [MINOR]: Surround this <dt> item tag by a <dl> container one.
+
+php:S121 (1 issues):
+  Line 9 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 11 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 4-statement bloc
+
+================================================================================
+kunaal-theme/blocks/heatmap/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 111 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+Web:S6842 (1 issues):
+  Line 142 [MAJOR]: Non-interactive elements should not be assigned interactive roles.
+
+Web:TableHeaderHasIdOrScopeCheck (6 issues):
+  Line 145 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 147 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 156 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 203 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  Line 205 [MAJOR]: Add either an 'id' or a 'scope' attribute to this <th> tag.
+  ... and 1 more
+
+php:S100 (5 issues):
+  Line 49 [MINOR]: Rename function "kunaal_interpolate_color" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 58 [MINOR]: Rename function "kunaal_hex_to_rgb" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 67 [MINOR]: Rename function "kunaal_get_theme_color" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 76 [MINOR]: Rename function "kunaal_format_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 90 [MINOR]: Rename function "kunaal_get_cell_color" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (12 issues):
+  Line 111 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 112 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 130 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 157 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 159 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 7 more
+
+php:S1142 (2 issues):
+  Line 76 [MAJOR]: This function has 4 returns, which is more than the 3 allowed.
+  Line 90 [MAJOR]: This function has 4 returns, which is more than the 3 allowed.
+
+================================================================================
+kunaal-theme/blocks/inline-formats/style.css
+================================================================================
+
+css:S7924 (2 issues):
+  Line 155 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 140 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/know-dont-know/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 10 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 12 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 3-statement bloc
+
+================================================================================
+kunaal-theme/blocks/magazine-figure/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 13 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/network-graph/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 27 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+Web:S6850 (1 issues):
+  Line 70 [MAJOR]: Headings must have content and the content must be accessible by a screen reader.
+
+php:S1131 (8 issues):
+  Line 27 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 28 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 77 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 83 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 102 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 3 more
+
+php:S121 (2 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 84 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/parallax-section/render.php
+================================================================================
+
+php:S1131 (2 issues):
+  Line 40 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 41 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/blocks/pub-table/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 15 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 17 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 4-statement bloc
+
+================================================================================
+kunaal-theme/blocks/related-link/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 11 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/reveal-wrapper/render.php
+================================================================================
+
+php:S1131 (1 issues):
+  Line 21 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/blocks/rubric-row/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 9 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 11 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 4-statement bloc
+
+================================================================================
+kunaal-theme/blocks/scenario-compare/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 10 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/scenario-compare/style.css
+================================================================================
+
+css:S7924 (3 issues):
+  Line 82 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 87 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 92 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/sidenote/render.php
+================================================================================
+
+php:S1131 (2 issues):
+  Line 21 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 22 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/blocks/sidenote/style.css
+================================================================================
+
+css:S4666 (1 issues):
+  Line 65 [MAJOR]: Unexpected duplicate selector ".sidenote", first used at line 52
+
+================================================================================
+kunaal-theme/blocks/slopegraph/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 32 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+php:S100 (1 issues):
+  Line 19 [MINOR]: Rename function "kunaal_format_slope_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (3 issues):
+  Line 51 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 64 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 98 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S1142 (1 issues):
+  Line 19 [MAJOR]: This function has 5 returns, which is more than the 3 allowed.
+
+php:S121 (1 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S3358 (6 issues):
+  Line 59 [MAJOR]: Extract this nested ternary operation into an independent statement.
+  Line 62 [MAJOR]: Extract this nested ternary operation into an independent statement.
+  Line 64 [MAJOR]: Extract this nested ternary operation into an independent statement.
+  Line 66 [MAJOR]: Extract this nested ternary operation into an independent statement.
+  Line 71 [MAJOR]: Extract this nested ternary operation into an independent statement.
+  ... and 1 more
+
+php:S6600 (1 issues):
+  Line 76 [CRITICAL]: Remove the parentheses from this "echo" call.
+
+================================================================================
+kunaal-theme/blocks/small-multiples/render.php
+================================================================================
+
+Web:S6819 (2 issues):
+  Line 21 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+  Line 38 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+
+php:S1131 (1 issues):
+  Line 34 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S121 (1 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+
+================================================================================
+kunaal-theme/blocks/source-excerpt/render.php
+================================================================================
+
+php:S121 (1 issues):
+  Line 13 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S2681 (1 issues):
+  Line 15 [MAJOR]: This statement will not be executed conditionally; only the first statement of this 6-statement bloc
+
+================================================================================
+kunaal-theme/blocks/source-excerpt/style.css
+================================================================================
+
+css:S7924 (2 issues):
+  Line 43 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+  Line 107 [MAJOR]: Text does not meet the minimal contrast requirement with its background.
+
+================================================================================
+kunaal-theme/blocks/statistical-distribution/render.php
+================================================================================
+
+Web:S6819 (1 issues):
+  Line 100 [MAJOR]: Use <img> instead of the img role to ensure accessibility across all devices.
+
+php:S100 (2 issues):
+  Line 21 [MINOR]: Rename function "kunaal_calculate_quartiles" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 63 [MINOR]: Rename function "kunaal_format_stat_value" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (8 issues):
+  Line 27 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 100 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 116 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 134 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 138 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 3 more
+
+php:S1142 (1 issues):
+  Line 63 [MAJOR]: This function has 5 returns, which is more than the 3 allowed.
+
+php:S121 (2 issues):
+  Line 5 [CRITICAL]: Add curly braces around the nested statement(s).
+  Line 25 [CRITICAL]: Add curly braces around the nested statement(s).
+
+php:S3923 (2 issues):
+  Line 43 [MAJOR]: Remove this conditional structure or edit its code blocks so that they're not all the same.
+  Line 44 [MAJOR]: Remove this conditional structure or edit its code blocks so that they're not all the same.
+
+================================================================================
+kunaal-theme/blocks/takeaway-item/render.php
+================================================================================
+
+Web:ItemTagNotWithinContainerTagCheck (1 issues):
+  Line 12 [MINOR]: Surround this <li> item tag by a <ul> or <ol> container one.
+
+================================================================================
+kunaal-theme/footer.php
+================================================================================
+
+php:S1131 (1 issues):
+  Line 25 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S3973 (1 issues):
+  Line 10 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+
+================================================================================
+kunaal-theme/functions.php
+================================================================================
+
+php:S100 (75 issues):
+  Line 62 [MINOR]: Rename function "kunaal_theme_shutdown_handler" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 82 [MINOR]: Rename function "kunaal_theme_register_shutdown_handler" to match the regular expression ^[a-z][a-zA
+  Line 1331 [MINOR]: Rename function "kunaal_filter_wp_mail_from" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 1343 [MINOR]: Rename function "kunaal_filter_wp_mail_from_name" to match the regular expression ^[a-z][a-zA-Z0-9]*
+  Line 1355 [MINOR]: Rename function "kunaal_action_phpmailer_init" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  ... and 70 more
+
+php:S1131 (11 issues):
+  Line 1603 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 1877 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 1901 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 1924 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 1944 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 6 more
+
+php:S1142 (3 issues):
+  Line 2075 [MAJOR]: This function has 4 returns, which is more than the 3 allowed.
+  Line 988 [MAJOR]: This function has 4 returns, which is more than the 3 allowed.
+  Line 1073 [MAJOR]: This function has 4 returns, which is more than the 3 allowed.
+
+php:S138 (1 issues):
+  Line 198 [MAJOR]: This function "kunaal_enqueue_assets" has 241 lines, which is greater than the 150 lines authorized.
+
+php:S3776 (3 issues):
+  Line 198 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+  Line 988 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.
+  Line 1114 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 28 to the 15 allowed.
+
+php:S4833 (3 issues):
+  Line 1684 [MAJOR]: Replace "require_once" with namespace import mechanism through the "use" keyword.
+  Line 1687 [MAJOR]: Replace "require_once" with namespace import mechanism through the "use" keyword.
+  Line 93 [MAJOR]: Replace "require_once" with namespace import mechanism through the "use" keyword.
+
+php:S6600 (2 issues):
+  Line 1684 [CRITICAL]: Remove the parentheses from this "require_once" call.
+  Line 1687 [CRITICAL]: Remove the parentheses from this "require_once" call.
+
+================================================================================
+kunaal-theme/header.php
+================================================================================
+
+Web:PageWithoutTitleCheck (1 issues):
+  Line 3 [MAJOR]: Add a <title> tag to this page.
+
+php:S1131 (2 issues):
+  Line 13 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 6 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S1192 (1 issues):
+  Line 65 [CRITICAL]: Define a constant instead of duplicating this literal " current" 4 times.
+
+php:S3973 (2 issues):
+  Line 69 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+  Line 75 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+
+================================================================================
+kunaal-theme/inc/about-customizer-v22.php
+================================================================================
+
+php:S100 (2 issues):
+  Line 765 [MINOR]: Rename function "kunaal_get_category_choices_v22" to match the regular expression ^[a-z][a-zA-Z0-9]*
+  Line 19 [MINOR]: Rename function "kunaal_about_customizer_v22" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (2 issues):
+  Line 4 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 761 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S1192 (1 issues):
+  Line 262 [CRITICAL]: Define a constant instead of duplicating this literal "Section Title" 3 times.
+
+php:S138 (1 issues):
+  Line 19 [MAJOR]: This function "kunaal_about_customizer_v22" has 586 lines, which is greater than the 150 lines autho
+
+================================================================================
+kunaal-theme/inc/about-helpers.php
+================================================================================
+
+php:S100 (1 issues):
+  Line 22 [MINOR]: Rename function "kunaal_render_panoramas" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (2 issues):
+  Line 4 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 17 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/inc/blocks.php
+================================================================================
+
+php:S100 (8 issues):
+  Line 22 [MINOR]: Rename function "kunaal_blocks_api_available" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 107 [MINOR]: Rename function "kunaal_get_block_definitions" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 180 [MINOR]: Rename function "kunaal_get_view_script_blocks" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 337 [MINOR]: Rename function "kunaal_block_wrapper" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 75 [MINOR]: Rename function "kunaal_unregister_core_blocks" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  ... and 3 more
+
+php:S1066 (1 issues):
+  Line 354 [MAJOR]: Merge this if statement with the enclosing one.
+
+php:S1131 (8 issues):
+  Line 32 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 71 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 97 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 103 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 204 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 3 more
+
+php:S1192 (1 issues):
+  Line 213 [CRITICAL]: Define a constant instead of duplicating this literal "/blocks" 3 times.
+
+php:S1481 (2 issues):
+  Line 229 [MINOR]: Remove this unused "$category" local variable.
+  Line 284 [MINOR]: Remove this unused "$category" local variable.
+
+php:S3776 (1 issues):
+  Line 274 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+
+================================================================================
+kunaal-theme/inc/customizer-sections.php
+================================================================================
+
+php:S100 (7 issues):
+  Line 21 [MINOR]: Rename function "kunaal_customize_register_author_section" to match the regular expression ^[a-z][a-
+  Line 103 [MINOR]: Rename function "kunaal_customize_register_sharing_section" to match the regular expression ^[a-z][a
+  Line 152 [MINOR]: Rename function "kunaal_customize_register_site_identity" to match the regular expression ^[a-z][a-z
+  Line 171 [MINOR]: Rename function "kunaal_customize_register_subscribe_section" to match the regular expression ^[a-z]
+  Line 291 [MINOR]: Rename function "kunaal_customize_register_contact_page_section" to match the regular expression ^[a
+  ... and 2 more
+
+================================================================================
+kunaal-theme/inc/helpers.php
+================================================================================
+
+Web:S6819 (2 issues):
+  Line 294 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+  Line 375 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+
+Web:S6843 (2 issues):
+  Line 294 [MAJOR]: Interactive elements should not be assigned non-interactive roles.
+  Line 375 [MAJOR]: Interactive elements should not be assigned non-interactive roles.
+
+php:S100 (11 issues):
+  Line 210 [MINOR]: Rename function "kunaal_home_query" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 246 [MINOR]: Rename function "kunaal_home_recent_ids" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 266 [MINOR]: Rename function "kunaal_render_essay_card" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 350 [MINOR]: Rename function "kunaal_render_jotting_row" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 19 [MINOR]: Rename function "kunaal_get_initials" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  ... and 6 more
+
+php:S1131 (13 issues):
+  Line 200 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 204 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 237 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 240 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 261 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 8 more
+
+php:S131 (1 issues):
+  Line 129 [CRITICAL]: Add a "case default" clause to this "switch" statement.
+
+php:S3776 (2 issues):
+  Line 266 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+  Line 115 [CRITICAL]: Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+
+================================================================================
+kunaal-theme/inc/interest-icons.php
+================================================================================
+
+php:S100 (1 issues):
+  Line 20 [MINOR]: Rename function "kunaal_get_interest_icon" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (1 issues):
+  Line 15 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S138 (1 issues):
+  Line 20 [MAJOR]: This function "kunaal_get_interest_icon" has 200 lines, which is greater than the 150 lines authoriz
+
+php:S3973 (1 issues):
+  Line 19 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+
+================================================================================
+kunaal-theme/index.php
+================================================================================
+
+Web:S6819 (2 issues):
+  Line 22 [MAJOR]: Use <menu> or <ol> or <ul> instead of the list role to ensure accessibility across all devices.
+  Line 29 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+
+Web:S6843 (1 issues):
+  Line 29 [MAJOR]: Interactive elements should not be assigned non-interactive roles.
+
+================================================================================
+kunaal-theme/page-contact.php
+================================================================================
+
+php:S1131 (15 issues):
+  Line 47 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 44 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 45 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 46 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 48 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 10 more
+
+================================================================================
+kunaal-theme/page.php
+================================================================================
+
+php:S1131 (3 issues):
+  Line 30 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 45 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 47 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/pdf-generator.php
+================================================================================
+
+php:S100 (4 issues):
+  Line 165 [MINOR]: Rename function "kunaal_build_pdf_html" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 19 [MINOR]: Rename function "kunaal_generate_pdf" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+  Line 215 [MINOR]: Rename function "kunaal_process_content_for_pdf" to match the regular expression ^[a-z][a-zA-Z0-9]*$
+  Line 244 [MINOR]: Rename function "kunaal_get_pdf_styles" to match the regular expression ^[a-z][a-zA-Z0-9]*$.
+
+php:S1131 (6 issues):
+  Line 137 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 138 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 136 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 139 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 140 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  ... and 1 more
+
+php:S4833 (1 issues):
+  Line 32 [MAJOR]: Replace "require_once" with namespace import mechanism through the "use" keyword.
+
+================================================================================
+kunaal-theme/pdf-template.php
+================================================================================
+
+php:S1131 (1 issues):
+  Line 25 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+================================================================================
+kunaal-theme/single-essay.php
+================================================================================
+
+php:S1131 (4 issues):
+  Line 25 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 87 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 23 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 84 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S3973 (2 issues):
+  Line 25 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+  Line 87 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+
+================================================================================
+kunaal-theme/single-jotting.php
+================================================================================
+
+php:S1131 (4 issues):
+  Line 25 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 87 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 23 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+  Line 84 [MINOR]: Remove the useless trailing whitespaces at the end of this line.
+
+php:S3973 (2 issues):
+  Line 25 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+  Line 87 [CRITICAL]: Use curly braces or indentation to denote the code conditionally executed by this "if".
+
+================================================================================
+kunaal-theme/style.css
+================================================================================
+
+css:S4666 (7 issues):
+  Line 1717 [MAJOR]: Unexpected duplicate selector ".subscribe-section", first used at line 1577
+  Line 1725 [MAJOR]: Unexpected duplicate selector ".subscribe-section h3", first used at line 1584
+  Line 1740 [MAJOR]: Unexpected duplicate selector ".subscribe-form", first used at line 1594
+  Line 1746 [MAJOR]: Unexpected duplicate selector ".subscribe-form input[type="email"]", first used at line 1600
+  Line 1755 [MAJOR]: Unexpected duplicate selector ".subscribe-form input[type="email"]:focus", first used at line 1607
+  ... and 2 more
+
+================================================================================
+kunaal-theme/taxonomy-topic.php
+================================================================================
+
+Web:S6819 (2 issues):
+  Line 23 [MAJOR]: Use <menu> or <ol> or <ul> instead of the list role to ensure accessibility across all devices.
+  Line 31 [MAJOR]: Use <li> instead of the listitem role to ensure accessibility across all devices.
+
+Web:S6843 (1 issues):
+  Line 31 [MAJOR]: Interactive elements should not be assigned non-interactive roles.
+
+================================================================================
+kunaal-theme/template-parts/home.php
+================================================================================
+
+Web:S6819 (7 issues):
+  Line 111 [MAJOR]: Use <menu> or <ol> or <ul> instead of the list role to ensure accessibility across all devices.
+  Line 151 [MAJOR]: Use <menu> or <ol> or <ul> instead of the list role to ensure accessibility across all devices.
+  Line 40 [MAJOR]: Use <datalist> or <select> instead of the listbox role to ensure accessibility across all devices.
+  Line 41 [MAJOR]: Use <option> instead of the option role to ensure accessibility across all devices.
+  Line 47 [MAJOR]: Use <option> instead of the option role to ensure accessibility across all devices.
+  ... and 2 more

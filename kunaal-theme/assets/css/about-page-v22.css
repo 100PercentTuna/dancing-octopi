@@ -117,7 +117,11 @@ body.js:not(.gsap-ready) [data-reveal] {
 }
 
 /* Big, faint "gallery label" words drifting behind sections */
-.section-inner { position: relative; }
+.section-inner {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
 .section-bgword{
   position:absolute;
   left: 50%;
@@ -225,6 +229,8 @@ a:focus-visible, button:focus-visible {
 ============================================= */
 body.page-template-page-about .hero,
 .page-template-page-about .hero {
+  margin-top: calc(-1 * var(--mastH, 100px));
+  min-height: calc(100vh + var(--mastH, 100px));
   display: grid;
   grid-template-columns: 60px 1fr 1fr 1fr minmax(280px, 400px) 60px;
   grid-template-rows: 1fr 1fr;
@@ -446,15 +452,13 @@ body.page-template-page-about .hero-photo.has-accent::before,
   opacity: 0.65;
   font-weight: 400;
 }
+/* Scroll indicator line - animation with subtle bounce */
 .scroll-indicator-line {
   width: 1px;
   height: 32px;
   background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
   position: relative;
   opacity: 0.6;
-}
-/* Scroll indicator line animation - subtle bounce */
-.scroll-indicator-line {
   animation: scrollLineBounce 2s ease-in-out infinite;
 }
 
@@ -603,10 +607,6 @@ body.page-template-page-about .hero-photo.has-accent::before,
   padding: 3.5rem 2rem;
 }
 .section.warm { background: var(--bgWarm); }
-.section-inner {
-  max-width: 900px;
-  margin: 0 auto;
-}
 .section-label {
   font-family: var(--mono);
   font-size: 11px; /* Increased from 10px - mono font too small */

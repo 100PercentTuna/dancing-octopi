@@ -31,19 +31,8 @@
   --blueRing: rgba(224,122,98,0.30);
   --blueShadow: rgba(224,122,98,0.16);
   --blueMuted: #E8956E;
-}
-
-/* Subtle background gradient for all pages (dark mode) */
-:root[data-theme="dark"] body {
-  background: 
-    radial-gradient(2000px 1500px at 20% 10%, rgba(224,122,98,0.06), transparent 70%),
-    radial-gradient(1800px 1400px at 80% 90%, rgba(201,184,168,0.06), transparent 70%),
-    var(--bg);
-  background-attachment: fixed;
-}
-
-/* Chart colors - adjusted for dark mode */
-:root[data-theme="dark"] {
+  
+  /* Chart colors - adjusted for dark mode */
   --chart-blue: #6BB3C9;
   --chart-blue-light: #8BC9DB;
   --chart-blue-muted: #A5D4E5;
@@ -59,6 +48,15 @@
   --chart-gray: #A0A0A0;
   --chart-gray-light: #B8B8B8;
   --chart-gray-muted: #3D3D3D;
+}
+
+/* Subtle background gradient for all pages (dark mode) */
+:root[data-theme="dark"] body {
+  background: 
+    radial-gradient(2000px 1500px at 20% 10%, rgba(224,122,98,0.06), transparent 70%),
+    radial-gradient(1800px 1400px at 80% 90%, rgba(201,184,168,0.06), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
 }
 
 /* Dark mode header override */

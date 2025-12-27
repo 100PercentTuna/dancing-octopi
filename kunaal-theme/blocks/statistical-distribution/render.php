@@ -24,7 +24,7 @@ function kunaal_calculate_quartiles($values) {
     $n = count($sorted);
     if ($n === 0) return ['min' => 0, 'q1' => 0, 'median' => 0, 'q3' => 0, 'max' => 0, 'mean' => 0];
     
-    $median = $n % 2 === 0 
+    $median = $n % 2 === 0
         ? ($sorted[$n/2 - 1] + $sorted[$n/2]) / 2
         : $sorted[floor($n/2)];
     
@@ -97,7 +97,7 @@ $axis_min = !empty($all_values) ? min($all_values) : 0;
 $axis_max = !empty($all_values) ? max($all_values) : 100;
 ?>
 
-<figure class="wp-block-kunaal-statistical-distribution stat-dist--<?php echo esc_attr($chart_type); ?> stat-dist--<?php echo esc_attr($orientation); ?>" 
+<figure class="wp-block-kunaal-statistical-distribution stat-dist--<?php echo esc_attr($chart_type); ?> stat-dist--<?php echo esc_attr($orientation); ?>"
         role="img" aria-labelledby="<?php echo esc_attr($block_id); ?>-title">
     
     <?php if ($title || $subtitle) : ?>
@@ -113,7 +113,7 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
     
     <div class="stat-dist-chart">
         <svg class="stat-dist-visual" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
-            <?php foreach ($stats_data as $i => $stat) : 
+            <?php foreach ($stats_data as $i => $stat) :
                 $y = 50 + ($i * 60);
                 $min_x = 140 + (($stat['min'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 $q1_x = 140 + (($stat['q1'] - $axis_min) / ($axis_max - $axis_min)) * 560;
@@ -131,19 +131,19 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                 <line class="stat-whisker-connector" x1="<?php echo $min_x; ?>" y1="20" x2="<?php echo $max_x; ?>" y2="20" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2,2"/>
                 
                 <!-- Box -->
-                <rect class="stat-box" x="<?php echo $q1_x; ?>" y="10" width="<?php echo $q3_x - $q1_x; ?>" height="20" 
+                <rect class="stat-box" x="<?php echo $q1_x; ?>" y="10" width="<?php echo $q3_x - $q1_x; ?>" height="20"
                       fill="var(--warmLight)" fill-opacity="0.6" stroke="var(--warm)" stroke-width="2" rx="3"/>
                 
                 <!-- Median -->
-                <line class="stat-median" x1="<?php echo $median_x; ?>" y1="8" x2="<?php echo $median_x; ?>" y2="32" 
+                <line class="stat-median" x1="<?php echo $median_x; ?>" y1="8" x2="<?php echo $median_x; ?>" y2="32"
                       stroke="var(--ink)" stroke-width="2"/>
                 
                 <?php if ($show_mean) : ?>
-                <polygon class="stat-mean" points="<?php echo $stat['mean'] ? ($median_x + 30) : $median_x; ?>,20 <?php echo $stat['mean'] ? ($median_x + 36) : ($median_x + 6); ?>,14 <?php echo $stat['mean'] ? ($median_x + 42) : ($median_x + 12); ?>,20 <?php echo $stat['mean'] ? ($median_x + 36) : ($median_x + 6); ?>,26" 
+                <polygon class="stat-mean" points="<?php echo $stat['mean'] ? ($median_x + 30) : $median_x; ?>,20 <?php echo $stat['mean'] ? ($median_x + 36) : ($median_x + 6); ?>,14 <?php echo $stat['mean'] ? ($median_x + 42) : ($median_x + 12); ?>,20 <?php echo $stat['mean'] ? ($median_x + 36) : ($median_x + 6); ?>,26"
                          fill="var(--blue)"/>
                 <?php endif; ?>
                 
-                <?php if ($show_outliers && !empty($stat['outliers'])) : 
+                <?php if ($show_outliers && !empty($stat['outliers'])) :
                     foreach ($stat['outliers'] as $outlier) :
                         $outlier_x = 140 + (($outlier - $axis_min) / ($axis_max - $axis_min)) * 560;
                 ?>
@@ -156,7 +156,7 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
             <!-- Axis -->
             <g class="stat-axis stat-axis-x">
                 <line x1="140" y1="380" x2="700" y2="380" stroke="var(--muted)" stroke-width="1"/>
-                <?php for ($i = 0; $i <= 4; $i++) : 
+                <?php for ($i = 0; $i <= 4; $i++) :
                     $x = 140 + ($i / 4) * 560;
                     $val = $axis_min + ($i / 4) * ($axis_max - $axis_min);
                 ?>

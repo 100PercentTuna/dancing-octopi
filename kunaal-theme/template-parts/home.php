@@ -98,21 +98,21 @@ $shown_jottings = $jottings_query->post_count;
     </div>
 
     <?php if ($essays_query->have_posts()) : ?>
-      <div class="grid" id="essayGrid" role="list" data-post-type="essay">
+      <ul class="grid" id="essayGrid" data-post-type="essay">
         <?php while ($essays_query->have_posts()) : $essays_query->the_post(); ?>
           <?php kunaal_render_essay_card(get_the_ID()); ?>
         <?php endwhile; ?>
-      </div>
+      </ul>
     <?php elseif (!empty($total_essays)) : ?>
       <?php
       $essay_ids = kunaal_home_recent_ids('essay', 6);
       ?>
       <?php if (!empty($essay_ids)) : ?>
-      <div class="grid" id="essayGridFallback" role="list" data-post-type="essay">
+      <ul class="grid" id="essayGridFallback" data-post-type="essay">
         <?php foreach ($essay_ids as $post_id) : ?>
           <?php kunaal_render_essay_card($post_id); ?>
         <?php endforeach; ?>
-      </div>
+      </ul>
       <?php wp_reset_postdata(); ?>
       <?php else : ?>
       <p class="no-posts"><?php esc_html_e('No essays yet.', 'kunaal-theme'); ?></p>
@@ -138,21 +138,21 @@ $shown_jottings = $jottings_query->post_count;
     </div>
 
     <?php if ($jottings_query->have_posts()) : ?>
-      <div class="ledger" id="jotList" role="list" data-post-type="jotting">
+      <ul class="ledger" id="jotList" data-post-type="jotting">
         <?php while ($jottings_query->have_posts()) : $jottings_query->the_post(); ?>
           <?php kunaal_render_jotting_row(get_the_ID()); ?>
         <?php endwhile; ?>
-      </div>
+      </ul>
     <?php elseif (!empty($total_jottings)) : ?>
       <?php
       $jotting_ids = kunaal_home_recent_ids('jotting', $home_posts_limit);
       ?>
       <?php if (!empty($jotting_ids)) : ?>
-      <div class="ledger" id="jotListFallback" role="list" data-post-type="jotting">
+      <ul class="ledger" id="jotListFallback" data-post-type="jotting">
         <?php foreach ($jotting_ids as $post_id) : ?>
           <?php kunaal_render_jotting_row($post_id); ?>
         <?php endforeach; ?>
-      </div>
+      </ul>
       <?php wp_reset_postdata(); ?>
       <?php else : ?>
       <p class="no-posts"><?php esc_html_e('No jottings yet.', 'kunaal-theme'); ?></p>

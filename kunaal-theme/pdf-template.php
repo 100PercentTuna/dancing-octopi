@@ -22,7 +22,7 @@
       <?php endif; ?>
       <?php if ($topics && !is_wp_error($topics)) : ?>
         <p class="pdf-topics">
-          <?php 
+          <?php
           $topic_names = array_map(function($t) { return '#' . $t->name; }, $topics);
           echo esc_html(implode(' ', $topic_names));
           ?>

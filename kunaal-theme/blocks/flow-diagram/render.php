@@ -26,7 +26,7 @@ function kunaal_format_flow_value($value, $format, $currency = '$', $unit = '') 
     switch ($format) {
         case 'percent': return round($value, 1) . '%';
         case 'currency': return $currency . number_format($value) . ($unit ? ' ' . $unit : '');
-        case 'compact': 
+        case 'compact':
             if ($value >= 1000000) return $currency . round($value / 1000000, 1) . 'M' . ($unit ? ' ' . $unit : '');
             if ($value >= 1000) return $currency . round($value / 1000, 1) . 'K' . ($unit ? ' ' . $unit : '');
             return $currency . round($value) . ($unit ? ' ' . $unit : '');
@@ -35,8 +35,8 @@ function kunaal_format_flow_value($value, $format, $currency = '$', $unit = '') 
 }
 ?>
 
-<figure class="wp-block-kunaal-flow-diagram flow-diagram--<?php echo esc_attr($diagram_type); ?>" 
-        role="img" 
+<figure class="wp-block-kunaal-flow-diagram flow-diagram--<?php echo esc_attr($diagram_type); ?>"
+        role="img"
         aria-labelledby="<?php echo esc_attr($block_id); ?>-title"
         data-lazy-block="flow-diagram"
         data-diagram-type="<?php echo esc_attr($diagram_type); ?>"
@@ -85,12 +85,12 @@ function kunaal_format_flow_value($value, $format, $currency = '$', $unit = '') 
                 <tr><th><?php esc_html_e('From', 'kunaal-theme'); ?></th><th><?php esc_html_e('To', 'kunaal-theme'); ?></th><th><?php esc_html_e('Value', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
-                <?php 
+                <?php
                 $node_map = [];
                 foreach ($nodes as $node) {
                     $node_map[$node['id']] = $node['label'] ?? $node['id'];
                 }
-                foreach ($links as $link) : 
+                foreach ($links as $link) :
                 ?>
                 <tr>
                     <td><?php echo esc_html($node_map[$link['source']] ?? $link['source']); ?></td>

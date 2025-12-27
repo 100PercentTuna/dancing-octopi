@@ -1,7 +1,7 @@
 <?php
 /**
  * Template Name: Contact Page
- * 
+ *
  * Elegant note-taking interface with optional name/email
  * Polished design matching site aesthetic
  *
@@ -41,11 +41,11 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
                 
                 <!-- Message textarea (always visible) -->
                 <div class="contact-field contact-message-field">
-                    <textarea 
-                        id="contact-message" 
-                        name="contact_message" 
-                        rows="5" 
-                        required 
+                    <textarea
+                        id="contact-message"
+                        name="contact_message"
+                        rows="5"
+                        required
                         placeholder="<?php echo esc_attr($contact_placeholder); ?>"
                         data-reveal="up"
                     ></textarea>
@@ -63,18 +63,18 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
                 <!-- Name and email fields (hidden by default, animated reveal) -->
                 <div class="contact-optional-fields" id="contact-optional-fields" style="display: none;">
                     <div class="contact-field" data-reveal="up">
-                        <input 
-                            type="text" 
-                            id="contact-name" 
-                            name="contact_name" 
+                        <input
+                            type="text"
+                            id="contact-name"
+                            name="contact_name"
                             placeholder="<?php esc_attr_e('Your name', 'kunaal-theme'); ?>"
                         >
                     </div>
                     <div class="contact-field" data-reveal="up">
-                        <input 
-                            type="email" 
-                            id="contact-email" 
-                            name="contact_email" 
+                        <input
+                            type="email"
+                            id="contact-email"
+                            name="contact_email"
                             placeholder="<?php esc_attr_e('Your email', 'kunaal-theme'); ?>"
                         >
                     </div>
@@ -154,7 +154,7 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
                     </a>
                     <?php endif; ?>
                     
-                    <?php if ($twitter) : 
+                    <?php if ($twitter) :
                         $twitter_url = 'https://x.com/' . ltrim($twitter, '@');
                     ?>
                     <a href="<?php echo esc_url($twitter_url); ?>" class="contact-social-link" target="_blank" rel="noopener" aria-label="<?php esc_attr_e('X / Twitter', 'kunaal-theme'); ?>">

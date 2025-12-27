@@ -1,7 +1,7 @@
 <?php
 /**
  * About Page Helper Functions
- * 
+ *
  * Reusable functions for About page template
  *
  * @package Kunaal_Theme
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 /**
  * Render panorama section
- * 
+ *
  * @param array $panoramas Array of panorama items
  * @param string $extra_class Additional CSS class(es) to add
  * @return void Outputs HTML

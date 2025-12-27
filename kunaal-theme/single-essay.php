@@ -20,9 +20,9 @@ get_header();
   </button>
   
   <!-- Subscribe Button -->
-  <?php 
+  <?php
   $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
-  if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) : 
+  if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) {
   ?>
   <button class="dockButton" id="subscribeToggle" aria-label="<?php esc_attr_e('Subscribe to updates', 'kunaal-theme'); ?>" data-action="subscribe">
     <span class="tip"><?php esc_html_e('Subscribe', 'kunaal-theme'); ?></span>
@@ -31,7 +31,7 @@ get_header();
       <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
     </svg>
   </button>
-  <?php endif; ?>
+  <?php } ?>
   
   <!-- Download/Print Button -->
   <button class="dockButton" id="downloadButton" aria-label="<?php esc_attr_e('Download PDF', 'kunaal-theme'); ?>" data-action="download">
@@ -81,10 +81,10 @@ get_header();
 </div>
 
 <!-- Subscribe Panel (slides out when subscribe button clicked) -->
-<?php 
+<?php
 $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
 $sub_mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
-if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) : 
+if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) {
 ?>
 <div class="subscribePanel" id="subscribePanel">
   <div class="subscribePanelContent">
@@ -97,7 +97,7 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
     <div class="subscribe-status" aria-live="polite"></div>
   </div>
 </div>
-<?php endif; ?>
+<?php } ?>
 
 
 <main class="article container">

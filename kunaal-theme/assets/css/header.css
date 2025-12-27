@@ -66,9 +66,6 @@
     /* Ensure proper alignment */
     align-items: center;
     gap: 12px; /* Reduce gap for snug fit */
-  }
-  
-  .mastInner {
     justify-content: flex-end; /* Push everything to right */
   }
   

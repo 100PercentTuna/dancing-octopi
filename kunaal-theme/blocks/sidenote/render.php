@@ -18,8 +18,8 @@ if (empty($content)) {
 $sidenote_id = 'sn-' . wp_unique_id();
 ?>
 <span class="sidenote-wrapper<?php echo $class_name; ?>">
-    <label 
-        for="<?php echo esc_attr($sidenote_id); ?>" 
+    <label
+        for="<?php echo esc_attr($sidenote_id); ?>"
         class="sidenote-number"
         aria-describedby="<?php echo esc_attr($sidenote_id); ?>-content"
     ></label>
