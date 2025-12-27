@@ -199,11 +199,19 @@ function kunaal_enqueue_assets() {
         null
     );
 
+    // CSS Variables (loaded first, before main stylesheet)
+    wp_enqueue_style(
+        'kunaal-theme-variables',
+        KUNAAL_THEME_URI . '/assets/css/variables.css',
+        array(),
+        kunaal_asset_version('assets/css/variables.css')
+    );
+
     // Main stylesheet
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts'),
+        array('kunaal-google-fonts', 'kunaal-theme-variables'),
         kunaal_asset_version('style.css')
     );
     
