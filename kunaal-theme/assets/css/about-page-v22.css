@@ -432,8 +432,9 @@ a:focus-visible, button:focus-visible {
   border-right: 2px solid var(--warm);
   border-bottom: 2px solid var(--warm);
   transform: rotate(45deg);
-  animation: scrollBounce 1.8s ease-in-out infinite;
+  animation: scrollBounce 1.8s ease-in-out infinite !important;
   opacity: 0.9;
+  will-change: transform;
 }
 /* Scroll indicator animation - down/up movement (not side) */
 @keyframes scrollBounce {
@@ -1139,7 +1140,8 @@ a:focus-visible, button:focus-visible {
   transform: translateY(-2px);
 }
 .say-hello-link svg,
-.say-hello-links svg {
+.say-hello-links svg,
+.say-hello-social-link svg {
   width: 15px !important; /* Force size to prevent oversized icons */
   height: 15px !important;
   max-width: 15px !important;

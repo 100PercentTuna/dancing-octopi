@@ -129,7 +129,12 @@
         .from('#scrollIndicator', { 
           opacity: 0, 
           duration: 0.35,
-          clearProps: 'transform' // Clear any transforms after fade-in to avoid conflict with CSS animation
+          onComplete: function() {
+            // Ensure final opacity is 1, not the low value from animation
+            if (scrollIndicator) {
+              window.gsap.set(scrollIndicator, { opacity: 1 });
+            }
+          }
         }, '<0.25');
       
       // #region agent log
@@ -207,20 +212,32 @@
               debugLog('about-page-v22.js:205', 'Before ScrollTrigger refresh', {opacity:beforeRefresh.opacity,transform:beforeRefresh.transform,display:beforeRefresh.display}, 'H4.1,H4.2');
               // #endregion
               
-              // If mobile state changed, refresh with new settings
-              if (newIsMobile !== isMobile && newIsHeroText) {
-                st.scrollTrigger.refresh();
-              } else {
-                st.scrollTrigger.refresh();
-              }
+              // Check if element is in viewport before refresh
+              var rect = el.getBoundingClientRect();
+              var isInViewport = rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
               
-              // #region agent log
+              // Refresh ScrollTrigger
+              st.scrollTrigger.refresh();
+              
+              // If element is in viewport after resize, force it to be visible
+              // This fixes the issue where elements get stuck at opacity 0
               setTimeout(function() {
+                var afterRect = el.getBoundingClientRect();
+                var afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
+                
+                if (afterIsInViewport || isInViewport) {
+                  // Element should be visible - force it if ScrollTrigger left it hidden
+                  var computed = window.getComputedStyle(el);
+                  if (parseFloat(computed.opacity) < 0.5) {
+                    window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'transform' });
+                  }
+                }
+                
+                // #region agent log
                 var afterRefresh = window.getComputedStyle(el);
-                var rect = el.getBoundingClientRect();
-                debugLog('about-page-v22.js:219', 'After ScrollTrigger refresh', {opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:rect.top,left:rect.left,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H4.1,H4.2,H4.3');
-              }, 100);
-              // #endregion
+                debugLog('about-page-v22.js:219', 'After ScrollTrigger refresh', {opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:afterRect.top,left:afterRect.left,inViewport:afterIsInViewport}, 'H4.1,H4.2,H4.3');
+                // #endregion
+              }, 150);
             }
           };
           

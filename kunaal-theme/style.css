@@ -409,6 +409,9 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Match nav padding-top to ensure exact vertical alignment */
+  padding-top: 2px;
+  line-height: 1;
 }
 @media (max-width: 640px) {
   /* Mobile theme toggle: smaller, snug to menu, no box styling */
