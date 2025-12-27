@@ -106,6 +106,8 @@ function kunaal_add_defer_to_scripts($tag, $handle) {
         'gsap-core',
         'gsap-scrolltrigger',
         'kunaal-about-page-v22',
+        'd3-js',
+        'topojson-js',
     );
     
     if (in_array($handle, $defer_scripts)) {

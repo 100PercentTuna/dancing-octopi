@@ -181,3 +181,194 @@ function kunaal_enqueue_main_styles() {
     );
 }
 
+/**
+ * Enqueue page-specific assets (About page, Contact page)
+ * Must be called after main styles are enqueued
+ */
+function kunaal_enqueue_page_specific_assets() {
+    // Template detection
+    $is_about_page = is_page_template('page-about.php') || is_page('about');
+    $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
+    
+    // About page: Generate CSS variables for category colors (externalized from template)
+    if ($is_about_page) {
+        $categories = kunaal_get_categories_v22();
+        if (!empty($categories)) {
+            $css_vars = "body.page-template-page-about {\n";
+            foreach ($categories as $slug => $category) {
+                $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
+            }
+            $css_vars .= "}";
+            wp_add_inline_style('kunaal-about-page-v22', $css_vars);
+        }
+    }
+    
+    if ($is_about_page || $is_contact_page) {
+        // Cormorant Garamond font
+        wp_enqueue_style(
+            'kunaal-cormorant-font',
+            'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&display=swap',
+            array(),
+            null
+        );
+    }
+    
+    // Contact page specific assets
+    if ($is_contact_page) {
+        // Contact page CSS
+        wp_enqueue_style(
+            'kunaal-contact-page',
+            KUNAAL_THEME_URI . '/assets/css/contact-page.css',
+            array('kunaal-theme-style'),
+            kunaal_asset_version('assets/css/contact-page.css')
+        );
+        
+        // Contact page JavaScript
+        wp_enqueue_script(
+            'kunaal-contact-page',
+            KUNAAL_THEME_URI . '/assets/js/contact-page.js',
+            array('kunaal-theme-main'),
+            kunaal_asset_version('assets/js/contact-page.js'),
+            true
+        );
+    }
+    
+    // About page specific assets (heavier libraries)
+    if ($is_about_page) {
+        // About page V22 CSS
+        wp_enqueue_style(
+            'kunaal-about-page-v22',
+            KUNAAL_THEME_URI . '/assets/css/about-page-v22.css',
+            array('kunaal-theme-style'),
+            kunaal_asset_version('assets/css/about-page-v22.css')
+        );
+        
+        // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
+        wp_enqueue_script(
+            'gsap-core',
+            'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
+            array(),
+            '3.12.5',
+            true // Load in footer to avoid blocking render
+        );
+        
+        // GSAP ScrollTrigger Plugin
+        wp_enqueue_script(
+            'gsap-scrolltrigger',
+            'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js',
+            array('gsap-core'),
+            '3.12.5',
+            true // Load in footer
+        );
+        
+        // D3.js for world map
+        wp_enqueue_script(
+            'd3-js',
+            'https://d3js.org/d3.v7.min.js',
+            array(),
+            '7.0.0',
+            true
+        );
+        
+        // TopoJSON for world map
+        wp_enqueue_script(
+            'topojson-js',
+            'https://unpkg.com/topojson-client@3',
+            array('d3-js'),
+            '3.0.0',
+            true
+        );
+        
+        // About page V22 JS (depends on GSAP, D3, TopoJSON)
+        wp_enqueue_script(
+            'kunaal-about-page-v22',
+            KUNAAL_THEME_URI . '/assets/js/about-page-v22.js',
+            array('gsap-scrolltrigger', 'd3-js', 'topojson-js'),
+            kunaal_asset_version('assets/js/about-page-v22.js'),
+            true
+        );
+        
+        // Localize script with places data for map and debug config
+        $places = kunaal_get_places_v22();
+        wp_localize_script('kunaal-about-page-v22', 'kunaalAboutV22', array(
+            'places' => $places,
+            'debug' => defined('WP_DEBUG') && WP_DEBUG, // Gate debug logging behind WP_DEBUG
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('kunaal_debug_log_nonce'),
+        ));
+    }
+}
+
+/**
+ * Main asset enqueuing function
+ * Delegates to helper functions to reduce cognitive complexity.
+ */
+function kunaal_enqueue_assets() {
+    kunaal_enqueue_google_fonts();
+    kunaal_enqueue_core_css();
+    kunaal_enqueue_component_css();
+    kunaal_enqueue_page_css();
+    kunaal_enqueue_main_styles();
+
+    // Main script (defer for non-blocking)
+    wp_enqueue_script(
+        'kunaal-theme-main',
+        KUNAAL_THEME_URI . '/assets/js/main.js',
+        array(),
+        kunaal_asset_version('assets/js/main.js'),
+        true
+    );
+
+    // Theme controller (dark mode) - defer
+    wp_enqueue_script(
+        'kunaal-theme-controller',
+        KUNAAL_THEME_URI . '/assets/js/theme-controller.js',
+        array(),
+        kunaal_asset_version('assets/js/theme-controller.js'),
+        true
+    );
+
+    // Lazy loading for heavy blocks - defer
+    wp_enqueue_script(
+        'kunaal-lazy-blocks',
+        KUNAAL_THEME_URI . '/assets/js/lazy-blocks.js',
+        array(),
+        kunaal_asset_version('assets/js/lazy-blocks.js'),
+        true
+    );
+
+    // Centralized library loader (prevents duplicate loads) - defer
+    wp_enqueue_script(
+        'kunaal-lib-loader',
+        KUNAAL_THEME_URI . '/assets/js/lib-loader.js',
+        array(),
+        kunaal_asset_version('assets/js/lib-loader.js'),
+        true
+    );
+
+    // Localize script with data
+    // Always localize to ensure kunaalTheme is available on all pages
+    wp_localize_script('kunaal-theme-main', 'kunaalTheme', array(
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('kunaal_theme_nonce'),
+        'pdfNonce' => wp_create_nonce('kunaal_pdf_nonce'),
+        'homeUrl' => home_url('/'),
+        'shareText' => kunaal_mod('kunaal_share_text', ''),
+        'twitterHandle' => kunaal_mod('kunaal_twitter_handle', ''),
+        'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
+        'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
+        'debug' => defined('WP_DEBUG') && WP_DEBUG, // Add debug flag for console statement guards
+    ));
+    
+    // For contact page, also add inline script to ensure kunaalTheme is available
+    // even if main.js loads late or fails
+    if (is_page_template('page-contact.php') || (is_page() && get_page_template_slug() === 'page-contact.php')) {
+        wp_add_inline_script('kunaal-theme-main',
+            'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(admin_url('admin-ajax.php')) . '" }; }',
+            'before'
+        );
+    }
+    
+    // Page-specific assets (About page, Contact page)
+    kunaal_enqueue_page_specific_assets();
+}
