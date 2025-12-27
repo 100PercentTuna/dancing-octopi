@@ -790,8 +790,18 @@ $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note
       debugLog('page-contact.php:inline', 'Contact page background CSS computed styles', {minHeight:pageStyles.minHeight,height:pageRect.height,viewportHeight:window.innerHeight,paddingTop:pageStyles.paddingTop,marginTop:pageStyles.marginTop,background:pageStyles.background,backgroundAttachment:pageStyles.backgroundAttachment,backgroundSize:pageStyles.backgroundSize,pageTop:pageRect.top,bodyTop:bodyRect.top,gapAbove:pageRect.top-bodyRect.top}, 'H6.1,H6.2,H6.3');
     }
     
-    // Check X/Twitter text wrapping
-    var twitterLink = document.querySelector('.contact-social-link span');
+    // Check X/Twitter text wrapping - use more specific selector
+    var twitterLink = document.querySelector('.contact-social-link[aria-label*="Twitter"] span, .contact-social-link[aria-label*="X"] span');
+    if (!twitterLink) {
+      // Fallback: find link containing "Twitter" or "X" text
+      var allLinks = document.querySelectorAll('.contact-social-link span');
+      for (var i = 0; i < allLinks.length; i++) {
+        if (allLinks[i].textContent.includes('Twitter') || allLinks[i].textContent.includes('X')) {
+          twitterLink = allLinks[i];
+          break;
+        }
+      }
+    }
     if (twitterLink) {
       var linkStyles = window.getComputedStyle(twitterLink);
       var linkRect = twitterLink.getBoundingClientRect();

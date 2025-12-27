@@ -132,7 +132,7 @@
           onComplete: function() {
             // Ensure final opacity is 1, not the low value from animation
             if (scrollIndicator) {
-              window.gsap.set(scrollIndicator, { opacity: 1 });
+              window.gsap.set(scrollIndicator, { opacity: 1, clearProps: 'opacity' });
             }
           }
         }, '<0.25');
@@ -225,17 +225,31 @@
                 var afterRect = el.getBoundingClientRect();
                 var afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
                 
-                if (afterIsInViewport || isInViewport) {
+                // Check if element is actually visible in viewport (accounting for negative positions)
+                var isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
+                
+                if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
                   // Element should be visible - force it if ScrollTrigger left it hidden
                   var computed = window.getComputedStyle(el);
-                  if (parseFloat(computed.opacity) < 0.5) {
-                    window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'transform' });
+                  var currentOpacity = parseFloat(computed.opacity);
+                  if (currentOpacity < 0.5 || isNaN(currentOpacity)) {
+                    // Force visible and reset transforms
+                    window.gsap.set(el, { 
+                      opacity: 1, 
+                      x: 0, 
+                      y: 0, 
+                      clearProps: 'all' 
+                    });
+                    // Re-trigger ScrollTrigger to recalculate
+                    if (st && st.scrollTrigger) {
+                      st.scrollTrigger.refresh();
+                    }
                   }
                 }
                 
                 // #region agent log
                 var afterRefresh = window.getComputedStyle(el);
-                debugLog('about-page-v22.js:219', 'After ScrollTrigger refresh', {opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:afterRect.top,left:afterRect.left,inViewport:afterIsInViewport}, 'H4.1,H4.2,H4.3');
+                debugLog('about-page-v22.js:219', 'After ScrollTrigger refresh', {opacity:afterRefresh.opacity,transform:afterRefresh.transform,display:afterRefresh.display,top:afterRect.top,left:afterRect.left,inViewport:afterIsInViewport,isActuallyVisible:isActuallyVisible}, 'H4.1,H4.2,H4.3');
                 // #endregion
               }, 150);
             }
@@ -560,7 +574,7 @@
       };
 
       var width = host.clientWidth || 900;
-      var height = 460;
+      var height = host.clientHeight || 360; // Use actual container height, not hardcoded 460
 
       host.innerHTML = '';
       var svg = window.d3.select(host)

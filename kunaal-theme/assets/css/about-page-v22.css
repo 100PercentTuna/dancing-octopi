@@ -297,6 +297,7 @@ a:focus-visible, button:focus-visible {
 .hero-photo.color-active::after { transform: scaleY(1); }
 /* Dog-ear accent - exact original implementation using linear-gradient */
 .hero-photo.has-accent {
+  position: relative; /* Ensure ::before can be positioned absolutely */
   isolation: isolate; /* Create new stacking context to ensure accent is above image */
 }
 
@@ -398,13 +399,15 @@ a:focus-visible, button:focus-visible {
   align-items: center;
   gap: 0.4rem;
   z-index: 20;
-  opacity: 1;
+  opacity: 1 !important; /* Force visibility - GSAP will override but this ensures base state */
   transition: opacity 0.5s ease;
   pointer-events: none;
   color: var(--warm);
   /* Exclude from grid layout - span full grid area but stay absolutely positioned */
   grid-column: 1 / -1;
   grid-row: 1 / -1;
+  /* Ensure it stays within viewport bounds */
+  max-height: calc(100vh - 4rem);
 }
 .scroll-indicator.hidden { 
   opacity: 0;
