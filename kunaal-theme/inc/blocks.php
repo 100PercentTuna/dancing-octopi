@@ -270,6 +270,8 @@ add_action('init', 'kunaal_register_block_scripts', 5);
  *
  * Registers all blocks from the /blocks directory.
  * Each block must have a valid block.json file.
+ * 
+ * Delegates to helper functions to reduce cognitive complexity.
  */
 function kunaal_register_blocks() {
     if (!kunaal_blocks_api_available()) {
@@ -284,34 +286,7 @@ function kunaal_register_blocks() {
     foreach ($block_definitions as $category => $blocks) {
         foreach ($blocks as $block) {
             $block_path = $blocks_dir . '/' . $block;
-            $block_json = $block_path . '/block.json';
-            
-            if (!file_exists($block_json)) {
-                continue;
-            }
-            
-            // Validate block.json before registration
-            $block_data = json_decode(file_get_contents($block_json), true);
-            if (json_last_error() !== JSON_ERROR_NONE || !is_array($block_data)) {
-                kunaal_theme_log('Invalid block.json', array('block' => $block, 'error' => json_last_error_msg()));
-                continue;
-            }
-            
-            // Validate required fields
-            if (empty($block_data['name']) || empty($block_data['title'])) {
-                kunaal_theme_log('Block.json missing required fields', array('block' => $block));
-                continue;
-            }
-            
-            // Register block with error handling
-            try {
-                $result = register_block_type($block_path);
-                if (!$result) {
-                    kunaal_theme_log('Block registration failed', array('block' => $block));
-                }
-            } catch (Exception $e) {
-                kunaal_theme_log('Block registration exception', array('block' => $block, 'error' => $e->getMessage()));
-            }
+            kunaal_register_single_block($block_path, $block);
         }
     }
 }

@@ -46,7 +46,7 @@ $point_data = $attributes['pointData'] ?? [];
  * @param string $suffix Optional suffix
  * @return string Formatted value
  */
-function kunaal_format_compact_value($value, $currency, $suffix) {
+function kunaal_format_compact_value($value, $currency, $suffix) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
     if ($value >= 1000000) {
         return $currency . round($value / 1000000, 1) . 'M' . ($suffix ? ' ' . $suffix : '');
     }
@@ -56,19 +56,28 @@ function kunaal_format_compact_value($value, $currency, $suffix) {
     return $currency . round($value) . ($suffix ? ' ' . $suffix : '');
 }
 
+/**
+ * Format map value based on format type
+ * 
+ * @param float $value Value to format
+ * @param string $format Format type (percent, currency, compact, decimal1, number)
+ * @param string $currency Currency symbol
+ * @param string $suffix Optional suffix
+ * @return string Formatted value
+ */
 function kunaal_format_map_value($value, $format, $currency = '$', $suffix = '') {
-    switch ($format) {
-        case 'percent':
-            return round($value, 1) . '%';
-        case 'currency':
-            return $currency . number_format($value) . ($suffix ? ' ' . $suffix : '');
-        case 'compact':
-            return kunaal_format_compact_value($value, $currency, $suffix);
-        case 'decimal1':
-            return number_format($value, 1) . ($suffix ? ' ' . $suffix : '');
-        default:
-            return round($value) . ($suffix ? ' ' . $suffix : '');
+    $format_handlers = array(
+        'percent' => function($v, $c, $s) { return round($v, 1) . '%'; },
+        'currency' => function($v, $c, $s) { return $c . number_format($v) . ($s ? ' ' . $s : ''); },
+        'compact' => function($v, $c, $s) { return kunaal_format_compact_value($v, $c, $s); },
+        'decimal1' => function($v, $c, $s) { return number_format($v, 1) . ($s ? ' ' . $s : ''); },
+    );
+    
+    if (isset($format_handlers[$format])) {
+        return $format_handlers[$format]($value, $currency, $suffix);
     }
+    
+    return round($value) . ($suffix ? ' ' . $suffix : '');
 }
 
 $block_id = 'data-map-' . wp_unique_id();

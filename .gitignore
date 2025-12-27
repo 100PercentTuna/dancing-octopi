@@ -49,3 +49,13 @@ reference-files/
 
 # Local notes (kept on developer machine only)
 local-notes/
+
+# SonarQube analysis scripts and output (generated files)
+sonarqube_issues.json
+sonarqube_issues_v2.json
+sonarqube_issues_by_file.txt
+analyze_sonarqube.py
+extract_issues_by_file.py
+fix_trailing_whitespace.py
+read_sonarqube_issues.py
+read_sonarqube_v2.py

@@ -114,17 +114,13 @@ if (!function_exists('kunaal_get_card_image_url')) {
  * @return string CSS class
  */
 if (!function_exists('kunaal_get_clip_class')) {
-    function kunaal_get_clip_class($clip) {
-        switch ($clip) {
-            case 'angle_bottom':
-                return 'clip-angle-bottom';
-            case 'angle_top':
-                return 'clip-angle-top';
-            case 'angle_both':
-                return 'clip-angle-both';
-            default:
-                return '';
-        }
+    function kunaal_get_clip_class($clip) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
+        $clip_map = array(
+            'angle_bottom' => 'clip-angle-bottom',
+            'angle_top' => 'clip-angle-top',
+            'angle_both' => 'clip-angle-both',
+        );
+        return isset($clip_map[$clip]) ? $clip_map[$clip] : '';
     }
 }
 
@@ -136,7 +132,7 @@ if (!function_exists('kunaal_get_clip_class')) {
  * @return void Outputs HTML
  */
 if (!function_exists('kunaal_render_quote_image')) {
-    function kunaal_render_quote_image($img, $clip_class) {
+    function kunaal_render_quote_image($img, $clip_class) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
         ?>
         <section class="about-quote-image about-layer-image">
             <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
@@ -161,7 +157,7 @@ if (!function_exists('kunaal_render_quote_image')) {
  * @return void Outputs HTML
  */
 if (!function_exists('kunaal_render_atmo_image')) {
-    function kunaal_render_atmo_image($img, $clip_class) {
+    function kunaal_render_atmo_image($img, $clip_class) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
         ?>
         <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
             <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
@@ -237,7 +233,7 @@ if (!function_exists('kunaal_mod')) {
  * Some managed hosts/plugins hook query filters differently on the front page.
  * We do a normal query first, and if it returns empty, we retry with
  * suppress_filters to bypass third-party query mutations.
- * 
+ *
  * @param string $post_type Post type to query
  * @param int    $limit     Number of posts to retrieve
  * @return WP_Query Query object

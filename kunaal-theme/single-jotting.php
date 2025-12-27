@@ -22,7 +22,7 @@ get_header();
   <!-- Subscribe Button -->
   <?php
   $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
-  if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) :
+  if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) {
   ?>
   <button class="dockButton" id="subscribeToggle" aria-label="<?php esc_attr_e('Subscribe to updates', 'kunaal-theme'); ?>" data-action="subscribe">
     <span class="tip"><?php esc_html_e('Subscribe', 'kunaal-theme'); ?></span>
