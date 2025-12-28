@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Core theme constants
-define('KUNAAL_THEME_VERSION', '4.34.1');
+define('KUNAAL_THEME_VERSION', '4.34.2');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 

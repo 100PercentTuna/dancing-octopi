@@ -25,7 +25,8 @@ $first_name = kunaal_mod('kunaal_author_first_name', 'Kunaal');
 $last_name = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
 $full_name = trim($first_name . ' ' . $last_name);
 
-$hero_photos = kunaal_get_hero_photos_v22();
+// Get photo IDs for optimized rendering with srcset
+$hero_photo_ids = kunaal_get_hero_photo_ids_v22();
 $hero_intro = kunaal_mod('kunaal_about_v22_hero_intro', 'A curiosity about humans and human collectives — how we organize, what we believe, why we do what we do.');
 $hero_hand_note = kunaal_mod('kunaal_about_v22_hero_hand_note', 'slightly alarming?');
 $hero_location = kunaal_mod('kunaal_about_v22_hero_location', 'Singapore');
@@ -75,15 +76,23 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 
 // Row 1 - Slots 1-4
 for ($slot = 1; $slot <= 4; $slot++) :
-    if (!isset($hero_photos[$slot])) continue;
-    $photo_url = $hero_photos[$slot];
+    if (!isset($hero_photo_ids[$slot])) continue;
+    $photo_id = $hero_photo_ids[$slot];
     // Slot 3 gets accent (dog-ear) unconditionally if it exists
     $has_accent = ($slot === 3);
     $loading = $slot === 1 ? 'eager' : 'lazy';
     $fetchpriority = $slot === 1 ? 'high' : 'auto';
+    // Use wp_get_attachment_image for srcset/sizes optimization
+    $image_attrs = array(
+        'alt' => '',
+        'decoding' => 'async',
+        'loading' => $loading,
+        'fetchpriority' => $fetchpriority,
+        'class' => '',
+    );
 ?>
 <div class="hero-photo hero-photo--<?php echo esc_attr($slot); ?><?php echo $has_accent ? ' has-accent' : ''; ?>">
-    <img alt="" decoding="async" loading="<?php echo esc_attr($loading); ?>" fetchpriority="<?php echo esc_attr($fetchpriority); ?>" src="<?php echo esc_url($photo_url); ?>"/>
+    <?php echo wp_get_attachment_image($photo_id, 'full', false, $image_attrs); ?>
 </div>
 <?php endfor; ?>
 
@@ -118,32 +127,50 @@ for ($slot = 1; $slot <= 4; $slot++) :
 
 <?php
 // Row 1 - Slot 5 (right-strip top)
-if (isset($hero_photos[5])) :
-    $photo_url = $hero_photos[5];
+if (isset($hero_photo_ids[5])) :
+    $photo_id = $hero_photo_ids[5];
+    $image_attrs = array(
+        'alt' => '',
+        'decoding' => 'async',
+        'loading' => 'lazy',
+        'class' => '',
+    );
 ?>
 <div class="hero-photo hero-photo--5">
-    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+    <?php echo wp_get_attachment_image($photo_id, 'full', false, $image_attrs); ?>
 </div>
 <?php endif; ?>
 
 <!-- Row 2 - Slots 6-9 -->
 <?php
 for ($slot = 6; $slot <= 9; $slot++) :
-    if (!isset($hero_photos[$slot])) continue;
-    $photo_url = $hero_photos[$slot];
+    if (!isset($hero_photo_ids[$slot])) continue;
+    $photo_id = $hero_photo_ids[$slot];
+    $image_attrs = array(
+        'alt' => '',
+        'decoding' => 'async',
+        'loading' => 'lazy',
+        'class' => '',
+    );
 ?>
 <div class="hero-photo hero-photo--<?php echo esc_attr($slot); ?>">
-    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+    <?php echo wp_get_attachment_image($photo_id, 'full', false, $image_attrs); ?>
 </div>
 <?php endfor; ?>
 
 <?php
 // Row 2 - Slot 10 (right-strip bottom)
-if (isset($hero_photos[10])) :
-    $photo_url = $hero_photos[10];
+if (isset($hero_photo_ids[10])) :
+    $photo_id = $hero_photo_ids[10];
+    $image_attrs = array(
+        'alt' => '',
+        'decoding' => 'async',
+        'loading' => 'lazy',
+        'class' => '',
+    );
 ?>
 <div class="hero-photo hero-photo--10">
-    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+    <?php echo wp_get_attachment_image($photo_id, 'full', false, $image_attrs); ?>
 </div>
 <?php endif; ?>
 </div>

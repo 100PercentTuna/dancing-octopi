@@ -381,14 +381,37 @@
 
   // =============================================
   // Masked "portal band" parallax (fast)
+  // Performance: Disabled on mobile, gated by IntersectionObserver
   // =============================================
   function initPanoramaParallax(gsapOk) {
     if (reduceMotion || !gsapOk) return;
+    
+    // Disable parallax on mobile for performance
+    const isMobile = window.innerWidth < 900 || window.matchMedia('(hover: none)').matches;
+    if (isMobile) return;
+    
     const bands = document.querySelectorAll('.panorama');
-    for (var i = 0; i < bands.length; i++) {
-      (function (band) {
+    if (!bands.length) return;
+    
+    // Use IntersectionObserver to only activate parallax when bands are near viewport
+    const observerOptions = {
+      root: null,
+      rootMargin: '50%', // Start parallax when band is 50% away from viewport
+      threshold: 0
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        
+        const band = entry.target;
         const img = band.querySelector('.panorama-img');
         if (!img) return;
+        
+        // Only initialize if not already initialized
+        if (band.dataset.parallaxInitialized === 'true') return;
+        band.dataset.parallaxInitialized = 'true';
+        
         const speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
         // Parallax movement: increased amplitude for more dramatic scrollytelling effect
@@ -405,7 +428,7 @@
                 trigger: band,
                 start: 'top bottom',
                 end: 'bottom top',
-                scrub: true // Changed from scrub: 1 to scrub: true for smooth, lag-free parallax
+                scrub: true // Smooth, lag-free parallax
               }
             }
           );
@@ -414,7 +437,12 @@
             console.warn('Panorama parallax failed:', e);
           }
         }
-      })(bands[i]);
+      });
+    }, observerOptions);
+    
+    // Observe all bands
+    for (var i = 0; i < bands.length; i++) {
+      observer.observe(bands[i]);
     }
   }
 

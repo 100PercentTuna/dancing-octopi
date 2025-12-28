@@ -19,6 +19,7 @@ if (!defined('ABSPATH')) {
  * Returns array keyed by slot number 1..10 (stable slots, no reindex shifting)
  * 
  * @return array<int, string> Array keyed by slot number (1-10) => photo URL
+ * @deprecated Use kunaal_get_hero_photo_ids_v22() for better performance with srcset
  */
 function kunaal_get_hero_photos_v22(): array {
     $photos = array();
@@ -32,6 +33,23 @@ function kunaal_get_hero_photos_v22(): array {
         }
     }
     return $photos;
+}
+
+/**
+ * Get hero photo attachment IDs for v22 About page
+ * Returns array keyed by slot number 1..10 for use with wp_get_attachment_image()
+ * 
+ * @return array<int, int> Array keyed by slot number (1-10) => attachment ID
+ */
+function kunaal_get_hero_photo_ids_v22(): array {
+    $photo_ids = array();
+    for ($i = 1; $i <= 10; $i++) {
+        $photo_id = (int) kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
+        if ($photo_id) {
+            $photo_ids[$i] = $photo_id;
+        }
+    }
+    return $photo_ids;
 }
 
 /**
