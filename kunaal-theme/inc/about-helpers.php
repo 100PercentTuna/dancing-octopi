@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
  * @param string $extra_class Additional CSS class(es) to add
  * @return void Outputs HTML
  */
-function kunaal_render_panoramas($panoramas, $extra_class = '') {
+function kunaal_render_panoramas(array $panoramas, string $extra_class = ''): void {
     // Ensure we have a valid array and it's not empty
     if (!is_array($panoramas) || empty($panoramas)) {
         return;

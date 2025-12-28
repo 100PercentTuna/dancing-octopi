@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
  * Main Customizer Registration
  * Delegates to section-specific functions
  */
-function kunaal_customize_register($wp_customize) {
+function kunaal_customize_register(WP_Customize_Manager $wp_customize): void {
     kunaal_customize_register_author_section($wp_customize);
     kunaal_customize_register_sharing_section($wp_customize);
     kunaal_customize_register_site_identity($wp_customize);
@@ -35,7 +35,7 @@ add_action('customize_register', 'kunaal_customize_register');
  * Loads JavaScript that handles live preview updates without page refresh.
  * Uses debouncing to prevent excessive updates while typing.
  */
-function kunaal_customizer_preview_js() {
+function kunaal_customizer_preview_js(): void {
     wp_enqueue_script(
         'kunaal-customizer-preview',
         KUNAAL_THEME_URI . '/assets/js/customizer-preview.js',

@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
  *
  * @return bool True if valid, false otherwise
  */
-function kunaal_validate_contact_request() {
+function kunaal_validate_contact_request(): bool {
     if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
         return false;
     }
@@ -29,7 +29,7 @@ function kunaal_validate_contact_request() {
 /**
  * Helper: Sanitize contact form inputs
  */
-function kunaal_sanitize_contact_inputs() {
+function kunaal_sanitize_contact_inputs(): array {
     return array(
         'name' => isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '',
         'email' => isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '',
@@ -44,14 +44,14 @@ function kunaal_sanitize_contact_inputs() {
  * @param string $honeypot Honeypot field value
  * @return bool True if honeypot is empty (valid), false if filled (bot)
  */
-function kunaal_check_contact_honeypot($honeypot) {
+function kunaal_check_contact_honeypot(string $honeypot): bool {
     return empty($honeypot);
 }
 
 /**
  * Helper: Get client IP address
  */
-function kunaal_get_client_ip() {
+function kunaal_get_client_ip(): string {
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $forwarded = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         return sanitize_text_field(trim($forwarded[0]));
@@ -66,7 +66,7 @@ function kunaal_get_client_ip() {
  *
  * @return bool True if within rate limit, false if rate limited
  */
-function kunaal_check_contact_rate_limit() {
+function kunaal_check_contact_rate_limit(): bool {
     $ip = kunaal_get_client_ip();
     if (empty($ip)) {
         return true; // Can't rate limit without IP, allow request
@@ -88,7 +88,7 @@ function kunaal_check_contact_rate_limit() {
  * @param string $email Email address
  * @return array Array with 'valid' (bool) and 'error' (string) keys
  */
-function kunaal_validate_contact_data($message, $email) {
+function kunaal_validate_contact_data(string $message, string $email): array {
     if (empty($message)) {
         return array('valid' => false, 'error' => 'Please enter a message.');
     }
@@ -103,7 +103,7 @@ function kunaal_validate_contact_data($message, $email) {
 /**
  * Helper: Get contact form recipient email
  */
-function kunaal_get_contact_recipient() {
+function kunaal_get_contact_recipient(): string {
     $to_email = kunaal_mod('kunaal_contact_recipient_email', get_option('admin_email'));
     if (!is_email($to_email)) {
         $to_email = get_option('admin_email');
@@ -114,7 +114,7 @@ function kunaal_get_contact_recipient() {
 /**
  * Helper: Build contact form email
  */
-function kunaal_build_contact_email($name, $email, $message) {
+function kunaal_build_contact_email(string $name, string $email, string $message): array {
     $site_name = get_bloginfo('name');
     $sender_name = !empty($name) ? $name : 'Anonymous';
     $email_subject = '[' . $site_name . '] New note' . (!empty($name) ? ' from ' . $name : '');
@@ -148,7 +148,7 @@ function kunaal_build_contact_email($name, $email, $message) {
 /**
  * Helper: Handle contact form email error
  */
-function kunaal_handle_contact_email_error($to_email, $email_subject) {
+function kunaal_handle_contact_email_error(string $to_email, string $email_subject): void {
     global $phpmailer;
     $error_message = 'Sorry, there was an error sending your message.';
     
@@ -166,7 +166,7 @@ function kunaal_handle_contact_email_error($to_email, $email_subject) {
 /**
  * Contact Form AJAX Handler
  */
-function kunaal_handle_contact_form() {
+function kunaal_handle_contact_form(): void {
     try {
         if (!kunaal_validate_contact_request()) {
             wp_send_json_error(array('message' => 'Security check failed. Please refresh and try again.'));

@@ -17,14 +17,14 @@ if (!defined('ABSPATH')) {
 /**
  * Check if SMTP is enabled
  */
-function kunaal_smtp_is_enabled() {
+function kunaal_smtp_is_enabled(): bool {
     return (bool) kunaal_mod('kunaal_smtp_enabled', false);
 }
 
 /**
  * Filter: Set SMTP from email
  */
-function kunaal_filter_wp_mail_from($from_email) {
+function kunaal_filter_wp_mail_from(string $from_email): string {
     if (!kunaal_smtp_is_enabled()) {
         return $from_email;
     }
@@ -36,7 +36,7 @@ add_filter('wp_mail_from', 'kunaal_filter_wp_mail_from');
 /**
  * Filter: Set SMTP from name
  */
-function kunaal_filter_wp_mail_from_name($from_name) {
+function kunaal_filter_wp_mail_from_name(string $from_name): string {
     if (!kunaal_smtp_is_enabled()) {
         return $from_name;
     }
@@ -48,7 +48,7 @@ add_filter('wp_mail_from_name', 'kunaal_filter_wp_mail_from_name');
 /**
  * Action: Configure PHPMailer for SMTP
  */
-function kunaal_action_phpmailer_init($phpmailer) {
+function kunaal_action_phpmailer_init(PHPMailer\PHPMailer\PHPMailer $phpmailer): void {
     if (!kunaal_smtp_is_enabled()) {
         return;
     }

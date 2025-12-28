@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
  * Some WordPress installs may be behind on block APIs. If core block
  * registration functions don't exist, we should no-op instead of fataling.
  */
-function kunaal_blocks_api_available() {
+function kunaal_blocks_api_available(): bool {
     return function_exists('register_block_type');
 }
 
@@ -33,7 +33,7 @@ function kunaal_blocks_api_available() {
  * These categories organize blocks in the editor inserter.
  * Categories are ordered by usage frequency.
  */
-function kunaal_register_block_categories($categories) {
+function kunaal_register_block_categories(array $categories): array {
     return array_merge(
         array(
             array(
@@ -72,7 +72,7 @@ add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
  * We have custom versions of these blocks that better match
  * the theme's design language.
  */
-function kunaal_unregister_core_blocks() {
+function kunaal_unregister_core_blocks(): void {
     if (!kunaal_blocks_api_available()) {
         return;
     }
@@ -104,7 +104,7 @@ add_action('init', 'kunaal_unregister_core_blocks', 100);
  * Some blocks also have:
  * - view.js (frontend JavaScript)
  */
-function kunaal_get_block_definitions() {
+function kunaal_get_block_definitions(): array {
     return array(
         // Editorial blocks - text and content formatting
         'editorial' => array(
@@ -178,7 +178,7 @@ function kunaal_get_block_definitions() {
 /**
  * Blocks that have frontend view scripts
  */
-function kunaal_get_view_script_blocks() {
+function kunaal_get_view_script_blocks(): array {
     return array(
         'sidenote',
         'annotation',
@@ -208,7 +208,7 @@ function kunaal_get_view_script_blocks() {
  * @param string $blocks_uri Block directory URI
  * @param string $version Theme version
  */
-function kunaal_register_editor_scripts($blocks_dir, $blocks_uri, $version) {
+function kunaal_register_editor_scripts(string $blocks_dir, string $blocks_uri, string $version): void {
     $editor_deps = array(
         'wp-blocks',
         'wp-element',
@@ -244,7 +244,7 @@ function kunaal_register_editor_scripts($blocks_dir, $blocks_uri, $version) {
  * @param string $blocks_uri Block directory URI
  * @param string $version Theme version
  */
-function kunaal_register_view_scripts($blocks_dir, $blocks_uri, $version) {
+function kunaal_register_view_scripts(string $blocks_dir, string $blocks_uri, string $version): void {
     $view_blocks = kunaal_get_view_script_blocks();
     foreach ($view_blocks as $block) {
         $view_path = $blocks_dir . '/' . $block . '/view.js';
@@ -266,7 +266,7 @@ function kunaal_register_view_scripts($blocks_dir, $blocks_uri, $version) {
  * Registers edit.js for each block and view.js for blocks
  * that need frontend JavaScript.
  */
-function kunaal_register_block_scripts() {
+function kunaal_register_block_scripts(): void {
     if (!kunaal_blocks_api_available()) {
         return;
     }
@@ -297,7 +297,7 @@ add_action('init', 'kunaal_register_block_scripts', 5);
  * 
  * Delegates to helper functions to reduce cognitive complexity.
  */
-function kunaal_register_blocks() {
+function kunaal_register_blocks(): void {
     if (!kunaal_blocks_api_available()) {
         return;
     }
@@ -334,7 +334,7 @@ add_action('init', 'kunaal_register_blocks', 10);
  * @param string $block_content Block HTML content
  * @return string|false Updated HTML or false on failure
  */
-function kunaal_add_reveal_class_processor($block_content) {
+function kunaal_add_reveal_class_processor(string $block_content): string|false {
     if (!class_exists('WP_HTML_Tag_Processor')) {
         return false;
     }
@@ -364,7 +364,7 @@ function kunaal_add_reveal_class_processor($block_content) {
  * @param string $block_content Block HTML content
  * @return string|false Updated HTML or false on failure
  */
-function kunaal_add_reveal_class_dom($block_content) {
+function kunaal_add_reveal_class_dom(string $block_content): string|false {
     if (!function_exists('wp_kses_post') || !class_exists('DOMDocument')) {
         return false;
     }
@@ -401,7 +401,7 @@ function kunaal_add_reveal_class_dom($block_content) {
  * when viewing essays or jottings.
  * Uses WP_HTML_Tag_Processor for safe HTML manipulation (WordPress 6.2+).
  */
-function kunaal_block_wrapper($block_content, $block) {
+function kunaal_block_wrapper(string $block_content, array $block): string {
     // Early return if not processing
     if (!is_singular(array('essay', 'jotting'))) {
         return $block_content;

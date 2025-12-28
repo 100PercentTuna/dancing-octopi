@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
  * 
  * @return array<int, string> Array keyed by slot number (1-10) => photo URL
  */
-function kunaal_get_hero_photos_v22() {
+function kunaal_get_hero_photos_v22(): array {
     $photos = array();
     for ($i = 1; $i <= 10; $i++) {
         $photo_id = (int) kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
@@ -38,7 +38,7 @@ function kunaal_get_hero_photos_v22() {
  * Get numbers data for v22 About page
  * Returns array of number items (up to 8) plus infinity option
  */
-function kunaal_get_numbers_v22() {
+function kunaal_get_numbers_v22(): array {
     $numbers = array();
     for ($i = 1; $i <= 8; $i++) {
         $value = kunaal_mod("kunaal_about_v22_number_{$i}_value", '');
@@ -71,7 +71,7 @@ function kunaal_get_numbers_v22() {
  * Get categories for v22 About page
  * Returns array of category definitions (up to 12)
  */
-function kunaal_get_categories_v22() {
+function kunaal_get_categories_v22(): array {
     $categories = array();
     for ($i = 1; $i <= 12; $i++) {
         $name = kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
@@ -90,7 +90,7 @@ function kunaal_get_categories_v22() {
  * Get rabbit holes for v22 About page
  * Returns array of rabbit hole items (up to 200)
  */
-function kunaal_get_rabbit_holes_v22() {
+function kunaal_get_rabbit_holes_v22(): array {
     $rabbit_holes = array();
     for ($i = 1; $i <= 200; $i++) {
         $text = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_text", '');
@@ -115,7 +115,7 @@ function kunaal_get_rabbit_holes_v22() {
  * Get panoramas for v22 About page
  * Returns array organized by position
  */
-function kunaal_get_panoramas_v22() {
+function kunaal_get_panoramas_v22(): array {
     $panoramas_by_position = array(
         'after_hero' => array(),
         'after_numbers' => array(),
@@ -151,7 +151,7 @@ function kunaal_get_panoramas_v22() {
  * Get books for v22 About page
  * Returns array of book items (up to 6)
  */
-function kunaal_get_books_v22() {
+function kunaal_get_books_v22(): array {
     $books = array();
     for ($i = 1; $i <= 6; $i++) {
         $title = kunaal_mod("kunaal_about_v22_book_{$i}_title", '');
@@ -174,7 +174,7 @@ function kunaal_get_books_v22() {
  * Get digital media for v22 About page
  * Returns array of digital items (up to 6)
  */
-function kunaal_get_digital_media_v22() {
+function kunaal_get_digital_media_v22(): array {
     $digital = array();
     for ($i = 1; $i <= 6; $i++) {
         $title = kunaal_mod("kunaal_about_v22_digital_{$i}_title", '');
@@ -199,7 +199,7 @@ function kunaal_get_digital_media_v22() {
  * Get places data for v22 About page
  * Returns array with lived, visited, and current location ISO codes
  */
-function kunaal_get_places_v22() {
+function kunaal_get_places_v22(): array {
     $lived_str = kunaal_mod('kunaal_about_v22_places_lived', '');
     $visited_str = kunaal_mod('kunaal_about_v22_places_visited', '');
     $current = kunaal_mod('kunaal_about_v22_places_current', '');
@@ -236,7 +236,7 @@ function kunaal_get_places_v22() {
  * Get inspirations for v22 About page
  * Returns array of inspiration items (up to 10)
  */
-function kunaal_get_inspirations_v22() {
+function kunaal_get_inspirations_v22(): array {
     $inspirations = array();
     for ($i = 1; $i <= 10; $i++) {
         $name = kunaal_mod("kunaal_about_v22_inspiration_{$i}_name", '');

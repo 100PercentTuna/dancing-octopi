@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Find subscriber by email address
  */
-function kunaal_find_subscriber_by_email($email) {
+function kunaal_find_subscriber_by_email(string $email): int {
     $email = strtolower(trim($email));
     if (!is_email($email)) {
         return 0;
@@ -42,14 +42,14 @@ function kunaal_find_subscriber_by_email($email) {
 /**
  * Generate subscribe confirmation token
  */
-function kunaal_generate_subscribe_token() {
+function kunaal_generate_subscribe_token(): string {
     return wp_generate_password(32, false, false);
 }
 
 /**
  * Send subscribe confirmation email
  */
-function kunaal_send_subscribe_confirmation($email, $token) {
+function kunaal_send_subscribe_confirmation(string $email, string $token): bool {
     $to = $email;
     $site = get_bloginfo('name');
     $confirm_url = add_query_arg(array('kunaal_sub_confirm' => $token), home_url('/'));
@@ -63,7 +63,7 @@ function kunaal_send_subscribe_confirmation($email, $token) {
  *
  * @return array|WP_Error Returns error array on failure, null on success
  */
-function kunaal_validate_subscribe_request() {
+function kunaal_validate_subscribe_request(): array|null {
     if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
         return array('message' => 'Security check failed. Please refresh and try again.');
     }
@@ -81,7 +81,7 @@ function kunaal_validate_subscribe_request() {
  *
  * @return string|WP_Error Valid email address or error
  */
-function kunaal_validate_subscribe_email() {
+function kunaal_validate_subscribe_email(): string|WP_Error {
     $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
     if (!is_email($email)) {
         return new WP_Error('invalid_email', 'Please enter a valid email address.');
@@ -95,7 +95,7 @@ function kunaal_validate_subscribe_email() {
  * @param int $subscriber_id Subscriber post ID
  * @return bool True if response sent, false otherwise
  */
-function kunaal_handle_existing_subscriber($subscriber_id) {
+function kunaal_handle_existing_subscriber(int $subscriber_id): bool {
     $status = get_post_meta($subscriber_id, 'kunaal_status', true);
     if ($status === 'confirmed') {
         wp_send_json_success(array('message' => 'You are already subscribed.'));
@@ -113,7 +113,7 @@ function kunaal_handle_existing_subscriber($subscriber_id) {
  * @param string $token Confirmation token
  * @return int|WP_Error Subscriber post ID or error
  */
-function kunaal_create_subscriber_post($email, $token) {
+function kunaal_create_subscriber_post(string $email, string $token): int|WP_Error {
     $subscriber_id = wp_insert_post(array(
         'post_type' => 'kunaal_subscriber',
         'post_status' => 'private',
@@ -135,7 +135,7 @@ function kunaal_create_subscriber_post($email, $token) {
 /**
  * Main subscribe handler - refactored to reduce cognitive complexity
  */
-function kunaal_handle_subscribe() {
+function kunaal_handle_subscribe(): void {
     try {
         // Validate request
         $validation_error = kunaal_validate_subscribe_request();
@@ -187,7 +187,7 @@ add_action('wp_ajax_nopriv_kunaal_subscribe', 'kunaal_handle_subscribe');
 /**
  * Handle subscribe confirmation request
  */
-function kunaal_handle_subscribe_confirmation_request() {
+function kunaal_handle_subscribe_confirmation_request(): void {
     if (empty($_GET['kunaal_sub_confirm'])) {
         return;
     }

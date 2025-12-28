@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
  *
  * @return array Array with 'valid' (bool) and 'error' (string) keys
  */
-function kunaal_validate_debug_log_request() {
+function kunaal_validate_debug_log_request(): array {
     $result = array('valid' => true, 'error' => '');
     
     if (!defined('WP_DEBUG') || !WP_DEBUG) {
@@ -37,7 +37,7 @@ function kunaal_validate_debug_log_request() {
 /**
  * Helper: Get log data from POST
  */
-function kunaal_get_debug_log_data() {
+function kunaal_get_debug_log_data(): string {
     $log_json = isset($_POST['log_data']) ? stripslashes($_POST['log_data']) : '';
     if (empty($log_json)) {
         $raw_input = file_get_contents('php://input');
@@ -54,7 +54,7 @@ function kunaal_get_debug_log_data() {
  * @param mixed $log_data Log data to validate
  * @return bool True if valid, false otherwise
  */
-function kunaal_validate_debug_log_data($log_data) {
+function kunaal_validate_debug_log_data(mixed $log_data): bool {
     if (!$log_data || !isset($log_data['location']) || !isset($log_data['message'])) {
         return false;
     }
@@ -64,7 +64,7 @@ function kunaal_validate_debug_log_data($log_data) {
 /**
  * Helper: Write log to file
  */
-function kunaal_write_debug_log($log_data) {
+function kunaal_write_debug_log(array $log_data): void {
     $log_file = get_template_directory() . '/debug.log';
     $log_line = json_encode($log_data) . "\n";
     @file_put_contents($log_file, $log_line, FILE_APPEND | LOCK_EX);
@@ -75,7 +75,7 @@ function kunaal_write_debug_log($log_data) {
  * Only active during development/debugging (WP_DEBUG must be true)
  * Nonce-protected and capability-checked for security
  */
-function kunaal_handle_debug_log() {
+function kunaal_handle_debug_log(): void {
     $validation = kunaal_validate_debug_log_request();
     if (!$validation['valid']) {
         wp_send_json_error(array('message' => $validation['error']));

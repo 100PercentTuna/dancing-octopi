@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Register Inline Formats for Gutenberg Editor
  */
-function kunaal_register_inline_formats() {
+function kunaal_register_inline_formats(): void {
     $formats_dir = KUNAAL_THEME_DIR . '/blocks/inline-formats';
     
     if (!file_exists($formats_dir . '/index.js')) {
@@ -45,7 +45,7 @@ add_action('init', 'kunaal_register_inline_formats');
  * Consolidated Block Editor Assets
  * Enqueues all editor assets in one place to avoid conflicts
  */
-function kunaal_enqueue_editor_assets() {
+function kunaal_enqueue_editor_assets(): void {
     // Editor sidebar (only on essay/jotting edit screens)
     $screen = get_current_screen();
     if ($screen && in_array($screen->post_type, array('essay', 'jotting'))) {
@@ -169,7 +169,7 @@ add_action('enqueue_block_editor_assets', 'kunaal_enqueue_editor_assets');
 /**
  * Enqueue Inline Format Styles on Frontend
  */
-function kunaal_enqueue_inline_formats_frontend() {
+function kunaal_enqueue_inline_formats_frontend(): void {
     if (is_singular(array('essay', 'jotting', 'post', 'page'))) {
         wp_enqueue_style(
             'kunaal-inline-formats-style',

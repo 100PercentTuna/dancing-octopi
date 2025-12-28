@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_author_section($wp_customize) {
+function kunaal_customize_register_author_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_author', array(
         'title' => 'Author Info',
         'priority' => 30,
@@ -100,7 +100,7 @@ function kunaal_customize_register_author_section($wp_customize) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_sharing_section($wp_customize) {
+function kunaal_customize_register_sharing_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_sharing', array(
         'title' => 'Social Sharing',
         'priority' => 35,
@@ -149,7 +149,7 @@ function kunaal_customize_register_sharing_section($wp_customize) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_site_identity($wp_customize) {
+function kunaal_customize_register_site_identity(WP_Customize_Manager $wp_customize): void {
     // Favicon (PNG without border)
     $wp_customize->add_setting('kunaal_favicon', array(
         'default' => '',
@@ -168,7 +168,7 @@ function kunaal_customize_register_site_identity($wp_customize) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_subscribe_section($wp_customize) {
+function kunaal_customize_register_subscribe_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_subscribe', array(
         'title' => 'Subscribe Section',
         'priority' => 45,
@@ -288,7 +288,7 @@ function kunaal_customize_register_subscribe_section($wp_customize) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_contact_page_section($wp_customize) {
+function kunaal_customize_register_contact_page_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_contact_page', array(
         'title' => 'Contact Page',
         'priority' => 51,
@@ -344,7 +344,7 @@ function kunaal_customize_register_contact_page_section($wp_customize) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_email_delivery_section($wp_customize) {
+function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_email_delivery', array(
         'title' => 'Email Delivery (SMTP)',
         'priority' => 52,
@@ -452,7 +452,7 @@ function kunaal_customize_register_email_delivery_section($wp_customize) {
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
-function kunaal_customize_register_contact_social_links($wp_customize) {
+function kunaal_customize_register_contact_social_links(WP_Customize_Manager $wp_customize): void {
     // Instagram
     $wp_customize->add_setting('kunaal_contact_instagram', array(
         'default' => '',

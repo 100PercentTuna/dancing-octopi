@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
  * @return string Uppercase initials from author first and last name
  */
 if (!function_exists('kunaal_get_initials')) {
-    function kunaal_get_initials() {
+    function kunaal_get_initials(): string {
         $first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
         $last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
         return strtoupper(substr($first, 0, 1) . substr($last, 0, 1));
@@ -29,7 +29,7 @@ if (!function_exists('kunaal_get_initials')) {
  * @return void
  */
 if (!function_exists('kunaal_subscribe_section')) {
-    function kunaal_subscribe_section() {
+    function kunaal_subscribe_section(): void {
         $should_show = kunaal_mod('kunaal_subscribe_enabled', false);
         if ($should_show) {
             $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
@@ -65,7 +65,7 @@ if (!function_exists('kunaal_subscribe_section')) {
  * @return array Array of topic data with slug, name, and count
  */
 if (!function_exists('kunaal_get_all_topics')) {
-    function kunaal_get_all_topics() {
+    function kunaal_get_all_topics(): array {
     $topics = get_terms(array(
         'taxonomy' => 'topic',
         'hide_empty' => false,
@@ -95,7 +95,7 @@ if (!function_exists('kunaal_get_all_topics')) {
  * @return string Image URL or empty string
  */
 if (!function_exists('kunaal_get_card_image_url')) {
-    function kunaal_get_card_image_url($post_id, $size = 'essay-card') {
+    function kunaal_get_card_image_url(int $post_id, string $size = 'essay-card'): string {
     $card_image = get_post_meta($post_id, 'kunaal_card_image', true);
     if ($card_image) {
         return wp_get_attachment_image_url($card_image, $size);
@@ -114,7 +114,7 @@ if (!function_exists('kunaal_get_card_image_url')) {
  * @return string CSS class
  */
 if (!function_exists('kunaal_get_clip_class')) {
-    function kunaal_get_clip_class($clip) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
+    function kunaal_get_clip_class(string $clip): string { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
         $clip_map = array(
             'angle_bottom' => 'clip-angle-bottom',
             'angle_top' => 'clip-angle-top',
@@ -132,7 +132,7 @@ if (!function_exists('kunaal_get_clip_class')) {
  * @return void Outputs HTML
  */
 if (!function_exists('kunaal_render_quote_image')) {
-    function kunaal_render_quote_image($img, $clip_class) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
+    function kunaal_render_quote_image(array $img, string $clip_class): void { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
         ?>
         <section class="about-quote-image about-layer-image">
             <div class="about-quote-image-bg parallax-slow <?php echo esc_attr($clip_class); ?>">
@@ -157,7 +157,7 @@ if (!function_exists('kunaal_render_quote_image')) {
  * @return void Outputs HTML
  */
 if (!function_exists('kunaal_render_atmo_image')) {
-    function kunaal_render_atmo_image($img, $clip_class) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
+    function kunaal_render_atmo_image(array $img, string $clip_class): void { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid -- WordPress uses underscores
         ?>
         <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
             <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
@@ -174,7 +174,7 @@ if (!function_exists('kunaal_render_atmo_image')) {
  * Moved from page-about.php template to prevent side effects
  */
 if (!function_exists('kunaal_render_atmo_images')) {
-    function kunaal_render_atmo_images($position, $images) {
+    function kunaal_render_atmo_images(string $position, array $images): void {
         if (empty($images)) {
             return;
         }
@@ -204,7 +204,7 @@ if (!function_exists('kunaal_render_atmo_images')) {
  * @return array All theme modification values
  */
 if (!function_exists('kunaal_get_theme_mods')) {
-    function kunaal_get_theme_mods() {
+    function kunaal_get_theme_mods(): array {
     static $mods = null;
     if ($mods === null) {
         $mods = get_theme_mods();
@@ -221,7 +221,7 @@ if (!function_exists('kunaal_get_theme_mods')) {
  * @return mixed Theme mod value or default
  */
 if (!function_exists('kunaal_mod')) {
-    function kunaal_mod($key, $default = '') {
+    function kunaal_mod(string $key, mixed $default = ''): mixed {
     $mods = kunaal_get_theme_mods();
     return isset($mods[$key]) ? $mods[$key] : $default;
     }
@@ -239,7 +239,7 @@ if (!function_exists('kunaal_mod')) {
  * @return WP_Query Query object
  */
 if (!function_exists('kunaal_home_query')) {
-    function kunaal_home_query($post_type, $limit = 6) {
+    function kunaal_home_query(string $post_type, int $limit = 6): WP_Query {
         $base = array(
             'post_type' => $post_type,
             'posts_per_page' => (int) $limit,
@@ -275,7 +275,7 @@ if (!function_exists('kunaal_home_query')) {
  * @return array Array of post IDs
  */
 if (!function_exists('kunaal_home_recent_ids')) {
-    function kunaal_home_recent_ids($post_type, $limit = 6) {
+    function kunaal_home_recent_ids(string $post_type, int $limit = 6): array {
         global $wpdb;
         $limit = max(1, (int) $limit);
         $sql = $wpdb->prepare(
@@ -334,7 +334,7 @@ function kunaal_get_essay_card_data(int $post_id): array|false {
 }
 
 if (!function_exists('kunaal_render_essay_card')) {
-    function kunaal_render_essay_card($post) {
+    function kunaal_render_essay_card(int|WP_Post $post): void {
         $post_id = is_object($post) ? $post->ID : (int) $post;
         $data = kunaal_get_essay_card_data($post_id);
         
@@ -445,7 +445,7 @@ function kunaal_get_jotting_row_data(int $post_id): array|false {
 }
 
 if (!function_exists('kunaal_render_jotting_row')) {
-    function kunaal_render_jotting_row($post) {
+    function kunaal_render_jotting_row(int|WP_Post $post): void {
         $post_id = is_object($post) ? $post->ID : (int) $post;
         $data = kunaal_get_jotting_row_data($post_id);
         

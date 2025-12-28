@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Helper: Validate filter request
  */
-function kunaal_validate_filter_request() {
+function kunaal_validate_filter_request(): bool {
     if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
         return false;
     }
@@ -27,7 +27,7 @@ function kunaal_validate_filter_request() {
 /**
  * Helper: Parse and sanitize topics from POST data
  */
-function kunaal_parse_filter_topics() {
+function kunaal_parse_filter_topics(): array {
     $topics = array();
     if (isset($_POST['topics'])) {
         $topics_raw = $_POST['topics'];
@@ -43,7 +43,7 @@ function kunaal_parse_filter_topics() {
 /**
  * Helper: Build WP_Query args for filter
  */
-function kunaal_build_filter_query_args($post_type, $topics, $sort, $search, $page, $per_page) {
+function kunaal_build_filter_query_args(string $post_type, array $topics, string $sort, string $search, int $page, int $per_page): array {
     $args = array(
         'post_type' => $post_type,
         'posts_per_page' => min($per_page, 100), // Limit to prevent DoS
@@ -88,7 +88,7 @@ function kunaal_build_filter_query_args($post_type, $topics, $sort, $search, $pa
 /**
  * Helper: Prime caches to prevent N+1 queries
  */
-function kunaal_prime_post_caches($post_ids) {
+function kunaal_prime_post_caches(array $post_ids): void {
     if (empty($post_ids)) {
         return;
     }
@@ -112,7 +112,7 @@ function kunaal_prime_post_caches($post_ids) {
 /**
  * Helper: Extract topics from post
  */
-function kunaal_extract_post_topics($post_id) {
+function kunaal_extract_post_topics(int $post_id): array {
     $topics_list = get_the_terms($post_id, 'topic');
     $tags = array();
     $tag_slugs = array();
@@ -130,7 +130,7 @@ function kunaal_extract_post_topics($post_id) {
 /**
  * Helper: Build post data array for JSON response
  */
-function kunaal_build_post_data($post_id) {
+function kunaal_build_post_data(int $post_id): array {
     $topics = kunaal_extract_post_topics($post_id);
     
     return array(
@@ -150,7 +150,7 @@ function kunaal_build_post_data($post_id) {
 /**
  * AJAX: Filter content
  */
-function kunaal_filter_content() {
+function kunaal_filter_content(): void {
     try {
         if (!kunaal_validate_filter_request()) {
             wp_send_json_error(array('message' => 'Security check failed. Please refresh the page and try again.'));

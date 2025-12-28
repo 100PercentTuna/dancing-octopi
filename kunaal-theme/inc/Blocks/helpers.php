@@ -83,7 +83,7 @@ function kunaal_register_single_block(string $block_path, string $block): bool {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_compact_value')) {
-    function kunaal_format_compact_value($value, $currency, $suffix) {
+    function kunaal_format_compact_value(float $value, string $currency, string $suffix): string {
         if ($value >= 1000000) {
             return $currency . round($value / 1000000, 1) . 'M' . ($suffix ? ' ' . $suffix : '');
         }
@@ -105,7 +105,7 @@ if (!function_exists('kunaal_format_compact_value')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_map_value')) {
-    function kunaal_format_map_value($value, $format, $currency = '$', $suffix = '') {
+    function kunaal_format_map_value(float $value, string $format, string $currency = '$', string $suffix = ''): string {
         $format_handlers = array(
             'percent' => function($v) { return round($v, 1) . '%'; },
             'currency' => function($v) use ($currency, $suffix) { return $currency . number_format($v) . ($suffix ? ' ' . $suffix : ''); },
@@ -129,7 +129,7 @@ if (!function_exists('kunaal_format_map_value')) {
  * @return array Array with min, q1, median, q3, max, mean, outliers
  */
 if (!function_exists('kunaal_calculate_quartiles')) {
-    function kunaal_calculate_quartiles($values) {
+    function kunaal_calculate_quartiles(array $values): array {
         $sorted = $values;
         sort($sorted);
         $n = count($sorted);
@@ -185,7 +185,7 @@ if (!function_exists('kunaal_calculate_quartiles')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_stat_value')) {
-    function kunaal_format_stat_value($value, $format, $currency = '$') {
+    function kunaal_format_stat_value(float $value, string $format, string $currency = '$'): string {
         $result = '';
         switch ($format) {
             case 'currency':
@@ -218,7 +218,7 @@ if (!function_exists('kunaal_format_stat_value')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_slope_value')) {
-    function kunaal_format_slope_value($value, $format, $currency = '$') {
+    function kunaal_format_slope_value(float $value, string $format, string $currency = '$'): string {
         $result = '';
         switch ($format) {
             case 'percent':
@@ -252,7 +252,7 @@ if (!function_exists('kunaal_format_slope_value')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_flow_value')) {
-    function kunaal_format_flow_value($value, $format, $currency = '$', $unit = '') {
+    function kunaal_format_flow_value(float $value, string $format, string $currency = '$', string $unit = ''): string {
         $result = '';
         $unit_suffix = $unit ? ' ' . $unit : '';
         switch ($format) {
@@ -289,7 +289,7 @@ if (!function_exists('kunaal_format_flow_value')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_dumbbell_value')) {
-    function kunaal_format_dumbbell_value($value, $format, $currency = '$') {
+    function kunaal_format_dumbbell_value(float $value, string $format, string $currency = '$'): string {
         $result = '';
         switch ($format) {
             case 'percent':
@@ -325,7 +325,7 @@ if (!function_exists('kunaal_format_dumbbell_value')) {
  * @return string RGB color string
  */
 if (!function_exists('kunaal_interpolate_color')) {
-    function kunaal_interpolate_color($color1, $color2, $t) {
+    function kunaal_interpolate_color(string $color1, string $color2, float $t): string {
         $c1 = kunaal_hex_to_rgb($color1);
         $c2 = kunaal_hex_to_rgb($color2);
         $r = round($c1['r'] + ($c2['r'] - $c1['r']) * $t);
@@ -343,7 +343,7 @@ if (!function_exists('kunaal_interpolate_color')) {
  * @return array Array with r, g, b keys
  */
 if (!function_exists('kunaal_hex_to_rgb')) {
-    function kunaal_hex_to_rgb($hex) {
+    function kunaal_hex_to_rgb(string $hex): array {
         $hex = ltrim($hex, '#');
         return array(
             'r' => hexdec(substr($hex, 0, 2)),
@@ -361,7 +361,7 @@ if (!function_exists('kunaal_hex_to_rgb')) {
  * @return string Hex color
  */
 if (!function_exists('kunaal_get_theme_color')) {
-    function kunaal_get_theme_color($normalized) {
+    function kunaal_get_theme_color(float $normalized): string {
         $colors = array(
             '#F5F0EB', '#E8DFD5', '#D4C4B5', '#B8A99A',
             '#8B7355', '#7D6B5D', '#5C4A3D'
@@ -380,7 +380,7 @@ if (!function_exists('kunaal_get_theme_color')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_heatmap_value')) {
-    function kunaal_format_heatmap_value($value, $format) {
+    function kunaal_format_heatmap_value(float $value, string $format): string {
         $result = '';
         switch ($format) {
             case 'percent':
@@ -445,7 +445,7 @@ function kunaal_get_diverging_color(float $normalized, string $low, string $mid,
 }
 
 if (!function_exists('kunaal_get_cell_color')) {
-    function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '') {
+    function kunaal_get_cell_color(float $value, float $min, float $max, string $scale, string $low, string $high, string $mid = ''): string {
         $normalized = kunaal_normalize_value($value, $min, $max);
         
         if ($scale === 'custom') {
@@ -466,7 +466,7 @@ if (!function_exists('kunaal_get_cell_color')) {
  * @return array Array of floats
  */
 if (!function_exists('kunaal_parse_data')) {
-    function kunaal_parse_data($str) {
+    function kunaal_parse_data(string $str): array {
         if (!$str) {
             return array();
         }
@@ -484,7 +484,7 @@ if (!function_exists('kunaal_parse_data')) {
  * @return string Formatted value
  */
 if (!function_exists('kunaal_format_chart_value')) {
-    function kunaal_format_chart_value($val, $unit, $unit_position) {
+    function kunaal_format_chart_value(float $val, string $unit, string $unit_position): string {
         $formatted = number_format($val, ($val == floor($val)) ? 0 : 1);
         if ($unit) {
             return $unit_position === 'prefix' ? $unit . $formatted : $formatted . $unit;

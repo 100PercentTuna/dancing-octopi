@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 /**
  * Enqueue Google Fonts
  */
-function kunaal_enqueue_google_fonts() {
+function kunaal_enqueue_google_fonts(): void {
     wp_enqueue_style(
         'kunaal-google-fonts',
         'https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Inter:opsz,wght@14..32,300..700&family=Caveat:wght@400;500;600;700&display=swap',
@@ -28,7 +28,7 @@ function kunaal_enqueue_google_fonts() {
 /**
  * Enqueue core CSS modules (tokens, variables, base, dark mode, layout, header)
  */
-function kunaal_enqueue_core_css() {
+function kunaal_enqueue_core_css(): void {
     // 1. Design tokens (must load first - single source of truth)
     wp_enqueue_style(
         'kunaal-theme-tokens',
@@ -81,7 +81,7 @@ function kunaal_enqueue_core_css() {
 /**
  * Enqueue component CSS modules
  */
-function kunaal_enqueue_component_css() {
+function kunaal_enqueue_component_css(): void {
     // 6. Components (cards, buttons, panels, footer)
     wp_enqueue_style(
         'kunaal-theme-components',
@@ -118,7 +118,7 @@ function kunaal_enqueue_component_css() {
 /**
  * Enqueue page-specific CSS modules
  */
-function kunaal_enqueue_page_css() {
+function kunaal_enqueue_page_css(): void {
     // 10. Pages (archive, article, prose, page utilities)
     wp_enqueue_style(
         'kunaal-theme-pages',
@@ -171,7 +171,7 @@ function kunaal_enqueue_page_css() {
 /**
  * Enqueue main stylesheet and print styles
  */
-function kunaal_enqueue_main_styles() {
+function kunaal_enqueue_main_styles(): void {
     // 16. Main stylesheet (now minimal - only contains theme header and any remaining styles)
     wp_enqueue_style(
         'kunaal-theme-style',
@@ -194,7 +194,7 @@ function kunaal_enqueue_main_styles() {
  * Enqueue page-specific assets (About page, Contact page)
  * Must be called after main styles are enqueued
  */
-function kunaal_enqueue_page_specific_assets() {
+function kunaal_enqueue_page_specific_assets(): void {
     // Template detection
     $is_about_page = is_page_template('page-about.php') || is_page('about');
     $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
@@ -314,7 +314,7 @@ function kunaal_enqueue_page_specific_assets() {
  * Main asset enqueuing function
  * Delegates to helper functions to reduce cognitive complexity.
  */
-function kunaal_enqueue_assets() {
+function kunaal_enqueue_assets(): void {
     kunaal_enqueue_google_fonts();
     kunaal_enqueue_core_css();
     kunaal_enqueue_component_css();
@@ -389,7 +389,7 @@ function kunaal_enqueue_assets() {
  * 
  * Moved from functions.php to keep functions.php bootstrap-only.
  */
-function kunaal_add_defer_to_scripts($tag, $handle) {
+function kunaal_add_defer_to_scripts(string $tag, string $handle): string {
     $defer_scripts = array(
         'kunaal-theme-main',
         'kunaal-theme-controller',

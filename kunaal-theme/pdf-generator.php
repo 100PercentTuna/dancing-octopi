@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 /**
  * Generate PDF for a post
  */
-function kunaal_generate_pdf() {
+function kunaal_generate_pdf(): void {
     if (!isset($_GET['kunaal_pdf']) || !isset($_GET['post_id'])) {
         return;
     }
@@ -162,7 +162,7 @@ add_action('template_redirect', 'kunaal_generate_pdf');
 /**
  * Build PDF HTML structure (journal paper style)
  */
-function kunaal_build_pdf_html($data) {
+function kunaal_build_pdf_html(array $data): string {
     $styles = kunaal_get_pdf_styles();
     
     $topics_html = '';
@@ -212,7 +212,7 @@ function kunaal_build_pdf_html($data) {
 /**
  * Process content for PDF output
  */
-function kunaal_process_content_for_pdf($content) {
+function kunaal_process_content_for_pdf(string $content): string {
     // Expand accordions (only add 'open' if not already present - more robust check)
     $content = preg_replace_callback('/<details([^>]*)>/i', function($matches) {
         $attrs = $matches[1];
@@ -241,7 +241,7 @@ function kunaal_process_content_for_pdf($content) {
 /**
  * Get PDF-specific CSS styles
  */
-function kunaal_get_pdf_styles() {
+function kunaal_get_pdf_styles(): string {
     $css_file = KUNAAL_THEME_DIR . '/assets/css/pdf-ebook.css';
     if (file_exists($css_file)) {
         return file_get_contents($css_file);

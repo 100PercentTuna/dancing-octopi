@@ -46,7 +46,7 @@ if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
 /**
  * Asset version helper (cache-bust on managed hosts/CDNs).
  */
-function kunaal_asset_version($relative_path) {
+function kunaal_asset_version(string $relative_path): string {
     $relative_path = ltrim((string) $relative_path, '/');
     $full = trailingslashit(KUNAAL_THEME_DIR) . $relative_path;
     if ($relative_path && file_exists($full)) {

@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 /**
  * Register Hero Section
  */
-function kunaal_register_about_hero_section($wp_customize) {
+function kunaal_register_about_hero_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_hero', array(
         'title' => 'Hero Section',
         'panel' => 'kunaal_about_v22_panel',
@@ -105,7 +105,7 @@ function kunaal_register_about_hero_section($wp_customize) {
 /**
  * Register Numbers Section
  */
-function kunaal_register_about_numbers_section($wp_customize) {
+function kunaal_register_about_numbers_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_numbers', array(
         'title' => 'By the Numbers',
         'panel' => 'kunaal_about_v22_panel',
@@ -188,7 +188,7 @@ function kunaal_register_about_numbers_section($wp_customize) {
 /**
  * Register Categories Section
  */
-function kunaal_register_about_categories_section($wp_customize) {
+function kunaal_register_about_categories_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_categories', array(
         'title' => 'Rabbit Holes - Categories',
         'panel' => 'kunaal_about_v22_panel',
@@ -226,7 +226,7 @@ function kunaal_register_about_categories_section($wp_customize) {
 /**
  * Register Rabbit Holes Section
  */
-function kunaal_register_about_rabbit_holes_section($wp_customize) {
+function kunaal_register_about_rabbit_holes_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_rabbit_holes', array(
         'title' => 'Rabbit Holes',
         'panel' => 'kunaal_about_v22_panel',
@@ -311,7 +311,7 @@ function kunaal_register_about_rabbit_holes_section($wp_customize) {
 /**
  * Register Panoramas Section
  */
-function kunaal_register_about_panoramas_section($wp_customize) {
+function kunaal_register_about_panoramas_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_panoramas', array(
         'title' => 'Panorama Dividers',
         'panel' => 'kunaal_about_v22_panel',
@@ -419,7 +419,7 @@ function kunaal_register_about_panoramas_section($wp_customize) {
 /**
  * Register Books Section
  */
-function kunaal_register_about_books_section($wp_customize) {
+function kunaal_register_about_books_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_books', array(
         'title' => 'Media - Books (On the Nightstand)',
         'panel' => 'kunaal_about_v22_panel',
@@ -489,7 +489,7 @@ function kunaal_register_about_books_section($wp_customize) {
 /**
  * Register Digital Content Section
  */
-function kunaal_register_about_digital_section($wp_customize) {
+function kunaal_register_about_digital_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_digital', array(
         'title' => 'Media - Digital Content (On Repeat)',
         'panel' => 'kunaal_about_v22_panel',
@@ -575,7 +575,7 @@ function kunaal_register_about_digital_section($wp_customize) {
 /**
  * Register Places Section
  */
-function kunaal_register_about_places_section($wp_customize) {
+function kunaal_register_about_places_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_places', array(
         'title' => 'Places',
         'panel' => 'kunaal_about_v22_panel',
@@ -645,7 +645,7 @@ function kunaal_register_about_places_section($wp_customize) {
 /**
  * Register Inspirations Section
  */
-function kunaal_register_about_inspirations_section($wp_customize) {
+function kunaal_register_about_inspirations_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_inspirations', array(
         'title' => 'Inspirations',
         'panel' => 'kunaal_about_v22_panel',
@@ -739,7 +739,7 @@ function kunaal_register_about_inspirations_section($wp_customize) {
 /**
  * Register Say Hello Section
  */
-function kunaal_register_about_say_hello_section($wp_customize) {
+function kunaal_register_about_say_hello_section(WP_Customize_Manager $wp_customize): void {
     $wp_customize->add_section('kunaal_about_v22_say_hello', array(
         'title' => 'Say Hello',
         'panel' => 'kunaal_about_v22_panel',

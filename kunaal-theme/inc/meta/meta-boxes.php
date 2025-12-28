@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
  * Register Meta Boxes for Classic Editor fallback only
  * Gutenberg uses the JavaScript sidebar plugin instead
  */
-function kunaal_add_meta_boxes() {
+function kunaal_add_meta_boxes(): void {
     // Only add meta boxes if NOT using Gutenberg
     if (function_exists('use_block_editor_for_post_type')) {
         $screen = get_current_screen();
@@ -60,7 +60,7 @@ add_action('add_meta_boxes', 'kunaal_add_meta_boxes');
 /**
  * Essay Meta Box
  */
-function kunaal_essay_meta_box_callback($post) {
+function kunaal_essay_meta_box_callback(WP_Post $post): void {
     wp_nonce_field('kunaal_save_meta', 'kunaal_meta_nonce');
     $subtitle = get_post_meta($post->ID, 'kunaal_subtitle', true);
     $read_time = get_post_meta($post->ID, 'kunaal_read_time', true);
@@ -84,7 +84,7 @@ function kunaal_essay_meta_box_callback($post) {
 /**
  * Jotting Meta Box
  */
-function kunaal_jotting_meta_box_callback($post) {
+function kunaal_jotting_meta_box_callback(WP_Post $post): void {
     wp_nonce_field('kunaal_save_meta', 'kunaal_meta_nonce');
     $subtitle = get_post_meta($post->ID, 'kunaal_subtitle', true);
     ?>
@@ -99,7 +99,7 @@ function kunaal_jotting_meta_box_callback($post) {
 /**
  * Card Image Meta Box
  */
-function kunaal_card_image_meta_box_callback($post) {
+function kunaal_card_image_meta_box_callback(WP_Post $post): void {
     $card_image = get_post_meta($post->ID, 'kunaal_card_image', true);
     $card_image_url = $card_image ? wp_get_attachment_image_url($card_image, 'medium') : '';
     ?>
@@ -156,7 +156,7 @@ function kunaal_card_image_meta_box_callback($post) {
  * @param int $post_id Post ID
  * @return int Reading time in minutes
  */
-function kunaal_calculate_reading_time($post_id) {
+function kunaal_calculate_reading_time(int $post_id): string {
     $content = get_post_field('post_content', $post_id);
     
     // Strip shortcodes and HTML tags
@@ -174,7 +174,7 @@ function kunaal_calculate_reading_time($post_id) {
 /**
  * Save Meta Box Data
  */
-function kunaal_save_meta_box_data($post_id) {
+function kunaal_save_meta_box_data(int $post_id): void {
     if (!isset($_POST['kunaal_meta_nonce']) || !wp_verify_nonce($_POST['kunaal_meta_nonce'], 'kunaal_save_meta')) {
         return;
     }
@@ -205,7 +205,7 @@ add_action('save_post', 'kunaal_save_meta_box_data');
 /**
  * Register meta fields for REST API access (needed for Gutenberg)
  */
-function kunaal_register_meta_fields() {
+function kunaal_register_meta_fields(): void {
     register_post_meta('essay', 'kunaal_read_time', array(
         'show_in_rest' => true,
         'single' => true,
@@ -267,7 +267,7 @@ add_action('init', 'kunaal_register_meta_fields');
 /**
  * Enqueue media uploader in admin
  */
-function kunaal_admin_scripts($hook) {
+function kunaal_admin_scripts(string $hook): void {
     if ('post.php' === $hook || 'post-new.php' === $hook) {
         wp_enqueue_media();
     }

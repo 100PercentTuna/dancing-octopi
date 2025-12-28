@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
  * Makes the canonical double underline motif available as a block style
  * for core/paragraph and core/heading blocks.
  */
-function kunaal_register_double_underline_style() {
+function kunaal_register_double_underline_style(): void {
     if (!function_exists('register_block_style')) {
         return;
     }

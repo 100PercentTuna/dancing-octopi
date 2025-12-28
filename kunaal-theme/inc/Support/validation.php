@@ -39,7 +39,7 @@ function kunaal_get_meta_value(array $meta, string $key, int $post_id = 0): mixe
  * @param int $post_id Post ID
  * @return bool True if has topics
  */
-function kunaal_essay_has_topics($request, int $post_id = 0): bool {
+function kunaal_essay_has_topics(WP_REST_Request $request, int $post_id = 0): bool {
     $topic_terms = $request->get_param('topic');
     if (!empty($topic_terms)) {
         return true;
@@ -59,7 +59,7 @@ function kunaal_essay_has_topics($request, int $post_id = 0): bool {
  * @param int $post_id Post ID
  * @return bool True if has image
  */
-function kunaal_essay_has_image($request, array $meta, int $post_id = 0): bool {
+function kunaal_essay_has_image(WP_REST_Request $request, array $meta, int $post_id = 0): bool {
     $featured_media = $request->get_param('featured_media');
     $card_image = kunaal_get_meta_value($meta, 'kunaal_card_image', $post_id);
     return !empty($card_image) || !empty($featured_media) || ($post_id && has_post_thumbnail($post_id));
@@ -68,7 +68,7 @@ function kunaal_essay_has_image($request, array $meta, int $post_id = 0): bool {
 /**
  * Validate Essay Before Publish (REST API compatible for Gutenberg)
  */
-function kunaal_validate_essay_rest($prepared_post, $request): WP_Post|WP_Error {
+function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
     // Only validate essays being published
     if ($prepared_post->post_type !== 'essay' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
@@ -115,7 +115,7 @@ add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
 /**
  * Validate Jotting Before Publish (REST API compatible for Gutenberg)
  */
-function kunaal_validate_jotting_rest($prepared_post, $request): WP_Post|WP_Error {
+function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
     // Only validate jottings being published
     if ($prepared_post->post_type !== 'jotting' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
