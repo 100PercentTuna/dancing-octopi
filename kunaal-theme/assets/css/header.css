@@ -200,20 +200,32 @@
   color: var(--muted);
   padding: 8px 0;
   position: relative;
-  /* Blue underline animation - left to right */
-  /* Using canonical double underline tokens */
-  background-image: linear-gradient(var(--k-underline-blue-color, var(--blue)), var(--k-underline-blue-color, var(--blue)));
+}
+/* Nav links use canonical double underline utility */
+.nav a {
+  /* Apply double underline via utility class behavior */
+  display: inline;
+  text-decoration: underline;
+  text-decoration-color: var(--k-underline-gray-color, var(--hair2));
+  text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
+  text-underline-offset: var(--k-underline-gray-offset, 0px);
+  background-image: linear-gradient(
+    var(--k-underline-blue-color, var(--blue)),
+    var(--k-underline-blue-color, var(--blue))
+  );
   background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 2px;
-  padding-bottom: 4px;
-  transition: color 240ms cubic-bezier(0.4,0,0.2,1), 
-              background-size 240ms cubic-bezier(0.4,0,0.2,1) 40ms,
+  background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
+  background-size: 0% var(--k-underline-blue-thickness, 2px);
+  padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
+  box-decoration-break: clone;
+  transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms,
+              color 240ms cubic-bezier(0.4,0,0.2,1),
               letter-spacing 200ms cubic-bezier(0.4,0,0.2,1);
 }
 .nav a:hover, .nav a:focus-visible, .nav a.current {
   color: var(--ink);
-  background-size: 100% 2px;
+  background-size: 100% var(--k-underline-blue-thickness, 2px);
+  letter-spacing: .01em;
 }
 
 /* Mobile nav toggle */

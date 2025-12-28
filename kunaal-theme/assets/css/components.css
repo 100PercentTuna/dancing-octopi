@@ -836,23 +836,10 @@ footer {
 }
 
 /* ========================================
-   IMPROVED PROSE LINK UNDERLINES
+   PROSE LINK UNDERLINES
    ======================================== */
-.prose a:not(.wp-block-button__link):not(.shareItem) {
-  color: var(--ink);
-  text-decoration: none;
-  /* Using canonical double underline tokens */
-  background-image: linear-gradient(var(--k-underline-blue-color, var(--blue)), var(--k-underline-blue-color, var(--blue)));
-  background-repeat: no-repeat;
-  background-position: 0 calc(100% - 1px);
-  background-size: 100% 1px;
-  padding-bottom: 2px;
-  transition: background-size 240ms cubic-bezier(0.4,0,0.2,1), color 200ms ease;
-}
-.prose a:not(.wp-block-button__link):not(.shareItem):hover {
-  color: var(--blue);
-  background-size: 100% 2px;
-}
+/* Prose links use canonical double underline - handled in pages.css */
+/* This section removed to avoid duplication */
 
 
 

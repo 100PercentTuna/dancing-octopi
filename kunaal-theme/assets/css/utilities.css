@@ -5,10 +5,10 @@
 /* CSS Cascade Layers */
 @layer tokens, base, utilities, components, blocks;
 
+@layer utilities {
 /* ========================================
    PROGRESS BAR
    ======================================== */
-@layer utilities {
 .progress {
   position: fixed;
   top: 0;
@@ -89,7 +89,6 @@
 /* ========================================
    DOUBLE UNDERLINE MOTIF - Canonical Implementation
    ======================================== */
-@layer utilities {
   /**
    * Double underline utility: thick blue line over thin gray line
    * 
@@ -162,7 +161,6 @@
     background-size: 100% 2px;
     letter-spacing: .01em;
   }
-}
 
 /* ========================================
    SCREEN READER ONLY
