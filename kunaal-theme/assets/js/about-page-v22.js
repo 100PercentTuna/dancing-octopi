@@ -1036,7 +1036,7 @@
     if(!capsules.length) return;
 
     capsules.forEach(function(cap){
-      const inner = cap.querySelector('.capsule-inner');
+      let inner = cap.querySelector('.capsule-inner');
 
       // Wrap contents so our idle animation doesn't fight GSAP transforms
       if(!inner){

@@ -21,6 +21,31 @@
   box-sizing: border-box;
 }
 
+/* Dark mode: ensure nav is visible with adequate contrast */
+:root[data-theme="dark"] .mast {
+  background: rgba(11, 18, 32, 0.95);
+  border-bottom-color: rgba(125, 107, 93, 0.3);
+}
+
+:root[data-theme="dark"] .nav a {
+  color: var(--warmLight, rgba(201, 184, 168, 0.9));
+}
+
+:root[data-theme="dark"] .nav a:hover,
+:root[data-theme="dark"] .nav a:focus-visible,
+:root[data-theme="dark"] .nav a.current {
+  color: var(--warmLight, rgba(201, 184, 168, 1));
+}
+
+:root[data-theme="dark"] .navToggle {
+  color: var(--warmLight, rgba(201, 184, 168, 0.9));
+}
+
+:root[data-theme="dark"] .nav {
+  background: rgba(11, 18, 32, 0.98);
+  border-color: rgba(125, 107, 93, 0.4);
+}
+
 /* Ensure header stays fixed on all screen sizes */
 @media (max-width: 640px) {
   .mast {

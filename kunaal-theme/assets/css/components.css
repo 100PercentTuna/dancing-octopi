@@ -421,7 +421,15 @@
   transition: all 200ms ease;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.dockButton:hover,
+.dockButton:hover { 
+  border-color: var(--blueStroke); 
+  color: var(--blue);
+  background: var(--blueTint);
+  box-shadow: 0 4px 12px rgba(30,90,255,0.12);
+  transform: translateY(-2px);
+  /* No outline on hover - only border color change */
+}
+
 .dockButton:focus-visible { 
   border-color: var(--blueStroke); 
   color: var(--blue);

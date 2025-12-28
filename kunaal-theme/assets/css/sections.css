@@ -16,7 +16,8 @@
   align-items: baseline;
   gap: var(--space-2);
   padding-bottom: var(--space-1);
-  border-bottom: 1px solid var(--hair2);
+  /* Single gray line - blue segment overlays via .u-section-underline::after */
+  border-bottom: 1px solid rgba(125, 107, 93, 0.25); /* More visible gray line */
   margin-bottom: var(--space-3);
   opacity: 0;
   transform: translateY(20px);

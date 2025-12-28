@@ -218,7 +218,9 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero {
   position: relative;
   margin-top: calc(-1 * var(--mastH, 96px));
-  height: calc(100svh + var(--mastH, 96px));
+  /* Fill viewport BELOW fixed header - no white gap */
+  height: calc(100svh);
+  min-height: calc(100svh - var(--mastH, 96px));
   overflow-x: clip; /* fallback to hidden if needed */
   overflow-y: visible;
   background: var(--bg);
@@ -266,6 +268,11 @@ a:focus-visible, button:focus-visible {
   grid-row: 1;
 }
 
+/* Tile 3: adjust object-position for better cropping/focal point */
+.kunaal-about-page .hero-photo--3 img {
+  object-position: center 40%; /* Adjust focal point to show subject better */
+}
+
 .kunaal-about-page .hero-photo--4 {
   grid-column: 4;
   grid-row: 1;
@@ -307,6 +314,16 @@ a:focus-visible, button:focus-visible {
   overflow: hidden;
   min-height: 0;
   background: var(--bgAlt);
+}
+
+/* Placeholder for missing images - ensure no blank white tiles */
+.kunaal-about-page .hero-photo:empty::after,
+.kunaal-about-page .hero-photo:not(:has(img))::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--bgAlt) 0%, var(--warmLight) 100%);
+  opacity: 0.5;
 }
 
 .kunaal-about-page .hero-photo img {
@@ -353,17 +370,25 @@ a:focus-visible, button:focus-visible {
   transform: scaleY(1); 
 }
 
-/* Dog-ear: make it impossible to "not render" - use clip-path overlay INSIDE the tile */
+/* Dog-ear: robust CSS triangle via borders (more reliable than clip-path) */
+.kunaal-about-page .hero-photo.has-accent {
+  overflow: visible; /* Ensure accent is visible */
+  z-index: 1;
+  position: relative;
+}
+
 .kunaal-about-page .hero-photo.has-accent::before {
   content: "";
   position: absolute;
   top: 0; 
   left: 0;
-  width: 28px; 
-  height: 28px;
-  background: var(--blue);
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-  z-index: 2;
+  width: 0;
+  height: 0;
+  /* CSS triangle using borders - more reliable than clip-path */
+  border-style: solid;
+  border-width: var(--k-dogear-size, 28px) var(--k-dogear-size, 28px) 0 0;
+  border-color: var(--blue) transparent transparent transparent;
+  z-index: 10; /* High z-index to ensure visibility above header */
   pointer-events: none;
 }
 
@@ -605,10 +630,9 @@ a:focus-visible, button:focus-visible {
     transform: translateY(0) !important;
   }
   
-  /* Mobile: Smaller dog-ear accent */
+  /* Mobile: Smaller dog-ear accent - maintain border triangle approach */
   .kunaal-about-page .hero-photo.has-accent::before {
-    width: 20px;
-    height: 20px;
+    border-width: 20px 20px 0 0; /* Smaller on mobile */
   }
 }
 
@@ -936,6 +960,24 @@ a:focus-visible, button:focus-visible {
   /* Align items to start so second row starts at same vertical position */
   align-items: start;
 }
+
+/* Ensure both columns align their second rows by using same grid structure */
+.media-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevent overflow */
+}
+
+/* Align second rows: ensure both grids start at same vertical position */
+.media-row {
+  align-items: start; /* Align columns to top */
+  /* Use subgrid if supported, otherwise rely on consistent item heights */
+}
+
+/* Ensure media items have consistent structure for alignment */
+.media-item {
+  /* Items will naturally align if both grids have same structure */
+}
 .media-col:last-child .media-grid {
   gap: 1rem;
 }
@@ -1042,12 +1084,16 @@ a:focus-visible, button:focus-visible {
   line-height: 1.3;
   /* Ensure space for at least 2 lines - prevents row misalignment */
   min-height: calc(2 * 11px * 1.3); /* 2 lines × font-size × line-height = ~28.6px */
-  /* Allow wrapping but limit to 2 lines */
-  overflow: visible; /* Changed from hidden to visible to allow wrapping */
-  display: block; /* Changed from -webkit-box to block for proper wrapping */
-  word-wrap: break-word; /* Allow long words to wrap */
-  word-break: break-word; /* Break long words if needed */
+  /* Fix text wrapping - prevent overflow and awkward truncation */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  /* Limit to 2 lines with ellipsis */
+  display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   line-clamp: 2;
   -webkit-box-orient: vertical;
 }

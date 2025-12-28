@@ -101,10 +101,7 @@
    */
   .u-underline-double {
     display: inline;
-    text-decoration: underline;
-    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
-    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
-    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    text-decoration: none; /* No underline at rest */
     background-image: linear-gradient(
       var(--k-underline-blue-color, var(--blue)),
       var(--k-underline-blue-color, var(--blue))
@@ -123,12 +120,10 @@
   }
 
   /* Global link underline - canonical implementation using :where() for low specificity */
+  /* Default: no underline visible - links look like normal text */
   :where(.nav a, .footer a, .prose a:not([class*="button"]):not([class*="btn"]), .articleMeta a, .mailWrap, .say-hello-text a) {
     display: inline;
-    text-decoration: underline;
-    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
-    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
-    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    text-decoration: none; /* No underline at rest */
     background-image: linear-gradient(
       var(--k-underline-blue-color, var(--blue)),
       var(--k-underline-blue-color, var(--blue))
@@ -141,6 +136,7 @@
     transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms;
   }
 
+  /* Hover/focus: animated blue underline appears */
   :where(.nav a, .footer a, .prose a:not([class*="button"]):not([class*="btn"]), .articleMeta a, .mailWrap, .say-hello-text a):hover,
   :where(.nav a, .footer a, .prose a:not([class*="button"]):not([class*="btn"]), .articleMeta a, .mailWrap, .say-hello-text a):focus-visible {
     background-size: 100% var(--k-underline-blue-thickness, 2px);
@@ -156,10 +152,7 @@
   /* Block style class mapping (for Gutenberg block styles) */
   .is-style-double-underline {
     display: inline;
-    text-decoration: underline;
-    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
-    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
-    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    text-decoration: none; /* No underline at rest */
     background-image: linear-gradient(
       var(--k-underline-blue-color, var(--blue)),
       var(--k-underline-blue-color, var(--blue))
@@ -173,24 +166,25 @@
 
 
   /* Section heading underline motif - canonical implementation */
+  /* Gray line comes from .sectionHead border-bottom, blue segment overlays here */
   .u-section-underline {
     position: relative;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--k-underline-gray-color, var(--hair2));
+    /* No border-bottom here - gray line is on .sectionHead container */
   }
 
   .u-section-underline::after {
     content: "";
     position: absolute;
     left: 0;
-    bottom: -1px; /* Position to overlap the border-bottom */
-    width: 40px;
-    height: var(--k-underline-blue-thickness, 2px);
+    bottom: -1px; /* Position to overlap the .sectionHead border-bottom */
+    width: 30px; /* 75% of previous 40px - shorter blue segment */
+    height: 3px; /* Thicker than gray line (2px vs 1px) */
     background: var(--k-underline-blue-color, var(--blue));
     transform-origin: left;
     transform: scaleX(0);
     animation: growLine 600ms ease 350ms forwards;
-    z-index: 2; /* Ensure blue line is above the border */
+    z-index: 2; /* Ensure blue line is above the gray border */
   }
 
   @keyframes growLine {
@@ -202,10 +196,7 @@
   /* Path B: Make it match .u-underline-double (double underline), NOT the old single underline */
   .uBlue {
     display: inline;
-    text-decoration: underline;
-    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
-    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
-    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    text-decoration: none; /* No underline at rest */
     background-image: linear-gradient(
       var(--k-underline-blue-color, var(--blue)),
       var(--k-underline-blue-color, var(--blue))

@@ -56,7 +56,7 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   transform: none;
 }
 .articleMeta a { color: var(--warm); }
-.articleMeta a:hover { text-decoration: underline; }
+/* Hover underline handled by global :where() selector in utilities.css */
 
 .articleTitle {
   margin: 0 0 var(--space-3);

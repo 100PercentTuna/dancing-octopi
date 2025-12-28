@@ -67,7 +67,7 @@ $all_topics = kunaal_get_all_topics();
   <!-- Section header - EXACTLY like home page with blue underline and count -->
   <section class="section" id="essays" aria-label="Essays">
     <div class="sectionHead">
-      <h2>Essays</h2>
+      <h2 class="u-section-underline">Essays</h2>
       <span class="sectionCount">
         <span id="essayCountShown"><?php echo esc_html($total_essays); ?></span>
         <span id="essayLabel"><?php echo esc_html($total_essays == 1 ? 'essay' : 'essays'); ?></span>

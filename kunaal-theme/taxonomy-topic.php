@@ -53,8 +53,9 @@ $term = get_queried_object();
             </div>
           </div>
         </a>
+        </li>
       <?php endwhile; ?>
-    </div>
+    </ul>
     
     <?php the_posts_navigation(); ?>
   <?php else : ?>

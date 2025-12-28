@@ -53,8 +53,9 @@ get_header();
             </div>
           </div>
         </a>
+        </li>
       <?php endwhile; ?>
-    </div>
+    </ul>
     <?php the_posts_navigation(); ?>
   <?php else : ?>
     <p class="no-posts"><?php esc_html_e('No content found.', 'kunaal-theme'); ?></p>
