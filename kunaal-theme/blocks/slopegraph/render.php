@@ -24,16 +24,16 @@ $block_id = 'slope-' . wp_unique_id();
 ?>
 
 <figure class="wp-block-kunaal-slopegraph slope-<?php echo esc_attr($row_height); ?>" role="img" aria-labelledby="<?php echo esc_attr($block_id); ?>-title">
-    <?php if ($title || $subtitle) : ?>
+    <?php if ($title || $subtitle) { ?>
     <header class="slopegraph-header">
-        <?php if ($title) : ?>
+        <?php if ($title) { ?>
         <h3 id="<?php echo esc_attr($block_id); ?>-title" class="slopegraph-title"><?php echo esc_html($title); ?></h3>
-        <?php endif; ?>
-        <?php if ($subtitle) : ?>
+        <?php } ?>
+        <?php if ($subtitle) { ?>
         <p class="slopegraph-subtitle"><?php echo esc_html($subtitle); ?></p>
-        <?php endif; ?>
+        <?php } ?>
     </header>
-    <?php endif; ?>
+    <?php } ?>
     
     <div class="slopegraph-chart">
         <div class="slopegraph-columns">
@@ -66,11 +66,11 @@ $block_id = 'slope-' . wp_unique_id();
                 <text class="label label-right" x="490" y="<?php echo $y + ($is_positive ? -5 : ($is_negative ? 15 : 5)); ?>"><?php echo esc_html($label); ?></text>
                 <text class="value value-right" x="570" y="<?php echo $y + ($is_positive ? -5 : ($is_negative ? 15 : 5)); ?>" text-anchor="end">
                     <?php echo esc_html(kunaal_format_slope_value($right_val, $value_format, $currency_symbol)); ?>
-                    <?php if ($show_pct) : ?>
+                    <?php if ($show_pct) { ?>
                     <tspan class="pct-change" fill="<?php echo esc_attr($color); ?>">
                         (<?php echo $change >= 0 ? '+' : ''; ?><?php echo round($pct_change, 1); ?>%)
                     </tspan>
-                    <?php endif; ?>
+                    <?php } ?>
                 </text>
             </g>
             <?php
@@ -79,11 +79,11 @@ $block_id = 'slope-' . wp_unique_id();
         </svg>
     </div>
     
-    <?php if ($source_note) : ?>
+    <?php if ($source_note) { ?>
     <footer class="slopegraph-footer">
         <p class="slopegraph-source"><?php echo esc_html($source_note); ?></p>
     </footer>
-    <?php endif; ?>
+    <?php } ?>
     
     <details class="slopegraph-data-table">
         <summary><?php esc_html_e('View data table', 'kunaal-theme'); ?></summary>

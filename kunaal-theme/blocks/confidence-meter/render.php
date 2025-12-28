@@ -26,15 +26,15 @@ $level_class = $level >= 70 ? 'high' : ($level >= 40 ? 'medium' : 'low');
 <div<?php echo $anchor; ?> class="wp-block-kunaal-confidence-meter confidence-meter level-<?php echo esc_attr($level_class) . $class_name; ?>">
     <div class="cm-header">
         <span class="cm-label"><?php echo wp_kses_post($label); ?></span>
-        <?php if ($show_percentage) : ?>
+        <?php if ($show_percentage) { ?>
             <span class="cm-percentage" style="color: <?php echo esc_attr($color); ?>"><?php echo esc_html($level); ?>%</span>
-        <?php endif; ?>
+        <?php } ?>
     </div>
     <div class="cm-bar-container">
         <div class="cm-bar" style="width: <?php echo esc_attr($level); ?>%; background: <?php echo esc_attr($color); ?>"></div>
     </div>
-    <?php if ($description) : ?>
+    <?php if ($description) { ?>
         <p class="cm-description"><?php echo wp_kses_post($description); ?></p>
-    <?php endif; ?>
+    <?php } ?>
 </div>
 
