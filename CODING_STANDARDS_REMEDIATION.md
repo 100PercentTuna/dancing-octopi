@@ -960,9 +960,14 @@ After remediation, verify:
 - [x] S-010, S-011: All var declarations converted to const/let
 - [x] S-014: Duplicate constant definition fixed
 - [x] S-017: All console statements guarded with debug checks
-- [ ] S-005 to S-009: CDN scripts, inline scripts, nth-child() - In progress
-- [ ] S-012, S-013: Hardcoded colors, !important - In progress
-- [ ] S-015, S-016, S-018: Inline styles, return types, body classes - Pending
+- [x] S-007, S-008, S-009: nth-child() replaced with CSS custom properties and inline styles
+- [ ] S-005: CDN scripts (GSAP, D3.js, TopoJSON) - Requires bundling locally (deferred)
+- [ ] S-006: Inline script in header - Acceptable for FOUC prevention (documented)
+- [ ] S-012: Hardcoded colors (187+ instances) - Extensive, requires theme.json migration
+- [ ] S-013: !important usage - Most justified (reduced motion, print, fallbacks) - Reviewed
+- [ ] S-015: Inline styles in block render files - Framework-matrix is acceptable (dynamic grid)
+- [ ] S-016: Missing return type declarations - Pending
+- [ ] S-018: WordPress body class dependencies - Pending
 
 **MAJOR Issues (42 total):**
 - [ ] In progress - focusing on high-impact fixes first
