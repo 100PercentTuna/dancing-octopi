@@ -542,13 +542,17 @@
       }
       // If request fails, keep existing content and surface a useful error.
       if (!data.success) {
-        console.error('Filter request failed:', data?.data || data);
+        if (window.kunaalTheme?.debug) {
+          console.error('Filter request failed:', data?.data || data);
+        }
         ajaxDisabled = true;
         filterDom(postType, replace);
       }
     })
     .catch(err => {
-      console.error('Filter error:', err);
+      if (window.kunaalTheme?.debug) {
+        console.error('Filter error:', err);
+      }
       ajaxDisabled = true;
       filterDom(postType, replace);
       // Announce to screen readers + keep UI responsive
@@ -845,7 +849,9 @@
     const postIdMatch = bodyClasses.match(/postid-(\d+)/);
     
     if (!postIdMatch) {
-      console.error('Could not determine post ID for PDF generation');
+      if (window.kunaalTheme?.debug) {
+        console.error('Could not determine post ID for PDF generation');
+      }
       return;
     }
     
@@ -1057,7 +1063,9 @@
       lastY = window.scrollY || 0;
       requestTick();
     } catch (e) {
-      console.error('Theme init failed; disabling js-only reveals', e);
+      if (window.kunaalTheme?.debug) {
+        console.error('Theme init failed; disabling js-only reveals', e);
+      }
       document.documentElement.classList.remove('js-ready');
     }
   }

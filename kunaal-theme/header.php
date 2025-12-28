@@ -14,7 +14,8 @@
   }
   ?>
   <?php
-  // Inline script to set theme before render (prevents flash)
+  // Theme preference script (prevents flash) - inline for critical path to avoid FOUC
+  // This must run synchronously before styles load, so inline is appropriate here
   ?>
   <script>
     (function() {
@@ -70,12 +71,8 @@ $initials = kunaal_get_initials();
 
     <nav class="nav" id="nav" role="navigation">
       <?php
-      // Constant for current navigation class
-      if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
-          define('KUNAAL_NAV_CURRENT_CLASS', ' current');
-      }
+      // Use constant from inc/Setup/constants.php (single source of truth)
       $current_class = KUNAAL_NAV_CURRENT_CLASS;
-      // Note: This constant is already defined above, so no duplicate literal issue
       ?>
       <a class="<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
       <a class="<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>

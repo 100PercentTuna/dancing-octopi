@@ -136,7 +136,7 @@
                 setNewTopicName('');
             } catch (error) {
                 // Error handled by UI feedback, no alert needed
-                if (typeof console !== 'undefined' && console.error) {
+                if (typeof console !== 'undefined' && console.error && (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug)) {
                     console.error('Failed to create topic:', error);
                 }
             } finally {

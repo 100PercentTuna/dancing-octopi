@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Core theme constants
-define('KUNAAL_THEME_VERSION', '4.32.0');
+define('KUNAAL_THEME_VERSION', '4.34.0');
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
 
@@ -36,6 +36,11 @@ if (!defined('PANORAMA_BG_WARM')) {
 }
 if (!defined('KUNAAL_ERROR_MESSAGE_GENERIC')) {
     define('KUNAAL_ERROR_MESSAGE_GENERIC', 'An error occurred. Please try again.'); // Generic error message for AJAX responses
+}
+
+// Navigation constants
+if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
+    define('KUNAAL_NAV_CURRENT_CLASS', ' current'); // CSS class for current navigation item
 }
 
 /**

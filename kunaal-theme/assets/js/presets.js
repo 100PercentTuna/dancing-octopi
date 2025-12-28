@@ -18,7 +18,9 @@
         const stored = localStorage.getItem(PRESET_STORAGE_KEY);
         return stored ? JSON.parse(stored) : [];
       } catch (error) {
-        console.error('Failed to load presets:', error);
+        if (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug) {
+          console.error('Failed to load presets:', error);
+        }
         return [];
       }
     }
@@ -28,7 +30,9 @@
         localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(this.presets));
         return true;
       } catch (error) {
-        console.error('Failed to save presets:', error);
+        if (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug) {
+          console.error('Failed to save presets:', error);
+        }
         return false;
       }
     }
@@ -80,7 +84,9 @@
         }
         return false;
       } catch (error) {
-        console.error('Failed to import presets:', error);
+        if (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug) {
+          console.error('Failed to import presets:', error);
+        }
         return false;
       }
     }

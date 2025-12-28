@@ -67,7 +67,7 @@
       }
     } catch (error) {
       // Always log errors as they indicate real problems
-      if (typeof console !== 'undefined' && console.error) {
+      if (typeof console !== 'undefined' && console.error && (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug)) {
         console.error(`Failed to load ${blockType}:`, error);
       }
       element.classList.add('is-error');

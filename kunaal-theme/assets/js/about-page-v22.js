@@ -88,7 +88,9 @@
       try { 
         window.gsap.registerPlugin(window.ScrollTrigger); 
       } catch (e) {
-        console.warn('GSAP ScrollTrigger registration failed:', e);
+        if (window.kunaalTheme?.debug) {
+          console.warn('GSAP ScrollTrigger registration failed:', e);
+        }
         // #region agent log
         debugLog('about-page-v22.js:40', 'GSAP registration error', {error:e.message}, 'H2.1');
         // #endregion
@@ -201,7 +203,9 @@
       });
       // #endregion
     } catch (e) {
-      console.warn('Page load animation failed:', e);
+      if (window.kunaalTheme?.debug) {
+        console.warn('Page load animation failed:', e);
+      }
       // #region agent log
       debugLog('about-page-v22.js:144', 'Page load animation error', {error:e.message,stack:e.stack}, 'H2.1');
       // #endregion
@@ -289,7 +293,9 @@
           scrollTriggers.push({ st: st, el: el, isHeroText: isHeroText });
           revealElements.push(el);
         } catch (e) {
-          console.warn('Scroll reveal failed for element:', e);
+          if (window.kunaalTheme?.debug) {
+            console.warn('Scroll reveal failed for element:', e);
+          }
         }
       })(els[i]);
     }
@@ -404,7 +410,9 @@
             }
           );
         } catch (e) {
-          console.warn('Panorama parallax failed:', e);
+          if (window.kunaalTheme?.debug) {
+            console.warn('Panorama parallax failed:', e);
+          }
         }
       })(bands[i]);
     }
@@ -426,7 +434,9 @@
           pinSpacing: true
         });
       } catch (e) {
-        console.warn('Pinned scene failed:', e);
+        if (window.kunaalTheme?.debug) {
+          console.warn('Pinned scene failed:', e);
+        }
       }
     }
   }
@@ -457,7 +467,9 @@
             }
           );
         } catch (e) {
-          console.warn('Marquee word failed:', e);
+          if (window.kunaalTheme?.debug) {
+            console.warn('Marquee word failed:', e);
+          }
         }
       })(words[i]);
     }
@@ -593,7 +605,9 @@
     // #endregion
     
     if (!window.d3 || !window.topojson) {
-      console.warn('D3.js or TopoJSON not loaded');
+      if (window.kunaalTheme?.debug) {
+        console.warn('D3.js or TopoJSON not loaded');
+      }
       return;
     }
 
@@ -620,7 +634,9 @@
       
       // Debug: log if no places data (helpful for troubleshooting)
       if (current.length === 0 && lived.length === 0 && visited.length === 0) {
-        console.warn('About page map: No places data found. Check Customizer settings for Places section.');
+        if (window.kunaalTheme?.debug) {
+          console.warn('About page map: No places data found. Check Customizer settings for Places section.');
+        }
       }
       
       try {
@@ -835,7 +851,9 @@
           observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         }
       }).catch(function (err) {
-        console.warn('World map data load failed:', err);
+        if (window.kunaalTheme?.debug) {
+          console.warn('World map data load failed:', err);
+        }
         // #region agent log
         debugLog('about-page-v22.js:699', 'D3.json error', {error:err.message,stack:err.stack}, 'H3.4');
         // #endregion
@@ -844,7 +862,9 @@
         // #region agent log
         debugLog('about-page-v22.js:704', 'Map draw() error', {error:drawError.message,stack:drawError.stack}, 'H3.4');
         // #endregion
-        console.warn('Map draw() failed:', drawError);
+        if (window.kunaalTheme?.debug) {
+          console.warn('Map draw() failed:', drawError);
+        }
       }
     }
 
@@ -858,7 +878,9 @@
           setTimeout(function() { tryDraw(attempts + 1); }, 100);
           return;
         }
-        console.warn('World map: D3.js or TopoJSON not loaded after waiting.');
+        if (window.kunaalTheme?.debug) {
+          console.warn('World map: D3.js or TopoJSON not loaded after waiting.');
+        }
         return;
       }
       
@@ -869,13 +891,17 @@
           return;
         }
         // After waiting, proceed with empty data
-        console.warn('About page map: Places data not loaded after waiting. Proceeding with empty data.');
+        if (window.kunaalTheme?.debug) {
+          console.warn('About page map: Places data not loaded after waiting. Proceeding with empty data.');
+        }
       }
       
       try {
         draw();
       } catch (e) {
-        console.warn('World map draw failed:', e);
+        if (window.kunaalTheme?.debug) {
+          console.warn('World map draw failed:', e);
+        }
       }
     }
     

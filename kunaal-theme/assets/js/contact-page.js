@@ -15,7 +15,7 @@
     const elements = document.querySelectorAll('[data-reveal]');
     if (!elements.length) return;
     
-    var observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
@@ -33,18 +33,18 @@
   }
   
   function initContactForm() {
-    var form = document.getElementById('contact-form');
+    const form = document.getElementById('contact-form');
     if (!form) {
       setTimeout(initContactForm, 100);
       return;
     }
     
-    var checkbox = document.getElementById('contact-include-info');
-    var optionalFields = document.getElementById('contact-optional-fields');
-    var nameField = document.getElementById('contact-name');
-    var emailField = document.getElementById('contact-email');
-    var submitBtn = document.getElementById('contact-submit');
-    var status = document.getElementById('contact-status');
+    const checkbox = document.getElementById('contact-include-info');
+    const optionalFields = document.getElementById('contact-optional-fields');
+    const nameField = document.getElementById('contact-name');
+    const emailField = document.getElementById('contact-email');
+    const submitBtn = document.getElementById('contact-submit');
+    const status = document.getElementById('contact-status');
     
     // Toggle optional fields with animation
     if (checkbox && optionalFields) {
@@ -57,7 +57,7 @@
           
           // Trigger scroll reveals for new fields
           setTimeout(function() {
-            var revealEls = optionalFields.querySelectorAll('[data-reveal]');
+            const revealEls = optionalFields.querySelectorAll('[data-reveal]');
             revealEls.forEach(function(el) {
               el.classList.add('is-visible');
             });
@@ -74,7 +74,7 @@
     // Form submission
     if (!submitBtn) return;
     
-    var ajaxUrl = (typeof kunaalTheme !== 'undefined' && kunaalTheme.ajaxUrl) 
+    const ajaxUrl = (typeof kunaalTheme !== 'undefined' && kunaalTheme.ajaxUrl) 
       ? kunaalTheme.ajaxUrl 
       : '';
     
@@ -96,7 +96,7 @@
         status.textContent = '';
       }
       
-      var formData = new FormData(form);
+      const formData = new FormData(form);
       formData.append('action', 'kunaal_contact_form');
       
       fetch(ajaxUrl, {
@@ -134,7 +134,9 @@
         }
       })
       .catch(function(error) {
-        console.error('Contact form error:', error);
+        if (window.kunaalTheme?.debug) {
+          console.error('Contact form error:', error);
+        }
         submitBtn.classList.remove('is-loading');
         if (status) {
           status.className = 'contact-status is-error';
@@ -158,17 +160,17 @@
   // Debug logging (only if WP_DEBUG is enabled)
   if (typeof window.kunaalAboutV22 !== 'undefined' && window.kunaalAboutV22.debug) {
     setTimeout(function() {
-      var contactPage = document.querySelector('.contact-page');
+      const contactPage = document.querySelector('.contact-page');
       if (contactPage) {
-        var pageStyles = window.getComputedStyle(contactPage);
-        var pageRect = contactPage.getBoundingClientRect();
-        var bodyRect = document.body.getBoundingClientRect();
+        const pageStyles = window.getComputedStyle(contactPage);
+        const pageRect = contactPage.getBoundingClientRect();
+        const bodyRect = document.body.getBoundingClientRect();
         // Debug logging helper
         function debugLog(location, message, data, hypothesisId) {
           if (typeof window.kunaalTheme === 'undefined' || !window.kunaalTheme.ajaxUrl) {
             return;
           }
-          var logData = {
+          const logData = {
             location: location,
             message: message,
             data: data || {},
@@ -177,7 +179,7 @@
             runId: 'run1',
             hypothesisId: hypothesisId || ''
           };
-          var formData = new FormData();
+          const formData = new FormData();
           formData.append('action', 'kunaal_debug_log');
           formData.append('log_data', JSON.stringify(logData));
           fetch(window.kunaalTheme.ajaxUrl, {
@@ -207,11 +209,11 @@
       }
       
       // Check X/Twitter text wrapping - use more specific selector
-      var twitterLink = document.querySelector('.contact-social-link[aria-label*="Twitter"] span, .contact-social-link[aria-label*="X"] span');
+      let twitterLink = document.querySelector('.contact-social-link[aria-label*="Twitter"] span, .contact-social-link[aria-label*="X"] span');
       if (!twitterLink) {
         // Fallback: find link containing "Twitter" or "X" text
-        var allLinks = document.querySelectorAll('.contact-social-link span');
-        for (var i = 0; i < allLinks.length; i++) {
+        const allLinks = document.querySelectorAll('.contact-social-link span');
+        for (let i = 0; i < allLinks.length; i++) {
           if (allLinks[i].textContent.includes('Twitter') || allLinks[i].textContent.includes('X')) {
             twitterLink = allLinks[i];
             break;
@@ -219,8 +221,8 @@
         }
       }
       if (twitterLink) {
-        var linkStyles = window.getComputedStyle(twitterLink);
-        var linkRect = twitterLink.getBoundingClientRect();
+        const linkStyles = window.getComputedStyle(twitterLink);
+        const linkRect = twitterLink.getBoundingClientRect();
         debugLog('contact-page.js', 'X/Twitter text wrapping check', {
           whiteSpace: linkStyles.whiteSpace,
           width: linkRect.width,
