@@ -55,8 +55,6 @@
     --blueRing: var(--k-color-accent-ring);
     --blueShadow: var(--k-color-accent-shadow);
     --blueMuted: var(--k-color-accent-muted);
-  }
-}
 
     /* Double underline: thick blue over thin gray */
     --k-underline-gray-thickness: 1px;
