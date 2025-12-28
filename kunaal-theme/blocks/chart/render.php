@@ -31,7 +31,9 @@ $data3 = kunaal_parse_data($data3_str);
 $labels = $labels_str ? array_map('trim', explode(',', $labels_str)) : array();
 $series_labels = $series_labels_str ? array_map('trim', explode(',', $series_labels_str)) : array('Series 1', 'Series 2', 'Series 3');
 
-if (empty($data)) return;
+if (empty($data)) {
+    return;
+}
 
 // Ensure labels match data length
 while (count($labels) < count($data)) {

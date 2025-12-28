@@ -25,7 +25,11 @@
 </head>
 
 <body <?php body_class(); ?>>
-<?php if (function_exists('wp_body_open')) { wp_body_open(); } ?>
+<?php
+if (function_exists('wp_body_open')) {
+    wp_body_open();
+}
+?>
 
 <!-- Skip Links for Accessibility -->
 <a href="#main" class="skip-link"><?php esc_html_e('Skip to main content', 'kunaal-theme'); ?></a>
@@ -74,17 +78,17 @@ $initials = kunaal_get_initials();
       <?php
       $about_page = get_page_by_path('about');
       if ($about_page) {
-      ?>
+          ?>
         <a class="uBlue<?php echo is_page('about') ? $current_class : ''; ?>" href="<?php echo esc_url(get_permalink($about_page)); ?>"><?php esc_html_e('About', 'kunaal-theme'); ?></a>
-      <?php
+          <?php
       }
       ?>
       <?php
       $contact_page = get_page_by_path('contact');
       if ($contact_page) {
-      ?>
+          ?>
         <a class="uBlue<?php echo is_page('contact') ? $current_class : ''; ?>" href="<?php echo esc_url(get_permalink($contact_page)); ?>"><?php esc_html_e('Contact', 'kunaal-theme'); ?></a>
-      <?php
+          <?php
       }
       ?>
     </nav>
