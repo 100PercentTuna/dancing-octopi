@@ -79,17 +79,17 @@ $initials = kunaal_get_initials();
       <?php
       $about_page = get_page_by_path('about');
       if ($about_page) {
-          ?>
-        <a class="uBlue<?php echo is_page('about') ? $current_class : ''; ?>" href="<?php echo esc_url(get_permalink($about_page)); ?>"><?php esc_html_e('About', 'kunaal-theme'); ?></a>
-          <?php
+          echo '<a class="uBlue' . (is_page('about') ? $current_class : '') . '" href="' . esc_url(get_permalink($about_page)) . '">';
+          esc_html_e('About', 'kunaal-theme');
+          echo '</a>';
       }
       ?>
       <?php
       $contact_page = get_page_by_path('contact');
       if ($contact_page) {
-          ?>
-        <a class="uBlue<?php echo is_page('contact') ? $current_class : ''; ?>" href="<?php echo esc_url(get_permalink($contact_page)); ?>"><?php esc_html_e('Contact', 'kunaal-theme'); ?></a>
-          <?php
+          echo '<a class="uBlue' . (is_page('contact') ? $current_class : '') . '" href="' . esc_url(get_permalink($contact_page)) . '">';
+          esc_html_e('Contact', 'kunaal-theme');
+          echo '</a>';
       }
       ?>
     </nav>
