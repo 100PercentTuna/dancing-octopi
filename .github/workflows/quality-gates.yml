@@ -27,7 +27,11 @@ jobs:
     - name: BOM Scan (PHP/CSS)
       run: |
         echo "Checking for UTF-8 BOM in PHP and CSS files..."
-        find kunaal-theme -type f \( -name "*.php" -o -name "*.css" \) -print0 | xargs -0 grep -Il $'^\xEF\xBB\xBF' && exit 1 || echo "✓ No BOM found"
+        if find kunaal-theme -type f \( -name "*.php" -o -name "*.css" \) -print0 | xargs -0 grep -Il $'^\xEF\xBB\xBF'; then
+          echo "✗ BOM characters found in files above"
+          exit 1
+        fi
+        echo "✓ No BOM found"
     
     - name: PHP Lint
       run: |
@@ -38,13 +42,13 @@ jobs:
     - name: JavaScript Syntax Check
       run: |
         echo "Checking JavaScript syntax..."
-        find kunaal-theme -name "*.js" -print0 | xargs -0 -n1 node --check
+        find kunaal-theme -name "*.js" -not -path "*/node_modules/*" -print0 | xargs -0 -n1 node --check
         echo "✓ JavaScript syntax check passed"
     
     - name: Check render.php for function declarations
       run: |
         echo "Checking render.php files for function declarations..."
-        if grep -R "^function " kunaal-theme/blocks/*/render.php; then
+        if grep -R "^function " kunaal-theme/blocks/*/render.php 2>/dev/null; then
           echo "✗ Found function declarations in render.php files"
           exit 1
         fi
@@ -53,15 +57,20 @@ jobs:
     - name: Check for console.log in theme JS
       run: |
         echo "Checking for console.log in theme JavaScript..."
-        if grep -rn "console\.log" kunaal-theme --include="*.js" --exclude-dir=node_modules; then
-          echo "✗ Found console.log in theme JavaScript (console.error is allowed)"
+        # Match actual console.log calls, not comments or strings mentioning it
+        # Matches: console.log( or console.log(
+        if grep -rn --include="*.js" -E "console\.log\s*\(" kunaal-theme --exclude-dir=node_modules; then
+          echo "✗ Found console.log() calls in theme JavaScript"
+          echo "  (console.error and console.warn are allowed)"
           exit 1
         fi
-        echo "✓ No console.log found (console.error is allowed)"
+        echo "✓ No console.log() calls found"
     
     - name: Underline drift check
       run: |
-        echo "Checking for competing underline implementations..."
-        # This is informational - we want to see if there are competing implementations
-        grep -rn "border-bottom:.*blue\|text-decoration-thickness\|underline-offset\|linear-gradient.*blue" kunaal-theme/assets/css || echo "✓ No competing underline patterns found"
-
+        echo "Checking for underline style drift..."
+        # Informational check - shows any raw underline CSS that should use canonical classes
+        echo "Files with direct underline styling (should use canonical classes):"
+        grep -rn --include="*.css" -E "border-bottom:|text-decoration-thickness:|underline-offset:|text-decoration:.*underline" kunaal-theme/assets/css || echo "✓ No direct underline styling found"
+        echo ""
+        echo "Review above results - ensure underlines use canonical classes"
