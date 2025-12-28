@@ -236,6 +236,6 @@
         }
     });
     
-    console.log('Kunaal Inline Formats: Registered 5 formats');
+    // Formats registered successfully (removed console.log for production)
 })();
 

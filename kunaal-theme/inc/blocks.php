@@ -358,28 +358,82 @@ function kunaal_block_wrapper($block_content, $block) {
         return $block_content;
     }
 
-    // Use WP_HTML_Tag_Processor if available (WordPress 6.2+)
+    // WordPress 6.2+ required: Use WP_HTML_Tag_Processor for safe HTML manipulation
+    // This prevents duplicate class attributes and invalid HTML
     if (class_exists('WP_HTML_Tag_Processor')) {
         $processor = new WP_HTML_Tag_Processor($block_content);
         if ($processor->next_tag()) {
             $existing_class = $processor->get_attribute('class');
-            $new_class = $existing_class ? $existing_class . ' reveal' : 'reveal';
-            $processor->set_attribute('class', $new_class);
+            // Safely merge classes: append 'reveal' if not already present
+            if ($existing_class) {
+                $classes = explode(' ', $existing_class);
+                if (!in_array('reveal', $classes, true)) {
+                    $classes[] = 'reveal';
+                    $processor->set_attribute('class', implode(' ', $classes));
+                }
+            } else {
+                $processor->set_attribute('class', 'reveal');
+            }
             return $processor->get_updated_html();
         }
     }
 
-    // Fallback for older WordPress versions: use regex (less safe but necessary)
-    // Only match the first tag to avoid modifying nested elements
-    $block_content = preg_replace(
-        '/^<(\w+)(\s+[^>]*)?>/',
-        '<$1$2 class="reveal">',
-        $block_content,
-        1
-    );
+    // Fallback: If WP_HTML_Tag_Processor is unavailable, use a safe callback approach
+    // This merges classes via DOMDocument to prevent duplicate attributes
+    if (function_exists('wp_kses_post') && class_exists('DOMDocument')) {
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $block_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $xpath = new DOMXPath($dom);
+        $first_element = $xpath->query('//*[1]')->item(0);
+        if ($first_element instanceof DOMElement) {
+            $existing_class = $first_element->getAttribute('class');
+            $classes = $existing_class ? explode(' ', trim($existing_class)) : array();
+            if (!in_array('reveal', $classes, true)) {
+                $classes[] = 'reveal';
+                $first_element->setAttribute('class', implode(' ', $classes));
+            }
+            $html = $dom->saveHTML();
+            // Remove XML declaration if present
+            return preg_replace('/^<\?xml[^>]*\?>\s*/', '', $html);
+        }
+        libxml_clear_errors();
+    }
 
+    // Last resort: Return unchanged if safe manipulation is impossible
     return $block_content;
 }
 add_filter('render_block', 'kunaal_block_wrapper', 10, 2);
+
+// ========================================
+// BLOCK STYLES
+// ========================================
+
+/**
+ * Register Double Underline Block Style
+ * 
+ * Makes the canonical double underline motif available as a block style
+ * for core/paragraph and core/heading blocks.
+ */
+function kunaal_register_double_underline_style() {
+    if (!function_exists('register_block_style')) {
+        return;
+    }
+
+    // Register for paragraph blocks
+    register_block_style('core/paragraph', array(
+        'name'         => 'double-underline',
+        'label'        => __('Double Underline', 'kunaal-theme'),
+        'style_handle' => 'kunaal-theme-utilities', // Uses utilities.css
+    ));
+
+    // Register for heading blocks
+    register_block_style('core/heading', array(
+        'name'         => 'double-underline',
+        'label'        => __('Double Underline', 'kunaal-theme'),
+        'style_handle' => 'kunaal-theme-utilities',
+    ));
+}
+add_action('init', 'kunaal_register_double_underline_style', 20);
 
 // Block patterns removed - all patterns have been converted to proper Gutenberg blocks

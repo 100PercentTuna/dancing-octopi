@@ -49,13 +49,18 @@
      * @returns {Promise} Promise that resolves when D3 is loaded
      */
     loadD3: function() {
-      // Check if already loaded
-      if (window.d3 && d3Loaded) {
+      // If D3 already exists globally, resolve immediately and mark as loaded
+      if (window.d3) {
+        d3Loaded = true;
         return Promise.resolve(window.d3);
       }
-      if (d3Loaded) return Promise.resolve(window.d3);
       
-      // Wait if currently loading
+      // If already marked as loaded, resolve with existing instance
+      if (d3Loaded) {
+        return Promise.resolve(window.d3);
+      }
+      
+      // Wait if currently loading (shared Promise per library)
       if (d3Loading) {
         return new Promise(resolve => {
           const checkInterval = setInterval(() => {
@@ -93,13 +98,27 @@
      * @returns {Promise} Promise that resolves when Leaflet is loaded
      */
     loadLeaflet: function() {
-      // Check if already loaded
-      if (window.L && leafletLoaded) {
+      // If Leaflet already exists globally, resolve immediately and mark as loaded
+      if (window.L) {
+        leafletLoaded = true;
+        // Ensure CSS is loaded if library exists but CSS wasn't tracked
+        if (!leafletCssLoaded) {
+          return loadCSS('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
+            .then(() => {
+              leafletCssLoaded = true;
+              return Promise.resolve(window.L);
+            })
+            .catch(() => Promise.resolve(window.L)); // Resolve even if CSS fails
+        }
         return Promise.resolve(window.L);
       }
-      if (leafletLoaded) return Promise.resolve(window.L);
       
-      // Wait if currently loading
+      // If already marked as loaded, resolve with existing instance
+      if (leafletLoaded) {
+        return Promise.resolve(window.L);
+      }
+      
+      // Wait if currently loading (shared Promise per library)
       if (leafletLoading) {
         return new Promise(resolve => {
           const checkInterval = setInterval(() => {
@@ -113,7 +132,7 @@
 
       leafletLoading = true;
       
-      // Load CSS first, then JS
+      // Load CSS first, then JS (ensure CSS loads exactly once)
       return loadCSS('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
         .then(() => {
           leafletCssLoaded = true;

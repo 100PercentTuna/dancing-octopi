@@ -1,0 +1,67 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: BOM Scan (PHP/CSS)
+      run: |
+        echo "Checking for UTF-8 BOM in PHP and CSS files..."
+        find kunaal-theme -type f \( -name "*.php" -o -name "*.css" \) -print0 | xargs -0 grep -Il $'^\xEF\xBB\xBF' && exit 1 || echo "✓ No BOM found"
+    
+    - name: PHP Lint
+      run: |
+        echo "Linting PHP files..."
+        find kunaal-theme -name "*.php" -print0 | xargs -0 -n1 php -l
+        echo "✓ PHP lint passed"
+    
+    - name: JavaScript Syntax Check
+      run: |
+        echo "Checking JavaScript syntax..."
+        find kunaal-theme -name "*.js" -print0 | xargs -0 -n1 node --check
+        echo "✓ JavaScript syntax check passed"
+    
+    - name: Check render.php for function declarations
+      run: |
+        echo "Checking render.php files for function declarations..."
+        if grep -R "^function " kunaal-theme/blocks/*/render.php; then
+          echo "✗ Found function declarations in render.php files"
+          exit 1
+        fi
+        echo "✓ No function declarations in render.php"
+    
+    - name: Check for console.log in theme JS
+      run: |
+        echo "Checking for console.log in theme JavaScript..."
+        if grep -rn "console\.log" kunaal-theme --include="*.js" --exclude-dir=node_modules; then
+          echo "✗ Found console.log in theme JavaScript (console.error is allowed)"
+          exit 1
+        fi
+        echo "✓ No console.log found (console.error is allowed)"
+    
+    - name: Underline drift check
+      run: |
+        echo "Checking for competing underline implementations..."
+        # This is informational - we want to see if there are competing implementations
+        grep -rn "border-bottom:.*blue\|text-decoration-thickness\|underline-offset\|linear-gradient.*blue" kunaal-theme/assets/css || echo "✓ No competing underline patterns found"
+

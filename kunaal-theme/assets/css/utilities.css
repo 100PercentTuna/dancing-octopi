@@ -2,9 +2,13 @@
    UTILITIES - Progress Bar, Lazy Loading, Animations
    ======================================== */
 
+/* CSS Cascade Layers */
+@layer tokens, base, utilities, components, blocks;
+
 /* ========================================
    PROGRESS BAR
    ======================================== */
+@layer utilities {
 .progress {
   position: fixed;
   top: 0;
@@ -83,22 +87,81 @@
 }
 
 /* ========================================
-   BLUE UNDERLINE ANIMATION (left-to-right)
+   DOUBLE UNDERLINE MOTIF - Canonical Implementation
    ======================================== */
-.uBlue {
-  display: inline-block;
-  background-image: linear-gradient(var(--blue), var(--blue));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 2px;
-  padding-bottom: 2px;
-  transition: background-size 240ms cubic-bezier(0.4,0,0.2,1) 40ms, 
-              color 240ms cubic-bezier(0.4,0,0.2,1), 
-              letter-spacing 200ms cubic-bezier(0.4,0,0.2,1);
-}
-.uBlue:hover, .uBlue:focus-visible, .uBlue.current {
-  background-size: 100% 2px;
-  letter-spacing: .01em;
+@layer utilities {
+  /**
+   * Double underline utility: thick blue line over thin gray line
+   * 
+   * Token-driven implementation:
+   * - Gray line via text-decoration (reliable across line breaks)
+   * - Blue line via background gradient positioned above gray
+   * - Works on inline links and spans
+   * - Supports multi-line wrapping with box-decoration-break
+   * - Maintains accessible focus states
+   */
+  .u-underline-double {
+    display: inline;
+    text-decoration: underline;
+    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
+    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
+    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    background-image: linear-gradient(
+      var(--k-underline-blue-color, var(--blue)),
+      var(--k-underline-blue-color, var(--blue))
+    );
+    background-repeat: no-repeat;
+    background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
+    background-size: 0% var(--k-underline-blue-thickness, 2px);
+    padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
+    box-decoration-break: clone;
+    transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms;
+  }
+
+  .u-underline-double:hover,
+  .u-underline-double:focus-visible {
+    background-size: 100% var(--k-underline-blue-thickness, 2px);
+  }
+
+  /* Block style class mapping (for Gutenberg block styles) */
+  .is-style-double-underline {
+    display: inline;
+    text-decoration: underline;
+    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
+    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
+    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    background-image: linear-gradient(
+      var(--k-underline-blue-color, var(--blue)),
+      var(--k-underline-blue-color, var(--blue))
+    );
+    background-repeat: no-repeat;
+    background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
+    background-size: 100% var(--k-underline-blue-thickness, 2px);
+    padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
+    box-decoration-break: clone;
+  }
+
+  .is-style-double-underline:hover,
+  .is-style-double-underline:focus-visible {
+    /* Already at 100% - no transition needed for block style */
+  }
+
+  /* Legacy single blue underline (deprecated - use .u-underline-double) */
+  .uBlue {
+    display: inline-block;
+    background-image: linear-gradient(var(--blue), var(--blue));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    padding-bottom: 2px;
+    transition: background-size 240ms cubic-bezier(0.4,0,0.2,1) 40ms, 
+                color 240ms cubic-bezier(0.4,0,0.2,1), 
+                letter-spacing 200ms cubic-bezier(0.4,0,0.2,1);
+  }
+  .uBlue:hover, .uBlue:focus-visible, .uBlue.current {
+    background-size: 100% 2px;
+    letter-spacing: .01em;
+  }
 }
 
 /* ========================================
@@ -115,4 +178,5 @@
   white-space: nowrap;
   border: 0;
 }
+} /* End utilities layer */
 

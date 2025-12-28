@@ -79,7 +79,7 @@
         // This is a simplified version - full implementation would load country GeoJSON
         regionData.forEach(region => {
           // Placeholder: In full implementation, would load GeoJSON and style by value
-          console.log('Region:', region.code, region.value);
+          // Removed console.log for production
         });
       }
 

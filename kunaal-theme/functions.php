@@ -93,28 +93,3 @@ kunaal_theme_safe_require_once(get_template_directory() . '/inc/seo/seo.php');
 // Main asset enqueuing (must load after all helpers are available)
 // This function is defined in inc/enqueue-helpers.php
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
-
-/**
- * Add defer attribute to non-critical scripts for better performance
- */
-function kunaal_add_defer_to_scripts($tag, $handle) {
-    $defer_scripts = array(
-        'kunaal-theme-main',
-        'kunaal-theme-controller',
-        'kunaal-lazy-blocks',
-        'kunaal-lib-loader',
-        'gsap-core',
-        'gsap-scrolltrigger',
-        'kunaal-about-page-v22',
-        'd3-js',
-        'topojson-js',
-    );
-    
-    $result = $tag;
-    if (in_array($handle, $defer_scripts)) {
-        $result = str_replace(' src', ' defer src', $tag);
-    }
-    
-    return $result;
-}
-add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 2);

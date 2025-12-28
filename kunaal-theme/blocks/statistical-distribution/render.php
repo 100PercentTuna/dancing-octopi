@@ -102,8 +102,8 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                 ?>
                 <circle class="stat-outlier" cx="<?php echo $outlier_x; ?>" cy="20" r="4" fill="var(--terracotta)"/>
                 <?php
-                }
-                }
+                    endforeach;
+                endif;
                 ?>
                 <?php endif; ?>
             </g>

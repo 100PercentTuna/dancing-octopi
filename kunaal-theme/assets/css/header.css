@@ -201,7 +201,8 @@
   padding: 8px 0;
   position: relative;
   /* Blue underline animation - left to right */
-  background-image: linear-gradient(var(--blue), var(--blue));
+  /* Using canonical double underline tokens */
+  background-image: linear-gradient(var(--k-underline-blue-color, var(--blue)), var(--k-underline-blue-color, var(--blue)));
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 0% 2px;

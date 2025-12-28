@@ -25,26 +25,34 @@ function kunaal_enqueue_google_fonts() {
 }
 
 /**
- * Enqueue core CSS modules (variables, base, dark mode, layout, header)
+ * Enqueue core CSS modules (tokens, variables, base, dark mode, layout, header)
  */
 function kunaal_enqueue_core_css() {
-    // 1. Variables (must load first)
+    // 1. Design tokens (must load first - single source of truth)
+    wp_enqueue_style(
+        'kunaal-theme-tokens',
+        KUNAAL_THEME_URI . '/assets/css/tokens.css',
+        array(),
+        kunaal_asset_version('assets/css/tokens.css')
+    );
+
+    // 2. Variables (legacy mappings and chart colors)
     wp_enqueue_style(
         'kunaal-theme-variables',
         KUNAAL_THEME_URI . '/assets/css/variables.css',
-        array(),
+        array('kunaal-theme-tokens'),
         kunaal_asset_version('assets/css/variables.css')
     );
 
-    // 2. Base styles (resets, typography)
+    // 3. Base styles (resets, typography)
     wp_enqueue_style(
         'kunaal-theme-base',
         KUNAAL_THEME_URI . '/assets/css/base.css',
-        array('kunaal-theme-variables'),
+        array('kunaal-theme-tokens', 'kunaal-theme-variables'),
         kunaal_asset_version('assets/css/base.css')
     );
 
-    // 3. Dark mode (must load after base)
+    // 4. Dark mode (must load after base)
     wp_enqueue_style(
         'kunaal-theme-dark-mode',
         KUNAAL_THEME_URI . '/assets/css/dark-mode.css',
@@ -52,7 +60,7 @@ function kunaal_enqueue_core_css() {
         kunaal_asset_version('assets/css/dark-mode.css')
     );
 
-    // 4. Layout
+    // 5. Layout
     wp_enqueue_style(
         'kunaal-theme-layout',
         KUNAAL_THEME_URI . '/assets/css/layout.css',
@@ -60,7 +68,7 @@ function kunaal_enqueue_core_css() {
         kunaal_asset_version('assets/css/layout.css')
     );
 
-    // 5. Header
+    // 6. Header
     wp_enqueue_style(
         'kunaal-theme-header',
         KUNAAL_THEME_URI . '/assets/css/header.css',
@@ -167,7 +175,7 @@ function kunaal_enqueue_main_styles() {
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections', 'kunaal-theme-pages', 'kunaal-theme-blocks', 'kunaal-theme-wordpress-blocks', 'kunaal-theme-motion', 'kunaal-theme-compatibility', 'kunaal-theme-about-page'),
+        array('kunaal-google-fonts', 'kunaal-theme-tokens', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections', 'kunaal-theme-pages', 'kunaal-theme-blocks', 'kunaal-theme-wordpress-blocks', 'kunaal-theme-motion', 'kunaal-theme-compatibility', 'kunaal-theme-about-page'),
         kunaal_asset_version('style.css')
     );
     
@@ -372,3 +380,30 @@ function kunaal_enqueue_assets() {
     // Page-specific assets (About page, Contact page)
     kunaal_enqueue_page_specific_assets();
 }
+
+/**
+ * Add defer attribute to non-critical scripts for better performance
+ * 
+ * Moved from functions.php to keep functions.php bootstrap-only.
+ */
+function kunaal_add_defer_to_scripts($tag, $handle) {
+    $defer_scripts = array(
+        'kunaal-theme-main',
+        'kunaal-theme-controller',
+        'kunaal-lazy-blocks',
+        'kunaal-lib-loader',
+        'gsap-core',
+        'gsap-scrolltrigger',
+        'kunaal-about-page-v22',
+        'd3-js',
+        'topojson-js',
+    );
+    
+    $result = $tag;
+    if (in_array($handle, $defer_scripts)) {
+        $result = str_replace(' src', ' defer src', $tag);
+    }
+    
+    return $result;
+}
+add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 2);

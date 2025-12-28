@@ -114,9 +114,7 @@ $block_id = 'dumbbell-' . wp_unique_id();
                     <text class="dumbbell-gap" x="720" y="<?php echo $y + 5; ?>" text-anchor="end">
                         <?php echo esc_html($gap_prefix . kunaal_format_dumbbell_value($gap, $value_format, $currency_symbol) . $gap_suffix); ?>
                     </text>
-                    <?php
-                    }
-                    ?>
+                    <?php endif; ?>
                 </g>
                 <?php
                 }
