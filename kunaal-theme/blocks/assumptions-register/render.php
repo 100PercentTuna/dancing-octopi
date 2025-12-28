@@ -17,9 +17,9 @@ $status_labels = ['untested' => 'Untested', 'validated' => 'Validated', 'invalid
     <table class="ar-table">
         <thead>
             <tr>
-                <th>Assumption</th>
-                <th>Confidence</th>
-                <th>Status</th>
+                <th scope="col">Assumption</th>
+                <th scope="col">Confidence</th>
+                <th scope="col">Status</th>
             </tr>
         </thead>
         <tbody>

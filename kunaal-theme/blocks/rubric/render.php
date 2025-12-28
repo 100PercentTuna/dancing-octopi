@@ -13,9 +13,9 @@ $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['clas
         <table class="rubric-table">
             <thead>
                 <tr>
-                    <th class="rubric-criteria-header">Criteria</th>
+                    <th scope="col" class="rubric-criteria-header">Criteria</th>
                     <?php foreach ($columns as $index => $col) : ?>
-                        <th class="rubric-level rubric-level-<?php echo $index; ?>"><?php echo esc_html($col); ?></th>
+                        <th scope="col" class="rubric-level rubric-level-<?php echo $index; ?>"><?php echo esc_html($col); ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
