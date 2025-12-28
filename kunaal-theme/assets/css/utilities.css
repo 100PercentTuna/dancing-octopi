@@ -87,14 +87,24 @@
 }
 
 /* ========================================
-   DOUBLE UNDERLINE MOTIF - Canonical Implementation
+   LINK UNDERLINE MOTIF - CANONICAL IMPLEMENTATION
+   (Single Source of Truth - see architecture.mdc)
    ======================================== */
   /**
-   * Double underline utility: thick blue line over thin gray line
+   * LINK CONTRACT (site-wide):
+   * - DEFAULT: no underline visible
+   * - HOVER/FOCUS-VISIBLE: animated blue underline L→R
+   * 
+   * ALLOWED SELECTORS (only these may use link underline styling):
+   * - .u-underline-double (explicit utility class)
+   * - :where(.nav a, .footer a, .prose a, .articleMeta a, .mailWrap, .say-hello-text a)
+   * - .is-style-double-underline (Gutenberg block style)
+   * 
+   * NO OTHER FILE may implement link underlines. If you need underline behavior
+   * on a new element, ADD IT to the :where() selector list here.
    * 
    * Token-driven implementation:
-   * - Gray line via text-decoration (reliable across line breaks)
-   * - Blue line via background gradient positioned above gray
+   * - Blue line via background gradient (no text-decoration)
    * - Works on inline links and spans
    * - Supports multi-line wrapping with box-decoration-break
    * - Maintains accessible focus states
@@ -165,8 +175,18 @@
   }
 
 
-  /* Section heading underline motif - canonical implementation */
-  /* Gray line comes from .sectionHead border-bottom, blue segment overlays here */
+  /* ========================================
+     SECTION HEADER RULE - CANONICAL IMPLEMENTATION
+     (Single Source of Truth - see architecture.mdc)
+     ========================================
+     SECTION RULE CONTRACT:
+     - Gray line: 1px border-bottom on .sectionHead container (in sections.css)
+     - Blue segment: 3px ::after pseudo-element on heading (here)
+     
+     Usage: <div class="sectionHead"><h2 class="u-section-underline">Title</h2></div>
+     
+     NO OTHER FILE may draw section rules. This is the only implementation.
+     ======================================== */
   .u-section-underline {
     position: relative;
     padding-bottom: 8px;
@@ -192,8 +212,10 @@
     to { transform: scaleX(1); }
   }
 
-  /* Legacy .uBlue alias (deprecated - use .u-underline-double) */
-  /* Path B: Make it match .u-underline-double (double underline), NOT the old single underline */
+  /* ========================================
+     DEPRECATED: .uBlue - Remove after 2025-03-01
+     Use .u-underline-double or add element to :where() selector above
+     ======================================== */
   .uBlue {
     display: inline;
     text-decoration: none; /* No underline at rest */

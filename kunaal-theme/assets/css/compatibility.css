@@ -32,6 +32,8 @@
   body { padding-top: 0; }
   .card { break-inside: avoid; }
   .media img { filter: none; }
+  /* EXCEPTION: Print styles use text-decoration for accessibility (no animations in print) */
+  /* This is an acceptable exception to the link underline contract */
   a { text-decoration: underline; }
   .prose a::after { content: " (" attr(href) ")"; font-size: 0.8em; color: var(--muted); }
 }

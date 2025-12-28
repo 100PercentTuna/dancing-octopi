@@ -227,10 +227,13 @@ kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
                 $float_dur = $float_durations[$index % 3] ?? 6.0;
             ?>
             <<?php echo $tag; ?> class="capsule" data-cat="<?php echo $category_slug; ?>" data-reveal="left" <?php echo $has_link ? 'href="' . esc_url($hole['url']) . '" target="_blank" rel="noopener"' : ''; ?> style="--float-dur: <?php echo esc_attr($float_dur); ?>s;">
-                <?php if (!empty($hole['image'])) : ?>
-                <img alt="" class="capsule-img" decoding="async" loading="lazy" src="<?php echo esc_url($hole['image']); ?>"/>
-                <?php endif; ?>
-                <span class="capsule-text"><?php echo esc_html($hole['text']); ?></span>
+                <span class="capsule-inner">
+                    <?php if (!empty($hole['image'])) : ?>
+                    <img alt="" class="capsule-img" decoding="async" loading="lazy" src="<?php echo esc_url($hole['image']); ?>"/>
+                    <?php endif; ?>
+                    <span class="capsule-text"><?php echo esc_html($hole['text']); ?></span>
+                    <span class="capsule-dot" aria-hidden="true"></span>
+                </span>
             </<?php echo $tag; ?>>
             <?php endforeach; ?>
         </div>

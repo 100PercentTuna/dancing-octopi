@@ -66,11 +66,8 @@ jobs:
         fi
         echo "✓ No console.log() calls found"
     
-    - name: Underline drift check
+    - name: UI Contracts Check
       run: |
-        echo "Checking for underline style drift..."
-        # Informational check - shows any raw underline CSS that should use canonical classes
-        echo "Files with direct underline styling (should use canonical classes):"
-        grep -rn --include="*.css" -E "border-bottom:|text-decoration-thickness:|underline-offset:|text-decoration:.*underline" kunaal-theme/assets/css || echo "✓ No direct underline styling found"
-        echo ""
-        echo "Review above results - ensure underlines use canonical classes"
+        echo "Running UI contracts drift check..."
+        chmod +x kunaal-theme/scripts/check-ui-contracts.sh
+        kunaal-theme/scripts/check-ui-contracts.sh

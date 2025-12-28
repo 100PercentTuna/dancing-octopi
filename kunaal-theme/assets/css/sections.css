@@ -10,14 +10,18 @@
   padding-top: var(--space-8); 
 }
 
+/* ========================================
+   SECTION HEADER RULE - CANONICAL IMPLEMENTATION (Part 1/2)
+   Gray line lives here. Blue segment is in utilities.css on .u-section-underline::after
+   ======================================== */
 .sectionHead {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: var(--space-2);
   padding-bottom: var(--space-1);
-  /* Single gray line - blue segment overlays via .u-section-underline::after */
-  border-bottom: 1px solid rgba(125, 107, 93, 0.25); /* More visible gray line */
+  /* CANONICAL: Gray line (blue segment overlays via .u-section-underline::after in utilities.css) */
+  border-bottom: 1px solid rgba(125, 107, 93, 0.25);
   margin-bottom: var(--space-3);
   opacity: 0;
   transform: translateY(20px);
