@@ -26,10 +26,10 @@ define('KUNAAL_THEME_VERSION', '4.33.0');
 // ============================================================================
 
 // Logging (must load first)
-require_once KUNAAL_THEME_DIR . '/inc/setup/logging.php';
+require_once KUNAAL_THEME_DIR . '/inc/Setup/logging.php';
 
 // Constants (needed by all modules)
-require_once KUNAAL_THEME_DIR . '/inc/setup/constants.php';
+require_once KUNAAL_THEME_DIR . '/inc/Setup/constants.php';
 
 // Body classes (stable page scoping)
 require_once KUNAAL_THEME_DIR . '/inc/Setup/body-classes.php';
@@ -38,13 +38,13 @@ require_once KUNAAL_THEME_DIR . '/inc/Setup/body-classes.php';
 require_once KUNAAL_THEME_DIR . '/inc/Setup/enqueue.php';
 
 // Theme setup (image sizes, theme support, etc.)
-require_once KUNAAL_THEME_DIR . '/inc/setup/theme-setup.php';
+require_once KUNAAL_THEME_DIR . '/inc/Setup/theme-setup.php';
 
 // Customizer registration
-require_once KUNAAL_THEME_DIR . '/inc/setup/customizer.php';
+require_once KUNAAL_THEME_DIR . '/inc/Setup/customizer.php';
 
 // Editor assets (Gutenberg)
-require_once KUNAAL_THEME_DIR . '/inc/setup/editor-assets.php';
+require_once KUNAAL_THEME_DIR . '/inc/Setup/editor-assets.php';
 
 // ============================================================================
 // FEATURES (Site Behavior)
