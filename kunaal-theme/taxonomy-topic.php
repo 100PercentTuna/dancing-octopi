@@ -20,7 +20,7 @@ $term = get_queried_object();
   </header>
 
   <?php if (have_posts()) : ?>
-    <div class="grid" role="list">
+    <ul class="grid">
       <?php while (have_posts()) : the_post(); ?>
         <?php
         $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
@@ -28,7 +28,7 @@ $term = get_queried_object();
         $topics = get_the_terms(get_the_ID(), 'topic');
         $card_image = function_exists('kunaal_get_card_image_url') ? kunaal_get_card_image_url(get_the_ID()) : get_the_post_thumbnail_url(get_the_ID(), 'essay-card');
         ?>
-        <a href="<?php the_permalink(); ?>" class="card" role="listitem" data-parallax="true">
+        <li><a href="<?php the_permalink(); ?>" class="card" data-parallax="true">
           <div class="media">
             <?php if ($card_image) : ?>
               <img src="<?php echo esc_url($card_image); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy" />

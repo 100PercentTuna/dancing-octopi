@@ -30,19 +30,19 @@ $block_id = 'sm-' . wp_unique_id();
     </header>
     <?php endif; ?>
     
-    <div class="small-multiples-grid" style="--columns: <?php echo esc_attr($columns); ?>; --aspect-ratio: <?php echo esc_attr($aspect_ratio); ?>;">
+    <ul class="small-multiples-grid" style="--columns: <?php echo esc_attr($columns); ?>; --aspect-ratio: <?php echo esc_attr($aspect_ratio); ?>;">
         <?php foreach ($data_rows as $i => $row) :
             $label = $row['label'] ?? '';
             $values = $row['values'] ?? [];
         ?>
-        <article class="small-multiples-cell" role="listitem" aria-label="<?php echo esc_attr($label); ?>">
+        <li class="small-multiples-cell" aria-label="<?php echo esc_attr($label); ?>">
             <div class="cell-chart" data-chart-type="<?php echo esc_attr($chart_type); ?>" data-values="<?php echo esc_attr(implode(',', $values)); ?>">
                 <canvas></canvas>
             </div>
             <p class="cell-label"><?php echo esc_html($label); ?></p>
-        </article>
+        </li>
         <?php endforeach; ?>
-    </div>
+    </ul>
     
     <?php if ($source_note) : ?>
     <footer class="small-multiples-footer">

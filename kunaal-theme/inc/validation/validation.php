@@ -117,11 +117,7 @@ add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
  */
 function kunaal_validate_jotting_rest($prepared_post, $request) {
     // Only validate jottings being published
-    if ($prepared_post->post_type !== 'jotting') {
-        return $prepared_post;
-    }
-    
-    if ($prepared_post->post_status !== 'publish') {
+    if ($prepared_post->post_type !== 'jotting' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
     }
     
@@ -130,13 +126,7 @@ function kunaal_validate_jotting_rest($prepared_post, $request) {
     $meta = $request->get_param('meta');
     
     // Check for subtitle (required for jottings)
-    $subtitle = null;
-    if (isset($meta['kunaal_subtitle']) && !empty($meta['kunaal_subtitle'])) {
-        $subtitle = $meta['kunaal_subtitle'];
-    } elseif ($post_id) {
-        $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
-    }
-    
+    $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
     if (empty($subtitle)) {
         $errors[] = '📝 SUBTITLE/DEK is required — Find "Jotting Details" in the right sidebar';
     }

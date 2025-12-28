@@ -110,10 +110,11 @@ function kunaal_add_defer_to_scripts($tag, $handle) {
         'topojson-js',
     );
     
+    $result = $tag;
     if (in_array($handle, $defer_scripts)) {
-        return str_replace(' src', ' defer src', $tag);
+        $result = str_replace(' src', ' defer src', $tag);
     }
     
-    return $tag;
+    return $result;
 }
 add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 2);

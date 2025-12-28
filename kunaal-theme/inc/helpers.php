@@ -30,32 +30,32 @@ if (!function_exists('kunaal_get_initials')) {
  */
 if (!function_exists('kunaal_subscribe_section')) {
     function kunaal_subscribe_section() {
-    if (!kunaal_mod('kunaal_subscribe_enabled', false)) {
-        return;
-    }
-    
-    // Check location setting - only show bottom if 'bottom' or 'both'
-    $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
-    if (!in_array($sub_location, array('bottom', 'both'))) {
-        return;
-    }
-    
-    $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
-    $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
-    $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
-    $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
-    
-    ?>
-    <section class="subscribe-section reveal">
-        <h3><?php echo esc_html($heading); ?></h3>
-        <p><?php echo esc_html($description); ?></p>
-        <form class="subscribe-form" data-subscribe-form="bottom" data-subscribe-mode="<?php echo esc_attr($mode); ?>" action="<?php echo $mode === 'external' ? esc_url($form_action) : ''; ?>" method="post" novalidate>
-            <input type="email" name="email" placeholder="<?php echo esc_attr__('Your email address', 'kunaal-theme'); ?>" required />
-            <button type="submit"><?php echo esc_html__('Subscribe', 'kunaal-theme'); ?></button>
-        </form>
-        <div class="subscribe-status" aria-live="polite"></div>
-    </section>
-    <?php
+        $should_show = kunaal_mod('kunaal_subscribe_enabled', false);
+        if ($should_show) {
+            $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
+            $should_show = in_array($sub_location, array('bottom', 'both'));
+        }
+        
+        if (!$should_show) {
+            return;
+        }
+        
+        $heading = kunaal_mod('kunaal_subscribe_heading', 'Stay updated');
+        $description = kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays and jottings are published.');
+        $form_action = kunaal_mod('kunaal_subscribe_form_action', '');
+        $mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
+        
+        ?>
+        <section class="subscribe-section reveal">
+            <h3><?php echo esc_html($heading); ?></h3>
+            <p><?php echo esc_html($description); ?></p>
+            <form class="subscribe-form" data-subscribe-form="bottom" data-subscribe-mode="<?php echo esc_attr($mode); ?>" action="<?php echo $mode === 'external' ? esc_url($form_action) : ''; ?>" method="post" novalidate>
+                <input type="email" name="email" placeholder="<?php echo esc_attr__('Your email address', 'kunaal-theme'); ?>" required />
+                <button type="submit"><?php echo esc_html__('Subscribe', 'kunaal-theme'); ?></button>
+            </form>
+            <div class="subscribe-status" aria-live="polite"></div>
+        </section>
+        <?php
     }
 }
 

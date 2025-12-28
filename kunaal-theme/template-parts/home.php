@@ -37,20 +37,20 @@ $shown_jottings = $jottings_query->post_count;
               <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <div class="topicDropdown" id="topicMenu" role="listbox" aria-multiselectable="true">
-            <div class="topicOpt" data-tag="__ALL__" role="option" aria-selected="true">
+          <ul class="topicDropdown" id="topicMenu" aria-multiselectable="true">
+            <li class="topicOpt" data-tag="__ALL__" aria-selected="true">
               <input type="checkbox" checked tabindex="-1" />
               <span class="tName"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
-            </div>
-            <div class="topicDivider"></div>
+            </li>
+            <li class="topicDivider" role="separator"></li>
             <?php foreach ($all_topics as $topic) : ?>
-            <div class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" role="option" aria-selected="false">
+            <li class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" aria-selected="false">
               <input type="checkbox" tabindex="-1" />
               <span class="tName">#<?php echo esc_html($topic['name']); ?></span>
               <span class="tCount"><?php echo esc_html($topic['count']); ?></span>
-            </div>
+            </li>
             <?php endforeach; ?>
-          </div>
+          </ul>
         </div>
         <?php endif; ?>
         

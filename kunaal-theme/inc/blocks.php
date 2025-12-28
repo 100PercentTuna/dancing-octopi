@@ -339,26 +339,22 @@ add_action('init', 'kunaal_register_blocks', 10);
  * Uses WP_HTML_Tag_Processor for safe HTML manipulation (WordPress 6.2+).
  */
 function kunaal_block_wrapper($block_content, $block) {
-    // Only add to singular post types
-    if (!is_singular(array('essay', 'jotting'))) {
-        return $block_content;
+    $should_process = is_singular(array('essay', 'jotting'));
+    if ($should_process) {
+        $reveal_blocks = array(
+            'core/paragraph',
+            'core/heading',
+            'core/image',
+            'core/quote',
+            'core/list',
+        );
+        $should_process = in_array($block['blockName'], $reveal_blocks);
+    }
+    if ($should_process) {
+        $should_process = strpos($block_content, 'reveal') === false;
     }
     
-    // Blocks that should have reveal animation
-    $reveal_blocks = array(
-        'core/paragraph',
-        'core/heading',
-        'core/image',
-        'core/quote',
-        'core/list',
-    );
-
-    if (!in_array($block['blockName'], $reveal_blocks)) {
-        return $block_content;
-    }
-
-    // Only add if not already wrapped in a reveal container
-    if (strpos($block_content, 'reveal') !== false) {
+    if (!$should_process) {
         return $block_content;
     }
 

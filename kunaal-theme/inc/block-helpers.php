@@ -22,23 +22,22 @@ if (!defined('ABSPATH')) {
  */
 function kunaal_validate_block_json($block_path, $block) {
     $block_json = $block_path . '/block.json';
+    $result = false;
     
-    if (!file_exists($block_json)) {
-        return false;
+    if (file_exists($block_json)) {
+        $block_data = json_decode(file_get_contents($block_json), true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($block_data)) {
+            if (!empty($block_data['name']) && !empty($block_data['title'])) {
+                $result = $block_data;
+            } else {
+                kunaal_theme_log('Block.json missing required fields', array('block' => $block));
+            }
+        } else {
+            kunaal_theme_log('Invalid block.json', array('block' => $block, 'error' => json_last_error_msg()));
+        }
     }
     
-    $block_data = json_decode(file_get_contents($block_json), true);
-    if (json_last_error() !== JSON_ERROR_NONE || !is_array($block_data)) {
-        kunaal_theme_log('Invalid block.json', array('block' => $block, 'error' => json_last_error_msg()));
-        return false;
-    }
-    
-    if (empty($block_data['name']) || empty($block_data['title'])) {
-        kunaal_theme_log('Block.json missing required fields', array('block' => $block));
-        return false;
-    }
-    
-    return $block_data;
+    return $result;
 }
 
 /**
@@ -50,21 +49,22 @@ function kunaal_validate_block_json($block_path, $block) {
  */
 function kunaal_register_single_block($block_path, $block) {
     $block_data = kunaal_validate_block_json($block_path, $block);
-    if (!$block_data) {
-        return false;
+    $result = false;
+    
+    if ($block_data) {
+        try {
+            $registered = register_block_type($block_path);
+            if ($registered) {
+                $result = true;
+            } else {
+                kunaal_theme_log('Block registration failed', array('block' => $block));
+            }
+        } catch (Exception $e) {
+            kunaal_theme_log('Block registration exception', array('block' => $block, 'error' => $e->getMessage()));
+        }
     }
     
-    try {
-        $result = register_block_type($block_path);
-        if (!$result) {
-            kunaal_theme_log('Block registration failed', array('block' => $block));
-            return false;
-        }
-        return true;
-    } catch (Exception $e) {
-        kunaal_theme_log('Block registration exception', array('block' => $block, 'error' => $e->getMessage()));
-        return false;
-    }
+    return $result;
 }
 
 // ========================================
@@ -185,18 +185,25 @@ if (!function_exists('kunaal_calculate_quartiles')) {
  */
 if (!function_exists('kunaal_format_stat_value')) {
     function kunaal_format_stat_value($value, $format, $currency = '$') {
+        $result = '';
         switch ($format) {
             case 'currency':
-                return $currency . number_format($value);
+                $result = $currency . number_format($value);
+                break;
             case 'percent':
-                return round($value, 1) . '%';
+                $result = round($value, 1) . '%';
+                break;
             case 'decimal1':
-                return number_format($value, 1);
+                $result = number_format($value, 1);
+                break;
             case 'decimal2':
-                return number_format($value, 2);
+                $result = number_format($value, 2);
+                break;
             default:
-                return round($value);
+                $result = round($value);
+                break;
         }
+        return $result;
     }
 }
 
@@ -211,18 +218,25 @@ if (!function_exists('kunaal_format_stat_value')) {
  */
 if (!function_exists('kunaal_format_slope_value')) {
     function kunaal_format_slope_value($value, $format, $currency = '$') {
+        $result = '';
         switch ($format) {
             case 'percent':
-                return round($value, 1) . '%';
+                $result = round($value, 1) . '%';
+                break;
             case 'currency':
-                return $currency . number_format($value);
+                $result = $currency . number_format($value);
+                break;
             case 'decimal1':
-                return number_format($value, 1);
+                $result = number_format($value, 1);
+                break;
             case 'decimal2':
-                return number_format($value, 2);
+                $result = number_format($value, 2);
+                break;
             default:
-                return round($value);
+                $result = round($value);
+                break;
         }
+        return $result;
     }
 }
 
@@ -238,22 +252,29 @@ if (!function_exists('kunaal_format_slope_value')) {
  */
 if (!function_exists('kunaal_format_flow_value')) {
     function kunaal_format_flow_value($value, $format, $currency = '$', $unit = '') {
+        $result = '';
+        $unit_suffix = $unit ? ' ' . $unit : '';
         switch ($format) {
             case 'percent':
-                return round($value, 1) . '%';
+                $result = round($value, 1) . '%';
+                break;
             case 'currency':
-                return $currency . number_format($value) . ($unit ? ' ' . $unit : '');
+                $result = $currency . number_format($value) . $unit_suffix;
+                break;
             case 'compact':
                 if ($value >= 1000000) {
-                    return $currency . round($value / 1000000, 1) . 'M' . ($unit ? ' ' . $unit : '');
+                    $result = $currency . round($value / 1000000, 1) . 'M' . $unit_suffix;
+                } elseif ($value >= 1000) {
+                    $result = $currency . round($value / 1000, 1) . 'K' . $unit_suffix;
+                } else {
+                    $result = $currency . round($value) . $unit_suffix;
                 }
-                if ($value >= 1000) {
-                    return $currency . round($value / 1000, 1) . 'K' . ($unit ? ' ' . $unit : '');
-                }
-                return $currency . round($value) . ($unit ? ' ' . $unit : '');
+                break;
             default:
-                return round($value) . ($unit ? ' ' . $unit : '');
+                $result = round($value) . $unit_suffix;
+                break;
         }
+        return $result;
     }
 }
 
@@ -268,22 +289,28 @@ if (!function_exists('kunaal_format_flow_value')) {
  */
 if (!function_exists('kunaal_format_dumbbell_value')) {
     function kunaal_format_dumbbell_value($value, $format, $currency = '$') {
+        $result = '';
         switch ($format) {
             case 'percent':
-                return round($value, 1) . '%';
+                $result = round($value, 1) . '%';
+                break;
             case 'currency':
-                return $currency . number_format($value);
+                $result = $currency . number_format($value);
+                break;
             case 'compact':
                 if ($value >= 1000000) {
-                    return $currency . round($value / 1000000, 1) . 'M';
+                    $result = $currency . round($value / 1000000, 1) . 'M';
+                } elseif ($value >= 1000) {
+                    $result = $currency . round($value / 1000, 1) . 'K';
+                } else {
+                    $result = $currency . round($value);
                 }
-                if ($value >= 1000) {
-                    return $currency . round($value / 1000, 1) . 'K';
-                }
-                return $currency . round($value);
+                break;
             default:
-                return round($value);
+                $result = round($value);
+                break;
         }
+        return $result;
     }
 }
 
@@ -353,16 +380,22 @@ if (!function_exists('kunaal_get_theme_color')) {
  */
 if (!function_exists('kunaal_format_heatmap_value')) {
     function kunaal_format_heatmap_value($value, $format) {
+        $result = '';
         switch ($format) {
             case 'percent':
-                return round($value, 1) . '%';
+                $result = round($value, 1) . '%';
+                break;
             case 'decimal1':
-                return number_format($value, 1);
+                $result = number_format($value, 1);
+                break;
             case 'decimal2':
-                return number_format($value, 2);
+                $result = number_format($value, 2);
+                break;
             default:
-                return round($value);
+                $result = round($value);
+                break;
         }
+        return $result;
     }
 }
 

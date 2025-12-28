@@ -26,20 +26,20 @@ $all_topics = kunaal_get_all_topics();
               <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <div class="topicDropdown" id="topicMenu" role="listbox" aria-multiselectable="true">
-            <div class="topicOpt" data-tag="__ALL__" role="option" aria-selected="true">
+          <ul class="topicDropdown" id="topicMenu" aria-multiselectable="true">
+            <li class="topicOpt" data-tag="__ALL__" aria-selected="true">
               <input type="checkbox" checked tabindex="-1" />
               <span class="tName">all topics</span>
-            </div>
-            <div class="topicDivider"></div>
+            </li>
+            <li class="topicDivider" role="separator"></li>
             <?php foreach ($all_topics as $topic) : ?>
-            <div class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" role="option" aria-selected="false">
+            <li class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" aria-selected="false">
               <input type="checkbox" tabindex="-1" />
               <span class="tName">#<?php echo esc_html($topic['name']); ?></span>
               <span class="tCount"><?php echo esc_html($topic['count']); ?></span>
-            </div>
+            </li>
             <?php endforeach; ?>
-          </div>
+          </ul>
         </div>
         <?php endif; ?>
         <select class="modernSelect" id="sortSelect" aria-label="Sort by">
@@ -75,7 +75,7 @@ $all_topics = kunaal_get_all_topics();
     </div>
 
     <?php if (have_posts()) : ?>
-      <div class="ledger" id="jotList" role="list" data-post-type="jotting">
+      <ul class="ledger" id="jotList" data-post-type="jotting">
         <?php while (have_posts()) : the_post(); ?>
           <?php
           $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);
@@ -87,7 +87,7 @@ $all_topics = kunaal_get_all_topics();
               }
           }
           ?>
-          <a href="<?php the_permalink(); ?>" class="jRow" role="listitem"
+          <li><a href="<?php the_permalink(); ?>" class="jRow"
              data-title="<?php echo esc_attr(get_the_title()); ?>"
              data-text="<?php echo esc_attr($subtitle); ?>"
              data-date="<?php echo esc_attr(get_the_date('Y-m-d')); ?>"
@@ -106,9 +106,9 @@ $all_topics = kunaal_get_all_topics();
                 </div>
               <?php endif; ?>
             </div>
-          </a>
+          </a></li>
         <?php endwhile; ?>
-      </div>
+      </ul>
       
       <div class="infiniteLoader hidden" id="infiniteLoader">
         <div class="spinner"></div>

@@ -598,7 +598,7 @@
       : `<svg viewBox="0 0 400 500" fill="none"><rect width="400" height="500" fill="url(#g${post.id})"/><defs><linearGradient id="g${post.id}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgba(30,90,255,0.08)"/><stop offset="100%" style="stop-color:rgba(11,18,32,0.02)"/></linearGradient></defs></svg>`;
 
     return `
-      <a href="${escapeHtml(post.url)}" class="card" role="listitem">
+      <li><a href="${escapeHtml(post.url)}" class="card">
         <div class="media" data-parallax="true">
           ${imageHtml}
           <div class="scrim"></div>
@@ -614,7 +614,7 @@
             ${post.subtitle ? `<p class="dek">${escapeHtml(post.subtitle)}</p>` : ''}
           </div>
         </div>
-      </a>
+      </a></li>
     `;
   }
 
@@ -622,14 +622,14 @@
     const tagsHtml = post.tags.map(t => `<span>#${escapeHtml(t)}</span>`).join('');
     
     return `
-      <a href="${escapeHtml(post.url)}" class="jRow" role="listitem">
+      <li><a href="${escapeHtml(post.url)}" class="jRow">
         <span class="jDate">${escapeHtml(post.dateShort)}</span>
         <div class="jContent">
           <h3 class="jTitle">${escapeHtml(post.title)}</h3>
           ${post.subtitle ? `<p class="jText">${escapeHtml(post.subtitle)}</p>` : ''}
           ${tagsHtml ? `<div class="jTags">${tagsHtml}</div>` : ''}
         </div>
-      </a>
+      </a></li>
     `;
   }
 
