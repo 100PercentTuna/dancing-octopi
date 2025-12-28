@@ -1,60 +1,68 @@
-# Agent Progress Tracker
+# Agent Progress Tracker - Critical Continuation Mission
 
-## Task 1 — Lock "Reveal" HTML Safety (P0)
-- [x] Update style.css header to require WP 6.2+
-- [x] Remove regex fallback or implement safe fallback
-- [x] Add inline comment about min WP decision
-- [x] Verify no duplicate class attributes possible
+## P0 — TASK 1: FIX ABOUT HERO MOSAIC + DOG-EAR + RESPONSIVENESS
 
-## Task 2 — Establish CSS System (Path B) with Layers + Tokens
-- [x] Step 2.1: Create/confirm canonical CSS layers
-- [x] Step 2.2: Create WordPress-native token exposure
-- [x] Step 2.3: Implement double underline motif ONCE
-- [x] Step 2.4: Remove ALL ad-hoc underline variants
-- [x] Step 2.5: Reduce style.css to header + minimal base
-- [x] Step 2.6: Enqueue discipline - one styling pipeline
-- [x] Step 2.7: Remove dead CSS artifacts
+### 1.1 Fix About-page scoping correctly
+- [ ] Add body class filter for `kunaal-about-v22`
+- [ ] Update about-page-v22.css to use `.kunaal-about-v22` scoping
+- [ ] Remove `page-template-page-about` and `page-id-about` selectors
+- [ ] Verify: grep returns no `page-template-page-about` in CSS
 
-## Task 3 — Harden Lib Loader (D3 / Leaflet)
-- [x] Check window.d3 exists → resolve immediately
-- [x] Check window.L exists → resolve immediately
-- [x] Use shared Promise per library
-- [x] Ensure Leaflet CSS loads exactly once
+### 1.2 Stop using :nth-child() for hero photo placement
+- [ ] Add stable classes `hero-photo--1` through `hero-photo--10` in page-about.php
+- [ ] Update CSS to use stable classes instead of nth-child
+- [ ] Verify: grep returns no `hero-photo:nth-child` in CSS
 
-## Task 4 — Remove Production console.log
-- [x] Remove/guard console.log in data-map/view.js
-- [x] Remove/guard console.log in inline-formats/index.js
+### 1.3 Fix the hero grid so 10 photos + hero text have intentional "slots"
+- [ ] Implement explicit CSS grid with defined columns
+- [ ] Assign each `.hero-photo--N` to explicit grid cell
+- [ ] Fix height rules (remove contradictory min-height/max-height)
+- [ ] Ensure no horizontal scroll at all breakpoints
+- [ ] Verify: No implicit rows, all photos in 2-row grid
 
-## Task 5 — Keep functions.php Bootstrap-Only
-- [x] Move remaining logic out of functions.php
-- [x] functions.php should only bootstrap
+### 1.4 Fix dog-ear accent so it is robust and always visible
+- [ ] Ensure `.hero-photo.has-accent` is positioned relative
+- [ ] Implement dog-ear using border-triangle or clip-path
+- [ ] Tokenize size with `--k-dogear`
+- [ ] Verify: Exactly one photo has accent, visible on desktop/mobile
 
-## Task 6 — CI Quality Gates
-- [x] Add .github/workflows/quality-gates.yml
-- [x] BOM scan for PHP/CSS
-- [x] php -l for all PHP
-- [x] node --check for all JS
-- [x] grep ensures no function decls in render.php
-- [x] grep ensures no console.log in theme JS
+### 1.5 Add responsive breakpoints to stop "thin/wide" breakage
+- [ ] Add medium breakpoint (max-width: 1200px)
+- [ ] Add ultra-wide handling (min-width: 1800px)
+- [ ] Use clamp() for gutters/padding
+- [ ] Verify: Hero layout coherent at 1000px–1300px, no overlap/overflow
 
-## Final Verification
-- [x] BOM scan passes (0 BOM found)
-- [x] PHP lint passes (fixed 3 syntax errors)
-- [x] JS syntax check passes (0 errors)
-- [x] Render template check passes (no function declarations)
-- [x] console.log check passes (no console.log calls, only comments)
-- [x] Underline drift check passes (canonical implementation in place)
+## P0 — TASK 2: UNDERLINES = SINGLE SOURCE OF TRUTH
 
-## Summary
+- [ ] Fix utilities.css layer structure (single @layer utilities wrapper)
+- [ ] Verify canonical double underline defined ONCE
+- [ ] Make nav/footer/prose links use same mechanism
+- [ ] Remove competing underline implementations
+- [ ] Verify: grep shows only canonical definition + tokens
 
-All tasks completed successfully:
+## P0 — TASK 3: EDITOR STYLING (WYSIWYG) AFTER PATH B
 
-1. **Reveal HTML Safety**: Updated to WP 6.2+ requirement with safe DOMDocument fallback
-2. **CSS System**: Established token-driven architecture with CSS layers, canonical double underline motif, and modular file structure
-3. **Lib Loader**: Hardened to check for existing libraries and use shared Promises
-4. **Console.log**: Removed from production code
-5. **functions.php**: Kept bootstrap-only by moving defer function to enqueue-helpers.php
-6. **CI Quality Gates**: Added comprehensive quality checks workflow
-7. **PHP Syntax**: Fixed 3 syntax errors in render.php files (dumbbell-chart, network-graph, statistical-distribution)
+- [ ] Ensure editor enqueues modular CSS stack
+- [ ] Stop enqueueing only style.css in editor
+- [ ] Verify: Editor gets tokens/base/wordpress-blocks/utilities/blocks
 
-All acceptance checks pass. Definition of Done satisfied.
+## P0 — TASK 4: ABOUT CATEGORY INLINE VARS ACTUALLY OUTPUT
+
+- [ ] Fix wp_add_inline_style timing
+- [ ] Attach to registered handle (kunaal-theme-tokens or kunaal-about-page-v22)
+- [ ] Verify: Category CSS vars actually output
+
+## P0 — TASK 5: CI QUALITY GATES + NO REGRESSIONS
+
+- [ ] Ensure workflow is at repo root `.github/workflows/...`
+- [ ] Add checks for BOM, php -l, node --check, render.php functions, console.log
+- [ ] Verify: Workflow runs on push/PR
+
+## FINAL VERIFICATION
+
+- [ ] PHP lint passes
+- [ ] JS syntax passes
+- [ ] No BOM found
+- [ ] No render.php functions
+- [ ] No console.log
+- [ ] Hero sanity checks pass

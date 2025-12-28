@@ -4,7 +4,7 @@
  * Extracted from kunaal-about-v22-polished.html
  * Matches reference design exactly including all effects, animations, and styles
  * 
- * Scoped to body.page-template-page-about to avoid conflicts with other pages
+ * Scoped to .kunaal-about-v22 to avoid conflicts with other pages
  * 
  * NOTE: Design tokens (CSS variables) are centralized in style.css
  * This file only contains About-page-specific styles
@@ -14,10 +14,11 @@
  */
 
 /* About-page-specific color variables (not in global design system) */
-body.page-template-page-about {
+.kunaal-about-v22 {
   --warmDark: #5C4D42;
   --warmBorder: rgba(125,107,93,0.12);
   --transition: 0.25s ease;
+  --k-dogear: 28px; /* Dog-ear accent size */
   
   /* Category colors are set dynamically from customizer via inline <style> in page-about.php */
   /* Fallback colors for when customizer hasn't set them yet */
@@ -28,7 +29,7 @@ body.page-template-page-about {
   --cat-tech: #5A7FA8;
 }
 
-:root[data-theme="dark"] body.page-template-page-about {
+:root[data-theme="dark"] .kunaal-about-v22 {
   --warmDark: #A89585;
   --warmBorder: rgba(201,184,168,0.12);
 }
@@ -36,15 +37,7 @@ body.page-template-page-about {
 /* Base styles are in style.css - only About-specific overrides here */
 
 /* About page - hero section snug to header */
-body.page-template-page-about .hero,
-.page-template-page-about .hero {
-  margin-top: calc(-1 * var(--mastH, 100px));
-  min-height: calc(100vh + var(--mastH, 100px));
-}
-
-/* Alternative selector for About page */
-body.page-id-about .hero,
-.page-id-about .hero {
+.kunaal-about-v22 .hero {
   margin-top: calc(-1 * var(--mastH, 100px));
   min-height: calc(100vh + var(--mastH, 100px));
 }
@@ -227,55 +220,83 @@ a:focus-visible, button:focus-visible {
    HERO - Exact original layout restored
    Scoped to about page to avoid conflicts
 ============================================= */
-body.page-template-page-about .hero,
-.page-template-page-about .hero {
+.kunaal-about-v22 .hero {
   margin-top: calc(-1 * var(--mastH, 100px));
+  min-height: 100svh; /* Use svh for better mobile support, fallback to vh */
   min-height: calc(100vh + var(--mastH, 100px));
   display: grid;
-  grid-template-columns: 60px 1fr 1fr 1fr minmax(280px, 400px) 60px;
+  /* Explicit grid: left gutter | 4 photo columns | hero text | right strip | right gutter */
+  grid-template-columns: clamp(16px, 4vw, 60px) repeat(4, minmax(0, 1fr)) minmax(280px, 420px) clamp(64px, 8vw, 120px) clamp(16px, 4vw, 60px);
   grid-template-rows: 1fr 1fr;
   gap: 2px;
-  height: 100vh; /* Fixed height - don't expand */
-  max-height: 100vh; /* Prevent expansion */
   background: var(--bg);
   position: relative;
   overflow: visible; /* Ensure hero section doesn't clip children (like scroll indicator and dog-ear accent) */
+  /* Prevent horizontal scroll */
+  max-width: 100vw;
+  width: 100%;
 }
 
-/* Desktop: Explicit grid positioning for photos 1-4 to ensure correct layout */
+/* Desktop: Explicit grid positioning for photos using stable classes */
+/* Grid columns: 1=gutter | 2-5=photos | 6=hero-text | 7=right-strip | 8=gutter */
 /* Photo 1: top-left (column 2, row 1) */
-body.page-template-page-about .hero-photo:nth-child(1),
-.page-template-page-about .hero-photo:nth-child(1) {
+.kunaal-about-v22 .hero-photo--1 {
   grid-column: 2;
   grid-row: 1;
 }
 
-/* Photo 2: top-middle (column 4, row 1) - swapped with photo 3 */
-body.page-template-page-about .hero-photo:nth-child(2),
-.page-template-page-about .hero-photo:nth-child(2) {
-  grid-column: 4;
-  grid-row: 1;
-}
-
-/* Photo 3: column 3, row 1 - THIS GETS THE ACCENT on desktop (third picture in first row) */
-body.page-template-page-about .hero-photo:nth-child(3),
-.page-template-page-about .hero-photo:nth-child(3) {
+/* Photo 2: top-middle (column 3, row 1) */
+.kunaal-about-v22 .hero-photo--2 {
   grid-column: 3;
   grid-row: 1;
 }
 
-/* Photo 4: bottom-left (column 2, row 2) */
-body.page-template-page-about .hero-photo:nth-child(4),
-.page-template-page-about .hero-photo:nth-child(4) {
+/* Photo 3: column 4, row 1 - THIS GETS THE ACCENT on desktop (third picture in first row) */
+.kunaal-about-v22 .hero-photo--3 {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+/* Photo 4: column 5, row 1 */
+.kunaal-about-v22 .hero-photo--4 {
+  grid-column: 5;
+  grid-row: 1;
+}
+
+/* Photo 5: right strip, row 1 (column 7, row 1) */
+.kunaal-about-v22 .hero-photo--5 {
+  grid-column: 7;
+  grid-row: 1;
+}
+
+/* Photo 6: row 2, column 2 */
+.kunaal-about-v22 .hero-photo--6 {
   grid-column: 2;
   grid-row: 2;
 }
 
-/* Photo 5: right side, row 1 (column 6, row 1) */
-body.page-template-page-about .hero-photo:nth-child(5),
-.page-template-page-about .hero-photo:nth-child(5) {
-  grid-column: 6;
-  grid-row: 1;
+/* Photo 7: row 2, column 3 */
+.kunaal-about-v22 .hero-photo--7 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+/* Photo 8: row 2, column 4 */
+.kunaal-about-v22 .hero-photo--8 {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+/* Photo 9: row 2, column 5 */
+.kunaal-about-v22 .hero-photo--9 {
+  grid-column: 5;
+  grid-row: 2;
+}
+
+/* Photo 10: row 2, column 7 (right strip) */
+.kunaal-about-v22 .hero-photo--10 {
+  grid-column: 7;
+  grid-row: 2;
 }
 
 .hero-photo {
@@ -284,8 +305,8 @@ body.page-template-page-about .hero-photo:nth-child(5),
   background: var(--bgAlt);
 }
 /* Dog-ear accent needs visible overflow - scoped to About page for specificity */
-body.page-template-page-about .hero-photo.has-accent,
-.page-template-page-about .hero-photo.has-accent {
+.kunaal-about-v22 .hero-photo.has-accent,
+.kunaal-about-v22 .hero-photo.has-accent {
   overflow: visible; /* Allow dog-ear accent to show */
 }
 .hero-photo img {
@@ -300,7 +321,7 @@ body.page-template-page-about .hero-photo.has-accent,
 }
 
 /* First photo: reveal more from left as screen widens */
-.hero-photo:first-child img {
+.hero-photo--1 img {
   object-position: left center;
 }
 .hero-photo.color-active img { filter: none; }
@@ -317,46 +338,37 @@ body.page-template-page-about .hero-photo.has-accent,
 }
 .hero-photo:hover::after { transform: scaleY(1); }
 .hero-photo.color-active::after { transform: scaleY(1); }
-/* Dog-ear accent - exact original implementation using linear-gradient */
-/* Scoped to About page for higher specificity */
-/* Desktop: Photo at index 2 (3rd photo in first 4) is in column 4, row 1 - this gets the accent */
-body.page-template-page-about .hero-photo.has-accent,
-.page-template-page-about .hero-photo.has-accent {
+/* Dog-ear accent - robust border triangle implementation */
+/* Desktop: Photo 3 (hero-photo--3) gets the accent */
+.kunaal-about-v22 .hero-photo.has-accent {
   position: relative; /* Ensure ::before can be positioned absolutely */
-  isolation: isolate; /* Create new stacking context to ensure accent is above image */
   overflow: visible; /* Prevent any clipping of accent */
-  z-index: 1; /* Ensure stacking context */
 }
 
-body.page-template-page-about .hero-photo.has-accent::before,
-.page-template-page-about .hero-photo.has-accent::before {
+.kunaal-about-v22 .hero-photo.has-accent::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(135deg, var(--blue, #1E5AFF) 50%, transparent 50%);
-  z-index: 10; /* Above image - high z-index within stacking context */
+  width: 0;
+  height: 0;
+  border-top: var(--k-dogear, 28px) solid var(--blue, #1E5AFF);
+  border-right: var(--k-dogear, 28px) solid transparent;
+  z-index: 10; /* Above image */
   pointer-events: none;
-  /* Ensure accent is not clipped */
-  clip-path: none;
-}
-.hero-photo.has-accent img {
-  position: relative;
-  z-index: 1; /* Ensure image is below accent */
 }
 
 .hero-text {
-  grid-column: 5;
+  grid-column: 6;
   grid-row: 1 / 3;
   background: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3rem 2.5rem;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2.5rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
+  min-width: 0; /* Prevent flex/grid overflow */
 }
 
 .hero-label {
@@ -473,18 +485,42 @@ body.page-template-page-about .hero-photo.has-accent::before,
   }
 }
 
-/* Wide viewport fallback - ensure hero text is visible at >1600px */
-@media (min-width: 1600px) {
+/* Ultra-wide handling: prevent comically stretched layouts */
+@media (min-width: 1800px) {
+  .kunaal-about-v22 .hero {
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
   .hero-label, .hero-title, .hero-intro, .hero-meta {
     opacity: 1 !important;
     transform: none !important;
   }
 }
 
+/* Wide viewport fallback - ensure hero text is visible at >1600px */
+@media (min-width: 1600px) and (max-width: 1799px) {
+  .hero-label, .hero-title, .hero-intro, .hero-meta {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Medium breakpoint: 1000px-1200px (thin desktop) */
+@media (max-width: 1200px) and (min-width: 901px) {
+  .kunaal-about-v22 .hero {
+    grid-template-columns: clamp(12px, 2vw, 40px) repeat(4, minmax(0, 1fr)) minmax(240px, 320px) clamp(48px, 6vw, 80px) clamp(12px, 2vw, 40px);
+    gap: 1px;
+  }
+  .hero-text {
+    padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.75rem);
+  }
+}
+
+/* Mobile breakpoint */
 @media (max-width: 900px) {
   /* Mobile hero - must match scoped selector */
-  body.page-template-page-about .hero,
-  .page-template-page-about .hero {
+  .kunaal-about-v22 .hero {
     grid-template-columns: 1fr 1fr; /* Remove side margins - photos fill full width */
     grid-template-rows: minmax(180px, 1fr) minmax(180px, 1fr) auto;
     height: auto; /* Remove fixed height on mobile */
@@ -529,20 +565,19 @@ body.page-template-page-about .hero-photo.has-accent::before,
   }
   
   /* Top row photos: center crop to preserve important content */
-  .hero-photo:nth-child(1) img,
-  .hero-photo:nth-child(2) img {
+  .hero-photo--1 img,
+  .hero-photo--2 img {
     object-position: center center;
   }
   
   /* Bottom row photos: can use default center crop */
-  .hero-photo:nth-child(3) img,
-  .hero-photo:nth-child(4) img {
+  .hero-photo--3 img,
+  .hero-photo--4 img {
     object-position: center center;
   }
   
-  /* Mobile: Hero photo with dog-ear (first photo) - keep in grid but ensure accent shows */
-  body.page-template-page-about .hero-photo.has-accent,
-  .page-template-page-about .hero-photo.has-accent {
+  /* Mobile: Hero photo with dog-ear (photo 3) - keep in grid but ensure accent shows */
+  .kunaal-about-v22 .hero-photo.has-accent {
     /* Keep in normal grid flow - don't force full width */
     overflow: visible; /* Ensure accent shows */
     z-index: 2; /* Ensure accent is above other elements */
@@ -555,29 +590,33 @@ body.page-template-page-about .hero-photo.has-accent::before,
   
   /* Mobile: Ensure first 4 photos stay in rows 1-2, not below text */
   /* Photo 1 - row 1, column 1 */
-  .hero-photo:nth-child(1) { 
+  .hero-photo--1 { 
     grid-column: 1; 
     grid-row: 1; 
   }
   /* Photo 2 - row 1, column 2 */
-  .hero-photo:nth-child(2) { 
+  .hero-photo--2 { 
     grid-column: 2; 
     grid-row: 1; 
   }
   /* Photo 3 (has accent - bottom-left) - row 2, column 1 */
-  .hero-photo:nth-child(3) { 
+  .hero-photo--3 { 
     grid-column: 1; 
     grid-row: 2; 
   }
   /* Photo 4 - row 2, column 2 */
-  .hero-photo:nth-child(4) { 
+  .hero-photo--4 { 
     grid-column: 2; 
     grid-row: 2; 
   }
   
   /* Hide all photos beyond the first 4 on mobile to prevent overflow below text */
-  body.page-template-page-about .hero-photo:nth-child(n+5),
-  .page-template-page-about .hero-photo:nth-child(n+5) {
+  .kunaal-about-v22 .hero-photo--5,
+  .kunaal-about-v22 .hero-photo--6,
+  .kunaal-about-v22 .hero-photo--7,
+  .kunaal-about-v22 .hero-photo--8,
+  .kunaal-about-v22 .hero-photo--9,
+  .kunaal-about-v22 .hero-photo--10 {
     display: none;
   }
   
@@ -698,8 +737,8 @@ body.page-template-page-about .hero-photo.has-accent::before,
   max-width: 850px;
 }
 /* Scoped to About page for higher specificity */
-body.page-template-page-about .capsules-cloud,
-.page-template-page-about .capsules-cloud {
+.kunaal-about-v22 .capsules-cloud,
+.kunaal-about-v22 .capsules-cloud {
   position: relative;
   padding: 1rem 0;
   border-radius: 0;
@@ -708,15 +747,15 @@ body.page-template-page-about .capsules-cloud,
   justify-content: center;
   gap: 0.6rem;
 }
-body.page-template-page-about .capsules-cloud::before,
-.page-template-page-about .capsules-cloud::before {
+.kunaal-about-v22 .capsules-cloud::before,
+.kunaal-about-v22 .capsules-cloud::before {
   content: none;
   display: none;
 }
 
 /* Outer wrapper: layout + GSAP reveal target */
-body.page-template-page-about .capsule,
-.page-template-page-about .capsule {
+.kunaal-about-v22 .capsule,
+.kunaal-about-v22 .capsule {
   position: relative;
   background: transparent;
   border: 0;
@@ -728,8 +767,8 @@ body.page-template-page-about .capsule,
   transform: none;
   display: inline-block;
 }
-body.page-template-page-about .capsule:hover,
-.page-template-page-about .capsule:hover {
+.kunaal-about-v22 .capsule:hover,
+.kunaal-about-v22 .capsule:hover {
   transform: none;
 }
 
@@ -780,8 +819,8 @@ body.page-template-page-about .capsule:hover,
 }
 
 /* Category dot lives INSIDE the moving inner wrapper */
-body.page-template-page-about .capsule::after,
-.page-template-page-about .capsule::after {
+.kunaal-about-v22 .capsule::after,
+.kunaal-about-v22 .capsule::after {
   content: none;
 }
 
@@ -795,44 +834,44 @@ body.page-template-page-about .capsule::after,
 }
 /* Category colors use CSS variables (set from customizer) */
 /* Dynamic selector - works for any category slug */
-body.page-template-page-about .capsule[data-cat] .capsule-dot {
+.kunaal-about-v22 .capsule[data-cat] .capsule-dot {
   background: var(--cat-var, var(--warm));
 }
 /* Set variable per category slug */
-body.page-template-page-about .capsule[data-cat="media"] .capsule-dot {
+.kunaal-about-v22 .capsule[data-cat="media"] .capsule-dot {
   background: var(--cat-media, #C4715B);
 }
-body.page-template-page-about .capsule[data-cat="knowledge"] .capsule-dot {
+.kunaal-about-v22 .capsule[data-cat="knowledge"] .capsule-dot {
   background: var(--cat-knowledge, #5B8A72);
 }
-body.page-template-page-about .capsule[data-cat="craft"] .capsule-dot {
+.kunaal-about-v22 .capsule[data-cat="craft"] .capsule-dot {
   background: var(--cat-craft, #8B7355);
 }
-body.page-template-page-about .capsule[data-cat="culture"] .capsule-dot {
+.kunaal-about-v22 .capsule[data-cat="culture"] .capsule-dot {
   background: var(--cat-culture, #7A6B99);
 }
-body.page-template-page-about .capsule[data-cat="tech"] .capsule-dot {
+.kunaal-about-v22 .capsule[data-cat="tech"] .capsule-dot {
   background: var(--cat-tech, #5A7FA8);
 }
 
 /* Dark mode category colors - auto-brighten for visibility */
 /* Use CSS color-mix to brighten customizer colors in dark mode */
-:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .capsule[data-cat] .capsule-dot {
   background: color-mix(in srgb, var(--cat-var, var(--warm)) 100%, white 20%);
 }
-:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="media"] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .capsule[data-cat="media"] .capsule-dot {
   background: color-mix(in srgb, var(--cat-media, #C4715B) 100%, white 20%);
 }
-:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="knowledge"] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .capsule[data-cat="knowledge"] .capsule-dot {
   background: color-mix(in srgb, var(--cat-knowledge, #5B8A72) 100%, white 20%);
 }
-:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="craft"] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .capsule[data-cat="craft"] .capsule-dot {
   background: color-mix(in srgb, var(--cat-craft, #8B7355) 100%, white 20%);
 }
-:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="culture"] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .capsule[data-cat="culture"] .capsule-dot {
   background: color-mix(in srgb, var(--cat-culture, #7A6B99) 100%, white 20%);
 }
-:root[data-theme="dark"] body.page-template-page-about .capsule[data-cat="tech"] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .capsule[data-cat="tech"] .capsule-dot {
   background: color-mix(in srgb, var(--cat-tech, #5A7FA8) 100%, white 20%);
 }
 
@@ -1094,85 +1133,85 @@ body.page-template-page-about .capsule[data-cat="tech"] .capsule-dot {
   height: 100%;
 }
 /* Map country colors - scoped to About page for specificity */
-body.page-template-page-about .country,
-.page-template-page-about .country {
+.kunaal-about-v22 .country,
+.kunaal-about-v22 .country {
   fill: #E8E4DF;
   stroke: #F9F7F4;
   stroke-width: 0.3;
   transition: fill var(--transition);
 }
-body.page-template-page-about .country.visited,
-.page-template-page-about .country.visited {
+.kunaal-about-v22 .country.visited,
+.kunaal-about-v22 .country.visited {
   fill: #B8A99A;
 }
-body.page-template-page-about .country.lived,
-.page-template-page-about .country.lived {
+.kunaal-about-v22 .country.lived,
+.kunaal-about-v22 .country.lived {
   fill: #7D6B5D;
 }
-body.page-template-page-about .country.current,
-.page-template-page-about .country.current {
+.kunaal-about-v22 .country.current,
+.kunaal-about-v22 .country.current {
   fill: #1E5AFF;
 }
 /* Hover: darken warm colors, NOT blue */
-body.page-template-page-about .country.visited:hover,
-.page-template-page-about .country.visited:hover {
+.kunaal-about-v22 .country.visited:hover,
+.kunaal-about-v22 .country.visited:hover {
   fill: #9A8B7C;
 }
-body.page-template-page-about .country.lived:hover,
-.page-template-page-about .country.lived:hover {
+.kunaal-about-v22 .country.lived:hover,
+.kunaal-about-v22 .country.lived:hover {
   fill: #5C4D42;
 }
 
 /* Dark mode map colors - scoped to About page */
-:root[data-theme="dark"] body.page-template-page-about .country,
-:root[data-theme="dark"] .page-template-page-about .country {
+:root[data-theme="dark"] .kunaal-about-v22 .country,
+:root[data-theme="dark"] .kunaal-about-v22 .country {
   fill: #2F2F2F;
   stroke: #3A3A3A;
 }
-:root[data-theme="dark"] body.page-template-page-about .country.visited,
-:root[data-theme="dark"] .page-template-page-about .country.visited {
+:root[data-theme="dark"] .kunaal-about-v22 .country.visited,
+:root[data-theme="dark"] .kunaal-about-v22 .country.visited {
   fill: #8B7D6F;
 }
-:root[data-theme="dark"] body.page-template-page-about .country.lived,
-:root[data-theme="dark"] .page-template-page-about .country.lived {
+:root[data-theme="dark"] .kunaal-about-v22 .country.lived,
+:root[data-theme="dark"] .kunaal-about-v22 .country.lived {
   fill: #C9B8A8;
 }
-:root[data-theme="dark"] body.page-template-page-about .country.current,
-:root[data-theme="dark"] .page-template-page-about .country.current {
+:root[data-theme="dark"] .kunaal-about-v22 .country.current,
+:root[data-theme="dark"] .kunaal-about-v22 .country.current {
   fill: #FF6B35; /* Orange beacon in dark mode */
 }
-:root[data-theme="dark"] body.page-template-page-about .country.visited:hover,
-:root[data-theme="dark"] .page-template-page-about .country.visited:hover {
+:root[data-theme="dark"] .kunaal-about-v22 .country.visited:hover,
+:root[data-theme="dark"] .kunaal-about-v22 .country.visited:hover {
   fill: #7A6B5D;
 }
-:root[data-theme="dark"] body.page-template-page-about .country.lived:hover,
-:root[data-theme="dark"] .page-template-page-about .country.lived:hover {
+:root[data-theme="dark"] .kunaal-about-v22 .country.lived:hover,
+:root[data-theme="dark"] .kunaal-about-v22 .country.lived:hover {
   fill: #A89585;
 }
 
 /* Legend dots use same category variables as capsule dots */
-body.page-template-page-about .legend-dot[data-cat] {
+.kunaal-about-v22 .legend-dot[data-cat] {
   background: var(--cat-var, var(--warm));
 }
-body.page-template-page-about .legend-dot[data-cat="media"] {
+.kunaal-about-v22 .legend-dot[data-cat="media"] {
   background: var(--cat-media, #C4715B);
 }
-body.page-template-page-about .legend-dot[data-cat="knowledge"] {
+.kunaal-about-v22 .legend-dot[data-cat="knowledge"] {
   background: var(--cat-knowledge, #5B8A72);
 }
-body.page-template-page-about .legend-dot[data-cat="craft"] {
+.kunaal-about-v22 .legend-dot[data-cat="craft"] {
   background: var(--cat-craft, #8B7355);
 }
-body.page-template-page-about .legend-dot[data-cat="culture"] {
+.kunaal-about-v22 .legend-dot[data-cat="culture"] {
   background: var(--cat-culture, #7A6B99);
 }
-body.page-template-page-about .legend-dot[data-cat="tech"] {
+.kunaal-about-v22 .legend-dot[data-cat="tech"] {
   background: var(--cat-tech, #5A7FA8);
 }
 
 /* Dark mode category colors - auto-brighten for better visibility */
-:root[data-theme="dark"] body.page-template-page-about .legend-dot[data-cat],
-:root[data-theme="dark"] body.page-template-page-about .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-v22 .legend-dot[data-cat],
+:root[data-theme="dark"] .kunaal-about-v22 .capsule-dot {
   filter: brightness(1.3) saturate(1.1);
 }
 
@@ -1213,8 +1252,8 @@ body.page-template-page-about .legend-dot[data-cat="tech"] {
 .map-legend-dot.lived { background: var(--warm); }
 .map-legend-dot.visited { background: var(--warmLight); }
 /* Dark mode legend dot colors */
-:root[data-theme="dark"] body.page-template-page-about .map-legend-dot.current,
-:root[data-theme="dark"] .page-template-page-about .map-legend-dot.current {
+:root[data-theme="dark"] .kunaal-about-v22 .map-legend-dot.current,
+:root[data-theme="dark"] .kunaal-about-v22 .map-legend-dot.current {
   background: #FF6B35; /* Orange in dark mode */
 }
 
@@ -1309,7 +1348,7 @@ body.page-template-page-about .legend-dot[data-cat="tech"] {
 }
 
 /* Ensure say-hello section is properly centered */
-body.page-template-page-about .say-hello .section-inner {
+.kunaal-about-v22 .say-hello .section-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1372,12 +1411,12 @@ body.page-template-page-about .say-hello .section-inner {
 }
 /* Hard-scope SVG sizing for about page - prevent 900px explosion */
 /* High specificity selector to override any global SVG styles */
-body.page-template-page-about .say-hello-link svg,
-body.page-template-page-about .say-hello-links svg,
-body.page-template-page-about .say-hello-social-link svg,
-body.page-template-page-about .say-hello .say-hello-link svg,
-body.page-template-page-about .say-hello .say-hello-links svg,
-body.page-template-page-about .say-hello .say-hello-social-link svg {
+.kunaal-about-v22 .say-hello-link svg,
+.kunaal-about-v22 .say-hello-links svg,
+.kunaal-about-v22 .say-hello-social-link svg,
+.kunaal-about-v22 .say-hello .say-hello-link svg,
+.kunaal-about-v22 .say-hello .say-hello-links svg,
+.kunaal-about-v22 .say-hello .say-hello-social-link svg {
   width: 15px;
   height: 15px;
   max-width: 15px;

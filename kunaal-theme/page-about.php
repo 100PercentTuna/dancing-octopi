@@ -72,14 +72,15 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 // Row 2: photos 6-10
 $photo_count = count($hero_photos);
 // Row 1 - Photos 1-4
-// Dog-ear accent: Desktop = first row, third picture (index 2, column 4). Mobile = second row, second picture (index 2, column 2, row 2)
+// Dog-ear accent: Desktop = first row, third picture (index 2, column 3). Mobile = second row, second picture (index 2, column 2, row 2)
 for ($i = 0; $i < min(4, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
-    // Index 2 (3rd photo) gets accent - desktop: column 4 row 1, mobile: column 2 row 2
+    // Index 2 (3rd photo) gets accent - desktop: column 3 row 1, mobile: column 2 row 2
     $has_accent = ($i === 2);
     $loading = $i === 0 ? 'eager' : 'lazy';
+    $photo_index = $i + 1; // 1-based index for CSS class
 ?>
-<div class="hero-photo<?php echo $has_accent ? ' has-accent' : ''; ?>">
+<div class="hero-photo hero-photo--<?php echo esc_attr($photo_index); ?><?php echo $has_accent ? ' has-accent' : ''; ?>">
     <img alt="" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
@@ -119,7 +120,7 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
 if ($photo_count > 4) :
     $photo_url = $hero_photos[4];
 ?>
-<div class="hero-photo">
+<div class="hero-photo hero-photo--5">
     <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endif; ?>
@@ -129,8 +130,9 @@ if ($photo_count > 4) :
 // Row 2 - Photos 6-10
 for ($i = 5; $i < min(10, $photo_count); $i++) :
     $photo_url = $hero_photos[$i];
+    $photo_index = $i + 1; // 1-based index for CSS class
 ?>
-<div class="hero-photo">
+<div class="hero-photo hero-photo--<?php echo esc_attr($photo_index); ?>">
     <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>

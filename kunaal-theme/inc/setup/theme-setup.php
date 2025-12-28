@@ -63,6 +63,18 @@ function kunaal_add_js_class() {
 add_action('wp_head', 'kunaal_add_js_class', 0);
 
 /**
+ * Add custom body class for About V22 page
+ * Provides stable scoping for About page CSS
+ */
+function kunaal_add_about_v22_body_class($classes) {
+    if (is_page_template('page-about.php') || is_page('about')) {
+        $classes[] = 'kunaal-about-v22';
+    }
+    return $classes;
+}
+add_filter('body_class', 'kunaal_add_about_v22_body_class');
+
+/**
  * Consolidated theme activation handler
  * Runs all activation tasks in proper order
  */
