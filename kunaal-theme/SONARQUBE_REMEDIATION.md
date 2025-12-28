@@ -6,15 +6,14 @@
 ## CRITICAL Issues (77) - MUST FIX ALL
 
 ### php:S121 - Missing Curly Braces (39 issues)
-- [x] `blocks/data-map/render.php` - Fixed 3 missing curly braces
-- [x] `blocks/dumbbell-chart/render.php` - Fixed 3 missing curly braces
+- [x] `blocks/data-map/render.php` - Fixed 5 missing curly braces (converted : syntax to {})
+- [x] `blocks/dumbbell-chart/render.php` - Fixed 2 missing curly braces (converted : syntax to {})
 - [x] `blocks/flow-diagram/render.php` - Fixed 3 missing curly braces
 - [x] `blocks/statistical-distribution/render.php` - Fixed 2 missing curly braces
 - [x] `blocks/network-graph/render.php` - Fixed 2 missing curly braces
-- [ ] `blocks/chart/render.php` - Multiple missing curly braces (needs conversion from : syntax)
-- [ ] `blocks/confidence-meter/render.php` - 3 missing curly braces
-- [ ] `blocks/slopegraph/render.php` - 1 missing curly brace
-- [ ] Other files - remaining issues
+- [x] `blocks/chart/render.php` - Fixed (converted : syntax to {})
+- [x] `blocks/confidence-meter/render.php` - Fixed
+- [x] `blocks/slopegraph/render.php` - Fixed
 
 ### php:S1192 - Duplicate String Literals (13 issues)
 - [ ] `blocks/chart/render.php:117` - `"" fill=""` duplicated 8 times

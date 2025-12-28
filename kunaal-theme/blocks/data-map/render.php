@@ -137,7 +137,7 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
         <summary><?php esc_html_e('View data table', 'kunaal-theme'); ?></summary>
         <table>
             <caption><?php echo esc_html($title ?: 'Map data'); ?></caption>
-            <?php if ($map_type === 'choropleth' || $map_type === 'combined') : ?>
+            <?php if ($map_type === 'choropleth' || $map_type === 'combined') { ?>
             <thead>
                 <tr><th><?php esc_html_e('Region', 'kunaal-theme'); ?></th><th><?php echo esc_html($value_label); ?></th></tr>
             </thead>
