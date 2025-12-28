@@ -329,6 +329,72 @@ add_action('init', 'kunaal_register_blocks', 10);
 // ========================================
 
 /**
+ * Add reveal class using WP_HTML_Tag_Processor (WordPress 6.2+)
+ * 
+ * @param string $block_content Block HTML content
+ * @return string|false Updated HTML or false on failure
+ */
+function kunaal_add_reveal_class_processor($block_content) {
+    if (!class_exists('WP_HTML_Tag_Processor')) {
+        return false;
+    }
+    
+    $processor = new WP_HTML_Tag_Processor($block_content);
+    if (!$processor->next_tag()) {
+        return false;
+    }
+    
+    $existing_class = $processor->get_attribute('class');
+    if ($existing_class) {
+        $classes = explode(' ', $existing_class);
+        if (!in_array('reveal', $classes, true)) {
+            $classes[] = 'reveal';
+            $processor->set_attribute('class', implode(' ', $classes));
+        }
+    } else {
+        $processor->set_attribute('class', 'reveal');
+    }
+    
+    return $processor->get_updated_html();
+}
+
+/**
+ * Add reveal class using DOMDocument fallback
+ * 
+ * @param string $block_content Block HTML content
+ * @return string|false Updated HTML or false on failure
+ */
+function kunaal_add_reveal_class_dom($block_content) {
+    if (!function_exists('wp_kses_post') || !class_exists('DOMDocument')) {
+        return false;
+    }
+    
+    libxml_use_internal_errors(true);
+    $dom = new DOMDocument();
+    $dom->loadHTML('<?xml encoding="UTF-8">' . $block_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $xpath = new DOMXPath($dom);
+    $first_element = $xpath->query('//*[1]')->item(0);
+    
+    if (!($first_element instanceof DOMElement)) {
+        libxml_clear_errors();
+        return false;
+    }
+    
+    $existing_class = $first_element->getAttribute('class');
+    $classes = $existing_class ? explode(' ', trim($existing_class)) : array();
+    if (!in_array('reveal', $classes, true)) {
+        $classes[] = 'reveal';
+        $first_element->setAttribute('class', implode(' ', $classes));
+    }
+    
+    $html = $dom->saveHTML();
+    libxml_clear_errors();
+    
+    // Remove XML declaration if present
+    return preg_replace('/^<\?xml[^>]*\?>\s*/', '', $html);
+}
+
+/**
  * Add Reveal Class to Core Blocks
  *
  * Adds scroll-triggered reveal animation class to core blocks
@@ -336,68 +402,40 @@ add_action('init', 'kunaal_register_blocks', 10);
  * Uses WP_HTML_Tag_Processor for safe HTML manipulation (WordPress 6.2+).
  */
 function kunaal_block_wrapper($block_content, $block) {
-    $should_process = is_singular(array('essay', 'jotting'));
-    if ($should_process) {
-        $reveal_blocks = array(
-            'core/paragraph',
-            'core/heading',
-            'core/image',
-            'core/quote',
-            'core/list',
-        );
-        $should_process = in_array($block['blockName'], $reveal_blocks);
-    }
-    if ($should_process) {
-        $should_process = strpos($block_content, 'reveal') === false;
+    // Early return if not processing
+    if (!is_singular(array('essay', 'jotting'))) {
+        return $block_content;
     }
     
-    if (!$should_process) {
+    $reveal_blocks = array(
+        'core/paragraph',
+        'core/heading',
+        'core/image',
+        'core/quote',
+        'core/list',
+    );
+    
+    if (!in_array($block['blockName'], $reveal_blocks)) {
+        return $block_content;
+    }
+    
+    if (strpos($block_content, 'reveal') !== false) {
         return $block_content;
     }
 
-    // WordPress 6.2+ required: Use WP_HTML_Tag_Processor for safe HTML manipulation
-    // This prevents duplicate class attributes and invalid HTML
-    if (class_exists('WP_HTML_Tag_Processor')) {
-        $processor = new WP_HTML_Tag_Processor($block_content);
-        if ($processor->next_tag()) {
-            $existing_class = $processor->get_attribute('class');
-            // Safely merge classes: append 'reveal' if not already present
-            if ($existing_class) {
-                $classes = explode(' ', $existing_class);
-                if (!in_array('reveal', $classes, true)) {
-                    $classes[] = 'reveal';
-                    $processor->set_attribute('class', implode(' ', $classes));
-                }
-            } else {
-                $processor->set_attribute('class', 'reveal');
-            }
-            return $processor->get_updated_html();
-        }
+    // Try WP_HTML_Tag_Processor first (WordPress 6.2+)
+    $result = kunaal_add_reveal_class_processor($block_content);
+    if ($result !== false) {
+        return $result;
     }
 
-    // Fallback: If WP_HTML_Tag_Processor is unavailable, use a safe callback approach
-    // This merges classes via DOMDocument to prevent duplicate attributes
-    if (function_exists('wp_kses_post') && class_exists('DOMDocument')) {
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $dom->loadHTML('<?xml encoding="UTF-8">' . $block_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $xpath = new DOMXPath($dom);
-        $first_element = $xpath->query('//*[1]')->item(0);
-        if ($first_element instanceof DOMElement) {
-            $existing_class = $first_element->getAttribute('class');
-            $classes = $existing_class ? explode(' ', trim($existing_class)) : array();
-            if (!in_array('reveal', $classes, true)) {
-                $classes[] = 'reveal';
-                $first_element->setAttribute('class', implode(' ', $classes));
-            }
-            $html = $dom->saveHTML();
-            // Remove XML declaration if present
-            return preg_replace('/^<\?xml[^>]*\?>\s*/', '', $html);
-        }
-        libxml_clear_errors();
+    // Fallback to DOMDocument
+    $result = kunaal_add_reveal_class_dom($block_content);
+    if ($result !== false) {
+        return $result;
     }
 
-    // Last resort: Return unchanged if safe manipulation is impossible
+    // Last resort: Return unchanged
     return $block_content;
 }
 add_filter('render_block', 'kunaal_block_wrapper', 10, 2);

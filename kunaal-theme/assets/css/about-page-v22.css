@@ -1421,8 +1421,9 @@ a:focus-visible, button:focus-visible {
 
 /* Progress bar, container, header, nav styles are in style.css - no About-specific overrides needed */
 
-/* Blue underline system */
-.uBlue{
+/* Blue underline system - deprecated, use canonical .u-underline-double from utilities.css */
+/* Legacy .uBlue class kept for backward compatibility but should be replaced */
+.uBlue {
   display: inline-block;
   background-image: linear-gradient(var(--blue), var(--blue));
   background-repeat: no-repeat;
@@ -1433,19 +1434,20 @@ a:focus-visible, button:focus-visible {
              color 240ms cubic-bezier(0.4,0,0.2,1),
              letter-spacing 200ms cubic-bezier(0.4,0,0.2,1);
 }
-.uBlue:hover, .uBlue:focus-visible{ background-size: 100% 2px; letter-spacing: .01em; }
-.nav a.active.uBlue{ background-size: 100% 2px; color: var(--ink); }
-a:focus-visible{ 
-  outline: 3px solid var(--blueRing); 
-  outline-offset: 4px; 
+.uBlue:hover, .uBlue:focus-visible { 
   background-size: 100% 2px; 
+  letter-spacing: .01em; 
+}
+.nav a.active.uBlue { 
+  background-size: 100% 2px; 
+  color: var(--ink); 
 }
 
 /* =============================================
    FOOTER (matches main theme exactly - no overrides)
 ============================================= */
 /* Footer uses main theme styles - no overrides needed */
-/* Ensure .mailWrap uses .uBlue class for underline animation (no text-decoration) */
+/* Links use canonical underline from utilities.css */
 
 /* Reduce "dead air" between Rabbit Holes and Media */
 .panorama.squeeze-after-rabbit{ height: 120px; }

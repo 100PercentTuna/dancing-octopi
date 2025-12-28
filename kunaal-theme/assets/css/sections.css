@@ -32,7 +32,8 @@
   to { transform: scaleX(1); }
 }
 
-h2 {
+/* Section headings use canonical underline motif from utilities.css */
+.sectionHead h2 {
   margin: 0;
   font-weight: 600;
   letter-spacing: -.02em;
@@ -40,24 +41,11 @@ h2 {
   line-height: 1.3;
   font-family: var(--serif);
   color: var(--ink);
-  position: relative;
-  padding-bottom: 8px;
 }
-
-/* Blue accent line under h2 */
-h2::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 40px;
-  height: 2px;
-  background: var(--blue);
-  transform-origin: left;
-  animation: growLine 600ms ease 400ms forwards;
-  transform: scaleX(0);
+.sectionHead h2.u-section-underline::after {
+  animation-delay: 400ms;
 }
-.sectionHead.revealed h2::after { 
+.sectionHead.revealed h2.u-section-underline::after { 
   transform: scaleX(1); 
 }
 

@@ -86,13 +86,13 @@ $shown_jottings = $jottings_query->post_count;
   <!-- Essays Section -->
   <section class="section" id="essays" aria-label="<?php esc_attr_e('Essays', 'kunaal-theme'); ?>">
     <div class="sectionHead">
-      <h2><?php esc_html_e('Essays', 'kunaal-theme'); ?></h2>
+      <h2 class="u-section-underline"><?php esc_html_e('Essays', 'kunaal-theme'); ?></h2>
       <span class="sectionCount">
         <span id="essayCountShown"><?php echo esc_html($shown_essays); ?></span>
         <span id="essayLabel"><?php echo $shown_essays === 1 ? esc_html__('essay', 'kunaal-theme') : esc_html__('essays', 'kunaal-theme'); ?></span>
         <?php if ($total_essays > $home_posts_limit) : ?>
           &nbsp;&middot;&nbsp;
-          <a href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>" class="uBlue"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
+          <a href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>" class="u-underline-double"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
         <?php endif; ?>
       </span>
     </div>
@@ -126,13 +126,13 @@ $shown_jottings = $jottings_query->post_count;
   <!-- Jottings Section -->
   <section class="section" id="jottings" aria-label="<?php esc_attr_e('Jottings', 'kunaal-theme'); ?>">
     <div class="sectionHead">
-      <h2><?php esc_html_e('Jottings', 'kunaal-theme'); ?></h2>
+      <h2 class="u-section-underline"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></h2>
       <span class="sectionCount">
         <span id="jotCountShown"><?php echo esc_html($shown_jottings); ?></span>
         <span id="jotLabel"><?php echo $shown_jottings === 1 ? esc_html__('quick jotted-down rough idea', 'kunaal-theme') : esc_html__('quick jotted-down rough ideas', 'kunaal-theme'); ?></span>
         <?php if ($total_jottings > $home_posts_limit) : ?>
           &nbsp;&middot;&nbsp;
-          <a href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>" class="uBlue"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
+          <a href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>" class="u-underline-double"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
         <?php endif; ?>
       </span>
     </div>

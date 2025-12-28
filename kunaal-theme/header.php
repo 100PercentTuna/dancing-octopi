@@ -77,12 +77,12 @@ $initials = kunaal_get_initials();
       $current_class = KUNAAL_NAV_CURRENT_CLASS;
       // Note: This constant is already defined above, so no duplicate literal issue
       ?>
-      <a class="uBlue<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
-      <a class="uBlue<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>
+      <a class="<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
+      <a class="<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>
       <?php
       $about_page = get_page_by_path('about');
       if ($about_page) {
-          echo '<a class="uBlue' . (is_page('about') ? $current_class : '') . '" href="' . esc_url(get_permalink($about_page)) . '">';
+          echo '<a class="' . (is_page('about') ? $current_class : '') . '" href="' . esc_url(get_permalink($about_page)) . '">';
           esc_html_e('About', 'kunaal-theme');
           echo '</a>';
       }
@@ -90,7 +90,7 @@ $initials = kunaal_get_initials();
       <?php
       $contact_page = get_page_by_path('contact');
       if ($contact_page) {
-          echo '<a class="uBlue' . (is_page('contact') ? $current_class : '') . '" href="' . esc_url(get_permalink($contact_page)) . '">';
+          echo '<a class="' . (is_page('contact') ? $current_class : '') . '" href="' . esc_url(get_permalink($contact_page)) . '">';
           esc_html_e('Contact', 'kunaal-theme');
           echo '</a>';
       }
