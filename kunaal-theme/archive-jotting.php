@@ -31,7 +31,7 @@ $all_topics = kunaal_get_all_topics();
               <input type="checkbox" checked tabindex="-1" />
               <span class="tName">all topics</span>
             </li>
-            <li class="topicDivider" role="separator"></li>
+            <li class="topicDivider"><hr></li>
             <?php foreach ($all_topics as $topic) : ?>
             <li class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" aria-selected="false">
               <input type="checkbox" tabindex="-1" />
