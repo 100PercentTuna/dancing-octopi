@@ -36,12 +36,6 @@
 
 /* Base styles are in style.css - only About-specific overrides here */
 
-/* About page - hero section snug to header */
-.kunaal-about-v22 .hero {
-  margin-top: calc(-1 * var(--mastH, 100px));
-  min-height: calc(100vh + var(--mastH, 100px));
-}
-
 /* Ensure all text elements use CSS variables for dark mode compatibility */
 .hero-title,
 .hero-intro,
@@ -217,24 +211,34 @@ a:focus-visible, button:focus-visible {
 }
 
 /* =============================================
-   HERO - Exact original layout restored
+   HERO - Bleed collage layout
    Scoped to about page to avoid conflicts
 ============================================= */
 .kunaal-about-v22 .hero {
   margin-top: calc(-1 * var(--mastH, 100px));
   min-height: 100svh; /* Use svh for better mobile support, fallback to vh */
   min-height: calc(100vh + var(--mastH, 100px));
-  display: grid;
-  /* Explicit grid: left gutter | 4 photo columns | hero text | right strip | right gutter */
-  grid-template-columns: clamp(16px, 4vw, 60px) repeat(4, minmax(0, 1fr)) minmax(280px, 420px) clamp(64px, 8vw, 120px) clamp(16px, 4vw, 60px);
-  grid-template-rows: 1fr 1fr;
-  gap: 2px;
   background: var(--bg);
   position: relative;
-  overflow: visible; /* Ensure hero section doesn't clip children (like scroll indicator and dog-ear accent) */
-  /* Prevent horizontal scroll */
-  max-width: 100vw;
+  /* Clip overflow horizontally to prevent scrollbar */
+  overflow-x: clip;
+  overflow-y: visible; /* Allow vertical overflow for scroll indicator */
   width: 100%;
+}
+
+/* Hero grid: wider than viewport, centered, with unequal columns */
+.kunaal-about-v22 .hero-grid {
+  display: grid;
+  /* 6 columns: photo1 (narrow) | photo2 (wide) | photo3 (wide) | photo4 (medium) | hero-text (wide) | right-strip (narrow) */
+  grid-template-columns: 10fr 20fr 20fr 18fr 32fr 10fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  /* Wider than viewport for bleed effect */
+  width: min(1800px, 110vw);
+  /* Center the grid */
+  margin-inline: auto;
+  /* Position relative for absolute children */
+  position: relative;
 }
 
 /* Desktop: Explicit grid positioning for photos using stable classes */

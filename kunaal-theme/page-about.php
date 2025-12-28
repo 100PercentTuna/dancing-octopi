@@ -63,8 +63,9 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 ?>
 
 <main id="main">
-<!-- HERO - Exact original layout restored -->
+<!-- HERO - Bleed collage layout -->
 <section class="hero">
+<div class="hero-grid">
 <!-- Row 1 -->
 <?php
 // Render 10 hero photos in grid layout matching reference exactly
@@ -109,12 +110,6 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
     
 </div>
 
-<!-- Scroll indicator - positioned outside hero-text to avoid clipping -->
-<div class="scroll-indicator" id="scrollIndicator">
-    <span class="scroll-indicator-text">Scroll</span>
-    <div class="scroll-indicator-line"></div>
-</div>
-
 <?php
 // Row 1 - Photo 5 (after hero-text)
 if ($photo_count > 4) :
@@ -136,6 +131,13 @@ for ($i = 5; $i < min(10, $photo_count); $i++) :
     <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
+</div>
+
+<!-- Scroll indicator - positioned outside hero-grid to avoid clipping -->
+<div class="scroll-indicator" id="scrollIndicator">
+    <span class="scroll-indicator-text">Scroll</span>
+    <div class="scroll-indicator-line"></div>
+</div>
 </section>
 
 <?php

@@ -195,14 +195,12 @@
   align-items: center;
   padding-top: 2px;
 }
+/* Nav links use canonical double underline utility */
 .nav a {
   font-size: 12.5px;
   color: var(--muted);
   padding: 8px 0;
   position: relative;
-}
-/* Nav links use canonical double underline utility */
-.nav a {
   /* Apply double underline via utility class behavior */
   display: inline;
   text-decoration: underline;
