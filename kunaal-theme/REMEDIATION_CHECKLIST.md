@@ -97,7 +97,14 @@
 - [ ] Review and fix security vulnerabilities (10 total)
 
 ### Web:TableHeaderHasIdOrScopeCheck - Table Accessibility (SonarQube)
-- [ ] Tables missing `id` or `scope` attributes on headers (10 total)
+- [x] `blocks/pub-table/render.php` - **FIXED**: Added `scope="col"` to headers
+- [x] `blocks/data-map/render.php` - **FIXED**: Added `scope="col"` to headers (2 tables)
+- [x] `blocks/dumbbell-chart/render.php` - **FIXED**: Added `scope="col"` to headers
+- [x] `blocks/flow-diagram/render.php` - **FIXED**: Added `scope="col"` to headers
+- [x] `blocks/slopegraph/render.php` - **FIXED**: Added `scope="col"` to headers
+- [x] `blocks/rubric/render.php` - **FIXED**: Added `scope="col"` to headers
+- [x] `blocks/assumptions-register/render.php` - **FIXED**: Added `scope="col"` to headers
+- [ ] Remaining tables (if any) - verify all have scope attributes
 
 ### php:S3358 - Collapsible If Statements (SonarQube)
 - [ ] Files with nested ifs that can be combined (8 total)

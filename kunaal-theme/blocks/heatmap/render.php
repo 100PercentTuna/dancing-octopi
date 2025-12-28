@@ -82,9 +82,9 @@ $block_id = 'heatmap-' . wp_unique_id();
         <table class="heatmap-grid" role="grid" aria-label="<?php echo esc_attr($title ?: 'Heatmap data'); ?>">
             <thead>
                 <tr>
-                    <th class="heatmap-corner"></th>
+                    <th scope="col" class="heatmap-corner"></th>
                     <?php foreach ($column_labels as $col_label) : ?>
-                    <th class="heatmap-col-header <?php echo $rotate_column_labels ? 'rotated' : ''; ?>">
+                    <th scope="col" class="heatmap-col-header <?php echo $rotate_column_labels ? 'rotated' : ''; ?>">
                         <?php echo esc_html($col_label); ?>
                     </th>
                     <?php endforeach; ?>
@@ -93,7 +93,7 @@ $block_id = 'heatmap-' . wp_unique_id();
             <tbody>
                 <?php foreach ($row_labels as $i => $row_label) : ?>
                 <tr>
-                    <th class="heatmap-row-header"><?php echo esc_html($row_label); ?></th>
+                    <th scope="row" class="heatmap-row-header"><?php echo esc_html($row_label); ?></th>
                     <?php
                     $row_data = $data[$i] ?? [];
                     foreach ($column_labels as $j => $col_label) :
@@ -140,16 +140,16 @@ $block_id = 'heatmap-' . wp_unique_id();
             <caption><?php echo esc_html($title ?: 'Heatmap data'); ?></caption>
             <thead>
                 <tr>
-                    <th></th>
+                    <th scope="col"></th>
                     <?php foreach ($column_labels as $col_label) : ?>
-                    <th><?php echo esc_html($col_label); ?></th>
+                    <th scope="col"><?php echo esc_html($col_label); ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($row_labels as $i => $row_label) : ?>
                 <tr>
-                    <th><?php echo esc_html($row_label); ?></th>
+                    <th scope="row"><?php echo esc_html($row_label); ?></th>
                     <?php
                     $row_data = $data[$i] ?? [];
                     foreach ($column_labels as $j => $col_label) :
