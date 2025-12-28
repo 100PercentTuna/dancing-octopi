@@ -302,10 +302,7 @@ function kunaal_register_blocks() {
         return;
     }
     
-    // Use constant for block directory path
-    if (!defined('KUNAAL_BLOCKS_DIR_RELATIVE')) {
-        define('KUNAAL_BLOCKS_DIR_RELATIVE', '/blocks');
-    }
+    // Use constant for block directory path (defined in kunaal_register_block_scripts)
     $blocks_dir = KUNAAL_THEME_DIR . KUNAAL_BLOCKS_DIR_RELATIVE;
     
     // Get all block folders

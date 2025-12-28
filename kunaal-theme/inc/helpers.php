@@ -140,9 +140,9 @@ if (!function_exists('kunaal_render_quote_image')) {
             </div>
             <div class="about-quote-content reveal-up">
                 <p class="about-quote-text">"<?php echo esc_html($img['quote']); ?>"</p>
-                <?php if (!empty($img['quote_attr'])) : ?>
+                <?php if (!empty($img['quote_attr'])) { ?>
                 <span class="about-quote-attr">— <?php echo esc_html($img['quote_attr']); ?></span>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </section>
         <?php
@@ -161,9 +161,9 @@ if (!function_exists('kunaal_render_atmo_image')) {
         ?>
         <div class="atmo-full <?php echo esc_attr($clip_class); ?> about-layer-image">
             <img src="<?php echo esc_url($img['image']); ?>" alt="" class="about-image parallax-slow">
-            <?php if (!empty($img['caption'])) : ?>
+            <?php if (!empty($img['caption'])) { ?>
             <span class="about-quote-caption"><?php echo esc_html($img['caption']); ?></span>
-            <?php endif; ?>
+            <?php } ?>
         </div>
         <?php
     }

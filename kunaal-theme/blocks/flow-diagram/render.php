@@ -82,7 +82,8 @@ $block_id = 'flow-' . wp_unique_id();
                 foreach ($nodes as $node) {
                     $node_map[$node['id']] = $node['label'] ?? $node['id'];
                 }
-                foreach ($links as $link) { ?>
+                foreach ($links as $link) {
+                    ?>
                 <tr>
                     <td><?php echo esc_html($node_map[$link['source']] ?? $link['source']); ?></td>
                     <td><?php echo esc_html($node_map[$link['target']] ?? $link['target']); ?></td>

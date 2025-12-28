@@ -38,11 +38,11 @@
 - [ ] `blocks/flow-diagram/render.php` - Complexity 17 (reduce to 15)
 
 ### php:S3973 - Missing Curly Braces on If Statements (9 issues)
-- [ ] `footer.php` - Missing curly braces
-- [ ] `header.php` - 2 missing curly braces
-- [ ] `single-essay.php` - 2 missing curly braces
-- [ ] `single-jotting.php` - 2 missing curly braces
-- [ ] `blocks/flow-diagram/render.php` - Missing curly braces on foreach
+- [x] `footer.php` - Fixed (already had curly braces)
+- [x] `header.php` - Fixed 1 missing curly brace
+- [x] `single-essay.php` - Fixed 4 missing curly braces
+- [x] `single-jotting.php` - Fixed 3 missing curly braces
+- [x] `blocks/flow-diagram/render.php` - Fixed missing curly braces on foreach
 
 ### php:S6600 - Remove Parentheses from require_once/echo (3 issues)
 - [ ] `functions.php` - 2 require_once parentheses
