@@ -817,6 +817,9 @@
               }
             });
             return;
+          default:
+            // Unknown platform - do nothing
+            return;
         }
 
         if (shareUrl) {

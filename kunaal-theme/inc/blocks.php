@@ -212,8 +212,13 @@ function kunaal_register_block_scripts() {
         return;
     }
 
-    $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
-    $blocks_uri = KUNAAL_THEME_URI . '/blocks';
+    // Constants for block directory paths
+    if (!defined('KUNAAL_BLOCKS_DIR_RELATIVE')) {
+        define('KUNAAL_BLOCKS_DIR_RELATIVE', '/blocks');
+    }
+    
+    $blocks_dir = KUNAAL_THEME_DIR . KUNAAL_BLOCKS_DIR_RELATIVE;
+    $blocks_uri = KUNAAL_THEME_URI . KUNAAL_BLOCKS_DIR_RELATIVE;
     $version = KUNAAL_THEME_VERSION;
     
     // WordPress dependencies for block editor scripts

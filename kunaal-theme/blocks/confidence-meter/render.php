@@ -9,12 +9,17 @@ $show_percentage = $attributes['showPercentage'] ?? true;
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($label)) return;
+if (empty($label)) {
+    return;
+}
 
 // Determine color based on level
 $color = '#eab308'; // default yellow
-if ($level >= 70) $color = '#16a34a'; // green
-elseif ($level < 40) $color = '#dc2626'; // red
+if ($level >= 70) {
+    $color = '#16a34a'; // green
+} elseif ($level < 40) {
+    $color = '#dc2626'; // red
+}
 
 $level_class = $level >= 70 ? 'high' : ($level >= 40 ? 'medium' : 'low');
 ?>

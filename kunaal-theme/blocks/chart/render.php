@@ -150,8 +150,12 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
             <?php elseif ($chart_type === 'stacked-bar' || $chart_type === 'clustered-bar') : ?>
                 <?php
                 $all_series = array($data);
-                if (!empty($data2)) $all_series[] = $data2;
-                if (!empty($data3)) $all_series[] = $data3;
+                if (!empty($data2)) {
+                    $all_series[] = $data2;
+                }
+                if (!empty($data3)) {
+                    $all_series[] = $data3;
+                }
                 $series_count = count($all_series);
                 
                 if ($chart_type === 'stacked-bar') {
@@ -287,8 +291,12 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
             <?php elseif ($chart_type === 'line') : ?>
                 <?php
                 $all_series = array($data);
-                if (!empty($data2)) $all_series[] = $data2;
-                if (!empty($data3)) $all_series[] = $data3;
+                if (!empty($data2)) {
+                    $all_series[] = $data2;
+                }
+                if (!empty($data3)) {
+                    $all_series[] = $data3;
+                }
                 $series_count = count($all_series);
                 
                 $max_value = 0;

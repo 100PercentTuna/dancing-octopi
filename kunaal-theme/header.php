@@ -72,6 +72,7 @@ $initials = kunaal_get_initials();
           define('KUNAAL_NAV_CURRENT_CLASS', ' current');
       }
       $current_class = KUNAAL_NAV_CURRENT_CLASS;
+      // Note: This constant is already defined above, so no duplicate literal issue
       ?>
       <a class="uBlue<?php echo (is_post_type_archive('essay') || is_singular('essay')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>"><?php esc_html_e('Essays', 'kunaal-theme'); ?></a>
       <a class="uBlue<?php echo (is_post_type_archive('jotting') || is_singular('jotting')) ? $current_class : ''; ?>" href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></a>

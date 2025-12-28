@@ -2,7 +2,9 @@
 /**
  * Network Graph Block - Frontend Render
  */
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 $title = $attributes['title'] ?? '';
 $subtitle = $attributes['subtitle'] ?? '';
@@ -81,7 +83,9 @@ $block_id = 'network-' . wp_unique_id();
     <footer class="network-footer">
         <div class="network-legend">
             <?php foreach ($groups as $i => $group) :
-                if (empty($group)) continue;
+                if (empty($group)) {
+                    continue;
+                }
                 $color = $group_colors[$group] ?? $theme_colors[$i % count($theme_colors)];
             ?>
             <span class="legend-item">
