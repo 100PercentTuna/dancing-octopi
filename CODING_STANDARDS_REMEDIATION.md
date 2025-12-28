@@ -16,7 +16,7 @@
 | MAJOR | 42 | 1 | 41 | 🔴 In Progress |
 | MEDIUM | 68 | 0 | 68 | 🔴 Pending |
 | MINOR | 35 | 0 | 35 | 🔴 Pending |
-| **TOTAL** | **175** | **26** | **149** | **15% Complete** |
+| **TOTAL** | **175** | **27** | **148** | **15% Complete** |
 
 ---
 
@@ -967,7 +967,7 @@ After remediation, verify:
 - [ ] S-013: !important usage - Most justified (reduced motion, print, fallbacks) - Reviewed
 - [ ] S-015: Inline styles in block render files - Framework-matrix is acceptable (dynamic grid)
 - [x] S-016: Missing return type declarations - Added to inc/blocks.php, inc/interest-icons.php (remaining files may need review)
-- [ ] S-018: WordPress body class dependencies - Pending
+- [x] S-018: WordPress body class dependencies - Already fixed (stable body classes implemented, no CSS dependencies found)
 
 **MAJOR Issues (42 total):**
 - [x] M-010: Missing 'use strict' - Fixed (added to editor-sidebar.js and color-picker.js)
@@ -1003,7 +1003,7 @@ After remediation, verify:
 
 **Completed:**
 - ✅ All 12 CRITICAL issues (100%)
-- ✅ 13/18 SEVERE issues (72%)
+- ✅ 14/18 SEVERE issues (78%)
   - Type hints, var→const/let, console statements guarded
   - nth-child() replaced with CSS custom properties
   - Return types added to key files
@@ -1030,20 +1030,19 @@ After remediation, verify:
 
 **As of 2025-01-27:**
 
-### ✅ Completed (26 issues - 15%)
+### ✅ Completed (27 issues - 15%)
 - **All 12 CRITICAL issues** - Security vulnerabilities, syntax errors, architecture violations
 - **13 of 18 SEVERE issues** - Type hints, var→const/let, console statements, nth-child fixes, return types
 - **1 of 42 MAJOR issues** - 'use strict' additions
 
-### 🔄 Remaining (149 issues - 85%)
+### 🔄 Remaining (148 issues - 85%)
 
-**SEVERE (5 remaining):**
+**SEVERE (4 remaining - all justified/deferred):**
 - S-005: CDN scripts (deferred - requires bundling)
-- S-006: Inline script (acceptable for FOUC)
-- S-012: Hardcoded colors (187+ instances - extensive migration needed)
-- S-013: !important usage (most justified - reviewed)
-- S-015: Inline styles (acceptable for dynamic content)
-- S-018: WordPress body class dependencies
+- S-006: Inline script (acceptable for FOUC prevention)
+- S-012: Hardcoded colors (187+ instances - extensive migration needed, deferred)
+- S-013: !important usage (most justified - reviewed and acceptable)
+- S-015: Inline styles (acceptable for dynamic content like grid-template-columns)
 
 **MAJOR (41 remaining):**
 - Docblocks on public functions
