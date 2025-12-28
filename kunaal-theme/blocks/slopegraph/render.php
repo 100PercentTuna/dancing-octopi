@@ -42,7 +42,8 @@ $block_id = 'slope-' . wp_unique_id();
         </div>
         
         <svg class="slopegraph-lines" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
-            <?php foreach ($data_rows as $i => $row) :
+            <?php
+            foreach ($data_rows as $i => $row) {
                 $label = $row['label'] ?? '';
                 $left_val = floatval($row['leftValue'] ?? 0);
                 $right_val = floatval($row['rightValue'] ?? 0);
@@ -52,7 +53,7 @@ $block_id = 'slope-' . wp_unique_id();
                 $is_negative = $change < -0.5;
                 $color = $is_positive ? '#7D6B5D' : ($is_negative ? '#C9553D' : '#666');
                 $y = 50 + ($i * 60);
-            ?>
+                ?>
             <g class="slopegraph-row" data-change="<?php echo $is_positive ? 'positive' : ($is_negative ? 'negative' : 'neutral'); ?>" tabindex="0">
                 <circle class="dot dot-left" cx="120" cy="<?php echo $y; ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
                 <line class="slope-line" x1="120" y1="<?php echo $y; ?>" x2="480" y2="<?php echo $y + ($is_positive ? -10 : ($is_negative ? 10 : 0)); ?>"
@@ -72,7 +73,9 @@ $block_id = 'slope-' . wp_unique_id();
                     <?php endif; ?>
                 </text>
             </g>
-            <?php endforeach; ?>
+            <?php
+            }
+            ?>
         </svg>
     </div>
     
@@ -89,16 +92,19 @@ $block_id = 'slope-' . wp_unique_id();
                 <tr><th><?php esc_html_e('Label', 'kunaal-theme'); ?></th><th><?php echo esc_html($left_label); ?></th><th><?php echo esc_html($right_label); ?></th><th><?php esc_html_e('Change', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
-                <?php foreach ($data_rows as $row) :
+                <?php
+                foreach ($data_rows as $row) {
                     $change = floatval($row['rightValue'] ?? 0) - floatval($row['leftValue'] ?? 0);
-                ?>
+                    ?>
                 <tr>
                     <td><?php echo esc_html($row['label'] ?? ''); ?></td>
                     <td><?php echo esc_html(kunaal_format_slope_value($row['leftValue'] ?? 0, $value_format, $currency_symbol)); ?></td>
                     <td><?php echo esc_html(kunaal_format_slope_value($row['rightValue'] ?? 0, $value_format, $currency_symbol)); ?></td>
                     <td><?php echo esc_html(($change >= 0 ? '+' : '') . kunaal_format_slope_value($change, $value_format, $currency_symbol)); ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php
+                }
+                ?>
             </tbody>
         </table>
     </details>

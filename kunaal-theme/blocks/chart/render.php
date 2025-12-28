@@ -42,7 +42,7 @@ while (count($labels) < count($data)) {
 
 // Helper functions are defined in inc/block-helpers.php
 
-// Constants for repeated color values
+// Constants for repeated color values and SVG attributes
 if (!defined('KUNAAL_CHART_COLOR_BLUE_500')) {
     define('KUNAAL_CHART_COLOR_BLUE_500', '#3B82F6');
 }
@@ -51,6 +51,9 @@ if (!defined('KUNAAL_CHART_COLOR_GREEN_500')) {
 }
 if (!defined('KUNAAL_CHART_COLOR_RED_500')) {
     define('KUNAAL_CHART_COLOR_RED_500', '#EF4444');
+}
+if (!defined('KUNAAL_SVG_ATTR_FILL')) {
+    define('KUNAAL_SVG_ATTR_FILL', ' fill="');
 }
 
 // Color schemes

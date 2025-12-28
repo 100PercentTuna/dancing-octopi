@@ -76,29 +76,37 @@ $block_id = 'network-' . wp_unique_id();
         </div>
     </div>
     
-    <?php if ($show_legend && $color_by_group) :
+    <?php
+    if ($show_legend && $color_by_group) {
         $groups = array_unique(array_column($nodes, 'group'));
         $theme_colors = ['#7D6B5D', '#B8A99A', '#C9553D', '#8B7355', '#D4C4B5', '#6B5B4F', '#A08B7A'];
-    ?>
+        ?>
     <footer class="network-footer">
         <div class="network-legend">
-            <?php foreach ($groups as $i => $group) :
+            <?php
+            foreach ($groups as $i => $group) {
                 if (empty($group)) {
                     continue;
                 }
                 $color = $group_colors[$group] ?? $theme_colors[$i % count($theme_colors)];
-            ?>
+                ?>
             <span class="legend-item">
                 <span class="legend-dot" style="background: <?php echo esc_attr($color); ?>"></span>
                 <?php echo esc_html($group); ?>
             </span>
-            <?php endforeach; ?>
+            <?php
+            }
+            ?>
         </div>
         <?php if ($source_note) : ?>
         <p class="network-source"><?php echo esc_html($source_note); ?></p>
-        <?php endif; ?>
+        <?php
+        }
+        ?>
     </footer>
-    <?php endif; ?>
+    <?php
+    }
+    ?>
     
     <details class="network-list-fallback">
         <summary><?php esc_html_e('View as list', 'kunaal-theme'); ?></summary>
@@ -108,11 +116,11 @@ $block_id = 'network-' . wp_unique_id();
             foreach ($nodes as $node) {
                 $node_map[$node['id']] = $node;
             }
-            foreach ($nodes as $node) :
+            foreach ($nodes as $node) {
                 $connections = array_filter($edges, function($e) use ($node) {
                     return $e['source'] === $node['id'] || $e['target'] === $node['id'];
                 });
-            ?>
+                ?>
             <li>
                 <strong><?php echo esc_html($node['label'] ?? $node['id']); ?></strong>
                 <?php if (!empty($node['group'])) : ?>
@@ -120,10 +128,11 @@ $block_id = 'network-' . wp_unique_id();
                 <?php endif; ?>
                 <?php if (!empty($connections)) : ?>
                 <ul>
-                    <?php foreach ($connections as $edge) :
+                    <?php
+                    foreach ($connections as $edge) {
                         $other_id = $edge['source'] === $node['id'] ? $edge['target'] : $edge['source'];
                         $other_node = $node_map[$other_id] ?? null;
-                    ?>
+                        ?>
                     <li>
                         <?php esc_html_e('Connected to:', 'kunaal-theme'); ?>
                         <?php echo esc_html($other_node['label'] ?? $other_id); ?>
@@ -131,11 +140,15 @@ $block_id = 'network-' . wp_unique_id();
                         (<?php echo esc_html($edge['label']); ?>)
                         <?php endif; ?>
                     </li>
-                    <?php endforeach; ?>
+                    <?php
+                    }
+                    ?>
                 </ul>
                 <?php endif; ?>
             </li>
-            <?php endforeach; ?>
+            <?php
+            }
+            ?>
         </ul>
     </details>
 </figure>

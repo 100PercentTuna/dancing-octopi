@@ -142,12 +142,16 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
                 <tr><th><?php esc_html_e('Region', 'kunaal-theme'); ?></th><th><?php echo esc_html($value_label); ?></th></tr>
             </thead>
             <tbody>
-                <?php foreach ($region_data as $region) : ?>
+                <?php
+                foreach ($region_data as $region) {
+                    ?>
                 <tr>
                     <td><?php echo esc_html($region['label'] ?? $region['code'] ?? ''); ?></td>
                     <td><?php echo esc_html(kunaal_format_map_value($region['value'] ?? 0, $value_format, $currency_symbol, $value_suffix)); ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php
+                }
+                ?>
             </tbody>
             <?php endif; ?>
             <?php if ($map_type === 'dots' || $map_type === 'gradient-dots' || $map_type === 'combined') : ?>
@@ -155,12 +159,16 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
                 <tr><th><?php esc_html_e('Location', 'kunaal-theme'); ?></th><th><?php echo esc_html($value_label); ?></th></tr>
             </thead>
             <tbody>
-                <?php foreach ($point_data as $point) : ?>
+                <?php
+                foreach ($point_data as $point) {
+                    ?>
                 <tr>
                     <td><?php echo esc_html($point['label'] ?? $point['lat'] . ', ' . $point['lng']); ?></td>
                     <td><?php echo esc_html(kunaal_format_map_value($point['value'] ?? 0, $value_format, $currency_symbol, $value_suffix)); ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php
+                }
+                ?>
             </tbody>
             <?php endif; ?>
         </table>

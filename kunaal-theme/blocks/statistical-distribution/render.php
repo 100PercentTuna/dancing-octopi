@@ -65,14 +65,15 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
     
     <div class="stat-dist-chart">
         <svg class="stat-dist-visual" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
-            <?php foreach ($stats_data as $i => $stat) :
+            <?php
+            foreach ($stats_data as $i => $stat) {
                 $y = 50 + ($i * 60);
                 $min_x = 140 + (($stat['min'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 $q1_x = 140 + (($stat['q1'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 $median_x = 140 + (($stat['median'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 $q3_x = 140 + (($stat['q3'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 $max_x = 140 + (($stat['max'] - $axis_min) / ($axis_max - $axis_min)) * 560;
-            ?>
+                ?>
             <g class="stat-group" data-group="<?php echo esc_attr($stat['label']); ?>" transform="translate(0, <?php echo $y; ?>)">
                 <text class="stat-label" x="10" y="25"><?php echo esc_html($stat['label']); ?></text>
                 
@@ -100,23 +101,31 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                         $outlier_x = 140 + (($outlier - $axis_min) / ($axis_max - $axis_min)) * 560;
                 ?>
                 <circle class="stat-outlier" cx="<?php echo $outlier_x; ?>" cy="20" r="4" fill="var(--terracotta)"/>
-                <?php endforeach; endif; ?>
+                <?php
+                }
+                }
+                ?>
                 <?php endif; ?>
             </g>
-            <?php endforeach; ?>
+            <?php
+            }
+            ?>
             
             <!-- Axis -->
             <g class="stat-axis stat-axis-x">
                 <line x1="140" y1="380" x2="700" y2="380" stroke="var(--muted)" stroke-width="1"/>
-                <?php for ($i = 0; $i <= 4; $i++) :
+                <?php
+                for ($i = 0; $i <= 4; $i++) {
                     $x = 140 + ($i / 4) * 560;
                     $val = $axis_min + ($i / 4) * ($axis_max - $axis_min);
-                ?>
+                    ?>
                 <line x1="<?php echo $x; ?>" y1="375" x2="<?php echo $x; ?>" y2="380" stroke="var(--muted)" stroke-width="1"/>
                 <text x="<?php echo $x; ?>" y="395" text-anchor="middle" class="axis-label">
                     <?php echo esc_html(kunaal_format_stat_value($val, $value_format, $currency_symbol)); ?>
                 </text>
-                <?php endfor; ?>
+                <?php
+                }
+                ?>
             </g>
         </svg>
     </div>
@@ -136,7 +145,9 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($stats_data as $stat) : ?>
+                <?php
+                foreach ($stats_data as $stat) {
+                    ?>
                 <tr>
                     <td><?php echo esc_html($stat['label']); ?></td>
                     <td><?php echo esc_html(kunaal_format_stat_value($stat['min'], $value_format, $currency_symbol)); ?></td>
@@ -145,7 +156,9 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                     <td><?php echo esc_html(kunaal_format_stat_value($stat['q3'], $value_format, $currency_symbol)); ?></td>
                     <td><?php echo esc_html(kunaal_format_stat_value($stat['max'], $value_format, $currency_symbol)); ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php
+                }
+                ?>
             </tbody>
         </table>
     </div>

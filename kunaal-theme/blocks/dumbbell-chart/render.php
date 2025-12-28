@@ -67,20 +67,24 @@ $block_id = 'dumbbell-' . wp_unique_id();
             <?php if ($show_axis) : ?>
             <g class="dumbbell-axis">
                 <line x1="140" y1="380" x2="700" y2="380" stroke="var(--muted)" stroke-width="1"/>
-                <?php for ($i = 0; $i <= 4; $i++) :
+                <?php
+                for ($i = 0; $i <= 4; $i++) {
                     $x = 140 + ($i / 4) * 560;
                     $val = $axis_min + ($i / 4) * ($axis_max - $axis_min);
-                ?>
+                    ?>
                 <line x1="<?php echo $x; ?>" y1="375" x2="<?php echo $x; ?>" y2="380" stroke="var(--muted)" stroke-width="1"/>
                 <text x="<?php echo $x; ?>" y="395" text-anchor="middle" class="axis-label">
                     <?php echo esc_html(kunaal_format_dumbbell_value($val, $value_format, $currency_symbol)); ?>
                 </text>
-                <?php endfor; ?>
+                    <?php
+                }
+                ?>
             </g>
             <?php endif; ?>
             
             <g class="dumbbell-rows">
-                <?php foreach ($data_rows as $i => $row) :
+                <?php
+                foreach ($data_rows as $i => $row) {
                     $category = $row['category'] ?? '';
                     $start_val = floatval($row['startValue'] ?? 0);
                     $end_val = floatval($row['endValue'] ?? 0);
@@ -90,7 +94,7 @@ $block_id = 'dumbbell-' . wp_unique_id();
                     $start_x = 140 + (($start_val - $axis_min) / ($axis_max - $axis_min)) * 560;
                     $end_x = 140 + (($end_val - $axis_min) / ($axis_max - $axis_min)) * 560;
                     $y = 50 + ($i * 60);
-                ?>
+                    ?>
                 <g class="dumbbell-row" data-category="<?php echo esc_attr($category); ?>" tabindex="0">
                     <text class="dumbbell-label" x="10" y="<?php echo $y + 5; ?>"><?php echo esc_html($category); ?></text>
                     <circle class="dumbbell-dot dumbbell-dot-start" cx="<?php echo $start_x; ?>" cy="<?php echo $y; ?>" r="8" fill="<?php echo esc_attr($start_color); ?>"/>
@@ -110,9 +114,13 @@ $block_id = 'dumbbell-' . wp_unique_id();
                     <text class="dumbbell-gap" x="720" y="<?php echo $y + 5; ?>" text-anchor="end">
                         <?php echo esc_html($gap_prefix . kunaal_format_dumbbell_value($gap, $value_format, $currency_symbol) . $gap_suffix); ?>
                     </text>
-                    <?php endif; ?>
+                    <?php
+                    }
+                    ?>
                 </g>
-                <?php endforeach; ?>
+                <?php
+                }
+                ?>
             </g>
         </svg>
     </div>
@@ -142,16 +150,19 @@ $block_id = 'dumbbell-' . wp_unique_id();
                 <tr><th><?php esc_html_e('Category', 'kunaal-theme'); ?></th><th><?php echo esc_html($start_label); ?></th><th><?php echo esc_html($end_label); ?></th><th><?php esc_html_e('Gap', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
-                <?php foreach ($data_rows as $row) :
+                <?php
+                foreach ($data_rows as $row) {
                     $gap = floatval($row['endValue'] ?? 0) - floatval($row['startValue'] ?? 0);
-                ?>
+                    ?>
                 <tr>
                     <td><?php echo esc_html($row['category'] ?? ''); ?></td>
                     <td><?php echo esc_html(kunaal_format_dumbbell_value($row['startValue'] ?? 0, $value_format, $currency_symbol)); ?></td>
                     <td><?php echo esc_html(kunaal_format_dumbbell_value($row['endValue'] ?? 0, $value_format, $currency_symbol)); ?></td>
                     <td><?php echo esc_html($gap_prefix . kunaal_format_dumbbell_value($gap, $value_format, $currency_symbol) . $gap_suffix); ?></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php
+                }
+                ?>
             </tbody>
         </table>
     </details>
