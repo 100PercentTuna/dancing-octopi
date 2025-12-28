@@ -202,6 +202,65 @@ function kunaal_get_view_script_blocks() {
 // ========================================
 
 /**
+ * Register editor scripts for all blocks
+ * 
+ * @param string $blocks_dir Block directory path
+ * @param string $blocks_uri Block directory URI
+ * @param string $version Theme version
+ */
+function kunaal_register_editor_scripts($blocks_dir, $blocks_uri, $version) {
+    $editor_deps = array(
+        'wp-blocks',
+        'wp-element',
+        'wp-block-editor',
+        'wp-components',
+        'wp-i18n',
+    );
+    
+    $block_definitions = kunaal_get_block_definitions();
+    $all_blocks = array();
+    foreach ($block_definitions as $category => $blocks) {
+        $all_blocks = array_merge($all_blocks, $blocks);
+    }
+    
+    foreach ($all_blocks as $block) {
+        $script_path = $blocks_dir . '/' . $block . '/edit.js';
+        if (file_exists($script_path)) {
+            wp_register_script(
+                'kunaal-' . $block . '-editor',
+                $blocks_uri . '/' . $block . '/edit.js',
+                $editor_deps,
+                $version,
+                true
+            );
+        }
+    }
+}
+
+/**
+ * Register view scripts for blocks with frontend JS
+ * 
+ * @param string $blocks_dir Block directory path
+ * @param string $blocks_uri Block directory URI
+ * @param string $version Theme version
+ */
+function kunaal_register_view_scripts($blocks_dir, $blocks_uri, $version) {
+    $view_blocks = kunaal_get_view_script_blocks();
+    foreach ($view_blocks as $block) {
+        $view_path = $blocks_dir . '/' . $block . '/view.js';
+        if (file_exists($view_path)) {
+            wp_register_script(
+                'kunaal-' . $block . '-view',
+                $blocks_uri . '/' . $block . '/view.js',
+                array(),
+                $version,
+                true
+            );
+        }
+    }
+}
+
+/**
  * Register Block Editor Scripts
  *
  * Registers edit.js for each block and view.js for blocks
@@ -221,50 +280,8 @@ function kunaal_register_block_scripts() {
     $blocks_uri = KUNAAL_THEME_URI . KUNAAL_BLOCKS_DIR_RELATIVE;
     $version = KUNAAL_THEME_VERSION;
     
-    // WordPress dependencies for block editor scripts
-    $editor_deps = array(
-        'wp-blocks',
-        'wp-element',
-        'wp-block-editor',
-        'wp-components',
-        'wp-i18n',
-    );
-    
-    // Get all block folders
-    $block_definitions = kunaal_get_block_definitions();
-    $all_blocks = array();
-    foreach ($block_definitions as $category => $blocks) {
-        $all_blocks = array_merge($all_blocks, $blocks);
-    }
-    
-    // Register editor scripts for each block
-    foreach ($all_blocks as $block) {
-        $script_path = $blocks_dir . '/' . $block . '/edit.js';
-        if (file_exists($script_path)) {
-            wp_register_script(
-                'kunaal-' . $block . '-editor',
-                $blocks_uri . '/' . $block . '/edit.js',
-                $editor_deps,
-                $version,
-                true
-            );
-        }
-    }
-    
-    // Register view scripts for blocks with frontend JS
-    $view_blocks = kunaal_get_view_script_blocks();
-    foreach ($view_blocks as $block) {
-        $view_path = $blocks_dir . '/' . $block . '/view.js';
-        if (file_exists($view_path)) {
-            wp_register_script(
-                'kunaal-' . $block . '-view',
-                $blocks_uri . '/' . $block . '/view.js',
-                array(),
-                $version,
-                true
-            );
-        }
-    }
+    kunaal_register_editor_scripts($blocks_dir, $blocks_uri, $version);
+    kunaal_register_view_scripts($blocks_dir, $blocks_uri, $version);
 }
 add_action('init', 'kunaal_register_block_scripts', 5);
 

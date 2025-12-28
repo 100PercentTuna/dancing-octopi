@@ -43,7 +43,7 @@ $point_data = $attributes['pointData'] ?? [];
 $block_id = 'data-map-' . wp_unique_id();
 
 // Calculate min/max for legend
-$all_values = [];
+$all_values = array();
 foreach ($region_data as $region) {
     if (isset($region['value']) && is_numeric($region['value'])) {
         $all_values[] = floatval($region['value']);

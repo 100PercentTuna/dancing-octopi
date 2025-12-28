@@ -107,14 +107,14 @@ if (!function_exists('kunaal_format_compact_value')) {
 if (!function_exists('kunaal_format_map_value')) {
     function kunaal_format_map_value($value, $format, $currency = '$', $suffix = '') {
         $format_handlers = array(
-            'percent' => function($v, $c, $s) { return round($v, 1) . '%'; },
-            'currency' => function($v, $c, $s) { return $c . number_format($v) . ($s ? ' ' . $s : ''); },
-            'compact' => function($v, $c, $s) { return kunaal_format_compact_value($v, $c, $s); },
-            'decimal1' => function($v, $c, $s) { return number_format($v, 1) . ($s ? ' ' . $s : ''); },
+            'percent' => function($v) { return round($v, 1) . '%'; },
+            'currency' => function($v) use ($currency, $suffix) { return $currency . number_format($v) . ($suffix ? ' ' . $suffix : ''); },
+            'compact' => function($v) use ($currency, $suffix) { return kunaal_format_compact_value($v, $currency, $suffix); },
+            'decimal1' => function($v) use ($suffix) { return number_format($v, 1) . ($suffix ? ' ' . $suffix : ''); },
         );
         
         if (isset($format_handlers[$format])) {
-            return $format_handlers[$format]($value, $currency, $suffix);
+            return $format_handlers[$format]($value);
         }
         
         return round($value) . ($suffix ? ' ' . $suffix : '');
@@ -379,25 +379,48 @@ if (!function_exists('kunaal_format_heatmap_value')) {
  * @param string $mid Mid color (for diverging)
  * @return string RGB color string
  */
+/**
+ * Get normalized value for color calculation
+ * 
+ * @param float $value Cell value
+ * @param float $min Minimum value
+ * @param float $max Maximum value
+ * @return float Normalized value (0-1)
+ */
+function kunaal_normalize_value($value, $min, $max) {
+    if ($max <= $min) {
+        return 0.5;
+    }
+    return ($value - $min) / ($max - $min);
+}
+
+/**
+ * Get diverging color scale
+ * 
+ * @param float $normalized Normalized value (0-1)
+ * @param string $low Low color
+ * @param string $mid Mid color
+ * @param string $high High color
+ * @return string RGB color string
+ */
+function kunaal_get_diverging_color($normalized, $low, $mid, $high) {
+    if ($normalized < 0.5) {
+        return kunaal_interpolate_color($low, $mid, $normalized * 2);
+    }
+    return kunaal_interpolate_color($mid, $high, ($normalized - 0.5) * 2);
+}
+
 if (!function_exists('kunaal_get_cell_color')) {
     function kunaal_get_cell_color($value, $min, $max, $scale, $low, $high, $mid = '') {
-        if ($max <= $min) {
-            $normalized = 0.5;
-        } else {
-            $normalized = ($value - $min) / ($max - $min);
-        }
+        $normalized = kunaal_normalize_value($value, $min, $max);
         
         if ($scale === 'custom') {
             return kunaal_interpolate_color($low, $high, $normalized);
-        } elseif ($scale === 'diverging' && $mid) {
-            if ($normalized < 0.5) {
-                return kunaal_interpolate_color($low, $mid, $normalized * 2);
-            } else {
-                return kunaal_interpolate_color($mid, $high, ($normalized - 0.5) * 2);
-            }
-        } else {
-            return kunaal_get_theme_color($normalized);
         }
+        if ($scale === 'diverging' && $mid) {
+            return kunaal_get_diverging_color($normalized, $low, $mid, $high);
+        }
+        return kunaal_get_theme_color($normalized);
     }
 }
 

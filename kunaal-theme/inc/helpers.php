@@ -294,34 +294,55 @@ if (!function_exists('kunaal_home_recent_ids')) {
  * @param int|WP_Post $post Post ID or post object
  * @return void Outputs HTML
  */
+/**
+ * Get essay card data
+ * 
+ * @param int $post_id Post ID
+ * @return array|false Card data array or false if invalid
+ */
+function kunaal_get_essay_card_data($post_id) {
+    $post_obj = get_post($post_id);
+    if (!$post_obj) {
+        return false;
+    }
+    
+    $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
+    $read_time = get_post_meta($post_id, 'kunaal_read_time', true);
+    $topics = get_the_terms($post_id, 'topic');
+    $card_image = function_exists('kunaal_get_card_image_url') ? kunaal_get_card_image_url($post_id) : '';
+    $topic_slugs = array();
+    
+    if ($topics && !is_wp_error($topics)) {
+        foreach ($topics as $t) {
+            $topic_slugs[] = $t->slug;
+        }
+    }
+    
+    return array(
+        'title' => get_the_title($post_id),
+        'permalink' => get_permalink($post_id),
+        'date' => get_the_date('Y-m-d', $post_id),
+        'date_display' => get_the_date('j F Y', $post_id),
+        'title_attr' => esc_attr(get_the_title($post_id)),
+        'subtitle' => $subtitle,
+        'read_time' => $read_time,
+        'topics' => $topics,
+        'card_image' => $card_image,
+        'topic_slugs' => $topic_slugs,
+        'post_id' => $post_id,
+    );
+}
+
 if (!function_exists('kunaal_render_essay_card')) {
     function kunaal_render_essay_card($post) {
         $post_id = is_object($post) ? $post->ID : (int) $post;
-        $post_obj = is_object($post) ? $post : get_post($post_id);
+        $data = kunaal_get_essay_card_data($post_id);
         
-        if (!$post_obj) {
+        if (!$data) {
             return;
         }
         
-        // Get post data directly (don't modify global $post)
-        $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
-        $read_time = get_post_meta($post_id, 'kunaal_read_time', true);
-        $topics = get_the_terms($post_id, 'topic');
-        $card_image = function_exists('kunaal_get_card_image_url') ? kunaal_get_card_image_url($post_id) : '';
-        $topic_slugs = array();
-        
-        if ($topics && !is_wp_error($topics)) {
-            foreach ($topics as $t) {
-                $topic_slugs[] = $t->slug;
-            }
-        }
-        
-        // Get post data using direct function calls (safer, no global state)
-        $title = get_the_title($post_id);
-        $permalink = get_permalink($post_id);
-        $date = get_the_date('Y-m-d', $post_id);
-        $date_display = get_the_date('j F Y', $post_id);
-        $title_attr = esc_attr(get_the_title($post_id));
+        extract($data);
         ?>
         <li>
         <a href="<?php echo esc_url($permalink); ?>" class="card"
@@ -380,31 +401,49 @@ if (!function_exists('kunaal_render_essay_card')) {
  * @param int|WP_Post $post Post ID or post object
  * @return void Outputs HTML
  */
+/**
+ * Get jotting row data
+ * 
+ * @param int $post_id Post ID
+ * @return array|false Row data array or false if invalid
+ */
+function kunaal_get_jotting_row_data($post_id) {
+    $post_obj = get_post($post_id);
+    if (!$post_obj) {
+        return false;
+    }
+    
+    $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
+    $topics = get_the_terms($post_id, 'topic');
+    $topic_slugs = array();
+    
+    if ($topics && !is_wp_error($topics)) {
+        foreach ($topics as $t) {
+            $topic_slugs[] = $t->slug;
+        }
+    }
+    
+    return array(
+        'title' => get_the_title($post_id),
+        'permalink' => get_permalink($post_id),
+        'date' => get_the_date('Y-m-d', $post_id),
+        'date_display' => get_the_date('j M Y', $post_id),
+        'subtitle' => $subtitle,
+        'topics' => $topics,
+        'topic_slugs' => $topic_slugs,
+    );
+}
+
 if (!function_exists('kunaal_render_jotting_row')) {
     function kunaal_render_jotting_row($post) {
         $post_id = is_object($post) ? $post->ID : (int) $post;
-        $post_obj = is_object($post) ? $post : get_post($post_id);
+        $data = kunaal_get_jotting_row_data($post_id);
         
-        if (!$post_obj) {
+        if (!$data) {
             return;
         }
         
-        // Get post data directly (don't modify global $post)
-        $subtitle = get_post_meta($post_id, 'kunaal_subtitle', true);
-        $topics = get_the_terms($post_id, 'topic');
-        $topic_slugs = array();
-        
-        if ($topics && !is_wp_error($topics)) {
-            foreach ($topics as $t) {
-                $topic_slugs[] = $t->slug;
-            }
-        }
-        
-        // Get post data using direct function calls (safer, no global state)
-        $title = get_the_title($post_id);
-        $permalink = get_permalink($post_id);
-        $date = get_the_date('Y-m-d', $post_id);
-        $date_display = get_the_date('j M Y', $post_id);
+        extract($data);
         ?>
         <li>
         <a href="<?php echo esc_url($permalink); ?>" class="jRow"
