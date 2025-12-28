@@ -120,7 +120,6 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
               <a href="<?php echo esc_url(get_term_link($topic)); ?>">#<?php echo esc_html($topic->name); ?></a>
               <?php }
           } ?>
-          ?>
         </div>
         
         <h1 class="articleTitle"><?php the_title(); ?></h1>
@@ -135,7 +134,6 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
           <?php the_post_thumbnail('essay-hero'); ?>
         </figure>
       <?php } ?>
-      ?>
 
       <div class="articleContent">
         <div class="prose" id="articleProse">

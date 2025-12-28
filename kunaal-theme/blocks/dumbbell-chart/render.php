@@ -72,8 +72,8 @@ $block_id = 'dumbbell-' . wp_unique_id();
                     $x = 140 + ($i / 4) * 560;
                     $val = $axis_min + ($i / 4) * ($axis_max - $axis_min);
                     ?>
-                <line x1="<?php echo $x; ?>" y1="375" x2="<?php echo $x; ?>" y2="380" stroke="var(--muted)" stroke-width="1"/>
-                <text x="<?php echo $x; ?>" y="395" text-anchor="middle" class="axis-label">
+                <line x1="<?php echo esc_attr($x); ?>" y1="375" x2="<?php echo esc_attr($x); ?>" y2="380" stroke="var(--muted)" stroke-width="1"/>
+                <text x="<?php echo esc_attr($x); ?>" y="395" text-anchor="middle" class="axis-label">
                     <?php echo esc_html(kunaal_format_dumbbell_value($val, $value_format, $currency_symbol)); ?>
                 </text>
                 <?php
@@ -96,22 +96,22 @@ $block_id = 'dumbbell-' . wp_unique_id();
                     $y = 50 + ($i * 60);
                     ?>
                 <g class="dumbbell-row" data-category="<?php echo esc_attr($category); ?>" tabindex="0">
-                    <text class="dumbbell-label" x="10" y="<?php echo $y + 5; ?>"><?php echo esc_html($category); ?></text>
-                    <circle class="dumbbell-dot dumbbell-dot-start" cx="<?php echo $start_x; ?>" cy="<?php echo $y; ?>" r="8" fill="<?php echo esc_attr($start_color); ?>"/>
+                    <text class="dumbbell-label" x="10" y="<?php echo esc_attr($y + 5); ?>"><?php echo esc_html($category); ?></text>
+                    <circle class="dumbbell-dot dumbbell-dot-start" cx="<?php echo esc_attr($start_x); ?>" cy="<?php echo esc_attr($y); ?>" r="8" fill="<?php echo esc_attr($start_color); ?>"/>
                     <line class="dumbbell-connector"
-                          x1="<?php echo $start_x; ?>" y1="<?php echo $y; ?>"
-                          x2="<?php echo $end_x; ?>" y2="<?php echo $y; ?>"
+                          x1="<?php echo esc_attr($start_x); ?>" y1="<?php echo esc_attr($y); ?>"
+                          x2="<?php echo esc_attr($end_x); ?>" y2="<?php echo esc_attr($y); ?>"
                           stroke="url(#dumbbell-gradient-<?php echo esc_attr($block_id); ?>)"
                           stroke-width="4"/>
-                    <circle class="dumbbell-dot dumbbell-dot-end" cx="<?php echo $end_x; ?>" cy="<?php echo $y; ?>" r="8" fill="<?php echo esc_attr($end_color); ?>"/>
-                    <text class="dumbbell-value dumbbell-value-start" x="<?php echo $start_x; ?>" y="<?php echo $y + 20; ?>" text-anchor="middle">
+                    <circle class="dumbbell-dot dumbbell-dot-end" cx="<?php echo esc_attr($end_x); ?>" cy="<?php echo esc_attr($y); ?>" r="8" fill="<?php echo esc_attr($end_color); ?>"/>
+                    <text class="dumbbell-value dumbbell-value-start" x="<?php echo esc_attr($start_x); ?>" y="<?php echo esc_attr($y + 20); ?>" text-anchor="middle">
                         <?php echo esc_html(kunaal_format_dumbbell_value($start_val, $value_format, $currency_symbol)); ?>
                     </text>
-                    <text class="dumbbell-value dumbbell-value-end" x="<?php echo $end_x; ?>" y="<?php echo $y + 20; ?>" text-anchor="middle">
+                    <text class="dumbbell-value dumbbell-value-end" x="<?php echo esc_attr($end_x); ?>" y="<?php echo esc_attr($y + 20); ?>" text-anchor="middle">
                         <?php echo esc_html(kunaal_format_dumbbell_value($end_val, $value_format, $currency_symbol)); ?>
                     </text>
                     <?php if ($show_gap) { ?>
-                    <text class="dumbbell-gap" x="720" y="<?php echo $y + 5; ?>" text-anchor="end">
+                    <text class="dumbbell-gap" x="720" y="<?php echo esc_attr($y + 5); ?>" text-anchor="end">
                         <?php echo esc_html($gap_prefix . kunaal_format_dumbbell_value($gap, $value_format, $currency_symbol) . $gap_suffix); ?>
                     </text>
                     <?php } ?>

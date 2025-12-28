@@ -91,20 +91,20 @@ $block_id = 'slope-' . wp_unique_id();
                 $y = 50 + ($i * 60);
                 ?>
             <g class="slopegraph-row" data-change="<?php echo esc_attr($change_type); ?>" tabindex="0">
-                <circle class="dot dot-left" cx="120" cy="<?php echo $y; ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
-                <line class="slope-line" x1="120" y1="<?php echo $y; ?>" x2="480" y2="<?php echo $y + $right_offset; ?>"
+                <circle class="dot dot-left" cx="120" cy="<?php echo esc_attr($y); ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
+                <line class="slope-line" x1="120" y1="<?php echo esc_attr($y); ?>" x2="480" y2="<?php echo esc_attr($y + $right_offset); ?>"
                       stroke="<?php echo esc_attr($color); ?>" stroke-width="2"/>
-                <circle class="dot dot-right" cx="480" cy="<?php echo $y + $right_offset; ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
-                <text class="label label-left" x="10" y="<?php echo $y + 5; ?>"><?php echo esc_html($label); ?></text>
-                <text class="value value-left" x="100" y="<?php echo $y + 5; ?>" text-anchor="end">
+                <circle class="dot dot-right" cx="480" cy="<?php echo esc_attr($y + $right_offset); ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
+                <text class="label label-left" x="10" y="<?php echo esc_attr($y + 5); ?>"><?php echo esc_html($label); ?></text>
+                <text class="value value-left" x="100" y="<?php echo esc_attr($y + 5); ?>" text-anchor="end">
                     <?php echo esc_html(kunaal_format_slope_value($left_val, $value_format, $currency_symbol)); ?>
                 </text>
-                <text class="label label-right" x="490" y="<?php echo $y + $text_offset; ?>"><?php echo esc_html($label); ?></text>
-                <text class="value value-right" x="570" y="<?php echo $y + $text_offset; ?>" text-anchor="end">
+                <text class="label label-right" x="490" y="<?php echo esc_attr($y + $text_offset); ?>"><?php echo esc_html($label); ?></text>
+                <text class="value value-right" x="570" y="<?php echo esc_attr($y + $text_offset); ?>" text-anchor="end">
                     <?php echo esc_html(kunaal_format_slope_value($right_val, $value_format, $currency_symbol)); ?>
                     <?php if ($show_pct) { ?>
                     <tspan class="pct-change" fill="<?php echo esc_attr($color); ?>">
-                        (<?php echo $change >= 0 ? '+' : ''; ?><?php echo round($pct_change, 1); ?>%)
+                        (<?php echo esc_html($change >= 0 ? '+' : ''); ?><?php echo esc_html(round($pct_change, 1)); ?>%)
                     </tspan>
                     <?php } ?>
                 </text>

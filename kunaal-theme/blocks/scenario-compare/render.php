@@ -15,7 +15,7 @@ $probability_labels = ['high' => 'High Likelihood', 'medium' => 'Medium', 'low' 
     <?php if ($title) : ?>
         <h3 class="sc-title"><?php echo esc_html($title); ?></h3>
     <?php endif; ?>
-    <div class="sc-grid" style="grid-template-columns: repeat(<?php echo count($scenarios); ?>, 1fr);">
+    <div class="sc-grid" style="grid-template-columns: repeat(<?php echo esc_attr(count($scenarios)); ?>, 1fr);">
         <?php foreach ($scenarios as $scenario) : ?>
             <div class="sc-card sc-<?php echo esc_attr($scenario['probability'] ?? 'medium'); ?>">
                 <div class="sc-card-header">

@@ -70,7 +70,7 @@ $all_topics = kunaal_get_all_topics();
       <h2>Essays</h2>
       <span class="sectionCount">
         <span id="essayCountShown"><?php echo esc_html($total_essays); ?></span>
-        <span id="essayLabel"><?php echo $total_essays == 1 ? 'essay' : 'essays'; ?></span>
+        <span id="essayLabel"><?php echo esc_html($total_essays == 1 ? 'essay' : 'essays'); ?></span>
       </span>
     </div>
 

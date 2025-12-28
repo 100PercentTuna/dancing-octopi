@@ -24,7 +24,7 @@
       return; // Skip if config incomplete
     }
     
-    var logData = {
+    const logData = {
       location: location,
       message: message,
       data: data || {},
@@ -33,7 +33,7 @@
       runId: 'run1',
       hypothesisId: hypothesisId || ''
     };
-    var formData = new FormData();
+    const formData = new FormData();
     formData.append('action', 'kunaal_debug_log');
     formData.append('log_data', JSON.stringify(logData));
     formData.append('nonce', window.kunaalAboutV22.nonce);
@@ -48,7 +48,7 @@
     });
   }
 
-  var reduceMotion = false;
+  let reduceMotion = false;
   try {
     reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) {
@@ -76,7 +76,7 @@
     debugLog('about-page-v22.js:33', 'init() called', {viewportWidth:window.innerWidth,viewportHeight:window.innerHeight}, 'H2.1,H3.1,H4.1');
     // #endregion
     
-    var gsapOk = hasGSAP();
+    const gsapOk = hasGSAP();
     // #region agent log
     debugLog('about-page-v22.js:36', 'GSAP check', {gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger}, 'H2.1');
     // #endregion
@@ -111,22 +111,22 @@
     
     // #region agent log - Check dog-ear and scroll indicator after init
     setTimeout(function() {
-      var accentPhoto = document.querySelector('.hero-photo.has-accent');
-      var scrollIndicator = document.getElementById('scrollIndicator');
+      const accentPhoto = document.querySelector('.hero-photo.has-accent');
+      const scrollIndicator = document.getElementById('scrollIndicator');
       if (accentPhoto) {
         // Ensure overflow: visible is applied (in case something overrides it)
-        var computedOverflow = window.getComputedStyle(accentPhoto).overflow;
+        const computedOverflow = window.getComputedStyle(accentPhoto).overflow;
         if (computedOverflow !== 'visible') {
           accentPhoto.style.overflow = 'visible';
         }
-        var img = accentPhoto.querySelector('img');
-        var before = window.getComputedStyle(accentPhoto, '::before');
-        var imgStyles = window.getComputedStyle(img);
+        const img = accentPhoto.querySelector('img');
+        const before = window.getComputedStyle(accentPhoto, '::before');
+        const imgStyles = window.getComputedStyle(img);
         debugLog('about-page-v22.js:58', 'Dog-ear styles check', {hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow}, 'H1.1,H1.2,H1.3,H1.5');
       }
       if (scrollIndicator) {
-        var siStyles = window.getComputedStyle(scrollIndicator);
-        var rect = scrollIndicator.getBoundingClientRect();
+        const siStyles = window.getComputedStyle(scrollIndicator);
+        const rect = scrollIndicator.getBoundingClientRect();
         debugLog('about-page-v22.js:65', 'Scroll indicator check', {exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H2.2,H2.3,H2.5');
       }
     }, 1000);
@@ -143,12 +143,12 @@
     
     if (reduceMotion || !gsapOk) return;
     try {
-      var scrollIndicator = document.getElementById('scrollIndicator');
+      const scrollIndicator = document.getElementById('scrollIndicator');
       // #region agent log
       debugLog('about-page-v22.js:120', 'Scroll indicator before GSAP', {exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null}, 'H2.1');
       // #endregion
       
-      var tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
+      const tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
         .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
         .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
@@ -174,11 +174,11 @@
       // Scroll indicator is now in-flow (not fixed) - only adjust opacity if needed
       // No display toggles to avoid layout shifts
       if (scrollIndicator) {
-        var scrollFadeHandler = function() {
-          var scrollY = window.scrollY || window.pageYOffset;
-          var fadeStart = 100; // Start fading after 100px scroll
-          var fadeEnd = 300; // Fully faded at 300px
-          var opacity = 1;
+        const scrollFadeHandler = function() {
+          const scrollY = window.scrollY || window.pageYOffset;
+          const fadeStart = 100; // Start fading after 100px scroll
+          const fadeEnd = 300; // Fully faded at 300px
+          let opacity = 1;
           
           if (scrollY > fadeStart) {
             opacity = Math.max(0, 1 - ((scrollY - fadeStart) / (fadeEnd - fadeStart)));
@@ -195,7 +195,7 @@
       // #region agent log
       tl.eventCallback('onComplete', function() {
         if (scrollIndicator) {
-          var finalStyles = window.getComputedStyle(scrollIndicator);
+          const finalStyles = window.getComputedStyle(scrollIndicator);
           debugLog('about-page-v22.js:137', 'Scroll indicator after GSAP animation', {opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility}, 'H2.1');
         }
       });
@@ -213,8 +213,8 @@
   // =============================================
   function initScrollReveals(gsapOk) {
     if (reduceMotion || !gsapOk) return;
-    var els = document.querySelectorAll('[data-reveal]');
-    var isMobile = window.innerWidth < 900;
+    const els = document.querySelectorAll('[data-reveal]');
+    let isMobile = window.innerWidth < 900;
     
     // Skip ScrollTrigger animations on mobile - use CSS fallback instead
     if (isMobile) {
@@ -227,13 +227,13 @@
     }
     
     // Store all ScrollTrigger instances for global resize handler
-    var scrollTriggers = [];
-    var revealElements = [];
+    const scrollTriggers = [];
+    const revealElements = [];
     
     for (var i = 0; i < els.length; i++) {
       (function (el) {
-        var dir = el.getAttribute('data-reveal') || 'up';
-        var x = 0, y = 14;
+        const dir = el.getAttribute('data-reveal') || 'up';
+        let x = 0, y = 14;
         if (dir === 'left') { x = -18; y = 0; }
         if (dir === 'right') { x = 18; y = 0; }
         if (dir === 'down') { x = 0; y = -14; }
@@ -245,15 +245,15 @@
         }
         
         // Mobile-specific handling for hero-text elements
-        var isHeroText = el.closest('.hero-text') !== null;
-        var startPos = 'top 86%';
-        var immediateRender = true;
+        const isHeroText = el.closest('.hero-text') !== null;
+        const startPos = 'top 86%';
+        const immediateRender = true;
         
         try {
           // Set initial state for animation
           window.gsap.set(el, { opacity: 0, x: x, y: y });
           
-          var st = window.gsap.from(el, {
+          const st = window.gsap.from(el, {
             x: x,
             y: y,
             opacity: 0,
@@ -298,7 +298,7 @@
     function handleGlobalResize() {
       if (!window.gsap || !window.ScrollTrigger) return;
       
-      var newIsMobile = window.innerWidth < 900;
+      const newIsMobile = window.innerWidth < 900;
       
       // Refresh all ScrollTriggers
       window.ScrollTrigger.refresh();
@@ -306,22 +306,22 @@
       // Check all elements after refresh
       setTimeout(function() {
         for (var j = 0; j < scrollTriggers.length; j++) {
-          var item = scrollTriggers[j];
-          var el = item.el;
-          var st = item.st;
-          var isHeroText = item.isHeroText;
+          const item = scrollTriggers[j];
+          const el = item.el;
+          const st = item.st;
+          const isHeroText = item.isHeroText;
           
           if (!st || !st.scrollTrigger) continue;
           
-          var afterRect = el.getBoundingClientRect();
-          var afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
-          var isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
+          const afterRect = el.getBoundingClientRect();
+          const afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
+          const isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
           
           // For hero text elements, always check if they're in viewport and force visible if needed
           if (isHeroText && (afterIsInViewport || isActuallyVisible)) {
-            var computed = window.getComputedStyle(el);
-            var currentOpacity = parseFloat(computed.opacity);
-            var currentY = parseFloat(computed.transform.match(/translateY\(([^)]+)\)/) ? computed.transform.match(/translateY\(([^)]+)\)/)[1] : '0') || 0;
+            const computed = window.getComputedStyle(el);
+            const currentOpacity = parseFloat(computed.opacity);
+            const currentY = parseFloat(computed.transform.match(/translateY\(([^)]+)\)/) ? computed.transform.match(/translateY\(([^)]+)\)/)[1] : '0') || 0;
             if (currentOpacity < 0.9 || Math.abs(currentY) > 2 || isNaN(currentOpacity)) {
               window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
               el.style.opacity = '1';
@@ -330,8 +330,8 @@
             }
           } else if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
             // For non-hero elements
-            var computed = window.getComputedStyle(el);
-            var currentOpacity = parseFloat(computed.opacity);
+            const computed = window.getComputedStyle(el);
+            const currentOpacity = parseFloat(computed.opacity);
             if (currentOpacity < 0.9 || isNaN(currentOpacity)) {
               window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
               el.style.opacity = '1';
@@ -345,9 +345,10 @@
     
     // Debounce helper
     function debounce(func, wait) {
-      var timeout;
+      let timeout;
       return function() {
-        var context = this, args = arguments;
+        const context = this;
+        const args = arguments;
         clearTimeout(timeout);
         timeout = setTimeout(function() {
           func.apply(context, args);
@@ -356,7 +357,7 @@
     }
     
     // Single global resize listener (replaces per-element listeners)
-    var debouncedResize = debounce(handleGlobalResize, 150);
+    const debouncedResize = debounce(handleGlobalResize, 150);
     window.addEventListener('resize', debouncedResize, { passive: true });
     
     // Handle wide viewport - clear GSAP inline styles that override CSS
@@ -377,16 +378,16 @@
   // =============================================
   function initPanoramaParallax(gsapOk) {
     if (reduceMotion || !gsapOk) return;
-    var bands = document.querySelectorAll('.panorama');
+    const bands = document.querySelectorAll('.panorama');
     for (var i = 0; i < bands.length; i++) {
       (function (band) {
-        var img = band.querySelector('.panorama-img');
+        const img = band.querySelector('.panorama-img');
         if (!img) return;
-        var speed = parseFloat(band.getAttribute('data-speed') || '1');
+        const speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed)) speed = 1;
         // Parallax movement: increased amplitude for more dramatic scrollytelling effect
         // Image is 220% height in CSS, so we have plenty of room for movement
-        var amp = 25 * speed; // percent of the IMAGE height (increased from 10 for more movement)
+        const amp = 25 * speed; // percent of the IMAGE height (increased from 10 for more movement)
         try {
           window.gsap.fromTo(img,
             { yPercent: -amp },
@@ -414,7 +415,7 @@
   // =============================================
   function initPinnedScenes(gsapOk) {
     if (reduceMotion || !gsapOk) return;
-    var pins = document.querySelectorAll('[data-pin="true"]');
+    const pins = document.querySelectorAll('[data-pin="true"]');
     for (var i = 0; i < pins.length; i++) {
       try {
         window.ScrollTrigger.create({
@@ -435,12 +436,12 @@
   // =============================================
   function initMarqueeWords(gsapOk) {
     if (reduceMotion || !gsapOk) return;
-    var words = document.querySelectorAll('[data-marquee]');
+    const words = document.querySelectorAll('[data-marquee]');
     for (var i = 0; i < words.length; i++) {
       (function (el) {
-        var dir = (el.getAttribute('data-dir') || 'left').toLowerCase();
-        var dist = (dir === 'right') ? 120 : -120;
-        var container = el.parentElement || el;
+        const dir = (el.getAttribute('data-dir') || 'left').toLowerCase();
+        const dist = (dir === 'right') ? 120 : -120;
+        const container = el.parentElement || el;
         try {
           window.gsap.fromTo(el,
             { x: -dist },
@@ -466,14 +467,14 @@
   // Numbers: quick "slot machine" feel, then settle
   // =============================================
   function initNumbers(gsapOk) {
-    var section = document.querySelector('.numbers');
+    const section = document.querySelector('.numbers');
     if (!section) return;
 
-    var numberEls = section.querySelectorAll('.number-value[data-target]');
+    const numberEls = section.querySelectorAll('.number-value[data-target]');
     if (!numberEls.length) return;
 
-    var infinityEl = section.querySelector('.infinity-value');
-    var fired = false;
+    const infinityEl = section.querySelector('.infinity-value');
+    let fired = false;
 
     function run() {
       if (fired) return;
@@ -481,26 +482,26 @@
 
       for (var i = 0; i < numberEls.length; i++) {
         (function (el, idx) {
-          var target = parseInt(el.getAttribute('data-target') || '0', 10);
-          var suffix = el.getAttribute('data-suffix') || '';
-          var spins = 0;
-          var maxSpins = 12 + Math.floor(Math.random() * 6);
+          const target = parseInt(el.getAttribute('data-target') || '0', 10);
+          const suffix = el.getAttribute('data-suffix') || '';
+          let spins = 0;
+          const maxSpins = 12 + Math.floor(Math.random() * 6);
 
           setTimeout(function () {
-            var spinInterval = setInterval(function () {
+            const spinInterval = setInterval(function () {
               el.textContent = Math.floor(Math.random() * target * 1.3).toLocaleString() + suffix;
               spins++;
               if (spins >= maxSpins) {
                 clearInterval(spinInterval);
 
-                var start = 0;
-                var duration = 500;
-                var t0 = performance.now();
+                const start = 0;
+                const duration = 500;
+                const t0 = performance.now();
 
                 function tick(now) {
-                  var p = Math.min(1, (now - t0) / duration);
-                  var eased = 1 - Math.pow(1 - p, 3);
-                  var val = Math.floor(start + (target - start) * eased);
+                  const p = Math.min(1, (now - t0) / duration);
+                  const eased = 1 - Math.pow(1 - p, 3);
+                  const val = Math.floor(start + (target - start) * eased);
                   el.textContent = val.toLocaleString() + suffix;
                   if (p < 1) {
                     requestAnimationFrame(tick);
@@ -541,7 +542,7 @@
       } catch (e) {
         // Fallback to IntersectionObserver
         if ('IntersectionObserver' in window) {
-          var io = new IntersectionObserver(function (entries) {
+          const io = new IntersectionObserver(function (entries) {
             for (var i = 0; i < entries.length; i++) {
               if (entries[i].isIntersecting) {
                 run();
@@ -556,7 +557,7 @@
         }
       }
     } else if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
+      const io = new IntersectionObserver(function (entries) {
         for (var i = 0; i < entries.length; i++) {
           if (entries[i].isIntersecting) {
             run();
@@ -579,7 +580,7 @@
     debugLog('about-page-v22.js:442', 'initWorldMap called', {timestamp:Date.now()}, 'H3.1,H3.2');
     // #endregion
     
-    var host = document.getElementById('world-map');
+    const host = document.getElementById('world-map');
     // #region agent log
     debugLog('about-page-v22.js:447', 'Map element check', {hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null}, 'H3.2,H3.5');
     // #endregion
@@ -602,16 +603,16 @@
       // #endregion
       
       // Get places data from WordPress localization
-      var placesData = (window.kunaalAboutV22 && window.kunaalAboutV22.places) || {
+      const placesData = (window.kunaalAboutV22 && window.kunaalAboutV22.places) || {
         current: [],
         lived: [],
         visited: []
       };
 
       // Ensure all are arrays
-      var current = Array.isArray(placesData.current) ? placesData.current : (placesData.current ? [placesData.current] : []);
-      var lived = Array.isArray(placesData.lived) ? placesData.lived : (placesData.lived ? [placesData.lived] : []);
-      var visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
+      const current = Array.isArray(placesData.current) ? placesData.current : (placesData.current ? [placesData.current] : []);
+      const lived = Array.isArray(placesData.lived) ? placesData.lived : (placesData.lived ? [placesData.lived] : []);
+      const visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
       
       // #region agent log
       debugLog('about-page-v22.js:480', 'Places data check', {hasKunaalAboutV22:!!window.kunaalAboutV22,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited}, 'H3.3');
@@ -625,7 +626,7 @@
       try {
 
       // Country name mapping (expandable)
-      var countryNames = {
+      const countryNames = {
         'USA': 'United States', 'IND': 'India', 'SGP': 'Singapore', 'PHL': 'Philippines',
         'THA': 'Thailand', 'ZAF': 'South Africa', 'GBR': 'United Kingdom', 'CHE': 'Switzerland',
         'CAN': 'Canada', 'MYS': 'Malaysia', 'MDV': 'Maldives', 'BRA': 'Brazil', 'MEX': 'Mexico',
@@ -642,7 +643,7 @@
 
       // ISO numeric (ISO 3166-1 numeric) -> ISO3 mapping
       // Complete mapping for world-atlas TopoJSON countries-110m.json
-      var idToIso = {
+      const idToIso = {
         // Major countries
         4: 'AFG', 8: 'ALB', 12: 'DZA', 16: 'ASM', 20: 'AND', 24: 'AGO', 28: 'ATG', 31: 'AZE', 32: 'ARG',
         36: 'AUS', 40: 'AUT', 44: 'BHS', 48: 'BHR', 50: 'BGD', 51: 'ARM', 52: 'BRB', 56: 'BEL', 60: 'BMU',
@@ -677,24 +678,24 @@
         876: 'WLF', 882: 'WSM', 886: 'YEM', 887: 'ZMB', 894: 'ZWE'
       };
 
-      var width = host.clientWidth || 900;
-      var height = host.clientHeight || 360; // Use actual container height, not hardcoded 460
+      const width = host.clientWidth || 900;
+      const height = host.clientHeight || 360; // Use actual container height, not hardcoded 460
 
       host.innerHTML = '';
-      var svg = window.d3.select(host)
+      const svg = window.d3.select(host)
         .append('svg')
         .attr('viewBox', '0 0 ' + width + ' ' + height)
         .attr('width', '100%')
         .attr('height', height);
 
-      var projection = window.d3.geoEquirectangular()
+      const projection = window.d3.geoEquirectangular()
         .scale(width / 6.5)
         .center([0, 20])
         .translate([width / 2, height / 2]);
 
-      var path = window.d3.geoPath().projection(projection);
+      const path = window.d3.geoPath().projection(projection);
 
-      var tooltip = document.getElementById('mapTooltip');
+      const tooltip = document.getElementById('mapTooltip');
 
       // #region agent log
       debugLog('about-page-v22.js:563', 'Starting D3.json fetch', {width:width,height:height}, 'H3.4');
@@ -705,7 +706,7 @@
         debugLog('about-page-v22.js:568', 'D3.json success', {hasWorld:!!world,hasObjects:!!world.objects}, 'H3.4');
         // #endregion
         
-        var countries = window.topojson.feature(world, world.objects.countries);
+        const countries = window.topojson.feature(world, world.objects.countries);
 
         svg.selectAll('path')
           .data(countries.features)
@@ -713,12 +714,12 @@
           .append('path')
           .attr('d', path)
           .attr('class', function (d) {
-            var iso = idToIso[d.id];
+            const iso = idToIso[d.id];
             if (!iso) {
               return 'country';
             }
             // Check all arrays (case-insensitive for safety)
-            var isoUpper = iso.toUpperCase();
+            const isoUpper = iso.toUpperCase();
             if (current.length > 0 && current.some(function(c) { return c.toUpperCase() === isoUpper; })) {
               return 'country current';
             }
@@ -732,7 +733,7 @@
           })
           .on('mouseenter', function (event, d) {
             if (!tooltip) return;
-            var iso = idToIso[d.id];
+            const iso = idToIso[d.id];
             if (iso && countryNames[iso]) {
               tooltip.textContent = countryNames[iso];
               tooltip.classList.add('visible');
@@ -753,7 +754,7 @@
         // Add pin for current location (use first current location)
         if (current.length > 0) {
           // Coordinates for common locations (expandable)
-          var coordsMap = {
+          const coordsMap = {
             'SGP': [103.8198, 1.3521],
             'USA': [-95.7129, 37.0902],
             'IND': [78.9629, 20.5937],
@@ -769,15 +770,16 @@
             'ZAF': [22.9375, -30.5595]
           };
 
-          var currentIso = current[0];
-          var coords = coordsMap[currentIso] || coordsMap['SGP']; // Default to Singapore
-          var pt = projection(coords);
-          var px = pt[0], py = pt[1];
-          var g = svg.append('g').attr('transform', 'translate(' + px + ',' + py + ')');
+          const currentIso = current[0];
+          const coords = coordsMap[currentIso] || coordsMap['SGP']; // Default to Singapore
+          const pt = projection(coords);
+          const px = pt[0];
+          const py = pt[1];
+          const g = svg.append('g').attr('transform', 'translate(' + px + ',' + py + ')');
 
           // Get beacon color - orange (inverse of blue) in dark mode, blue in light mode
           function getBeaconColor() {
-            var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             // Orange color (inverse/complement of blue) for dark mode
             if (isDark) {
               return '#FF6B35'; // Orange - inverse of blue
@@ -786,8 +788,8 @@
             }
           }
           
-          var beaconColor = getBeaconColor();
-          var beaconSize = 7; // Bigger beacon (was 5)
+          const beaconColor = getBeaconColor();
+          const beaconSize = 7; // Bigger beacon (was 5)
           
           function pulse() {
             g.append('circle')
@@ -809,19 +811,19 @@
           g.append('circle').attr('r', 3).attr('fill', '#fff'); // Bigger inner dot
           
           // Listen for theme changes and update beacon color
-          var observer = new MutationObserver(function(mutations) {
+          const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
                 beaconColor = getBeaconColor();
                 // Update existing circles
                 g.selectAll('circle').attr('fill', function() {
-                  var r = d3.select(this).attr('r');
+                  const r = d3.select(this).attr('r');
                   if (parseFloat(r) === beaconSize) {
                     return beaconColor;
                   }
                   return '#fff';
                 }).attr('stroke', function() {
-                  var r = d3.select(this).attr('r');
+                  const r = d3.select(this).attr('r');
                   if (parseFloat(r) > beaconSize) {
                     return beaconColor;
                   }
@@ -885,19 +887,19 @@
   // Progress bar (top) and scroll indicator hide
   // =============================================
   function initProgressBar(){
-    var fill = document.getElementById('progressFill');
+    const fill = document.getElementById('progressFill');
     if(!fill) return;
-    var ticking = false;
+    let ticking = false;
     function update(){
       ticking = false;
-      var doc = document.documentElement;
-      var scrollTop = window.pageYOffset || doc.scrollTop || 0;
-      var scrollHeight = (doc.scrollHeight || 0) - (doc.clientHeight || window.innerHeight || 1);
-      var p = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+      const doc = document.documentElement;
+      const scrollTop = window.pageYOffset || doc.scrollTop || 0;
+      const scrollHeight = (doc.scrollHeight || 0) - (doc.clientHeight || window.innerHeight || 1);
+      const p = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
       fill.style.width = (p * 100).toFixed(2) + '%';
 
       // Header compaction (drives CSS var(--p))
-      var hp = Math.min(scrollTop / 120, 1);
+      const hp = Math.min(scrollTop / 120, 1);
       document.body.style.setProperty('--p', hp.toFixed(4));
     }
     function onScroll(){
@@ -914,8 +916,8 @@
   // Header nav (mobile toggle)
   // =============================================
   function initHeaderNav(){
-    var toggle = document.getElementById('navToggle');
-    var nav = document.getElementById('mainNav');
+    const toggle = document.getElementById('navToggle');
+    const nav = document.getElementById('mainNav');
     if(!toggle || !nav) return;
 
     function close(){
@@ -939,14 +941,14 @@
     // Close when clicking outside
     document.addEventListener('click', function(e){
       if(!nav.classList.contains('open')) return;
-      var t = e.target;
+      const t = e.target;
       if(nav.contains(t) || toggle.contains(t)) return;
       close();
     });
 
     // Close after selecting a link (mobile)
     nav.addEventListener('click', function(e){
-      var a = e.target && e.target.closest ? e.target.closest('a') : null;
+      const a = e.target && e.target.closest ? e.target.closest('a') : null;
       if(a) close();
     });
 
@@ -966,10 +968,10 @@
   // =============================================
   function initHeroMosaicCycle(){
     // Scope selectors to About page to prevent accidental cross-page matches
-    var aboutPage = document.querySelector('.kunaal-about-page');
+    const aboutPage = document.querySelector('.kunaal-about-page');
     if (!aboutPage) return;
     
-    var tiles = Array.prototype.slice.call(aboutPage.querySelectorAll('.hero-photo'));
+    const tiles = Array.prototype.slice.call(aboutPage.querySelectorAll('.hero-photo'));
     if(!tiles.length) return;
 
     // Track hover so we don't constantly "steal" focus from the user's cursor.
@@ -979,7 +981,7 @@
       t.addEventListener('mouseleave', function(){ t.__isHover = false; });
     });
 
-    var idx = Math.floor(Math.random() * tiles.length);
+    let idx = Math.floor(Math.random() * tiles.length);
     function setActive(i){
       tiles.forEach(function(t, j){
         if(j === i) t.classList.add('color-active');
@@ -992,10 +994,10 @@
     setInterval(function(){
       if(document.hidden) return;
       // Choose next non-hovered tile if possible.
-      var candidates = tiles.map(function(_, i){ return i; }).filter(function(i){ return !tiles[i].__isHover; });
+      const candidates = tiles.map(function(_, i){ return i; }).filter(function(i){ return !tiles[i].__isHover; });
       if(!candidates.length) return;
-      var currentPos = candidates.indexOf(idx);
-      var next = candidates[(currentPos + 1) % candidates.length];
+      const currentPos = candidates.indexOf(idx);
+      const next = candidates[(currentPos + 1) % candidates.length];
       setActive(next);
     }, 2600);
   }
@@ -1004,11 +1006,11 @@
   // Rabbit hole capsules: wrap inner content so CSS animations don't fight GSAP
   // =============================================
   function initCapsuleLife(){
-    var capsules = document.querySelectorAll('.capsules-cloud .capsule');
+    const capsules = document.querySelectorAll('.capsules-cloud .capsule');
     if(!capsules.length) return;
 
     capsules.forEach(function(cap){
-      var inner = cap.querySelector('.capsule-inner');
+      const inner = cap.querySelector('.capsule-inner');
 
       // Wrap contents so our idle animation doesn't fight GSAP transforms
       if(!inner){
@@ -1022,7 +1024,7 @@
 
       // Ensure the category dot moves with the capsule (no pseudo-element jitter)
       if(!inner.querySelector('.capsule-dot')){
-        var dot = document.createElement('span');
+        const dot = document.createElement('span');
         dot.className = 'capsule-dot';
         dot.setAttribute('aria-hidden', 'true');
         inner.appendChild(dot);
@@ -1034,12 +1036,12 @@
   // Footer year (keep it evergreen)
   // =============================================
   function initFooterYear(){
-    var year = document.getElementById('footerYear');
+    const year = document.getElementById('footerYear');
     if(year) {
       year.textContent = new Date().getFullYear();
     }
     // Also check for #year (reference HTML uses this)
-    var yearAlt = document.getElementById('year');
+    const yearAlt = document.getElementById('year');
     if(yearAlt) {
       yearAlt.textContent = new Date().getFullYear();
     }

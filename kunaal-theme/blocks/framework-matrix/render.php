@@ -24,7 +24,7 @@ if (empty($cells)) {
     
     <div class="fm-container">
         <div class="fm-y-label"><?php echo esc_html($y_label); ?></div>
-        <div class="fm-grid" style="grid-template-columns: repeat(<?php echo $grid_size; ?>, 1fr);">
+        <div class="fm-grid" style="grid-template-columns: repeat(<?php echo esc_attr($grid_size); ?>, 1fr);">
             <?php for ($i = 0; $i < $total_cells; $i++) : ?>
                 <?php $cell = isset($cells[$i]) ? $cells[$i] : ['label' => '', 'content' => '']; ?>
                 <div class="fm-cell">

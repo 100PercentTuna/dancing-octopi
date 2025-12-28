@@ -84,7 +84,7 @@ $block_id = 'heatmap-' . wp_unique_id();
                 <tr>
                     <th scope="col" class="heatmap-corner"></th>
                     <?php foreach ($column_labels as $col_label) : ?>
-                    <th scope="col" class="heatmap-col-header <?php echo $rotate_column_labels ? 'rotated' : ''; ?>">
+                    <th scope="col" class="heatmap-col-header <?php echo esc_attr($rotate_column_labels ? 'rotated' : ''); ?>">
                         <?php echo esc_html($col_label); ?>
                     </th>
                     <?php endforeach; ?>

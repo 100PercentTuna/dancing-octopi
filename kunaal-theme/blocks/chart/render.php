@@ -86,7 +86,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
     <?php } ?>
     
     <div class="chart-container">
-        <svg class="chart-svg" viewBox="0 0 <?php echo $svg_width; ?> <?php echo $svg_height; ?>" preserveAspectRatio="xMidYMid meet">
+        <svg class="chart-svg" viewBox="0 0 <?php echo esc_attr($svg_width); ?> <?php echo esc_attr($svg_height); ?>" preserveAspectRatio="xMidYMid meet">
             
             <?php if ($chart_type === 'bar') { ?>
                 <?php
@@ -105,7 +105,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     if ($show_grid) {
                         for ($i = 0; $i <= 5; $i++) {
                             $x = $margin['left'] + ($i / 5) * $chart_width;
-                            echo '<line x1="' . $x . '" y1="' . $margin['top'] . '" x2="' . $x . '" y2="' . ($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>';
+                            echo '<line x1="' . esc_attr($x) . '" y1="' . esc_attr($margin['top']) . '" x2="' . esc_attr($x) . '" y2="' . esc_attr($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>';
                         }
                     }
                     
@@ -114,14 +114,14 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $y = $start_y + $index * ($bar_height + $bar_gap);
                         $color = $chart_colors[$index % count($chart_colors)];
                         
-                        echo '<rect x="' . $margin['left'] . '" y="' . $y . '" width="' . max(0, $bar_width) . '" height="' . $bar_height . '" fill="' . $color . '" rx="2"/>';
+                        echo '<rect x="' . esc_attr($margin['left']) . '" y="' . esc_attr($y) . '" width="' . esc_attr(max(0, $bar_width)) . '" height="' . esc_attr($bar_height) . '" fill="' . esc_attr($color) . '" rx="2"/>';
                         
                         // Label
-                        echo '<text x="' . ($margin['left'] - 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" text-anchor="end" font-size="12" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                        echo '<text x="' . esc_attr($margin['left'] - 8) . '" y="' . esc_attr($y + $bar_height / 2) . '" dominant-baseline="middle" text-anchor="end" font-size="12" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                         
                         // Value
                         if ($show_values) {
-                            echo '<text x="' . ($margin['left'] + $bar_width + 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" font-size="12" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . esc_attr($margin['left'] + $bar_width + 8) . '" y="' . esc_attr($y + $bar_height / 2) . '" dominant-baseline="middle" font-size="12" fill="#333" font-weight="500" font-family="var(--sans)">' . esc_html(kunaal_format_chart_value($value, $unit, $unit_position)) . '</text>';
                         }
                     }
                 } else {
@@ -135,12 +135,12 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     if ($show_grid) {
                         for ($i = 0; $i <= 5; $i++) {
                             $y = $margin['top'] + ($i / 5) * $chart_height;
-                            echo '<line x1="' . $margin['left'] . '" y1="' . $y . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . $y . '" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>';
+                            echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($y) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($y) . '" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>';
                         }
                     }
                     
                     // Baseline
-                    echo '<line x1="' . $margin['left'] . '" y1="' . ($svg_height - $margin['bottom']) . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . ($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
+                    echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($svg_height - $margin['bottom']) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
                     
                     foreach ($data as $index => $value) {
                         $bar_height_px = ($value / $max_value) * $chart_height;
@@ -148,15 +148,15 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $y = $margin['top'] + $chart_height - $bar_height_px;
                         $color = $chart_colors[$index % count($chart_colors)];
                         
-                        echo '<rect x="' . $x . '" y="' . $y . '" width="' . $bar_width . '" height="' . $bar_height_px . '" fill="' . $color . '" rx="2"/>';
+                        echo '<rect x="' . esc_attr($x) . '" y="' . esc_attr($y) . '" width="' . esc_attr($bar_width) . '" height="' . esc_attr($bar_height_px) . '" fill="' . esc_attr($color) . '" rx="2"/>';
                         
                         // Value on top
                         if ($show_values) {
-                            echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($y - 8) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . esc_attr($x + $bar_width / 2) . '" y="' . esc_attr($y - 8) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . esc_html(kunaal_format_chart_value($value, $unit, $unit_position)) . '</text>';
                         }
                         
                         // Label below
-                        echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($svg_height - $margin['bottom'] + 20) . '" text-anchor="middle" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                        echo '<text x="' . esc_attr($x + $bar_width / 2) . '" y="' . esc_attr($svg_height - $margin['bottom'] + 20) . '" text-anchor="middle" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                     }
                 }
                 ?>
@@ -198,11 +198,11 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                                 $bar_w = ($val / $max_stacked) * $chart_width;
                                 $color = $chart_colors[$s_index % count($chart_colors)];
                                 
-                                echo '<rect x="' . $current_x . '" y="' . $y . '" width="' . $bar_w . '" height="' . $bar_height . '" fill="' . $color . '"/>';
+                                echo '<rect x="' . esc_attr($current_x) . '" y="' . esc_attr($y) . '" width="' . esc_attr($bar_w) . '" height="' . esc_attr($bar_height) . '" fill="' . esc_attr($color) . '"/>';
                                 $current_x += $bar_w;
                             }
                             
-                            echo '<text x="' . ($margin['left'] - 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" text-anchor="end" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                            echo '<text x="' . esc_attr($margin['left'] - 8) . '" y="' . esc_attr($y + $bar_height / 2) . '" dominant-baseline="middle" text-anchor="end" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                         }
                     } else {
                         // Vertical stacked
@@ -212,7 +212,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $start_x = $margin['left'] + ($chart_width - $total_width) / 2;
                         
                         // Baseline
-                        echo '<line x1="' . $margin['left'] . '" y1="' . ($svg_height - $margin['bottom']) . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . ($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
+                        echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($svg_height - $margin['bottom']) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
                         
                         foreach ($data as $index => $value) {
                             $x = $start_x + $index * ($bar_width + $bar_gap);
@@ -223,11 +223,11 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                                 $bar_h = ($val / $max_stacked) * $chart_height;
                                 $color = $chart_colors[$s_index % count($chart_colors)];
                                 
-                                echo '<rect x="' . $x . '" y="' . ($current_y - $bar_h) . '" width="' . $bar_width . '" height="' . $bar_h . '" fill="' . $color . '"/>';
+                                echo '<rect x="' . esc_attr($x) . '" y="' . esc_attr($current_y - $bar_h) . '" width="' . esc_attr($bar_width) . '" height="' . esc_attr($bar_h) . '" fill="' . esc_attr($color) . '"/>';
                                 $current_y -= $bar_h;
                             }
                             
-                            echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($svg_height - $margin['bottom'] + 18) . '" text-anchor="middle" font-size="10" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                            echo '<text x="' . esc_attr($x + $bar_width / 2) . '" y="' . esc_attr($svg_height - $margin['bottom'] + 18) . '" text-anchor="middle" font-size="10" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                         }
                     }
                 } else {
@@ -254,10 +254,10 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                                 $y = $group_y + $s_index * ($sub_bar_height + $sub_bar_gap);
                                 $color = $chart_colors[$s_index % count($chart_colors)];
                                 
-                                echo '<rect x="' . $margin['left'] . '" y="' . $y . '" width="' . $bar_w . '" height="' . $sub_bar_height . '" fill="' . $color . '" rx="2"/>';
+                                echo '<rect x="' . esc_attr($margin['left']) . '" y="' . esc_attr($y) . '" width="' . esc_attr($bar_w) . '" height="' . esc_attr($sub_bar_height) . '" fill="' . esc_attr($color) . '" rx="2"/>';
                             }
                             
-                            echo '<text x="' . ($margin['left'] - 8) . '" y="' . ($group_y + $group_height / 2) . '" dominant-baseline="middle" text-anchor="end" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                            echo '<text x="' . esc_attr($margin['left'] - 8) . '" y="' . esc_attr($group_y + $group_height / 2) . '" dominant-baseline="middle" text-anchor="end" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                         }
                     } else {
                         // Vertical clustered
@@ -268,7 +268,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $total_width = count($data) * ($group_width + $group_gap) - $group_gap;
                         $start_x = $margin['left'] + ($chart_width - $total_width) / 2;
                         
-                        echo '<line x1="' . $margin['left'] . '" y1="' . ($svg_height - $margin['bottom']) . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . ($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
+                        echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($svg_height - $margin['bottom']) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
                         
                         foreach ($data as $index => $value) {
                             $group_x = $start_x + $index * ($group_width + $group_gap);
@@ -280,10 +280,10 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                                 $y = $margin['top'] + $chart_height - $bar_h;
                                 $color = $chart_colors[$s_index % count($chart_colors)];
                                 
-                                echo '<rect x="' . $x . '" y="' . $y . '" width="' . $sub_bar_width . '" height="' . $bar_h . '" fill="' . $color . '" rx="2"/>';
+                                echo '<rect x="' . esc_attr($x) . '" y="' . esc_attr($y) . '" width="' . esc_attr($sub_bar_width) . '" height="' . esc_attr($bar_h) . '" fill="' . esc_attr($color) . '" rx="2"/>';
                             }
                             
-                            echo '<text x="' . ($group_x + $group_width / 2) . '" y="' . ($svg_height - $margin['bottom'] + 18) . '" text-anchor="middle" font-size="10" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                            echo '<text x="' . esc_attr($group_x + $group_width / 2) . '" y="' . esc_attr($svg_height - $margin['bottom'] + 18) . '" text-anchor="middle" font-size="10" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                         }
                     }
                 }
@@ -296,8 +296,8 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $color = $chart_colors[$i % count($chart_colors)];
                         $label = isset($series_labels[$i]) ? $series_labels[$i] : ('Series ' . ($i + 1));
                         $x = $legend_x + $i * 100;
-                        echo '<rect x="' . $x . '" y="' . ($legend_y - 10) . '" width="14" height="14" fill="' . $color . '" rx="2"/>';
-                        echo '<text x="' . ($x + 20) . '" y="' . $legend_y . '" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($label) . '</text>';
+                        echo '<rect x="' . esc_attr($x) . '" y="' . esc_attr($legend_y - 10) . '" width="14" height="14" fill="' . esc_attr($color) . '" rx="2"/>';
+                        echo '<text x="' . esc_attr($x + 20) . '" y="' . esc_attr($legend_y) . '" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($label) . '</text>';
                     }
                 }
                 ?>
@@ -326,12 +326,12 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 if ($show_grid) {
                     for ($i = 0; $i <= 5; $i++) {
                         $y = $margin['top'] + ($i / 5) * $chart_height;
-                        echo '<line x1="' . $margin['left'] . '" y1="' . $y . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . $y . '" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>';
+                        echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($y) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($y) . '" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>';
                     }
                 }
                 
                 // Baseline
-                echo '<line x1="' . $margin['left'] . '" y1="' . ($svg_height - $margin['bottom']) . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . ($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
+                echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($svg_height - $margin['bottom']) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
                 
                 foreach ($all_series as $s_index => $series) {
                     $color = $chart_colors[$s_index % count($chart_colors)];
@@ -340,30 +340,30 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     foreach ($series as $index => $value) {
                         $x = $margin['left'] + ($index / max(1, count($series) - 1)) * $chart_width;
                         $y = $margin['top'] + $chart_height - (($value - $min_value) / $range) * $chart_height;
-                        $points[] = $x . ',' . $y;
+                        $points[] = esc_attr($x) . ',' . esc_attr($y);
                     }
                     
                     // Area fill (only for first series)
                     if ($s_index === 0) {
                         $area_points = $points;
-                        $area_points[] = ($margin['left'] + $chart_width) . ',' . ($svg_height - $margin['bottom']);
-                        $area_points[] = $margin['left'] . ',' . ($svg_height - $margin['bottom']);
-                        echo '<polygon points="' . implode(' ', $area_points) . '" fill="' . $color . '" opacity="0.1"/>';
+                        $area_points[] = esc_attr($margin['left'] + $chart_width) . ',' . esc_attr($svg_height - $margin['bottom']);
+                        $area_points[] = esc_attr($margin['left']) . ',' . esc_attr($svg_height - $margin['bottom']);
+                        echo '<polygon points="' . implode(' ', $area_points) . '" fill="' . esc_attr($color) . '" opacity="0.1"/>';
                     }
                     
                     // Line
                     $path_d = 'M ' . implode(' L ', $points);
-                    echo '<path d="' . $path_d . '" fill="none" stroke="' . $color . '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+                    echo '<path d="' . esc_attr($path_d) . '" fill="none" stroke="' . esc_attr($color) . '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
                     
                     // Data points
                     foreach ($series as $index => $value) {
                         $x = $margin['left'] + ($index / max(1, count($series) - 1)) * $chart_width;
                         $y = $margin['top'] + $chart_height - (($value - $min_value) / $range) * $chart_height;
-                        echo '<circle cx="' . $x . '" cy="' . $y . '" r="4" fill="' . $color . '"/>';
+                        echo '<circle cx="' . esc_attr($x) . '" cy="' . esc_attr($y) . '" r="4" fill="' . esc_attr($color) . '"/>';
                         
                         // Values
                         if ($show_values && $s_index === 0) {
-                            echo '<text x="' . $x . '" y="' . ($y - 10) . '" text-anchor="middle" font-size="10" fill="#333" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . esc_attr($x) . '" y="' . esc_attr($y - 10) . '" text-anchor="middle" font-size="10" fill="#333" font-family="var(--sans)">' . esc_html(kunaal_format_chart_value($value, $unit, $unit_position)) . '</text>';
                         }
                     }
                 }
@@ -371,7 +371,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 // X-axis labels
                 foreach ($labels as $index => $label) {
                     $x = $margin['left'] + ($index / max(1, count($labels) - 1)) * $chart_width;
-                    echo '<text x="' . $x . '" y="' . ($svg_height - $margin['bottom'] + 20) . '" text-anchor="middle" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($label) . '</text>';
+                    echo '<text x="' . esc_attr($x) . '" y="' . esc_attr($svg_height - $margin['bottom'] + 20) . '" text-anchor="middle" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($label) . '</text>';
                 }
                 
                 // Legend
@@ -381,8 +381,8 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $color = $chart_colors[$i % count($chart_colors)];
                         $label = isset($series_labels[$i]) ? $series_labels[$i] : ('Series ' . ($i + 1));
                         $x = $margin['left'] + $i * 100;
-                        echo '<line x1="' . $x . '" y1="' . $legend_y . '" x2="' . ($x + 20) . '" y2="' . $legend_y . '" stroke="' . $color . '" stroke-width="2"/>';
-                        echo '<text x="' . ($x + 26) . '" y="' . ($legend_y + 4) . '" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($label) . '</text>';
+                        echo '<line x1="' . esc_attr($x) . '" y1="' . esc_attr($legend_y) . '" x2="' . esc_attr($x + 20) . '" y2="' . esc_attr($legend_y) . '" stroke="' . esc_attr($color) . '" stroke-width="2"/>';
+                        echo '<text x="' . esc_attr($x + 26) . '" y="' . esc_attr($legend_y + 4) . '" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($label) . '</text>';
                     }
                 }
                 ?>
@@ -415,9 +415,9 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $ix2 = $center_x + ($inner_radius * cos(deg2rad($end_angle)));
                         $iy2 = $center_y + ($inner_radius * sin(deg2rad($end_angle)));
                         
-                        echo '<path d="M ' . $x1 . ',' . $y1 . ' A ' . $radius . ',' . $radius . ' 0 ' . $large_arc . ',1 ' . $x2 . ',' . $y2 . ' L ' . $ix2 . ',' . $iy2 . ' A ' . $inner_radius . ',' . $inner_radius . ' 0 ' . $large_arc . ',0 ' . $ix1 . ',' . $iy1 . ' Z" fill="' . $color . '"/>';
+                        echo '<path d="M ' . esc_attr($x1) . ',' . esc_attr($y1) . ' A ' . esc_attr($radius) . ',' . esc_attr($radius) . ' 0 ' . esc_attr($large_arc) . ',1 ' . esc_attr($x2) . ',' . esc_attr($y2) . ' L ' . esc_attr($ix2) . ',' . esc_attr($iy2) . ' A ' . esc_attr($inner_radius) . ',' . esc_attr($inner_radius) . ' 0 ' . esc_attr($large_arc) . ',0 ' . esc_attr($ix1) . ',' . esc_attr($iy1) . ' Z" fill="' . esc_attr($color) . '"/>';
                     } else {
-                        echo '<path d="M ' . $center_x . ',' . $center_y . ' L ' . $x1 . ',' . $y1 . ' A ' . $radius . ',' . $radius . ' 0 ' . $large_arc . ',1 ' . $x2 . ',' . $y2 . ' Z" fill="' . $color . '"/>';
+                        echo '<path d="M ' . esc_attr($center_x) . ',' . esc_attr($center_y) . ' L ' . esc_attr($x1) . ',' . esc_attr($y1) . ' A ' . esc_attr($radius) . ',' . esc_attr($radius) . ' 0 ' . esc_attr($large_arc) . ',1 ' . esc_attr($x2) . ',' . esc_attr($y2) . ' Z" fill="' . esc_attr($color) . '"/>';
                     }
                     
                     // Label
@@ -426,7 +426,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $label_radius = $chart_type === 'donut' ? ($radius + $inner_radius) / 2 : $radius * 0.65;
                         $label_x = $center_x + ($label_radius * cos(deg2rad($label_angle)));
                         $label_y = $center_y + ($label_radius * sin(deg2rad($label_angle)));
-                        echo '<text x="' . $label_x . '" y="' . $label_y . '" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="#fff" font-weight="600" font-family="var(--sans)">' . round($percentage) . '%</text>';
+                        echo '<text x="' . esc_attr($label_x) . '" y="' . esc_attr($label_y) . '" text-anchor="middle" dominant-baseline="middle" font-size="12" fill="#fff" font-weight="600" font-family="var(--sans)">' . esc_html(round($percentage)) . '%</text>';
                     }
                     
                     $current_angle = $end_angle;
@@ -434,8 +434,8 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 
                 // Center text for donut
                 if ($chart_type === 'donut' && $show_values) {
-                    echo '<text x="' . $center_x . '" y="' . ($center_y - 5) . '" text-anchor="middle" font-size="24" font-weight="700" fill="#333" font-family="var(--serif)">' . kunaal_format_chart_value($total, $unit, $unit_position) . '</text>';
-                    echo '<text x="' . $center_x . '" y="' . ($center_y + 18) . '" text-anchor="middle" font-size="12" fill="#666" font-family="var(--sans)">Total</text>';
+                    echo '<text x="' . esc_attr($center_x) . '" y="' . esc_attr($center_y - 5) . '" text-anchor="middle" font-size="24" font-weight="700" fill="#333" font-family="var(--serif)">' . esc_html(kunaal_format_chart_value($total, $unit, $unit_position)) . '</text>';
+                    echo '<text x="' . esc_attr($center_x) . '" y="' . esc_attr($center_y + 18) . '" text-anchor="middle" font-size="12" fill="#666" font-family="var(--sans)">Total</text>';
                 }
                 
                 // Legend
@@ -444,8 +444,8 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     foreach ($data as $index => $value) {
                         $color = $chart_colors[$index % count($chart_colors)];
                         $y = $margin['top'] + $index * 24;
-                        echo '<rect x="' . $legend_x . '" y="' . ($y - 8) . '" width="14" height="14" fill="' . $color . '" rx="2"/>';
-                        echo '<text x="' . ($legend_x + 20) . '" y="' . $y . '" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
+                        echo '<rect x="' . esc_attr($legend_x) . '" y="' . esc_attr($y - 8) . '" width="14" height="14" fill="' . esc_attr($color) . '" rx="2"/>';
+                        echo '<text x="' . esc_attr($legend_x + 20) . '" y="' . esc_attr($y) . '" font-size="11" fill="#666" font-family="var(--sans)">' . esc_html($labels[$index]) . '</text>';
                     }
                 }
                 ?>
@@ -503,10 +503,10 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 $start_x = $margin['left'] + ($chart_width - $total_width) / 2;
                 
                 // Grid and baseline
-                echo '<line x1="' . $margin['left'] . '" y1="' . ($svg_height - $margin['bottom']) . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . ($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
+                echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($svg_height - $margin['bottom']) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($svg_height - $margin['bottom']) . '" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>';
                 
                 $zero_y = $margin['top'] + (($max_val - 0) / $range) * $chart_height;
-                echo '<line x1="' . $margin['left'] . '" y1="' . $zero_y . '" x2="' . ($svg_width - $margin['right']) . '" y2="' . $zero_y . '" stroke="rgba(0,0,0,0.2)" stroke-width="1" stroke-dasharray="4,4"/>';
+                echo '<line x1="' . esc_attr($margin['left']) . '" y1="' . esc_attr($zero_y) . '" x2="' . esc_attr($svg_width - $margin['right']) . '" y2="' . esc_attr($zero_y) . '" stroke="rgba(0,0,0,0.2)" stroke-width="1" stroke-dasharray="4,4"/>';
                 
                 foreach ($cumulative as $index => $item) {
                     $x = $start_x + $index * ($bar_width + $bar_gap);
@@ -527,20 +527,20 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         $color = $item['type'] === 'positive' ? $positive_color : $negative_color;
                     }
                     
-                    echo '<rect x="' . $x . '" y="' . $y . '" width="' . $bar_width . '" height="' . max(2, $bar_height) . '" fill="' . $color . '" rx="2"/>';
+                    echo '<rect x="' . esc_attr($x) . '" y="' . esc_attr($y) . '" width="' . esc_attr($bar_width) . '" height="' . esc_attr(max(2, $bar_height)) . '" fill="' . esc_attr($color) . '" rx="2"/>';
                     
                     // Connector line (except for last)
                     if ($index < count($cumulative) - 1) {
                         $connect_y = $margin['top'] + (($max_val - $item['end']) / $range) * $chart_height;
                         $next_x = $start_x + ($index + 1) * ($bar_width + $bar_gap);
-                        echo '<line x1="' . ($x + $bar_width) . '" y1="' . $connect_y . '" x2="' . $next_x . '" y2="' . $connect_y . '" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>';
+                        echo '<line x1="' . esc_attr($x + $bar_width) . '" y1="' . esc_attr($connect_y) . '" x2="' . esc_attr($next_x) . '" y2="' . esc_attr($connect_y) . '" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>';
                     }
                     
                     // Value label
                     if ($show_values) {
                         $label_y = $y - 8;
                         $sign = ($item['type'] === 'positive' && $item['value'] > 0) ? '+' : '';
-                        echo '<text x="' . ($x + $bar_width / 2) . '" y="' . $label_y . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . $sign . kunaal_format_chart_value($item['value'], $unit, $unit_position) . '</text>';
+                        echo '<text x="' . esc_attr($x + $bar_width / 2) . '" y="' . esc_attr($label_y) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . esc_html($sign . kunaal_format_chart_value($item['value'], $unit, $unit_position)) . '</text>';
                     }
                     
                     // X-axis label
@@ -559,18 +559,18 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     } else {
                         $label_text = isset($labels[$index]) ? $labels[$index] : ('Step ' . $index);
                     }
-                    echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($svg_height - $margin['bottom'] + 18) . '" text-anchor="middle" font-size="10" fill="#666" font-family="var(--sans)">' . esc_html($label_text) . '</text>';
+                    echo '<text x="' . esc_attr($x + $bar_width / 2) . '" y="' . esc_attr($svg_height - $margin['bottom'] + 18) . '" text-anchor="middle" font-size="10" fill="#666" font-family="var(--sans)">' . esc_html($label_text) . '</text>';
                 }
                 
                 // Legend
                 if ($show_legend) {
                     $legend_y = $svg_height - 15;
-                    echo '<rect x="' . $margin['left'] . '" y="' . ($legend_y - 10) . '" width="12" height="12" fill="' . $positive_color . '" rx="2"/>';
-                    echo '<text x="' . ($margin['left'] + 18) . '" y="' . $legend_y . '" font-size="10" fill="#666" font-family="var(--sans)">Increase</text>';
-                    echo '<rect x="' . ($margin['left'] + 80) . '" y="' . ($legend_y - 10) . '" width="12" height="12" fill="' . $negative_color . '" rx="2"/>';
-                    echo '<text x="' . ($margin['left'] + 98) . '" y="' . $legend_y . '" font-size="10" fill="#666" font-family="var(--sans)">Decrease</text>';
-                    echo '<rect x="' . ($margin['left'] + 170) . '" y="' . ($legend_y - 10) . '" width="12" height="12" fill="' . $total_color . '" rx="2"/>';
-                    echo '<text x="' . ($margin['left'] + 188) . '" y="' . $legend_y . '" font-size="10" fill="#666" font-family="var(--sans)">Total</text>';
+                    echo '<rect x="' . esc_attr($margin['left']) . '" y="' . esc_attr($legend_y - 10) . '" width="12" height="12" fill="' . esc_attr($positive_color) . '" rx="2"/>';
+                    echo '<text x="' . esc_attr($margin['left'] + 18) . '" y="' . esc_attr($legend_y) . '" font-size="10" fill="#666" font-family="var(--sans)">Increase</text>';
+                    echo '<rect x="' . esc_attr($margin['left'] + 80) . '" y="' . esc_attr($legend_y - 10) . '" width="12" height="12" fill="' . esc_attr($negative_color) . '" rx="2"/>';
+                    echo '<text x="' . esc_attr($margin['left'] + 98) . '" y="' . esc_attr($legend_y) . '" font-size="10" fill="#666" font-family="var(--sans)">Decrease</text>';
+                    echo '<rect x="' . esc_attr($margin['left'] + 170) . '" y="' . esc_attr($legend_y - 10) . '" width="12" height="12" fill="' . esc_attr($total_color) . '" rx="2"/>';
+                    echo '<text x="' . esc_attr($margin['left'] + 188) . '" y="' . esc_attr($legend_y) . '" font-size="10" fill="#666" font-family="var(--sans)">Total</text>';
                 }
                 ?>
             <?php } ?>

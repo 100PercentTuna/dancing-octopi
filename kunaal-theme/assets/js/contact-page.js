@@ -12,7 +12,7 @@
 
   // Scroll reveal animations
   function initScrollReveals() {
-    var elements = document.querySelectorAll('[data-reveal]');
+    const elements = document.querySelectorAll('[data-reveal]');
     if (!elements.length) return;
     
     var observer = new IntersectionObserver(function(entries) {

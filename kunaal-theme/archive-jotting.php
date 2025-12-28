@@ -70,7 +70,7 @@ $all_topics = kunaal_get_all_topics();
       <h2>Jottings</h2>
       <span class="sectionCount">
         <span id="jotCountShown"><?php echo esc_html($total_jottings); ?></span>
-        <span id="jotLabel"><?php echo $total_jottings == 1 ? 'quick jotted-down rough idea' : 'quick jotted-down rough ideas'; ?></span>
+        <span id="jotLabel"><?php echo esc_html($total_jottings == 1 ? 'quick jotted-down rough idea' : 'quick jotted-down rough ideas'); ?></span>
       </span>
     </div>
 

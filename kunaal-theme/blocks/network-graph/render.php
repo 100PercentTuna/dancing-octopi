@@ -33,13 +33,13 @@ $block_id = 'network-' . wp_unique_id();
         data-layout="<?php echo esc_attr($layout); ?>"
         data-nodes='<?php echo esc_attr(wp_json_encode($nodes)); ?>'
         data-edges='<?php echo esc_attr(wp_json_encode($edges)); ?>'
-        data-show-labels="<?php echo $show_labels ? 'true' : 'false'; ?>"
-        data-enable-zoom="<?php echo $enable_zoom ? 'true' : 'false'; ?>"
-        data-enable-drag="<?php echo $enable_drag ? 'true' : 'false'; ?>"
-        data-enable-physics="<?php echo $enable_physics ? 'true' : 'false'; ?>"
+        data-show-labels="<?php echo esc_attr($show_labels ? 'true' : 'false'); ?>"
+        data-enable-zoom="<?php echo esc_attr($enable_zoom ? 'true' : 'false'); ?>"
+        data-enable-drag="<?php echo esc_attr($enable_drag ? 'true' : 'false'); ?>"
+        data-enable-physics="<?php echo esc_attr($enable_physics ? 'true' : 'false'); ?>"
         data-charge-strength="<?php echo esc_attr($charge_strength); ?>"
         data-link-distance="<?php echo esc_attr($link_distance); ?>"
-        data-color-by-group="<?php echo $color_by_group ? 'true' : 'false'; ?>"
+        data-color-by-group="<?php echo esc_attr($color_by_group ? 'true' : 'false'); ?>"
         data-group-colors='<?php echo esc_attr(wp_json_encode($group_colors)); ?>'>
     
     <?php if ($title || $subtitle) : ?>

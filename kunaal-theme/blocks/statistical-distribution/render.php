@@ -75,25 +75,25 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                 $q3_x = 140 + (($stat['q3'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 $max_x = 140 + (($stat['max'] - $axis_min) / ($axis_max - $axis_min)) * 560;
                 ?>
-            <g class="stat-group" data-group="<?php echo esc_attr($stat['label']); ?>" transform="translate(0, <?php echo $y; ?>)">
+            <g class="stat-group" data-group="<?php echo esc_attr($stat['label']); ?>" transform="translate(0, <?php echo esc_attr($y); ?>)">
                 <text class="stat-label" x="10" y="25"><?php echo esc_html($stat['label']); ?></text>
                 
                 <?php if ($chart_type === 'box' || $chart_type === 'combo') : ?>
                 <!-- Whiskers -->
-                <line class="stat-whisker stat-whisker-left" x1="<?php echo $min_x; ?>" y1="20" x2="<?php echo $q1_x; ?>" y2="20" stroke="var(--muted)" stroke-width="2"/>
-                <line class="stat-whisker stat-whisker-right" x1="<?php echo $q3_x; ?>" y1="20" x2="<?php echo $max_x; ?>" y2="20" stroke="var(--muted)" stroke-width="2"/>
-                <line class="stat-whisker-connector" x1="<?php echo $min_x; ?>" y1="20" x2="<?php echo $max_x; ?>" y2="20" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2,2"/>
+                <line class="stat-whisker stat-whisker-left" x1="<?php echo esc_attr($min_x); ?>" y1="20" x2="<?php echo esc_attr($q1_x); ?>" y2="20" stroke="var(--muted)" stroke-width="2"/>
+                <line class="stat-whisker stat-whisker-right" x1="<?php echo esc_attr($q3_x); ?>" y1="20" x2="<?php echo esc_attr($max_x); ?>" y2="20" stroke="var(--muted)" stroke-width="2"/>
+                <line class="stat-whisker-connector" x1="<?php echo esc_attr($min_x); ?>" y1="20" x2="<?php echo esc_attr($max_x); ?>" y2="20" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2,2"/>
                 
                 <!-- Box -->
-                <rect class="stat-box" x="<?php echo $q1_x; ?>" y="10" width="<?php echo $q3_x - $q1_x; ?>" height="20"
+                <rect class="stat-box" x="<?php echo esc_attr($q1_x); ?>" y="10" width="<?php echo esc_attr($q3_x - $q1_x); ?>" height="20"
                       fill="var(--warmLight)" fill-opacity="0.6" stroke="var(--warm)" stroke-width="2" rx="3"/>
                 
                 <!-- Median -->
-                <line class="stat-median" x1="<?php echo $median_x; ?>" y1="8" x2="<?php echo $median_x; ?>" y2="32"
+                <line class="stat-median" x1="<?php echo esc_attr($median_x); ?>" y1="8" x2="<?php echo esc_attr($median_x); ?>" y2="32"
                       stroke="var(--ink)" stroke-width="2"/>
                 
                 <?php if ($show_mean) : ?>
-                <polygon class="stat-mean" points="<?php echo $stat['mean'] ? ($median_x + 30) : $median_x; ?>,20 <?php echo $stat['mean'] ? ($median_x + 36) : ($median_x + 6); ?>,14 <?php echo $stat['mean'] ? ($median_x + 42) : ($median_x + 12); ?>,20 <?php echo $stat['mean'] ? ($median_x + 36) : ($median_x + 6); ?>,26"
+                <polygon class="stat-mean" points="<?php echo esc_attr($stat['mean'] ? ($median_x + 30) : $median_x); ?>,20 <?php echo esc_attr($stat['mean'] ? ($median_x + 36) : ($median_x + 6)); ?>,14 <?php echo esc_attr($stat['mean'] ? ($median_x + 42) : ($median_x + 12)); ?>,20 <?php echo esc_attr($stat['mean'] ? ($median_x + 36) : ($median_x + 6)); ?>,26"
                          fill="var(--blue)"/>
                 <?php endif; ?>
                 
@@ -101,7 +101,7 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                     foreach ($stat['outliers'] as $outlier) {
                         $outlier_x = 140 + (($outlier - $axis_min) / ($axis_max - $axis_min)) * 560;
                         ?>
-                <circle class="stat-outlier" cx="<?php echo $outlier_x; ?>" cy="20" r="4" fill="var(--terracotta)"/>
+                <circle class="stat-outlier" cx="<?php echo esc_attr($outlier_x); ?>" cy="20" r="4" fill="var(--terracotta)"/>
                 <?php
                     }
                 }
@@ -120,8 +120,8 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                     $x = 140 + ($i / 4) * 560;
                     $val = $axis_min + ($i / 4) * ($axis_max - $axis_min);
                     ?>
-                <line x1="<?php echo $x; ?>" y1="375" x2="<?php echo $x; ?>" y2="380" stroke="var(--muted)" stroke-width="1"/>
-                <text x="<?php echo $x; ?>" y="395" text-anchor="middle" class="axis-label">
+                <line x1="<?php echo esc_attr($x); ?>" y1="375" x2="<?php echo esc_attr($x); ?>" y2="380" stroke="var(--muted)" stroke-width="1"/>
+                <text x="<?php echo esc_attr($x); ?>" y="395" text-anchor="middle" class="axis-label">
                     <?php echo esc_html(kunaal_format_stat_value($val, $value_format, $currency_symbol)); ?>
                 </text>
                 <?php

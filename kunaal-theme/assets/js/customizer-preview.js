@@ -15,9 +15,9 @@
     // Prevents rapid successive calls
     // ========================================
     function debounce(func, wait) {
-        var timeout;
+        let timeout;
         return function() {
-            var context = this,
+            const context = this;
                 args = arguments;
             clearTimeout(timeout);
             timeout = setTimeout(function() {
@@ -36,8 +36,8 @@
         value.bind(debounce(function(newval) {
             $('.nameLine span:first-child').text(newval);
             $('.hero-name').each(function() {
-                var $this = $(this);
-                var lastName = $this.find('.hero-name-last').text();
+                const $this = $(this);
+                const lastName = $this.find('.hero-name-last').text();
                 $this.html(newval + ' <span class="hero-name-last">' + lastName + '</span>');
             });
         }, 150));
@@ -137,7 +137,7 @@
     // These require a refresh but are toggled
     // ========================================
     
-    var sectionToggles = [
+    const sectionToggles = [
         'kunaal_about_hero_show',
         'kunaal_about_bio_show',
         'kunaal_about_map_show',

@@ -1,0 +1,474 @@
+<?php
+/**
+ * Gutenberg Block Registration
+ *
+ * Registers all custom blocks, block categories, and editor assets.
+ * Patterns have been removed in favor of proper Gutenberg blocks
+ * which provide a better editing experience.
+ *
+ * @package Kunaal_Theme
+ * @since 4.11.2
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Compatibility guard:
+ * Some WordPress installs may be behind on block APIs. If core block
+ * registration functions don't exist, we should no-op instead of fataling.
+ */
+function kunaal_blocks_api_available() {
+    return function_exists('register_block_type');
+}
+
+// ========================================
+// BLOCK CATEGORIES
+// ========================================
+
+/**
+ * Register Custom Block Categories
+ *
+ * These categories organize blocks in the editor inserter.
+ * Categories are ordered by usage frequency.
+ */
+function kunaal_register_block_categories($categories) {
+    return array_merge(
+        array(
+            array(
+                'slug'  => 'kunaal-editorial',
+                'title' => __('Editorial', 'kunaal-theme'),
+                'icon'  => 'edit',
+            ),
+            array(
+                'slug'  => 'kunaal-data',
+                'title' => __('Data & Charts', 'kunaal-theme'),
+                'icon'  => 'chart-line',
+            ),
+            array(
+                'slug'  => 'kunaal-analysis',
+                'title' => __('Analysis', 'kunaal-theme'),
+                'icon'  => 'chart-bar',
+            ),
+            array(
+                'slug'  => 'kunaal-interactive',
+                'title' => __('Interactive', 'kunaal-theme'),
+                'icon'  => 'controls-play',
+            ),
+        ),
+        $categories
+    );
+}
+add_filter('block_categories_all', 'kunaal_register_block_categories', 10, 1);
+
+// ========================================
+// CORE BLOCK OVERRIDES
+// ========================================
+
+/**
+ * Unregister Core Blocks We Replace
+ *
+ * We have custom versions of these blocks that better match
+ * the theme's design language.
+ */
+function kunaal_unregister_core_blocks() {
+    if (!kunaal_blocks_api_available()) {
+        return;
+    }
+
+    if (class_exists('WP_Block_Type_Registry') && function_exists('unregister_block_type')) {
+        $registry = WP_Block_Type_Registry::get_instance();
+        
+        // Unregister core pullquote - we have kunaal/pullquote
+        if ($registry->is_registered('core/pullquote')) {
+            unregister_block_type('core/pullquote');
+        }
+    }
+}
+add_action('init', 'kunaal_unregister_core_blocks', 100);
+
+// ========================================
+// BLOCK DEFINITIONS
+// ========================================
+
+/**
+ * All available blocks organized by category.
+ *
+ * Each block requires:
+ * - block.json (metadata)
+ * - edit.js (editor component)
+ * - render.php (frontend output)
+ * - style.css (styles)
+ *
+ * Some blocks also have:
+ * - view.js (frontend JavaScript)
+ */
+function kunaal_get_block_definitions() {
+    return array(
+        // Editorial blocks - text and content formatting
+        'editorial' => array(
+            'insight',
+            'pullquote',
+            'accordion',
+            'sidenote',
+            'section-header',
+            'takeaways',
+            'takeaway-item',
+            'citation',
+            'aside',
+            'footnote',
+            'footnotes-section',
+            'magazine-figure',
+            'timeline',
+            'timeline-item',
+            'glossary',
+            'glossary-term',
+            'annotation',
+            'source-excerpt',
+            'context-panel',
+            'related-reading',
+            'related-link',
+            'lede-package',
+        ),
+        
+        // Analysis blocks - for making arguments and analysis
+        'analysis' => array(
+            'argument-map',
+            'know-dont-know',
+            'assumptions-register',
+            'confidence-meter',
+            'scenario-compare',
+            'decision-log',
+            'decision-entry',
+            'framework-matrix',
+            'causal-loop',
+            'rubric',
+            'rubric-row',
+            'debate',
+            'debate-side',
+        ),
+        
+        // Data blocks - tables, charts, flows
+        'data' => array(
+            'pub-table',
+            'flowchart',
+            'flowchart-step',
+            'chart',
+            'heatmap',
+            'dumbbell-chart',
+            'slopegraph',
+            'small-multiples',
+            'statistical-distribution',
+            'flow-diagram',
+            'network-graph',
+            'data-map',
+        ),
+        
+        // Interactive blocks - scrollytelling and reveals
+        'interactive' => array(
+            'parallax-section',
+            'scrollytelling',
+            'scrolly-step',
+            'reveal-wrapper',
+        ),
+    );
+}
+
+/**
+ * Blocks that have frontend view scripts
+ */
+function kunaal_get_view_script_blocks() {
+    return array(
+        'sidenote',
+        'annotation',
+        'footnote',
+        'parallax-section',
+        'scrollytelling',
+        'reveal-wrapper',
+        'heatmap',
+        'dumbbell-chart',
+        'slopegraph',
+        'small-multiples',
+        'statistical-distribution',
+        'flow-diagram',
+        'network-graph',
+        'data-map',
+    );
+}
+
+// ========================================
+// SCRIPT REGISTRATION
+// ========================================
+
+/**
+ * Register editor scripts for all blocks
+ * 
+ * @param string $blocks_dir Block directory path
+ * @param string $blocks_uri Block directory URI
+ * @param string $version Theme version
+ */
+function kunaal_register_editor_scripts($blocks_dir, $blocks_uri, $version) {
+    $editor_deps = array(
+        'wp-blocks',
+        'wp-element',
+        'wp-block-editor',
+        'wp-components',
+        'wp-i18n',
+    );
+    
+    $block_definitions = kunaal_get_block_definitions();
+    $all_blocks = array();
+    foreach ($block_definitions as $category => $blocks) {
+        $all_blocks = array_merge($all_blocks, $blocks);
+    }
+    
+    foreach ($all_blocks as $block) {
+        $script_path = $blocks_dir . '/' . $block . '/edit.js';
+        if (file_exists($script_path)) {
+            wp_register_script(
+                'kunaal-' . $block . '-editor',
+                $blocks_uri . '/' . $block . '/edit.js',
+                $editor_deps,
+                $version,
+                true
+            );
+        }
+    }
+}
+
+/**
+ * Register view scripts for blocks with frontend JS
+ * 
+ * @param string $blocks_dir Block directory path
+ * @param string $blocks_uri Block directory URI
+ * @param string $version Theme version
+ */
+function kunaal_register_view_scripts($blocks_dir, $blocks_uri, $version) {
+    $view_blocks = kunaal_get_view_script_blocks();
+    foreach ($view_blocks as $block) {
+        $view_path = $blocks_dir . '/' . $block . '/view.js';
+        if (file_exists($view_path)) {
+            wp_register_script(
+                'kunaal-' . $block . '-view',
+                $blocks_uri . '/' . $block . '/view.js',
+                array(),
+                $version,
+                true
+            );
+        }
+    }
+}
+
+/**
+ * Register Block Editor Scripts
+ *
+ * Registers edit.js for each block and view.js for blocks
+ * that need frontend JavaScript.
+ */
+function kunaal_register_block_scripts() {
+    if (!kunaal_blocks_api_available()) {
+        return;
+    }
+
+    // Constants for block directory paths
+    if (!defined('KUNAAL_BLOCKS_DIR_RELATIVE')) {
+        define('KUNAAL_BLOCKS_DIR_RELATIVE', '/blocks');
+    }
+    
+    $blocks_dir = KUNAAL_THEME_DIR . KUNAAL_BLOCKS_DIR_RELATIVE;
+    $blocks_uri = KUNAAL_THEME_URI . KUNAAL_BLOCKS_DIR_RELATIVE;
+    $version = KUNAAL_THEME_VERSION;
+    
+    kunaal_register_editor_scripts($blocks_dir, $blocks_uri, $version);
+    kunaal_register_view_scripts($blocks_dir, $blocks_uri, $version);
+}
+add_action('init', 'kunaal_register_block_scripts', 5);
+
+// ========================================
+// BLOCK REGISTRATION
+// ========================================
+
+/**
+ * Register Custom Gutenberg Blocks
+ *
+ * Registers all blocks from the /blocks directory.
+ * Each block must have a valid block.json file.
+ * 
+ * Delegates to helper functions to reduce cognitive complexity.
+ */
+function kunaal_register_blocks() {
+    if (!kunaal_blocks_api_available()) {
+        return;
+    }
+    
+    // Use constant for block directory path (defined in kunaal_register_block_scripts)
+    $blocks_dir = KUNAAL_THEME_DIR . KUNAAL_BLOCKS_DIR_RELATIVE;
+    
+    // Get all block folders
+    $block_definitions = kunaal_get_block_definitions();
+    
+    foreach ($block_definitions as $category => $blocks) {
+        foreach ($blocks as $block) {
+            $block_path = $blocks_dir . '/' . $block;
+            kunaal_register_single_block($block_path, $block);
+        }
+    }
+}
+add_action('init', 'kunaal_register_blocks', 10);
+
+// ========================================
+// EDITOR ASSETS
+// ========================================
+
+// Block editor assets are now enqueued in functions.php via kunaal_enqueue_editor_assets()
+// This consolidation avoids conflicts and centralizes asset management
+
+// ========================================
+// REVEAL ANIMATIONS
+// ========================================
+
+/**
+ * Add reveal class using WP_HTML_Tag_Processor (WordPress 6.2+)
+ * 
+ * @param string $block_content Block HTML content
+ * @return string|false Updated HTML or false on failure
+ */
+function kunaal_add_reveal_class_processor($block_content) {
+    if (!class_exists('WP_HTML_Tag_Processor')) {
+        return false;
+    }
+    
+    $processor = new WP_HTML_Tag_Processor($block_content);
+    if (!$processor->next_tag()) {
+        return false;
+    }
+    
+    $existing_class = $processor->get_attribute('class');
+    if ($existing_class) {
+        $classes = explode(' ', $existing_class);
+        if (!in_array('reveal', $classes, true)) {
+            $classes[] = 'reveal';
+            $processor->set_attribute('class', implode(' ', $classes));
+        }
+    } else {
+        $processor->set_attribute('class', 'reveal');
+    }
+    
+    return $processor->get_updated_html();
+}
+
+/**
+ * Add reveal class using DOMDocument fallback
+ * 
+ * @param string $block_content Block HTML content
+ * @return string|false Updated HTML or false on failure
+ */
+function kunaal_add_reveal_class_dom($block_content) {
+    if (!function_exists('wp_kses_post') || !class_exists('DOMDocument')) {
+        return false;
+    }
+    
+    libxml_use_internal_errors(true);
+    $dom = new DOMDocument();
+    $dom->loadHTML('<?xml encoding="UTF-8">' . $block_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $xpath = new DOMXPath($dom);
+    $first_element = $xpath->query('//*[1]')->item(0);
+    
+    if (!($first_element instanceof DOMElement)) {
+        libxml_clear_errors();
+        return false;
+    }
+    
+    $existing_class = $first_element->getAttribute('class');
+    $classes = $existing_class ? explode(' ', trim($existing_class)) : array();
+    if (!in_array('reveal', $classes, true)) {
+        $classes[] = 'reveal';
+        $first_element->setAttribute('class', implode(' ', $classes));
+    }
+    
+    $html = $dom->saveHTML();
+    libxml_clear_errors();
+    
+    // Remove XML declaration if present
+    return preg_replace('/^<\?xml[^>]*\?>\s*/', '', $html);
+}
+
+/**
+ * Add Reveal Class to Core Blocks
+ *
+ * Adds scroll-triggered reveal animation class to core blocks
+ * when viewing essays or jottings.
+ * Uses WP_HTML_Tag_Processor for safe HTML manipulation (WordPress 6.2+).
+ */
+function kunaal_block_wrapper($block_content, $block) {
+    // Early return if not processing
+    if (!is_singular(array('essay', 'jotting'))) {
+        return $block_content;
+    }
+    
+    $reveal_blocks = array(
+        'core/paragraph',
+        'core/heading',
+        'core/image',
+        'core/quote',
+        'core/list',
+    );
+    
+    if (!in_array($block['blockName'], $reveal_blocks)) {
+        return $block_content;
+    }
+    
+    if (strpos($block_content, 'reveal') !== false) {
+        return $block_content;
+    }
+
+    // Try WP_HTML_Tag_Processor first (WordPress 6.2+)
+    $result = kunaal_add_reveal_class_processor($block_content);
+    if ($result !== false) {
+        return $result;
+    }
+
+    // Fallback to DOMDocument
+    $result = kunaal_add_reveal_class_dom($block_content);
+    if ($result !== false) {
+        return $result;
+    }
+
+    // Last resort: Return unchanged
+    return $block_content;
+}
+add_filter('render_block', 'kunaal_block_wrapper', 10, 2);
+
+// ========================================
+// BLOCK STYLES
+// ========================================
+
+/**
+ * Register Double Underline Block Style
+ * 
+ * Makes the canonical double underline motif available as a block style
+ * for core/paragraph and core/heading blocks.
+ */
+function kunaal_register_double_underline_style() {
+    if (!function_exists('register_block_style')) {
+        return;
+    }
+
+    // Register for paragraph blocks
+    register_block_style('core/paragraph', array(
+        'name'         => 'double-underline',
+        'label'        => __('Double Underline', 'kunaal-theme'),
+        'style_handle' => 'kunaal-theme-utilities', // Uses utilities.css
+    ));
+
+    // Register for heading blocks
+    register_block_style('core/heading', array(
+        'name'         => 'double-underline',
+        'label'        => __('Double Underline', 'kunaal-theme'),
+        'style_handle' => 'kunaal-theme-utilities',
+    ));
+}
+add_action('init', 'kunaal_register_double_underline_style', 20);
+
+// Block patterns removed - all patterns have been converted to proper Gutenberg blocks

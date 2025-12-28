@@ -34,7 +34,7 @@
   <!-- Table of Contents -->
   <?php if ($toc) : ?>
     <div class="pdf-page-break"></div>
-    <?php echo $toc; ?>
+    <?php echo wp_kses_post($toc); ?>
   <?php endif; ?>
   
   <!-- Hero Image -->
@@ -48,7 +48,7 @@
   <!-- Main Content -->
   <div class="pdf-page-break"></div>
   <div class="pdf-content">
-    <?php echo $pdf_content; ?>
+    <?php echo wp_kses_post($pdf_content); ?>
   </div>
   
   <!-- Footer with author info -->

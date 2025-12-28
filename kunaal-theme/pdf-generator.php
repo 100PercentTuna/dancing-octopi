@@ -129,7 +129,7 @@ function kunaal_generate_pdf() {
     <meta charset="UTF-8">
     <title>' . esc_html($title) . '</title>
     <style>
-    ' . $styles . '
+    ' . esc_html($styles) . '
     @media print {
         @page { margin: 2cm; }
     }
@@ -149,7 +149,7 @@ function kunaal_generate_pdf() {
     <div class="print-notice">
         <strong>Save as PDF:</strong> Press Ctrl/Cmd + P and select "Save as PDF" as destination.
     </div>
-    ' . $html . '
+    ' . wp_kses_post($html) . '
     <script>window.print();</script>
 </body>
 </html>';
@@ -167,8 +167,8 @@ function kunaal_build_pdf_html($data) {
     
     $topics_html = '';
     if (!empty($data['topics']) && !is_wp_error($data['topics'])) {
-        $topic_names = array_map(function($t) { return '#' . $t->name; }, $data['topics']);
-        $topics_html = '<p class="pdf-topics">' . implode('  ', $topic_names) . '</p>';
+        $topic_names = array_map(function($t) { return '#' . esc_html($t->name); }, $data['topics']);
+        $topics_html = '<p class="pdf-topics">' . esc_html(implode('  ', $topic_names)) . '</p>';
     }
     
     $meta_parts = array();
@@ -186,7 +186,7 @@ function kunaal_build_pdf_html($data) {
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>' . esc_html($data['title']) . '</title>
-    <style>' . $styles . '</style>
+    <style>' . esc_html($styles) . '</style>
 </head>
 <body>
     <div class="pdf-wrapper">
@@ -194,11 +194,11 @@ function kunaal_build_pdf_html($data) {
             <h1 class="pdf-title">' . esc_html($data['title']) . '</h1>
             ' . ($data['subtitle'] ? '<p class="pdf-subtitle">' . esc_html($data['subtitle']) . '</p>' : '') . '
             <div class="pdf-meta">' . implode(' ', $meta_parts) . '</div>
-            ' . $topics_html . '
+            ' . wp_kses_post($topics_html) . '
         </header>
         
         <div class="pdf-content">
-            ' . $data['content'] . '
+            ' . wp_kses_post($data['content']) . '
         </div>
         
         <footer class="pdf-footer">

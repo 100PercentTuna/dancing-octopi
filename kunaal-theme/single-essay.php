@@ -120,14 +120,12 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
             <span class="dot"></span>
             <span><?php echo esc_html($read_time); ?> min read</span>
           <?php } ?>
-          ?>
           <?php if ($topics && !is_wp_error($topics)) {
               foreach ($topics as $topic) { ?>
               <span class="dot"></span>
               <a href="<?php echo esc_url(get_term_link($topic)); ?>">#<?php echo esc_html($topic->name); ?></a>
               <?php }
           } ?>
-          ?>
         </div>
         
         <h1 class="articleTitle"><?php the_title(); ?></h1>
@@ -142,7 +140,6 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
           <?php the_post_thumbnail('essay-hero'); ?>
         </figure>
       <?php } ?>
-      ?>
 
       <div class="articleContent">
         <div class="prose" id="articleProse">
