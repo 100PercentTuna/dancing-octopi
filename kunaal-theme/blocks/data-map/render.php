@@ -106,11 +106,11 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
             <div class="map-loading">Loading map...</div>
         </div>
         
-        <?php if ($show_legend) : ?>
+        <?php if ($show_legend) { ?>
         <div class="map-legend map-legend--<?php echo esc_attr($legend_position); ?>">
-            <?php if ($legend_title) : ?>
+            <?php if ($legend_title) { ?>
             <h4 class="legend-title"><?php echo esc_html($legend_title); ?></h4>
-            <?php endif; ?>
+            <?php } ?>
             <div class="legend-content">
                 <span class="legend-min"><?php echo esc_html(kunaal_format_map_value($min_value, $value_format, $currency_symbol, $value_suffix)); ?></span>
                 <div class="legend-gradient" 
@@ -119,7 +119,7 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
                 <span class="legend-max"><?php echo esc_html(kunaal_format_map_value($max_value, $value_format, $currency_symbol, $value_suffix)); ?></span>
             </div>
         </div>
-        <?php endif; ?>
+        <?php } ?>
         
         <div class="map-tooltip" role="tooltip" hidden>
             <h4 class="tooltip-region"></h4>
@@ -127,11 +127,11 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
         </div>
     </div>
     
-    <?php if ($source_note) : ?>
+    <?php if ($source_note) { ?>
     <footer class="map-footer">
         <p class="map-source"><?php echo esc_html($source_note); ?></p>
     </footer>
-    <?php endif; ?>
+    <?php } ?>
     
     <details class="map-data-table">
         <summary><?php esc_html_e('View data table', 'kunaal-theme'); ?></summary>
@@ -153,8 +153,8 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
                 }
                 ?>
             </tbody>
-            <?php endif; ?>
-            <?php if ($map_type === 'dots' || $map_type === 'gradient-dots' || $map_type === 'combined') : ?>
+            <?php } ?>
+            <?php if ($map_type === 'dots' || $map_type === 'gradient-dots' || $map_type === 'combined') { ?>
             <thead>
                 <tr><th><?php esc_html_e('Location', 'kunaal-theme'); ?></th><th><?php echo esc_html($value_label); ?></th></tr>
             </thead>
@@ -170,7 +170,7 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
                 }
                 ?>
             </tbody>
-            <?php endif; ?>
+            <?php } ?>
         </table>
     </details>
 </figure>

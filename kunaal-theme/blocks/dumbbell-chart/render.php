@@ -123,7 +123,7 @@ $block_id = 'dumbbell-' . wp_unique_id();
         </svg>
     </div>
     
-    <?php if ($show_legend) : ?>
+    <?php if ($show_legend) { ?>
     <footer class="dumbbell-footer">
         <div class="dumbbell-legend">
             <span class="legend-item">
@@ -135,11 +135,11 @@ $block_id = 'dumbbell-' . wp_unique_id();
                 <?php echo esc_html($end_label); ?>
             </span>
         </div>
-        <?php if ($source_note) : ?>
+        <?php if ($source_note) { ?>
         <p class="dumbbell-source"><?php echo esc_html($source_note); ?></p>
-        <?php endif; ?>
+        <?php } ?>
     </footer>
-    <?php endif; ?>
+    <?php } ?>
     
     <details class="dumbbell-data-table">
         <summary><?php esc_html_e('View data table', 'kunaal-theme'); ?></summary>
