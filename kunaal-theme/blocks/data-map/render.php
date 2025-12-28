@@ -122,8 +122,8 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
         <?php } ?>
         
         <div class="map-tooltip" role="tooltip" hidden>
-            <h4 class="tooltip-region"></h4>
-            <p class="tooltip-value"></p>
+            <div class="tooltip-region" aria-hidden="true"></div>
+            <p class="tooltip-value" aria-hidden="true"></p>
         </div>
     </div>
     

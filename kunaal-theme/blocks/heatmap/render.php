@@ -79,7 +79,7 @@ $block_id = 'heatmap-' . wp_unique_id();
     </div>
     
     <div class="heatmap-wrapper">
-        <table class="heatmap-grid" role="grid" aria-label="<?php echo esc_attr($title ?: 'Heatmap data'); ?>">
+        <table class="heatmap-grid" aria-label="<?php echo esc_attr($title ?: 'Heatmap data'); ?>">
             <thead>
                 <tr>
                     <th scope="col" class="heatmap-corner"></th>

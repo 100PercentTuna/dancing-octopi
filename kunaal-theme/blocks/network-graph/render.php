@@ -69,10 +69,10 @@ $block_id = 'network-' . wp_unique_id();
         <?php endif; ?>
         
         <div class="network-tooltip" role="tooltip" hidden>
-            <h4 class="tooltip-title"></h4>
-            <p class="tooltip-group"></p>
-            <p class="tooltip-description"></p>
-            <ul class="tooltip-connections"></ul>
+            <div class="tooltip-title" aria-hidden="true"></div>
+            <p class="tooltip-group" aria-hidden="true"></p>
+            <p class="tooltip-description" aria-hidden="true"></p>
+            <ul class="tooltip-connections" aria-hidden="true"></ul>
         </div>
     </div>
     
