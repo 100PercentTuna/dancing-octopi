@@ -74,7 +74,7 @@ $block_id = 'flow-' . wp_unique_id();
         <table>
             <caption><?php echo esc_html($title ?: 'Flow diagram data'); ?></caption>
             <thead>
-                <tr><th><?php esc_html_e('From', 'kunaal-theme'); ?></th><th><?php esc_html_e('To', 'kunaal-theme'); ?></th><th><?php esc_html_e('Value', 'kunaal-theme'); ?></th></tr>
+                <tr><th scope="col"><?php esc_html_e('From', 'kunaal-theme'); ?></th><th scope="col"><?php esc_html_e('To', 'kunaal-theme'); ?></th><th scope="col"><?php esc_html_e('Value', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
                 <?php

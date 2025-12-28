@@ -145,7 +145,7 @@ $block_id = 'dumbbell-' . wp_unique_id();
         <summary><?php esc_html_e('View data table', 'kunaal-theme'); ?></summary>
         <table>
             <thead>
-                <tr><th><?php esc_html_e('Category', 'kunaal-theme'); ?></th><th><?php echo esc_html($start_label); ?></th><th><?php echo esc_html($end_label); ?></th><th><?php esc_html_e('Gap', 'kunaal-theme'); ?></th></tr>
+                <tr><th scope="col"><?php esc_html_e('Category', 'kunaal-theme'); ?></th><th scope="col"><?php echo esc_html($start_label); ?></th><th scope="col"><?php echo esc_html($end_label); ?></th><th scope="col"><?php esc_html_e('Gap', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
                 <?php

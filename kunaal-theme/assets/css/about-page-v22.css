@@ -657,29 +657,17 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
   margin-bottom: 0.4rem;
 }
+/* Section titles use canonical underline motif from utilities.css */
 .section-title {
-  position: relative;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--warmBorder); /* Thin line */
   font-family: var(--serif);
   font-size: clamp(1.25rem, 2.5vw, 1.5rem);
   font-weight: 400;
   letter-spacing: -0.01em;
   margin-bottom: 1.5rem;
 }
-@keyframes growLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.section-title::after{
-  content:"";
-  position:absolute;
-  left:0;
-  bottom:-1px; /* Position to overlap the border-bottom (thin line) - 1px to sit on top */
-  width:40px;
-  height:2px;
-  background:var(--blue);
-  transform-origin:left;
-  transform:scaleX(0);
-  animation:growLine 600ms ease 350ms forwards;
-  z-index: 2; /* Ensure blue line is above the border */
+/* Extend canonical utility class for About page specificity */
+.kunaal-about-v22 .section-title {
+  padding-bottom: 10px;
 }
 
 /* =============================================

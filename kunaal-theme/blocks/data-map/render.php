@@ -139,7 +139,7 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
             <caption><?php echo esc_html($title ?: 'Map data'); ?></caption>
             <?php if ($map_type === 'choropleth' || $map_type === 'combined') { ?>
             <thead>
-                <tr><th><?php esc_html_e('Region', 'kunaal-theme'); ?></th><th><?php echo esc_html($value_label); ?></th></tr>
+                <tr><th scope="col"><?php esc_html_e('Region', 'kunaal-theme'); ?></th><th scope="col"><?php echo esc_html($value_label); ?></th></tr>
             </thead>
             <tbody>
                 <?php
@@ -156,7 +156,7 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
             <?php } ?>
             <?php if ($map_type === 'dots' || $map_type === 'gradient-dots' || $map_type === 'combined') { ?>
             <thead>
-                <tr><th><?php esc_html_e('Location', 'kunaal-theme'); ?></th><th><?php echo esc_html($value_label); ?></th></tr>
+                <tr><th scope="col"><?php esc_html_e('Location', 'kunaal-theme'); ?></th><th scope="col"><?php echo esc_html($value_label); ?></th></tr>
             </thead>
             <tbody>
                 <?php

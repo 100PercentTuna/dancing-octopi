@@ -34,7 +34,7 @@ if (is_front_page()) {
           if ($email) :
         ?>
           <div class="contactInfo">
-            <a href="mailto:<?php echo esc_attr($email); ?>" class="uBlue">
+            <a href="mailto:<?php echo esc_attr($email); ?>">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="2"/>
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>

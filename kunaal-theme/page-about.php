@@ -180,7 +180,7 @@ kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
     <div class="section-inner">
         <div class="section-bgword" data-dir="left" data-marquee="">Rabbit Holes</div>
         <div class="section-label" data-reveal="up">Rabbit Holes</div>
-        <h2 class="section-title" data-reveal="up"><?php echo esc_html($rabbit_holes_title); ?></h2>
+        <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($rabbit_holes_title); ?></h2>
         <div class="capsules-cloud">
             <?php foreach ($rabbit_holes as $hole) :
                 $category_slug = !empty($hole['category']) ? esc_attr($hole['category']) : '';
@@ -296,7 +296,7 @@ kunaal_render_panoramas($panoramas['after_media'] ?? array());
 <section class="places section">
     <div class="section-inner">
         <div class="section-label" data-reveal="up">Places</div>
-        <h2 class="section-title" data-reveal="up"><?php echo esc_html($places_title); ?></h2>
+        <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($places_title); ?></h2>
         <div class="map-container" id="world-map" data-reveal="up">
             <!-- Map rendered by D3.js -->
         </div>
@@ -332,7 +332,7 @@ kunaal_render_panoramas($places_panoramas);
 <section class="inspirations section warm">
     <div class="section-inner">
         <div class="section-label" data-reveal="up">Inspirations</div>
-        <h2 class="section-title" data-reveal="up"><?php echo esc_html($inspirations_title); ?></h2>
+        <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($inspirations_title); ?></h2>
         <div class="inspirations-grid">
             <?php foreach ($inspirations as $inspiration) : ?>
             <div class="inspiration-item" data-reveal="up">
@@ -351,7 +351,7 @@ kunaal_render_panoramas($places_panoramas);
 <section class="say-hello section">
     <div class="section-inner">
         <div class="section-label" data-reveal="up">Say Hello</div>
-        <h2 class="section-title" data-reveal="up">Let's connect</h2>
+        <h2 class="section-title u-section-underline" data-reveal="up">Let's connect</h2>
         <p class="say-hello-text" data-reveal="up">
             <?php if ($contact_email) : ?>
             <a href="mailto:<?php echo esc_attr($contact_email); ?>"><?php echo esc_html($contact_email); ?></a>

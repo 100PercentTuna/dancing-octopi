@@ -23,8 +23,8 @@ if (empty($rows)) return;
         <table class="pt-table">
             <thead>
                 <tr>
-                    <?php foreach ($headers as $header) : ?>
-                        <th><?php echo esc_html($header); ?></th>
+                    <?php foreach ($headers as $index => $header) : ?>
+                        <th scope="col"><?php echo esc_html($header); ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>

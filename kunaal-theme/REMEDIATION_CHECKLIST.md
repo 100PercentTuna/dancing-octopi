@@ -52,8 +52,8 @@
 - [x] `inc/block-helpers.php` - **VERIFIED**: All switch statements have default cases
 
 ### php:S3776 - Cognitive Complexity > 15 (SonarQube)
-- [ ] `inc/blocks.php:341` - Complexity 24 (reduce to 15)
-- [ ] `inc/blocks.php` - Complexity 21 (reduce to 15)
+- [x] `inc/blocks.php:338` - **FIXED**: Refactored `kunaal_block_wrapper` - extracted helper functions, reduced complexity from 24 to <15
+- [ ] `inc/blocks.php` - Complexity 21 (reduce to 15) - Other function
 - [ ] `inc/block-helpers.php` - Complexity 17 (reduce to 15)
 - [ ] `inc/validation/validation.php` - Complexity 24 (reduce to 15)
 - [ ] `inc/validation/validation.php` - Complexity 28 (reduce to 15)
@@ -84,7 +84,7 @@
 - [ ] Multiple other files - Replace separator roles (35 total)
 
 ### php:S1142 - Too Many Returns (SonarQube)
-- [ ] `inc/blocks.php:341` - 4 returns (max 3 allowed)
+- [x] `inc/blocks.php:338` - **FIXED**: Reduced returns from 4 to 3 in `kunaal_block_wrapper` by extracting helper functions
 - [ ] Other files - Functions with 4+ returns (23 total)
 
 ### Web:S6811 - ARIA Attribute Issues (SonarQube)

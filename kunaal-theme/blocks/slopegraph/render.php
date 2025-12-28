@@ -89,7 +89,7 @@ $block_id = 'slope-' . wp_unique_id();
         <summary><?php esc_html_e('View data table', 'kunaal-theme'); ?></summary>
         <table>
             <thead>
-                <tr><th><?php esc_html_e('Label', 'kunaal-theme'); ?></th><th><?php echo esc_html($left_label); ?></th><th><?php echo esc_html($right_label); ?></th><th><?php esc_html_e('Change', 'kunaal-theme'); ?></th></tr>
+                <tr><th scope="col"><?php esc_html_e('Label', 'kunaal-theme'); ?></th><th scope="col"><?php echo esc_html($left_label); ?></th><th scope="col"><?php echo esc_html($right_label); ?></th><th scope="col"><?php esc_html_e('Change', 'kunaal-theme'); ?></th></tr>
             </thead>
             <tbody>
                 <?php
