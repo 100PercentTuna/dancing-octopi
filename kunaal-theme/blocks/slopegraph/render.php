@@ -16,15 +16,7 @@ $currency_symbol = $attributes['currencySymbol'] ?? '$';
 $source_note = $attributes['sourceNote'] ?? '';
 $data_rows = $attributes['dataRows'] ?? [];
 
-function kunaal_format_slope_value($value, $format, $currency = '$') {
-    switch ($format) {
-        case 'percent': return round($value, 1) . '%';
-        case 'currency': return $currency . number_format($value);
-        case 'decimal1': return number_format($value, 1);
-        case 'decimal2': return number_format($value, 2);
-        default: return round($value);
-    }
-}
+// Helper functions are defined in inc/block-helpers.php
 
 $block_id = 'slope-' . wp_unique_id();
 ?>

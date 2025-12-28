@@ -37,55 +37,39 @@
     });
   }
 
+  // Registry pattern: blocks register their loaders
+  const blockLoaders = {};
+
+  function registerBlockLoader(blockName, loaderFn) {
+    blockLoaders[blockName] = loaderFn;
+  }
+
   async function loadBlock(element) {
     const blockType = element.dataset.lazyBlock;
-    
     if (!blockType) return;
 
-    // Show loading state
+    if (element.classList.contains('is-loaded')) return;
     element.classList.add('is-loading');
 
     try {
-      // Dynamic import based on block type
-      // 
-      // NOTE: Currently, all blocks resolve to empty init functions because:
-      // 1. Block-specific JavaScript is loaded via view.js files (enqueued in blocks.php)
-      // 2. view.js files run automatically when enqueued and handle their own initialization
-      // 3. This lazy-loading system primarily handles the IntersectionObserver logic
-      //    and loading states, while actual block functionality is handled by view.js
-      //
-      // Future enhancement: If code-splitting is needed, actual dynamic imports
-      // can be implemented here to load block-specific chunks on demand.
-      const moduleMap = {
-        'heatmap': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/heatmap/view.js
-        'dumbbell-chart': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/dumbbell-chart/view.js
-        'slopegraph': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/slopegraph/view.js
-        'small-multiples': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/small-multiples/view.js
-        'statistical-distribution': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/statistical-distribution/view.js
-        'flow-diagram': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/flow-diagram/view.js
-        'network-graph': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/network-graph/view.js
-        'data-map': () => Promise.resolve({ init: () => {} }), // Initialized by blocks/data-map/view.js
-      };
-
-      const loader = moduleMap[blockType];
-      
-      if (loader) {
-        const module = await loader();
-        
-        // Initialize the block
-        if (module && typeof module.init === 'function') {
-          module.init(element);
-        }
-        
+      const loader = blockLoaders[blockType];
+      if (loader && typeof loader === 'function') {
+        await loader(element);
         element.classList.remove('is-loading');
         element.classList.add('is-loaded');
       } else {
-        console.warn(`No loader found for block type: ${blockType}`);
+        // Only log in debug mode
+        if (typeof kunaalTheme !== 'undefined' && kunaalTheme.debug) {
+          console.warn(`No loader registered for block type: ${blockType}`);
+        }
         element.classList.add('is-error');
         element.classList.remove('is-loading');
       }
     } catch (error) {
-      console.error(`Failed to load ${blockType}:`, error);
+      // Always log errors as they indicate real problems
+      if (typeof console !== 'undefined' && console.error) {
+        console.error(`Failed to load ${blockType}:`, error);
+      }
       element.classList.add('is-error');
       element.classList.remove('is-loading');
       
@@ -97,18 +81,19 @@
     }
   }
 
+  // Expose for manual loading and registration
+  window.kunaalLazyLoad = {
+    register: registerBlockLoader,
+    load: loadBlock,
+    init: initLazyLoading
+  };
+
   // Initialize on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initLazyLoading);
   } else {
     initLazyLoading();
   }
-
-  // Expose for manual loading if needed
-  window.kunaalLazyLoad = {
-    loadBlock: loadBlock,
-    init: initLazyLoading
-  };
 
 })();
 

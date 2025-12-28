@@ -59,3 +59,8 @@ extract_issues_by_file.py
 fix_trailing_whitespace.py
 read_sonarqube_issues.py
 read_sonarqube_v2.py
+
+# Debug logs
+debug.log
+kunaal-theme/debug.log
+wp-content/kunaal-theme-debug.log

@@ -24,12 +24,7 @@ $unit_position = $attributes['unitPosition'] ?? 'suffix';
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-// Parse data arrays
-function kunaal_parse_data($str) {
-    if (!$str) return array();
-    return array_map('floatval', array_map('trim', explode(',', $str)));
-}
-
+// Helper functions are defined in inc/block-helpers.php
 $data = kunaal_parse_data($data_str);
 $data2 = kunaal_parse_data($data2_str);
 $data3 = kunaal_parse_data($data3_str);
@@ -43,14 +38,7 @@ while (count($labels) < count($data)) {
     $labels[] = 'Item ' . (count($labels) + 1);
 }
 
-// Format value with unit
-function kunaal_format_value($val, $unit, $unit_position) {
-    $formatted = number_format($val, ($val == floor($val)) ? 0 : 1);
-    if ($unit) {
-        return $unit_position === 'prefix' ? $unit . $formatted : $formatted . $unit;
-    }
-    return $formatted;
-}
+// Helper functions are defined in inc/block-helpers.php
 
 // Color schemes
 $color_schemes = array(
@@ -117,7 +105,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         
                         // Value
                         if ($show_values) {
-                            echo '<text x="' . ($margin['left'] + $bar_width + 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" font-size="12" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . ($margin['left'] + $bar_width + 8) . '" y="' . ($y + $bar_height / 2) . '" dominant-baseline="middle" font-size="12" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
                         }
                     }
                 } else {
@@ -148,7 +136,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         
                         // Value on top
                         if ($show_values) {
-                            echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($y - 8) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . ($x + $bar_width / 2) . '" y="' . ($y - 8) . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
                         }
                         
                         // Label below

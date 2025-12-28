@@ -6,6 +6,7 @@
   const { Component } = wp.element;
   const { Button, Popover, TabPanel } = wp.components;
   const { __ } = wp.i18n;
+  const el = wp.element.createElement;
 
   const themeColors = [
     { name: 'Brown', value: '#7D6B5D', label: __('Brown', 'kunaal-theme') },
@@ -37,105 +38,92 @@
       const { value, onChange, label, showGradients = true, showCustom = true } = this.props;
       const { isOpen } = this.state;
 
-      return (
-        <div className="kunaal-color-picker">
-          {label && <label className="components-base-control__label">{label}</label>}
-          <div className="kunaal-color-picker-controls">
-            <Button
-              onClick={() => this.setState({ isOpen: !isOpen })}
-              className="kunaal-color-picker-button"
-              aria-label={__('Select color', 'kunaal-theme')}
-            >
-              <span
-                className="kunaal-color-preview"
-                style={{
-                  background: value || 'transparent',
-                  border: value ? 'none' : '2px dashed var(--hair)',
-                }}
-              />
-              <span className="kunaal-color-value">{value || __('No color', 'kunaal-theme')}</span>
-            </Button>
-            {isOpen && (
-              <Popover
-                position="bottom left"
-                onClose={() => this.setState({ isOpen: false })}
-                className="kunaal-color-picker-popover"
-              >
-                <TabPanel
-                  className="kunaal-color-picker-tabs"
-                  tabs={[
-                    { name: 'theme', title: __('Theme', 'kunaal-theme') },
-                    ...(showGradients ? [{ name: 'gradients', title: __('Gradients', 'kunaal-theme') }] : []),
-                    ...(showCustom ? [{ name: 'custom', title: __('Custom', 'kunaal-theme') }] : []),
-                  ]}
-                >
-                  {(tab) => {
-                    if (tab.name === 'theme') {
-                      return (
-                        <div className="kunaal-color-grid">
-                          {themeColors.map((color) => (
-                            <button
-                              key={color.value}
-                              className="kunaal-color-swatch"
-                              style={{ backgroundColor: color.value }}
-                              onClick={() => {
-                                onChange(color.value);
-                                this.setState({ isOpen: false });
-                              }}
-                              aria-label={color.label}
-                              title={color.label}
-                            />
-                          ))}
-                        </div>
-                      );
-                    }
-                    if (tab.name === 'gradients' && showGradients) {
-                      return (
-                        <div className="kunaal-gradient-grid">
-                          {gradients.map((gradient) => (
-                            <button
-                              key={gradient.value}
-                              className="kunaal-gradient-swatch"
-                              style={{ background: gradient.value }}
-                              onClick={() => {
-                                onChange(gradient.value);
-                                this.setState({ isOpen: false });
-                              }}
-                              aria-label={gradient.label}
-                              title={gradient.label}
-                            />
-                          ))}
-                        </div>
-                      );
-                    }
-                    if (tab.name === 'custom' && showCustom) {
-                      return (
-                        <div className="kunaal-custom-color">
-                          <input
-                            type="color"
-                            value={value && value.startsWith('#') ? value : '#000000'}
-                            onChange={(e) => onChange(e.target.value)}
-                            className="kunaal-color-input"
-                          />
-                          <input
-                            type="text"
-                            value={value || ''}
-                            onChange={(e) => onChange(e.target.value)}
-                            placeholder="#000000 or gradient"
-                            className="kunaal-color-text-input"
-                          />
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                </TabPanel>
-              </Popover>
-            )}
-          </div>
-        </div>
+      return el('div', { className: 'kunaal-color-picker' },
+        label && el('label', { className: 'components-base-control__label' }, label),
+        el('div', { className: 'kunaal-color-picker-controls' },
+          el(Button, {
+            onClick: () => this.setState({ isOpen: !isOpen }),
+            className: 'kunaal-color-picker-button',
+            'aria-label': __('Select color', 'kunaal-theme')
+          },
+            el('span', {
+              className: 'kunaal-color-preview',
+              style: {
+                background: value || 'transparent',
+                border: value ? 'none' : '2px dashed var(--hair)',
+              }
+            }),
+            el('span', { className: 'kunaal-color-value' }, value || __('No color', 'kunaal-theme'))
+          ),
+          isOpen && el(Popover, {
+            position: 'bottom left',
+            onClose: () => this.setState({ isOpen: false }),
+            className: 'kunaal-color-picker-popover'
+          },
+            el(TabPanel, {
+              className: 'kunaal-color-picker-tabs',
+              tabs: [
+                { name: 'theme', title: __('Theme', 'kunaal-theme') },
+                ...(showGradients ? [{ name: 'gradients', title: __('Gradients', 'kunaal-theme') }] : []),
+                ...(showCustom ? [{ name: 'custom', title: __('Custom', 'kunaal-theme') }] : []),
+              ]
+            }, (tab) => {
+              if (tab.name === 'theme') {
+                return el('div', { className: 'kunaal-color-grid' },
+                  themeColors.map((color) =>
+                    el('button', {
+                      key: color.value,
+                      className: 'kunaal-color-swatch',
+                      style: { backgroundColor: color.value },
+                      onClick: () => {
+                        onChange(color.value);
+                        this.setState({ isOpen: false });
+                      },
+                      'aria-label': color.label,
+                      title: color.label
+                    })
+                  )
+                );
+              }
+              if (tab.name === 'gradients' && showGradients) {
+                return el('div', { className: 'kunaal-gradient-grid' },
+                  gradients.map((gradient) =>
+                    el('button', {
+                      key: gradient.value,
+                      className: 'kunaal-gradient-swatch',
+                      style: { background: gradient.value },
+                      onClick: () => {
+                        onChange(gradient.value);
+                        this.setState({ isOpen: false });
+                      },
+                      'aria-label': gradient.label,
+                      title: gradient.label
+                    })
+                  )
+                );
+              }
+              if (tab.name === 'custom' && showCustom) {
+                return el('div', { className: 'kunaal-custom-color' },
+                  el('input', {
+                    type: 'color',
+                    value: value && value.startsWith('#') ? value : '#000000',
+                    onChange: (e) => onChange(e.target.value),
+                    className: 'kunaal-color-input'
+                  }),
+                  el('input', {
+                    type: 'text',
+                    value: value || '',
+                    onChange: (e) => onChange(e.target.value),
+                    placeholder: '#000000 or gradient',
+                    className: 'kunaal-color-text-input'
+                  })
+                );
+              }
+              return null;
+            })
+          )
+        )
       );
     }
   };
 })(window.wp);
-

@@ -33,17 +33,7 @@ $max_val = !empty($all_values) ? max($all_values) : 100;
 $axis_min = $attributes['axisMin'] ?? $min_val;
 $axis_max = $attributes['axisMax'] ?? $max_val;
 
-function kunaal_format_dumbbell_value($value, $format, $currency = '$') {
-    switch ($format) {
-        case 'percent': return round($value, 1) . '%';
-        case 'currency': return $currency . number_format($value);
-        case 'compact':
-            if ($value >= 1000000) return $currency . round($value / 1000000, 1) . 'M';
-            if ($value >= 1000) return $currency . round($value / 1000, 1) . 'K';
-            return $currency . round($value);
-        default: return round($value);
-    }
-}
+// Helper functions are defined in inc/block-helpers.php
 
 $block_id = 'dumbbell-' . wp_unique_id();
 ?>

@@ -162,6 +162,7 @@ function kunaal_get_block_definitions() {
             'statistical-distribution',
             'flow-diagram',
             'network-graph',
+            'data-map',
         ),
         
         // Interactive blocks - scrollytelling and reveals
@@ -192,6 +193,7 @@ function kunaal_get_view_script_blocks() {
         'statistical-distribution',
         'flow-diagram',
         'network-graph',
+        'data-map',
     );
 }
 
@@ -308,6 +310,7 @@ add_action('init', 'kunaal_register_blocks', 10);
  *
  * Adds scroll-triggered reveal animation class to core blocks
  * when viewing essays or jottings.
+ * Uses WP_HTML_Tag_Processor for safe HTML manipulation (WordPress 6.2+).
  */
 function kunaal_block_wrapper($block_content, $block) {
     // Only add to singular post types
@@ -324,17 +327,34 @@ function kunaal_block_wrapper($block_content, $block) {
         'core/list',
     );
 
-    if (in_array($block['blockName'], $reveal_blocks)) {
-        // Only add if not already wrapped in a reveal container
-        if (strpos($block_content, 'reveal') === false) {
-            $block_content = preg_replace(
-                '/^<(\w+)/',
-                '<$1 class="reveal"',
-                $block_content,
-                1
-            );
+    if (!in_array($block['blockName'], $reveal_blocks)) {
+        return $block_content;
+    }
+
+    // Only add if not already wrapped in a reveal container
+    if (strpos($block_content, 'reveal') !== false) {
+        return $block_content;
+    }
+
+    // Use WP_HTML_Tag_Processor if available (WordPress 6.2+)
+    if (class_exists('WP_HTML_Tag_Processor')) {
+        $processor = new WP_HTML_Tag_Processor($block_content);
+        if ($processor->next_tag()) {
+            $existing_class = $processor->get_attribute('class');
+            $new_class = $existing_class ? $existing_class . ' reveal' : 'reveal';
+            $processor->set_attribute('class', $new_class);
+            return $processor->get_updated_html();
         }
     }
+
+    // Fallback for older WordPress versions: use regex (less safe but necessary)
+    // Only match the first tag to avoid modifying nested elements
+    $block_content = preg_replace(
+        '/^<(\w+)(\s+[^>]*)?>/',
+        '<$1$2 class="reveal">',
+        $block_content,
+        1
+    );
 
     return $block_content;
 }
