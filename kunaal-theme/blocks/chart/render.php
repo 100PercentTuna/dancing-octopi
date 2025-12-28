@@ -81,14 +81,14 @@ $chart_width = $svg_width - $margin['left'] - $margin['right'];
 $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
 ?>
 <figure<?php echo $anchor; ?> class="wp-block-kunaal-chart chart chart-<?php echo esc_attr($chart_type) . ' chart-' . esc_attr($orientation) . $class_name; ?>">
-    <?php if ($title) : ?>
+    <?php if ($title) { ?>
         <h3 class="chart-title"><?php echo esc_html($title); ?></h3>
-    <?php endif; ?>
+    <?php } ?>
     
     <div class="chart-container">
         <svg class="chart-svg" viewBox="0 0 <?php echo $svg_width; ?> <?php echo $svg_height; ?>" preserveAspectRatio="xMidYMid meet">
             
-            <?php if ($chart_type === 'bar') : ?>
+            <?php if ($chart_type === 'bar') { ?>
                 <?php
                 $max_value = max($data);
                 $min_value = min(0, min($data));
@@ -161,7 +161,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 }
                 ?>
                 
-            <?php elseif ($chart_type === 'stacked-bar' || $chart_type === 'clustered-bar') : ?>
+            <?php } elseif ($chart_type === 'stacked-bar' || $chart_type === 'clustered-bar') { ?>
                 <?php
                 $all_series = array($data);
                 if (!empty($data2)) {
@@ -302,7 +302,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 }
                 ?>
                 
-            <?php elseif ($chart_type === 'line') : ?>
+            <?php } elseif ($chart_type === 'line') { ?>
                 <?php
                 $all_series = array($data);
                 if (!empty($data2)) {
@@ -363,7 +363,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                         
                         // Values
                         if ($show_values && $s_index === 0) {
-                            echo '<text x="' . $x . '" y="' . ($y - 10) . '" text-anchor="middle" font-size="10" fill="#333" font-family="var(--sans)">' . kunaal_format_value($value, $unit, $unit_position) . '</text>';
+                            echo '<text x="' . $x . '" y="' . ($y - 10) . '" text-anchor="middle" font-size="10" fill="#333" font-family="var(--sans)">' . kunaal_format_chart_value($value, $unit, $unit_position) . '</text>';
                         }
                     }
                 }
@@ -387,7 +387,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 }
                 ?>
                 
-            <?php elseif ($chart_type === 'pie' || $chart_type === 'donut') : ?>
+            <?php } elseif ($chart_type === 'pie' || $chart_type === 'donut') { ?>
                 <?php
                 $total = array_sum($data);
                 $center_x = $svg_width / 2;
@@ -434,7 +434,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 
                 // Center text for donut
                 if ($chart_type === 'donut' && $show_values) {
-                    echo '<text x="' . $center_x . '" y="' . ($center_y - 5) . '" text-anchor="middle" font-size="24" font-weight="700" fill="#333" font-family="var(--serif)">' . kunaal_format_value($total, $unit, $unit_position) . '</text>';
+                    echo '<text x="' . $center_x . '" y="' . ($center_y - 5) . '" text-anchor="middle" font-size="24" font-weight="700" fill="#333" font-family="var(--serif)">' . kunaal_format_chart_value($total, $unit, $unit_position) . '</text>';
                     echo '<text x="' . $center_x . '" y="' . ($center_y + 18) . '" text-anchor="middle" font-size="12" fill="#666" font-family="var(--sans)">Total</text>';
                 }
                 
@@ -450,7 +450,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                 }
                 ?>
                 
-            <?php elseif ($chart_type === 'waterfall') : ?>
+            <?php } elseif ($chart_type === 'waterfall') { ?>
                 <?php
                 // Calculate cumulative values
                 $cumulative = array();
@@ -540,7 +540,7 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     if ($show_values) {
                         $label_y = $y - 8;
                         $sign = ($item['type'] === 'positive' && $item['value'] > 0) ? '+' : '';
-                        echo '<text x="' . ($x + $bar_width / 2) . '" y="' . $label_y . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . $sign . kunaal_format_value($item['value'], $unit, $unit_position) . '</text>';
+                        echo '<text x="' . ($x + $bar_width / 2) . '" y="' . $label_y . '" text-anchor="middle" font-size="11" fill="#333" font-weight="500" font-family="var(--sans)">' . $sign . kunaal_format_chart_value($item['value'], $unit, $unit_position) . '</text>';
                     }
                     
                     // X-axis label
@@ -567,18 +567,18 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     echo '<text x="' . ($margin['left'] + 188) . '" y="' . $legend_y . '" font-size="10" fill="#666" font-family="var(--sans)">Total</text>';
                 }
                 ?>
-            <?php endif; ?>
+            <?php } ?>
         </svg>
     </div>
     
-    <?php if ($caption || $source) : ?>
+    <?php if ($caption || $source) { ?>
         <figcaption class="chart-caption">
-            <?php if ($caption) : ?>
+            <?php if ($caption) { ?>
                 <span class="chart-caption-text"><?php echo wp_kses_post($caption); ?></span>
-            <?php endif; ?>
-            <?php if ($source) : ?>
+            <?php } ?>
+            <?php if ($source) { ?>
                 <span class="chart-source">Source: <?php echo esc_html($source); ?></span>
-            <?php endif; ?>
+            <?php } ?>
         </figcaption>
-    <?php endif; ?>
+    <?php } ?>
 </figure>
