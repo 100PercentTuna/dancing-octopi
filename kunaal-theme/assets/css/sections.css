@@ -22,8 +22,9 @@
   transform: translateY(20px);
   animation: fadeInUp 600ms ease forwards;
 }
-#essays .sectionHead { animation-delay: 100ms; }
-#jottings .sectionHead { animation-delay: 200ms; }
+/* Use stable classes instead of IDs - IDs are for JavaScript hooks only */
+.essays-section .sectionHead { animation-delay: 100ms; }
+.jottings-section .sectionHead { animation-delay: 200ms; }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }

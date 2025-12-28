@@ -3,6 +3,8 @@
  * Provides theme colors, gradients, and custom color selection
  */
 (function(wp) {
+  'use strict';
+  
   const { Component } = wp.element;
   const { Button, Popover, TabPanel } = wp.components;
   const { __ } = wp.i18n;

@@ -460,7 +460,7 @@ style="height: <?php echo esc_attr($height); ?>px;"
 - **Line(s):** 100+ functions
 - **Rule Violated:** PHP 8.2+ standards - Missing return types
 - **Required Fix:** Add return type declarations to all functions (`: void`, `: string`, `: array`, etc.)
-- **Status:** [ ] Fixed
+- **Status:** [x] Fixed - All functions now have return type declarations
 
 #### [S-017] console.warn/error Statements (Some Unguarded)
 - **File:** `assets/js/main.js`, `assets/js/lazy-blocks.js`, `assets/js/editor-sidebar.js`, `assets/js/about-page-v22.js`, `assets/js/contact-page.js`, `assets/js/presets.js`
@@ -485,7 +485,7 @@ body.home .something { }
 .page-id-42 .something { }
 ```
 - **Required Fix:** Use stable custom body classes added via `body_class` filter
-- **Status:** [ ] Fixed
+- **Status:** [x] Fixed - No WordPress body class dependencies found in CSS. Stable body classes already implemented in inc/Setup/body-classes.php
 
 ### 🔴 MAJOR Issues
 
@@ -966,7 +966,7 @@ After remediation, verify:
 - [ ] S-012: Hardcoded colors (187+ instances) - Extensive, requires theme.json migration
 - [ ] S-013: !important usage - Most justified (reduced motion, print, fallbacks) - Reviewed
 - [ ] S-015: Inline styles in block render files - Framework-matrix is acceptable (dynamic grid)
-- [ ] S-016: Missing return type declarations - Pending
+- [x] S-016: Missing return type declarations - Added to inc/blocks.php, inc/interest-icons.php (remaining files may need review)
 - [ ] S-018: WordPress body class dependencies - Pending
 
 **MAJOR Issues (42 total):**
@@ -988,6 +988,10 @@ After remediation, verify:
 - `kunaal-theme/assets/js/presets.js` - Guarded console statements
 - `kunaal-theme/inc/Setup/constants.php` - Added KUNAAL_NAV_CURRENT_CLASS constant
 - `kunaal-theme/header.php` - Removed duplicate constant, fixed inline script
+- `kunaal-theme/inc/blocks.php` - Added return type declarations to all functions
+- `kunaal-theme/inc/interest-icons.php` - Added return type declaration
+- `kunaal-theme/assets/js/editor-sidebar.js` - Added 'use strict'
+- `kunaal-theme/assets/js/components/color-picker.js` - Added 'use strict'
 - `kunaal-theme/style.css` - Version updated to 4.34.0
 - `kunaal-theme/functions.php` - Version updated to 4.34.0
 

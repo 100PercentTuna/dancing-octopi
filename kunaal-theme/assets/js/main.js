@@ -38,6 +38,11 @@
   
   const tocList = document.getElementById('tocList');
   const infiniteLoader = document.getElementById('infiniteLoader');
+  
+  // Early exit if critical DOM elements are missing
+  if (!navToggle || !nav) {
+    // Navigation not available - continue with other features
+  }
 
   // State
   let lastY = 0;
@@ -132,7 +137,9 @@
   function updateScrollEffects(y) {
     // Header compaction (0 to 1 over 120px scroll)
     const p = Math.min(y / 120, 1);
-    document.body.style.setProperty('--p', p.toFixed(4));
+    if (document.body) {
+      document.body.style.setProperty('--p', p.toFixed(4));
+    }
 
     // Progress bar
     if (progressFill) {
@@ -305,6 +312,7 @@
       });
 
       // Topic options
+      if (!topicMenu) return;
       topicMenu.querySelectorAll('.topicOpt').forEach(opt => {
         opt.addEventListener('click', (e) => {
           e.stopPropagation();

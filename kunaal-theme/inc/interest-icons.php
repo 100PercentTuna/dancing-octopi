@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
  * @return string The emoji icon
  */
 if (!function_exists('kunaal_get_interest_icon')) :
-function kunaal_get_interest_icon($interest) {
+function kunaal_get_interest_icon($interest): string {
     $interest_lower = strtolower(trim($interest));
     
     $icons = array(

@@ -4,6 +4,8 @@
  * Auto-calculates read time based on content
  */
 (function(wp) {
+    'use strict';
+    
     const { registerPlugin } = wp.plugins;
     const { PluginDocumentSettingPanel } = wp.editPost;
     const { TextControl, TextareaControl, Button, Spinner, CheckboxControl, PanelRow } = wp.components;
