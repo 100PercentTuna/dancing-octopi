@@ -198,19 +198,6 @@ function kunaal_enqueue_page_specific_assets() {
     $is_about_page = is_page_template('page-about.php') || is_page('about');
     $is_contact_page = is_page_template('page-contact.php') || is_page('contact');
     
-    // About page: Generate CSS variables for category colors (externalized from template)
-    if ($is_about_page) {
-        $categories = kunaal_get_categories_v22();
-        if (!empty($categories)) {
-            $css_vars = "body.page-template-page-about {\n";
-            foreach ($categories as $slug => $category) {
-                $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
-            }
-            $css_vars .= "}";
-            wp_add_inline_style('kunaal-about-page-v22', $css_vars);
-        }
-    }
-    
     if ($is_about_page || $is_contact_page) {
         // Cormorant Garamond font
         wp_enqueue_style(
@@ -243,13 +230,24 @@ function kunaal_enqueue_page_specific_assets() {
     
     // About page specific assets (heavier libraries)
     if ($is_about_page) {
-        // About page V22 CSS
+        // About page V22 CSS (must be enqueued before wp_add_inline_style)
         wp_enqueue_style(
             'kunaal-about-page-v22',
             KUNAAL_THEME_URI . '/assets/css/about-page-v22.css',
             array('kunaal-theme-style'),
             kunaal_asset_version('assets/css/about-page-v22.css')
         );
+        
+        // About page: Generate CSS variables for category colors (must be AFTER enqueue)
+        $categories = kunaal_get_categories_v22();
+        if (!empty($categories)) {
+            $css_vars = ".kunaal-about-v22 {\n";
+            foreach ($categories as $slug => $category) {
+                $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
+            }
+            $css_vars .= "}";
+            wp_add_inline_style('kunaal-about-page-v22', $css_vars);
+        }
         
         // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
         wp_enqueue_script(

@@ -110,12 +110,53 @@ function kunaal_enqueue_editor_assets() {
             null
         );
         
-        // Theme's main stylesheet for block previews
+        // Enqueue modular CSS stack for editor (same as frontend)
+        // 1. Tokens (must load first)
         wp_enqueue_style(
-            'kunaal-blocks-editor',
-            KUNAAL_THEME_URI . '/style.css',
+            'kunaal-theme-tokens-editor',
+            KUNAAL_THEME_URI . '/assets/css/tokens.css',
             array(),
-            KUNAAL_THEME_VERSION
+            kunaal_asset_version('assets/css/tokens.css')
+        );
+        
+        // 2. Base styles
+        wp_enqueue_style(
+            'kunaal-theme-base-editor',
+            KUNAAL_THEME_URI . '/assets/css/base.css',
+            array('kunaal-theme-tokens-editor'),
+            kunaal_asset_version('assets/css/base.css')
+        );
+        
+        // 3. WordPress blocks styles
+        wp_enqueue_style(
+            'kunaal-theme-wordpress-blocks-editor',
+            KUNAAL_THEME_URI . '/assets/css/wordpress-blocks.css',
+            array('kunaal-theme-base-editor'),
+            kunaal_asset_version('assets/css/wordpress-blocks.css')
+        );
+        
+        // 4. Utilities (includes double underline)
+        wp_enqueue_style(
+            'kunaal-theme-utilities-editor',
+            KUNAAL_THEME_URI . '/assets/css/utilities.css',
+            array('kunaal-theme-base-editor'),
+            kunaal_asset_version('assets/css/utilities.css')
+        );
+        
+        // 5. Blocks (custom blocks)
+        wp_enqueue_style(
+            'kunaal-theme-blocks-editor',
+            KUNAAL_THEME_URI . '/assets/css/blocks.css',
+            array('kunaal-theme-base-editor'),
+            kunaal_asset_version('assets/css/blocks.css')
+        );
+        
+        // 6. Editor-specific styles (wraps everything in .editor-styles-wrapper)
+        wp_enqueue_style(
+            'kunaal-editor-style',
+            KUNAAL_THEME_URI . '/assets/css/editor-style.css',
+            array('kunaal-theme-tokens-editor', 'kunaal-theme-base-editor', 'kunaal-theme-wordpress-blocks-editor', 'kunaal-theme-utilities-editor', 'kunaal-theme-blocks-editor'),
+            kunaal_asset_version('assets/css/editor-style.css')
         );
         
         // Inline formats
