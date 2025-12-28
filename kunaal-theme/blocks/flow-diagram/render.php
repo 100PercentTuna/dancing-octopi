@@ -2,7 +2,9 @@
 /**
  * Flow Diagram Block - Frontend Render
  */
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 $title = $attributes['title'] ?? '';
 $subtitle = $attributes['subtitle'] ?? '';
