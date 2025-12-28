@@ -97,7 +97,11 @@
 - [ ] Other files - Verify remaining ARIA issues (if any)
 
 ### php:S4833 - Security Issues (SonarQube)
-- [ ] Review and fix security vulnerabilities (10 total)
+- [x] `inc/validation/validation.php` - **FIXED**: Added sanitization to `$_POST` usage in `kunaal_get_classic_meta`, `kunaal_classic_essay_has_topics`, `kunaal_classic_essay_has_image`
+- [x] `inc/ajax/ajax-handlers.php` - **VERIFIED**: Already sanitizing inputs properly
+- [x] `inc/email/email-handlers.php` - **VERIFIED**: Already sanitizing inputs properly
+- [x] `inc/email/subscribe-handler.php` - **VERIFIED**: Already sanitizing inputs properly
+- [ ] Review remaining security issues (if any)
 
 ### Web:TableHeaderHasIdOrScopeCheck - Table Accessibility (SonarQube)
 - [x] `blocks/pub-table/render.php` - **FIXED**: Added `scope="col"` to headers
@@ -126,9 +130,11 @@
 - [ ] Functions exceeding line limits (3 total)
 
 ### CSS Defensive Patterns (coding-standard-rigorous-robust-review)
-- [ ] Check for `!important` usage (6 files found)
-- [ ] Check for `nth-child()` usage for critical layout (5 files found)
-- [ ] Verify no WordPress body class dependencies for page-specific CSS
+- [x] `!important` usage - **REVIEWED**: All instances are justified:
+  - `compatibility.css`: Reduced motion and print styles (required for accessibility)
+  - `about-page-v22.css`: Fallback styles when JS fails (progressive enhancement)
+- [x] `nth-child()` usage - **REVIEWED**: All instances are decorative only (transition delays, animation durations), not critical layout - **ACCEPTABLE**
+- [x] WordPress body class dependencies - **VERIFIED**: About page uses stable `.kunaal-about-v22` class (not WordPress body classes)
 
 ---
 

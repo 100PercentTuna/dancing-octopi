@@ -151,7 +151,15 @@ add_filter('rest_pre_insert_jotting', 'kunaal_validate_jotting_rest', 10, 2);
  * @return mixed Meta value or empty string
  */
 function kunaal_get_classic_meta($key, $post_id) {
-    $value = isset($_POST[$key]) ? $_POST[$key] : '';
+    $value = '';
+    if (isset($_POST[$key])) {
+        // Sanitize based on expected type
+        if (is_array($_POST[$key])) {
+            $value = array_map('sanitize_text_field', $_POST[$key]);
+        } else {
+            $value = sanitize_text_field($_POST[$key]);
+        }
+    }
     if (empty($value) && $post_id) {
         $value = get_post_meta($post_id, $key, true);
     }
@@ -165,7 +173,10 @@ function kunaal_get_classic_meta($key, $post_id) {
  * @return bool True if has topics
  */
 function kunaal_classic_essay_has_topics($post_id) {
-    $topics = isset($_POST['tax_input']['topic']) ? $_POST['tax_input']['topic'] : array();
+    $topics = array();
+    if (isset($_POST['tax_input']['topic']) && is_array($_POST['tax_input']['topic'])) {
+        $topics = array_map('absint', $_POST['tax_input']['topic']);
+    }
     if (!empty(array_filter($topics))) {
         return true;
     }
@@ -184,7 +195,7 @@ function kunaal_classic_essay_has_topics($post_id) {
  */
 function kunaal_classic_essay_has_image($post_id) {
     $card_image = kunaal_get_classic_meta('kunaal_card_image', $post_id);
-    $featured = isset($_POST['_thumbnail_id']) ? $_POST['_thumbnail_id'] : '';
+    $featured = isset($_POST['_thumbnail_id']) ? absint($_POST['_thumbnail_id']) : 0;
     if (empty($featured) && $post_id) {
         $featured = get_post_thumbnail_id($post_id);
     }
