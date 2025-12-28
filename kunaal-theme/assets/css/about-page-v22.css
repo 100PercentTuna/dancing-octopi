@@ -760,9 +760,10 @@ a:focus-visible, button:focus-visible {
   50%{transform:translateY(-2px)}
 }
 
-.capsule:nth-child(3n+1) .capsule-inner{--floatDur:6.2s}
-.capsule:nth-child(4n+2) .capsule-inner{--floatDur:7.1s}
-.capsule:nth-child(5n) .capsule-inner{--floatDur:5.8s}
+/* Float duration now set via data attribute or inline style in PHP */
+.capsule .capsule-inner {
+  animation-duration: var(--float-dur, 6s);
+}
 
 .capsule:hover .capsule-inner{
   animation-play-state:paused;

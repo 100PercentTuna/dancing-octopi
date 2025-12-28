@@ -109,15 +109,10 @@
   transform: translateY(-10px) scale(1.01);
 }
 
-/* Staggered delays */
-.card:nth-child(1) { transition-delay: 0ms; }
-.card:nth-child(2) { transition-delay: 60ms; }
-.card:nth-child(3) { transition-delay: 120ms; }
-.card:nth-child(4) { transition-delay: 180ms; }
-.card:nth-child(5) { transition-delay: 50ms; }
-.card:nth-child(6) { transition-delay: 110ms; }
-.card:nth-child(7) { transition-delay: 170ms; }
-.card:nth-child(8) { transition-delay: 230ms; }
+/* Staggered delays - now using CSS custom property set via inline style */
+.card {
+  transition-delay: var(--card-delay, 0ms);
+}
 
 /* Generic reveal classes */
 .js-ready .reveal {

@@ -191,12 +191,15 @@ kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
         <div class="section-label" data-reveal="up">Rabbit Holes</div>
         <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($rabbit_holes_title); ?></h2>
         <div class="capsules-cloud">
-            <?php foreach ($rabbit_holes as $hole) :
+            <?php foreach ($rabbit_holes as $index => $hole) :
                 $category_slug = !empty($hole['category']) ? esc_attr($hole['category']) : '';
                 $has_link = !empty($hole['url']);
                 $tag = $has_link ? 'a' : 'span';
+                // Set float duration based on index (replaces nth-child())
+                $float_durations = [6.2, 7.1, 5.8];
+                $float_dur = $float_durations[$index % 3] ?? 6.0;
             ?>
-            <<?php echo $tag; ?> class="capsule" data-cat="<?php echo $category_slug; ?>" data-reveal="left" <?php echo $has_link ? 'href="' . esc_url($hole['url']) . '" target="_blank" rel="noopener"' : ''; ?>>
+            <<?php echo $tag; ?> class="capsule" data-cat="<?php echo $category_slug; ?>" data-reveal="left" <?php echo $has_link ? 'href="' . esc_url($hole['url']) . '" target="_blank" rel="noopener"' : ''; ?> style="--float-dur: <?php echo esc_attr($float_dur); ?>s;">
                 <?php if (!empty($hole['image'])) : ?>
                 <img alt="" class="capsule-img" decoding="async" loading="lazy" src="<?php echo esc_url($hole['image']); ?>"/>
                 <?php endif; ?>

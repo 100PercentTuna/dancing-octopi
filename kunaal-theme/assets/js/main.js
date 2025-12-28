@@ -581,14 +581,44 @@
       return;
     }
 
-    posts.forEach(post => {
+    posts.forEach((post, index) => {
       const el = postType === 'essay' ? createEssayCard(post) : createJottingRow(post);
       container.insertAdjacentHTML('beforeend', el);
+      
+      // Set transition delay via CSS custom property (replaces nth-child())
+      const lastChild = container.lastElementChild;
+      if (lastChild) {
+        const delays = postType === 'essay' 
+          ? [0, 60, 120, 180, 50, 110, 170, 230]
+          : [0, 50, 100, 150];
+        const delay = delays[index % delays.length] || 0;
+        lastChild.style.setProperty('--card-delay', `${delay}ms`);
+        if (postType === 'jotting') {
+          lastChild.style.setProperty('--jotting-delay', `${delay}ms`);
+        }
+      }
     });
 
     // Re-init reveals for new content
     initScrollReveal();
     initParallax();
+  }
+
+  // Set transition delays for server-rendered cards (replaces nth-child())
+  function setCardDelays() {
+    const essayCards = document.querySelectorAll('#essayGrid .card, #essayGridFallback .card');
+    const essayDelays = [0, 60, 120, 180, 50, 110, 170, 230];
+    essayCards.forEach((card, index) => {
+      const delay = essayDelays[index % essayDelays.length] || 0;
+      card.style.setProperty('--card-delay', `${delay}ms`);
+    });
+
+    const jottingRows = document.querySelectorAll('#jotList .jRow, #jotListFallback .jRow');
+    const jottingDelays = [0, 50, 100, 150];
+    jottingRows.forEach((row, index) => {
+      const delay = jottingDelays[index % jottingDelays.length] || 0;
+      row.style.setProperty('--jotting-delay', `${delay}ms`);
+    });
   }
 
   function createEssayCard(post) {
