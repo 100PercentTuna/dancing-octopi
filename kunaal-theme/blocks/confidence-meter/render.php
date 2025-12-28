@@ -21,7 +21,13 @@ if ($level >= 70) {
     $color = '#dc2626'; // red
 }
 
-$level_class = $level >= 70 ? 'high' : ($level >= 40 ? 'medium' : 'low');
+if ($level >= 70) {
+    $level_class = 'high';
+} elseif ($level >= 40) {
+    $level_class = 'medium';
+} else {
+    $level_class = 'low';
+}
 ?>
 <div<?php echo $anchor; ?> class="wp-block-kunaal-confidence-meter confidence-meter level-<?php echo esc_attr($level_class) . $class_name; ?>">
     <div class="cm-header">

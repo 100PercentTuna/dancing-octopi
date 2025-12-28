@@ -8,7 +8,9 @@ $opposing = $attributes['opposing'] ?? [];
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($claim) && empty($supporting) && empty($opposing)) return;
+if (empty($claim) && empty($supporting) && empty($opposing)) {
+    return;
+}
 ?>
 <div<?php echo $anchor; ?> class="wp-block-kunaal-argument-map argument-map<?php echo $class_name; ?>">
     <?php if ($claim) : ?>

@@ -6,7 +6,9 @@ $criteria = $attributes['criteria'] ?? '';
 $levels = $attributes['levels'] ?? ['', '', '', ''];
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($criteria)) return;
+if (empty($criteria)) {
+    return;
+}
 ?>
 <tr class="wp-block-kunaal-rubric-row rubric-row<?php echo $class_name; ?>">
     <td class="rubric-criteria"><?php echo wp_kses_post($criteria); ?></td>

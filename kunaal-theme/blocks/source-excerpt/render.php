@@ -10,7 +10,9 @@ $source_url = $attributes['sourceUrl'] ?? '';
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($excerpt_content)) return;
+if (empty($excerpt_content)) {
+    return;
+}
 ?>
 <blockquote<?php echo $anchor; ?> class="wp-block-kunaal-source-excerpt source-excerpt source-<?php echo esc_attr($source_type) . $class_name; ?>">
     <div class="source-type-label"><?php echo esc_html(strtoupper($source_type)); ?></div>

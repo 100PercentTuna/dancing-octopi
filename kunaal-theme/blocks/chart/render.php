@@ -544,7 +544,13 @@ $chart_height = $svg_height - $margin['top'] - $margin['bottom'];
                     }
                     
                     // X-axis label
-                    $label_index = $index === 0 ? 0 : ($index === count($cumulative) - 1 ? -1 : $index - 1);
+                    if ($index === 0) {
+                        $label_index = 0;
+                    } elseif ($index === count($cumulative) - 1) {
+                        $label_index = -1;
+                    } else {
+                        $label_index = $index - 1;
+                    }
                     $label_text = '';
                     if ($index === 0) {
                         $label_text = isset($labels[0]) ? $labels[0] : 'Start';

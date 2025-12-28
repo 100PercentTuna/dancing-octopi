@@ -12,7 +12,9 @@ $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor'
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 $highlight_class = $highlight_first ? ' highlight-first' : '';
 
-if (empty($rows)) return;
+if (empty($rows)) {
+    return;
+}
 ?>
 <figure<?php echo $anchor; ?> class="wp-block-kunaal-pub-table pub-table<?php echo $highlight_class . $class_name; ?>">
     <?php if ($title) : ?>

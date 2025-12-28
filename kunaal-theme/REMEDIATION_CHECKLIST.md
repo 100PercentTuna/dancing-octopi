@@ -115,19 +115,34 @@
 - [x] All table headers now have proper scope attributes
 
 ### php:S3358 - Collapsible If Statements (SonarQube)
-- [ ] Files with nested ifs that can be combined (8 total)
+- [x] **FIXED**: Extracted nested ternary operations into independent if/elseif/else statements:
+  - `blocks/slopegraph/render.php` - 6 nested ternaries fixed (lines 54, 57, 59, 61, 66, 67)
+  - `blocks/chart/render.php` - 1 nested ternary fixed (line 547)
+  - `blocks/confidence-meter/render.php` - 1 nested ternary fixed (line 24)
 
 ### php:S2681 - Dead Code (SonarQube)
-- [ ] Remove unreachable code (8 total)
+- [x] **FIXED**: Added curly braces to early returns in 8 render.php files:
+  - `blocks/flowchart-step/render.php`
+  - `blocks/framework-matrix/render.php`
+  - `blocks/pub-table/render.php`
+  - `blocks/rubric-row/render.php`
+  - `blocks/argument-map/render.php`
+  - `blocks/glossary-term/render.php`
+  - `blocks/know-dont-know/render.php`
+  - `blocks/source-excerpt/render.php`
 
 ### php:S1172 - Unused Parameters (SonarQube)
-- [ ] Functions with unused parameters (6 total)
+- [ ] Functions with unused parameters (6 total) - **NOTE**: These are in closures where parameters are optional; may be acceptable
 
-### php:S3923 - Empty Catch Blocks (SonarQube)
-- [ ] Add error handling to empty catch blocks (4 total)
+### php:S3923 - Empty Catch Blocks / Duplicate Conditionals (SonarQube)
+- [x] **FIXED**: Removed duplicate conditional branches in `inc/block-helpers.php` lines 156-157
+- [x] **FIXED**: Extracted duplicate literal in `blocks/statistical-distribution/render.php` lines 43-44
 
 ### php:S138 - Too Many Lines (SonarQube)
-- [ ] Functions exceeding line limits (3 total)
+- [x] **VERIFIED**: Functions have already been refactored:
+  - `inc/about-customizer-v22.php` - `kunaal_about_customizer_v22` already refactored to ~30 lines (delegates to helper functions)
+  - `inc/enqueue-helpers.php` - `kunaal_enqueue_assets` already refactored to ~68 lines (delegates to helper functions)
+  - `inc/interest-icons.php` - `kunaal_get_interest_icon` is a data mapping array (200 lines of data, not complex logic) - **ACCEPTABLE**
 
 ### CSS Defensive Patterns (coding-standard-rigorous-robust-review)
 - [x] `!important` usage - **REVIEWED**: All instances are justified:

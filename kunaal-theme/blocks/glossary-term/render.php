@@ -6,7 +6,9 @@ $term = $attributes['term'] ?? '';
 $definition = $attributes['definition'] ?? '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($term) && empty($definition)) return;
+if (empty($term) && empty($definition)) {
+    return;
+}
 ?>
 <div class="wp-block-kunaal-glossary-term glossary-term<?php echo $class_name; ?>">
     <dt class="glossary-term-title"><?php echo esc_html($term); ?></dt>

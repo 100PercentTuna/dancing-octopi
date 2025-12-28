@@ -7,7 +7,9 @@ $dont_know_items = $attributes['dontKnowItems'] ?? [];
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($know_items) && empty($dont_know_items)) return;
+if (empty($know_items) && empty($dont_know_items)) {
+    return;
+}
 ?>
 <div<?php echo $anchor; ?> class="wp-block-kunaal-know-dont-know know-dont-know<?php echo $class_name; ?>">
     <div class="kdk-columns">

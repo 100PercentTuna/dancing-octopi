@@ -13,7 +13,9 @@ $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['clas
 $grid_size = $size === '3x3' ? 3 : 2;
 $total_cells = $grid_size * $grid_size;
 
-if (empty($cells)) return;
+if (empty($cells)) {
+    return;
+}
 ?>
 <div<?php echo $anchor; ?> class="wp-block-kunaal-framework-matrix framework-matrix matrix-<?php echo esc_attr($size) . $class_name; ?>">
     <?php if ($title) : ?>

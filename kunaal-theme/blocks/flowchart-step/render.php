@@ -7,7 +7,9 @@ $description = $attributes['description'] ?? '';
 $step_type = $attributes['stepType'] ?? 'process';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
-if (empty($label)) return;
+if (empty($label)) {
+    return;
+}
 ?>
 <div class="wp-block-kunaal-flowchart-step flowchart-step step-<?php echo esc_attr($step_type) . $class_name; ?>">
     <div class="fcs-box">

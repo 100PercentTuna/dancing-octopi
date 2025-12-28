@@ -51,20 +51,56 @@ $block_id = 'slope-' . wp_unique_id();
                 $pct_change = $left_val != 0 ? ($change / abs($left_val)) * 100 : 0;
                 $is_positive = $change > 0.5;
                 $is_negative = $change < -0.5;
-                $color = $is_positive ? '#7D6B5D' : ($is_negative ? '#C9553D' : '#666');
+                
+                // Determine color based on change direction
+                if ($is_positive) {
+                    $color = '#7D6B5D';
+                } elseif ($is_negative) {
+                    $color = '#C9553D';
+                } else {
+                    $color = '#666';
+                }
+                
+                // Determine change type for data attribute
+                if ($is_positive) {
+                    $change_type = 'positive';
+                } elseif ($is_negative) {
+                    $change_type = 'negative';
+                } else {
+                    $change_type = 'neutral';
+                }
+                
+                // Calculate vertical offset for right side
+                if ($is_positive) {
+                    $right_offset = -10;
+                } elseif ($is_negative) {
+                    $right_offset = 10;
+                } else {
+                    $right_offset = 0;
+                }
+                
+                // Calculate text offset for right labels
+                if ($is_positive) {
+                    $text_offset = -5;
+                } elseif ($is_negative) {
+                    $text_offset = 15;
+                } else {
+                    $text_offset = 5;
+                }
+                
                 $y = 50 + ($i * 60);
                 ?>
-            <g class="slopegraph-row" data-change="<?php echo $is_positive ? 'positive' : ($is_negative ? 'negative' : 'neutral'); ?>" tabindex="0">
+            <g class="slopegraph-row" data-change="<?php echo esc_attr($change_type); ?>" tabindex="0">
                 <circle class="dot dot-left" cx="120" cy="<?php echo $y; ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
-                <line class="slope-line" x1="120" y1="<?php echo $y; ?>" x2="480" y2="<?php echo $y + ($is_positive ? -10 : ($is_negative ? 10 : 0)); ?>"
+                <line class="slope-line" x1="120" y1="<?php echo $y; ?>" x2="480" y2="<?php echo $y + $right_offset; ?>"
                       stroke="<?php echo esc_attr($color); ?>" stroke-width="2"/>
-                <circle class="dot dot-right" cx="480" cy="<?php echo $y + ($is_positive ? -10 : ($is_negative ? 10 : 0)); ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
+                <circle class="dot dot-right" cx="480" cy="<?php echo $y + $right_offset; ?>" r="5" fill="<?php echo esc_attr($color); ?>"/>
                 <text class="label label-left" x="10" y="<?php echo $y + 5; ?>"><?php echo esc_html($label); ?></text>
                 <text class="value value-left" x="100" y="<?php echo $y + 5; ?>" text-anchor="end">
                     <?php echo esc_html(kunaal_format_slope_value($left_val, $value_format, $currency_symbol)); ?>
                 </text>
-                <text class="label label-right" x="490" y="<?php echo $y + ($is_positive ? -5 : ($is_negative ? 15 : 5)); ?>"><?php echo esc_html($label); ?></text>
-                <text class="value value-right" x="570" y="<?php echo $y + ($is_positive ? -5 : ($is_negative ? 15 : 5)); ?>" text-anchor="end">
+                <text class="label label-right" x="490" y="<?php echo $y + $text_offset; ?>"><?php echo esc_html($label); ?></text>
+                <text class="value value-right" x="570" y="<?php echo $y + $text_offset; ?>" text-anchor="end">
                     <?php echo esc_html(kunaal_format_slope_value($right_val, $value_format, $currency_symbol)); ?>
                     <?php if ($show_pct) { ?>
                     <tspan class="pct-change" fill="<?php echo esc_attr($color); ?>">

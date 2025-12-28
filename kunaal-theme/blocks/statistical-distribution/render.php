@@ -41,9 +41,10 @@ if ($data_mode === 'raw') {
 
 // Calculate axis range
 $all_values = [];
+$default_stat_value = 0;
 foreach ($stats_data as $stat) {
-    $all_values[] = floatval($stat['min'] ?? 0);
-    $all_values[] = floatval($stat['max'] ?? 0);
+    $all_values[] = floatval($stat['min'] ?? $default_stat_value);
+    $all_values[] = floatval($stat['max'] ?? $default_stat_value);
 }
 $axis_min = !empty($all_values) ? min($all_values) : 0;
 $axis_max = !empty($all_values) ? max($all_values) : 100;

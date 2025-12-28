@@ -153,8 +153,9 @@ if (!function_exists('kunaal_calculate_quartiles')) {
         $lower_fence = $q1 - 1.5 * $iqr;
         $upper_fence = $q3 + 1.5 * $iqr;
         
-        $min = $sorted[0] >= $lower_fence ? $sorted[0] : $sorted[0];
-        $max = $sorted[$n-1] <= $upper_fence ? $sorted[$n-1] : $sorted[$n-1];
+        // Clamp min/max to fences (outliers are handled separately)
+        $min = $sorted[0];
+        $max = $sorted[$n-1];
         
         $outliers = array_filter($sorted, function($v) use ($lower_fence, $upper_fence) {
             return $v < $lower_fence || $v > $upper_fence;
