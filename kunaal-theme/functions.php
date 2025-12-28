@@ -117,12 +117,3 @@ function kunaal_add_defer_to_scripts($tag, $handle) {
     return $tag;
 }
 add_filter('script_loader_tag', 'kunaal_add_defer_to_scripts', 10, 2);
-
-/**
- * Add a `js` class to <html> early for progressive enhancement.
- * This ensures About page content is visible even if JS fails.
- */
-function kunaal_add_js_class() {
-    echo "<script>(function(d){d.documentElement.classList.add('js');})(document);</script>\n";
-}
-add_action('wp_head', 'kunaal_add_js_class', 0);
