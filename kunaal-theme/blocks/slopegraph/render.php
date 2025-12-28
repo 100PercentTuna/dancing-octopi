@@ -67,7 +67,7 @@ $block_id = 'slope-' . wp_unique_id();
                     <?php echo esc_html(kunaal_format_slope_value($right_val, $value_format, $currency_symbol)); ?>
                     <?php if ($show_pct) : ?>
                     <tspan class="pct-change" fill="<?php echo esc_attr($color); ?>">
-                        (<?php echo ($change >= 0 ? '+' : ''); ?><?php echo round($pct_change, 1); ?>%)
+                        (<?php echo $change >= 0 ? '+' : ''; ?><?php echo round($pct_change, 1); ?>%)
                     </tspan>
                     <?php endif; ?>
                 </text>

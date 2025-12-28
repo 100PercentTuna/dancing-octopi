@@ -42,21 +42,32 @@ while (count($labels) < count($data)) {
 
 // Helper functions are defined in inc/block-helpers.php
 
+// Constants for repeated color values
+if (!defined('KUNAAL_CHART_COLOR_BLUE_500')) {
+    define('KUNAAL_CHART_COLOR_BLUE_500', '#3B82F6');
+}
+if (!defined('KUNAAL_CHART_COLOR_GREEN_500')) {
+    define('KUNAAL_CHART_COLOR_GREEN_500', '#10B981');
+}
+if (!defined('KUNAAL_CHART_COLOR_RED_500')) {
+    define('KUNAAL_CHART_COLOR_RED_500', '#EF4444');
+}
+
 // Color schemes
 $color_schemes = array(
-    'theme' => array('#1E5AFF', '#7D6B5D', '#5B7BA8', '#d4c4b5', '#3B82F6', '#B8A99A', '#60A5FA'),
-    'blue' => array('#1E5AFF', '#3B82F6', '#60A5FA', '#93C5FD', '#DBEAFE', '#1D4ED8', '#2563EB'),
+    'theme' => array('#1E5AFF', '#7D6B5D', '#5B7BA8', '#d4c4b5', KUNAAL_CHART_COLOR_BLUE_500, '#B8A99A', '#60A5FA'),
+    'blue' => array('#1E5AFF', KUNAAL_CHART_COLOR_BLUE_500, '#60A5FA', '#93C5FD', '#DBEAFE', '#1D4ED8', '#2563EB'),
     'warm' => array('#7D6B5D', '#B8A99A', '#d4c4b5', '#E8DED4', '#C9B8A8', '#8B7355', '#A69080'),
-    'green' => array('#059669', '#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#047857', '#065F46'),
+    'green' => array('#059669', KUNAAL_CHART_COLOR_GREEN_500, '#34D399', '#6EE7B7', '#A7F3D0', '#047857', '#065F46'),
     'mono' => array('#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af', '#d1d5db', '#e5e7eb'),
-    'rainbow' => array('#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4')
+    'rainbow' => array(KUNAAL_CHART_COLOR_RED_500, '#F59E0B', KUNAAL_CHART_COLOR_GREEN_500, KUNAAL_CHART_COLOR_BLUE_500, '#8B5CF6', '#EC4899', '#06B6D4')
 );
 
 $chart_colors = $color_schemes[$colors] ?? $color_schemes['theme'];
 
 // Positive/negative colors for waterfall
-$positive_color = '#10B981';
-$negative_color = '#EF4444';
+$positive_color = KUNAAL_CHART_COLOR_GREEN_500;
+$negative_color = KUNAAL_CHART_COLOR_RED_500;
 $total_color = $chart_colors[0];
 
 // SVG dimensions

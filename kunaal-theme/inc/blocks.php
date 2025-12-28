@@ -284,8 +284,12 @@ function kunaal_register_blocks() {
     if (!kunaal_blocks_api_available()) {
         return;
     }
-
-    $blocks_dir = KUNAAL_THEME_DIR . '/blocks';
+    
+    // Use constant for block directory path
+    if (!defined('KUNAAL_BLOCKS_DIR_RELATIVE')) {
+        define('KUNAAL_BLOCKS_DIR_RELATIVE', '/blocks');
+    }
+    $blocks_dir = KUNAAL_THEME_DIR . KUNAAL_BLOCKS_DIR_RELATIVE;
     
     // Get all block folders
     $block_definitions = kunaal_get_block_definitions();
