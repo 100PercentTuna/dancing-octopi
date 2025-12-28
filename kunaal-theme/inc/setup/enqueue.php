@@ -1,11 +1,12 @@
 <?php
 /**
- * Asset Enqueuing Helper Functions
+ * Asset Enqueuing
  * 
+ * Handles all CSS and JavaScript asset registration and enqueuing.
  * Extracted from kunaal_enqueue_assets() to reduce cognitive complexity.
  *
  * @package Kunaal_Theme
- * @since 4.30.0
+ * @since 4.32.0
  */
 
 if (!defined('ABSPATH')) {
@@ -241,7 +242,7 @@ function kunaal_enqueue_page_specific_assets() {
         // About page: Generate CSS variables for category colors (must be AFTER enqueue)
         $categories = kunaal_get_categories_v22();
         if (!empty($categories)) {
-            $css_vars = ".kunaal-about-v22 {\n";
+            $css_vars = ".kunaal-about-page {\n";
             foreach ($categories as $slug => $category) {
                 $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
             }
