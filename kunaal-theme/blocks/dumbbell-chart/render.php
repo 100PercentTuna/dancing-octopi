@@ -44,25 +44,16 @@ $block_id = 'dumbbell-' . wp_unique_id();
         role="img"
         aria-labelledby="<?php echo esc_attr($block_id); ?>-title">
     
-    <?php if ($title || $subtitle) {
-        ?>
+    <?php if ($title || $subtitle) { ?>
     <header class="dumbbell-header">
-        <?php if ($title) {
-            ?>
+        <?php if ($title) { ?>
         <h3 id="<?php echo esc_attr($block_id); ?>-title" class="dumbbell-title"><?php echo esc_html($title); ?></h3>
-            <?php
-        }
-        ?>
-        <?php if ($subtitle) {
-            ?>
+        <?php } ?>
+        <?php if ($subtitle) { ?>
         <p class="dumbbell-subtitle"><?php echo esc_html($subtitle); ?></p>
-            <?php
-        }
-        ?>
+        <?php } ?>
     </header>
-        <?php
-    }
-    ?>
+    <?php } ?>
     
     <div class="dumbbell-chart">
         <svg class="dumbbell-visual" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
@@ -73,8 +64,7 @@ $block_id = 'dumbbell-' . wp_unique_id();
                 </linearGradient>
             </defs>
             
-            <?php if ($show_axis) {
-                ?>
+            <?php if ($show_axis) { ?>
             <g class="dumbbell-axis">
                 <line x1="140" y1="380" x2="700" y2="380" stroke="var(--muted)" stroke-width="1"/>
                 <?php
@@ -86,13 +76,11 @@ $block_id = 'dumbbell-' . wp_unique_id();
                 <text x="<?php echo $x; ?>" y="395" text-anchor="middle" class="axis-label">
                     <?php echo esc_html(kunaal_format_dumbbell_value($val, $value_format, $currency_symbol)); ?>
                 </text>
-                    <?php
+                <?php
                 }
                 ?>
             </g>
-                <?php
-            }
-            ?>
+            <?php } ?>
             
             <g class="dumbbell-rows">
                 <?php
@@ -122,14 +110,11 @@ $block_id = 'dumbbell-' . wp_unique_id();
                     <text class="dumbbell-value dumbbell-value-end" x="<?php echo $end_x; ?>" y="<?php echo $y + 20; ?>" text-anchor="middle">
                         <?php echo esc_html(kunaal_format_dumbbell_value($end_val, $value_format, $currency_symbol)); ?>
                     </text>
-                    <?php if ($show_gap) {
-                        ?>
+                    <?php if ($show_gap) { ?>
                     <text class="dumbbell-gap" x="720" y="<?php echo $y + 5; ?>" text-anchor="end">
                         <?php echo esc_html($gap_prefix . kunaal_format_dumbbell_value($gap, $value_format, $currency_symbol) . $gap_suffix); ?>
                     </text>
-                        <?php
-                    }
-                    ?>
+                    <?php } ?>
                 </g>
                 <?php
                 }

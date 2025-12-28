@@ -96,14 +96,14 @@ $axis_max = !empty($all_values) ? max($all_values) : 100;
                          fill="var(--blue)"/>
                 <?php endif; ?>
                 
-                <?php if ($show_outliers && !empty($stat['outliers'])) :
-                    foreach ($stat['outliers'] as $outlier) :
+                <?php if ($show_outliers && !empty($stat['outliers'])) {
+                    foreach ($stat['outliers'] as $outlier) {
                         $outlier_x = 140 + (($outlier - $axis_min) / ($axis_max - $axis_min)) * 560;
-                ?>
+                        ?>
                 <circle class="stat-outlier" cx="<?php echo $outlier_x; ?>" cy="20" r="4" fill="var(--terracotta)"/>
                 <?php
-                    endforeach;
-                endif;
+                    }
+                }
                 ?>
                 <?php endif; ?>
             </g>

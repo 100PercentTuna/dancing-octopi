@@ -98,9 +98,9 @@ $block_id = 'network-' . wp_unique_id();
             }
             ?>
         </div>
-        <?php if ($source_note) : ?>
+        <?php if ($source_note) { ?>
         <p class="network-source"><?php echo esc_html($source_note); ?></p>
-        <?php endif; ?>
+        <?php } ?>
     </footer>
     <?php
     }
