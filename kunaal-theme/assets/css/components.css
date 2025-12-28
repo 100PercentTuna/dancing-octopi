@@ -2,6 +2,7 @@
    COMPONENTS - Cards, Buttons, Panels, Footer
    ======================================== */
 
+@layer components {
 /* ========================================
    CARDS (Essay Cards)
    ======================================== */
@@ -841,5 +842,4 @@ footer {
 /* Prose links use canonical double underline - handled in pages.css */
 /* This section removed to avoid duplication */
 
-
-
+} /* End @layer components */

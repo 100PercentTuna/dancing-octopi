@@ -3,7 +3,7 @@
    ======================================== */
 
 /* CSS Cascade Layers - Define layer order */
-@layer tokens, base, utilities, components, blocks;
+@layer tokens, base, utilities, components, blocks, pages;
 
 /* ========================================
    COLOR TOKENS
@@ -56,7 +56,12 @@
     --blueShadow: var(--k-color-accent-shadow);
     --blueMuted: var(--k-color-accent-muted);
 
-    /* Double underline: thick blue over thin gray */
+    /* Double underline: thick blue over thin gray
+     * Values match theme.json settings.custom.underline
+     * Note: WordPress doesn't auto-generate CSS vars from theme.json custom,
+     * so we maintain these here. Future: migrate to --wp--custom--underline--*
+     * if WordPress adds support.
+     */
     --k-underline-gray-thickness: 1px;
     --k-underline-blue-thickness: 2px;
     --k-underline-gray-offset: 0px;

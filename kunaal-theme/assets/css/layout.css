@@ -2,6 +2,7 @@
    LAYOUT & CONTAINERS
    ======================================== */
 
+@layer components {
 /* Container */
 .container {
   margin: 0 auto;
@@ -44,6 +45,4 @@ main {
   overflow: hidden;
 }
 
-
-
-
+} /* End @layer components */

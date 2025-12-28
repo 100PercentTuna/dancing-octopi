@@ -171,7 +171,8 @@
           }
         }, '<0.25');
       
-      // Fade scroll indicator as user scrolls
+      // Scroll indicator is now in-flow (not fixed) - only adjust opacity if needed
+      // No display toggles to avoid layout shifts
       if (scrollIndicator) {
         var scrollFadeHandler = function() {
           var scrollY = window.scrollY || window.pageYOffset;
@@ -183,14 +184,8 @@
             opacity = Math.max(0, 1 - ((scrollY - fadeStart) / (fadeEnd - fadeStart)));
           }
           
+          // Only adjust opacity, no display toggles
           scrollIndicator.style.opacity = opacity.toString();
-          
-          // Hide completely when scrolled past fadeEnd
-          if (scrollY > fadeEnd) {
-            scrollIndicator.style.display = 'none';
-          } else {
-            scrollIndicator.style.display = 'flex';
-          }
         };
         
         window.addEventListener('scroll', scrollFadeHandler, { passive: true });
@@ -244,7 +239,8 @@
         if (dir === 'down') { x = 0; y = -14; }
         
         // Skip scroll indicator - it should not have x transform
-        if (el.id === 'scrollIndicator' || el.closest('#scrollIndicator')) {
+        // Note: scroll indicator is now hero-scroll inside hero-text, not fixed
+        if (el.id === 'scrollIndicator' || el.closest('#scrollIndicator') || el.classList.contains('hero-scroll')) {
           x = 0; // Force no x transform for scroll indicator
         }
         
@@ -969,7 +965,11 @@
   // Hero mosaic: keep ONE tile in color, cycling like subtle "Christmas lights"
   // =============================================
   function initHeroMosaicCycle(){
-    var tiles = Array.prototype.slice.call(document.querySelectorAll('.hero-photo'));
+    // Scope selectors to About page to prevent accidental cross-page matches
+    var aboutPage = document.querySelector('.kunaal-about-page');
+    if (!aboutPage) return;
+    
+    var tiles = Array.prototype.slice.call(aboutPage.querySelectorAll('.hero-photo'));
     if(!tiles.length) return;
 
     // Track hover so we don't constantly "steal" focus from the user's cursor.

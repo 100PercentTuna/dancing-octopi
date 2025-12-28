@@ -64,25 +64,26 @@ $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
 
 <main id="main">
 <!-- HERO - Bleed collage layout -->
-<section class="hero">
+<section class="hero about-hero" aria-label="About hero">
 <div class="hero-grid">
-<!-- Row 1 -->
 <?php
-// Render 10 hero photos in grid layout matching reference exactly
-// Row 1: photos 1-4, then hero-text, then photo 5
-// Row 2: photos 6-10
-$photo_count = count($hero_photos);
-// Row 1 - Photos 1-4
-// Dog-ear accent: Desktop = first row, third picture (index 2, column 3). Mobile = second row, second picture (index 2, column 2, row 2)
-for ($i = 0; $i < min(4, $photo_count); $i++) :
-    $photo_url = $hero_photos[$i];
-    // Index 2 (3rd photo) gets accent - desktop: column 3 row 1, mobile: column 2 row 2
-    $has_accent = ($i === 2);
-    $loading = $i === 0 ? 'eager' : 'lazy';
-    $photo_index = $i + 1; // 1-based index for CSS class
+// Render photos by SLOT NUMBER (1-10), not array index
+// Slots 1-4: top row left-to-right
+// Slot 5: right-strip top
+// Slots 6-9: bottom row left-to-right
+// Slot 10: right-strip bottom
+
+// Row 1 - Slots 1-4
+for ($slot = 1; $slot <= 4; $slot++) :
+    if (!isset($hero_photos[$slot])) continue;
+    $photo_url = $hero_photos[$slot];
+    // Slot 3 gets accent (dog-ear) unconditionally if it exists
+    $has_accent = ($slot === 3);
+    $loading = $slot === 1 ? 'eager' : 'lazy';
+    $fetchpriority = $slot === 1 ? 'high' : 'auto';
 ?>
-<div class="hero-photo hero-photo--<?php echo esc_attr($photo_index); ?><?php echo $has_accent ? ' has-accent' : ''; ?>">
-    <img alt="" decoding="async" loading="<?php echo esc_attr($loading); ?>" src="<?php echo esc_url($photo_url); ?>"/>
+<div class="hero-photo hero-photo--<?php echo esc_attr($slot); ?><?php echo $has_accent ? ' has-accent' : ''; ?>">
+    <img alt="" decoding="async" loading="<?php echo esc_attr($loading); ?>" fetchpriority="<?php echo esc_attr($fetchpriority); ?>" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
 
@@ -108,35 +109,43 @@ for ($i = 0; $i < min(4, $photo_count); $i++) :
         </div>
     </div>
     
+    <!-- Scroll indicator - moved inside hero-text after meta rows -->
+    <div class="hero-scroll" id="scrollIndicator" aria-hidden="true">
+        <span class="hero-scroll__label">SCROLL</span>
+        <span class="hero-scroll__line"></span>
+    </div>
 </div>
 
 <?php
-// Row 1 - Photo 5 (after hero-text)
-if ($photo_count > 4) :
-    $photo_url = $hero_photos[4];
+// Row 1 - Slot 5 (right-strip top)
+if (isset($hero_photos[5])) :
+    $photo_url = $hero_photos[5];
 ?>
 <div class="hero-photo hero-photo--5">
     <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endif; ?>
 
-<!-- Row 2 -->
+<!-- Row 2 - Slots 6-9 -->
 <?php
-// Row 2 - Photos 6-10
-for ($i = 5; $i < min(10, $photo_count); $i++) :
-    $photo_url = $hero_photos[$i];
-    $photo_index = $i + 1; // 1-based index for CSS class
+for ($slot = 6; $slot <= 9; $slot++) :
+    if (!isset($hero_photos[$slot])) continue;
+    $photo_url = $hero_photos[$slot];
 ?>
-<div class="hero-photo hero-photo--<?php echo esc_attr($photo_index); ?>">
+<div class="hero-photo hero-photo--<?php echo esc_attr($slot); ?>">
     <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
 </div>
 <?php endfor; ?>
-</div>
 
-<!-- Scroll indicator - positioned outside hero-grid to avoid clipping -->
-<div class="scroll-indicator" id="scrollIndicator">
-    <span class="scroll-indicator-text">Scroll</span>
-    <div class="scroll-indicator-line"></div>
+<?php
+// Row 2 - Slot 10 (right-strip bottom)
+if (isset($hero_photos[10])) :
+    $photo_url = $hero_photos[10];
+?>
+<div class="hero-photo hero-photo--10">
+    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($photo_url); ?>"/>
+</div>
+<?php endif; ?>
 </div>
 </section>
 

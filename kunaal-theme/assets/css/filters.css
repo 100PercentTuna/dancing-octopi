@@ -1,6 +1,8 @@
 /* ========================================
    TOOLBAR / FILTERS
    ======================================== */
+
+@layer components {
 .toolbar {
   display: flex;
   align-items: center;
@@ -271,3 +273,4 @@
   .filterToggle span { display: none; }
 }
 
+} /* End @layer components */

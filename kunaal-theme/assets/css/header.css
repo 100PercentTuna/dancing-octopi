@@ -1,6 +1,8 @@
 /* ========================================
    HEADER - Fixed with backdrop blur
    ======================================== */
+
+@layer components {
 .mast {
   position: fixed;
   top: 0;
@@ -41,14 +43,24 @@
   /* No padding-left/right - inherits from .container */
 }
 
-/* Navigation and theme toggle container - equal spacing */
+/* Navigation and controls container - equal spacing */
 .mastInner > .nav {
   margin-left: auto;
   margin-right: var(--space-3);
 }
 
-.mastInner > .theme-toggle {
+/* Controls wrapper for nav toggle + theme toggle */
+.mastControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mastInner > .mastControls {
   margin-left: 16px; /* Fixed gap from menu, not auto */
+}
+
+.mastControls > .theme-toggle {
   margin-top: 0; /* Remove offset - use same baseline as nav */
   align-self: center;
   display: flex;
@@ -60,37 +72,74 @@
   /* Ensure same vertical baseline as nav items */
   vertical-align: baseline;
 }
+
+/* Legacy selector for backward compatibility */
+.mastInner > .theme-toggle {
+  margin-left: 16px;
+  margin-top: 0;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2px;
+  line-height: 1;
+  vertical-align: baseline;
+}
 @media (max-width: 640px) {
   /* Mobile theme toggle: smaller, snug to menu, no box styling */
   .mastInner {
     /* Ensure proper alignment */
     align-items: center;
     gap: 12px; /* Reduce gap for snug fit */
-    justify-content: flex-end; /* Push everything to right */
+    justify-content: space-between; /* Brand left, controls right */
   }
   
   .mastInner > .nav {
-    margin-right: 6px; /* Smaller gap - snug to theme toggle */
+    margin-right: 6px; /* Smaller gap - snug to controls */
     margin-left: 0;
-    order: 2; /* Nav comes before toggle */
+    order: 2; /* Nav comes before controls */
   }
   
-  .mastInner > .theme-toggle {
-    width: 32px;
-    height: 32px;
+  .mastInner > .mastControls {
     margin-left: 0;
     margin-right: 0; /* Rightmost element */
     order: 3; /* Ensure it's last (rightmost) */
+    gap: 8px; /* Tighter gap between buttons */
+  }
+  
+  .mastControls > .navToggle,
+  .mastControls > .theme-toggle {
+    width: 32px;
+    height: 32px;
     border: none;
     background: transparent;
     box-shadow: none;
     padding: 0;
-    /* Ensure same vertical alignment as nav */
+    /* Ensure same vertical alignment */
     align-self: center;
     display: flex;
     align-items: center;
     justify-content: center;
     /* Match nav vertical alignment exactly */
+    line-height: 1;
+    vertical-align: middle;
+  }
+  
+  /* Legacy selector for backward compatibility */
+  .mastInner > .theme-toggle {
+    width: 32px;
+    height: 32px;
+    margin-left: 0;
+    margin-right: 0;
+    order: 3;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
     vertical-align: middle;
   }
@@ -303,6 +352,5 @@
   .subtitle { display: none; }
 }
 
-
-
+} /* End @layer components */
 

@@ -2,6 +2,7 @@
    BASE RESET & TYPOGRAPHY
    ======================================== */
 
+@layer base {
 /* Box sizing reset */
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -124,6 +125,5 @@ h3.tTitle, h3.jTitle {
   text-transform: none !important;
 }
 
-
-
+} /* End @layer base */
 

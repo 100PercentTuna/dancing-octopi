@@ -1,6 +1,8 @@
 /* ========================================
    SECTIONS & GRID
    ======================================== */
+
+@layer components {
 .section { 
   padding: var(--space-3) 0 var(--space-2); 
 }
@@ -148,3 +150,4 @@
   transform: translateX(0); 
 }
 
+} /* End @layer components */

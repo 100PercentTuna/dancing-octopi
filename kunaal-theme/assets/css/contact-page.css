@@ -8,6 +8,7 @@
  * @since 4.20.8
  */
 
+@layer pages {
 /* Contact Page Styles - Polished Design */
 .contact-page {
     min-height: 100vh;
@@ -815,6 +816,5 @@
   }
 }
 
-
-
+} /* End @layer pages */
 

@@ -16,16 +16,18 @@ if (!defined('ABSPATH')) {
 
 /**
  * Get hero photos for v22 About page
- * Returns array of up to 10 photo URLs
+ * Returns array keyed by slot number 1..10 (stable slots, no reindex shifting)
+ * 
+ * @return array<int, string> Array keyed by slot number (1-10) => photo URL
  */
 function kunaal_get_hero_photos_v22() {
     $photos = array();
     for ($i = 1; $i <= 10; $i++) {
-        $photo_id = kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
+        $photo_id = (int) kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
         if ($photo_id) {
-            $photo_url = wp_get_attachment_image_url($photo_id, 'large');
+            $photo_url = wp_get_attachment_image_url($photo_id, 'full');
             if ($photo_url) {
-                $photos[] = $photo_url;
+                $photos[$i] = $photo_url;
             }
         }
     }

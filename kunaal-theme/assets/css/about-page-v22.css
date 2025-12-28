@@ -214,151 +214,161 @@ a:focus-visible, button:focus-visible {
    HERO - Bleed collage layout
    Scoped to about page to avoid conflicts
 ============================================= */
+/* Wrapper controls height + clipping */
 .kunaal-about-page .hero {
-  margin-top: calc(-1 * var(--mastH, 100px));
-  min-height: 100svh; /* Use svh for better mobile support, fallback to vh */
-  min-height: calc(100vh + var(--mastH, 100px));
-  background: var(--bg);
   position: relative;
-  /* Clip overflow horizontally to prevent scrollbar */
-  overflow-x: clip;
-  overflow-y: visible; /* Allow vertical overflow for scroll indicator */
-  width: 100%;
+  margin-top: calc(-1 * var(--mastH, 96px));
+  height: calc(100svh + var(--mastH, 96px));
+  overflow-x: clip; /* fallback to hidden if needed */
+  overflow-y: visible;
+  background: var(--bg);
 }
 
-/* Hero grid: wider than viewport, centered, with unequal columns */
+/* Grid controls bleed + column ratios */
 .kunaal-about-page .hero-grid {
   display: grid;
-  /* 6 columns: photo1 (narrow) | photo2 (wide) | photo3 (wide) | photo4 (medium) | hero-text (wide) | right-strip (narrow) */
-  grid-template-columns: 10fr 20fr 20fr 18fr 32fr 10fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 2px;
-  /* Wider than viewport for bleed effect */
+  height: 100%;
+  /* Bleed: wider than viewport, centered, clipped by wrapper */
   width: min(1800px, 110vw);
-  /* Center the grid */
-  margin-inline: auto;
-  /* Position relative for absolute children */
   position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 2px;
+  grid-template-rows: 1fr 1fr;
+
+  /* Non-equal widths: outer narrow, inner wider, text fixed-ish, right strip narrow */
+  grid-template-columns:
+    minmax(0, 0.55fr)  /* slot 1 / slot 6 (outer left) */
+    minmax(0, 1.0fr)   /* slot 2 / slot 7 */
+    minmax(0, 1.0fr)   /* slot 3 / slot 8 */
+    minmax(0, 1.0fr)   /* slot 4 / slot 9 */
+    minmax(320px, 420px) /* hero text */
+    minmax(0, 0.55fr); /* slot 5 / slot 10 (outer right strip) */
 }
 
-/* Desktop: Explicit grid positioning for photos using stable classes */
-/* Grid columns: 1=photo1 | 2=photo2 | 3=photo3 | 4=photo4 | 5=hero-text | 6=right-strip */
-/* Photo 1: top-left (column 1, row 1) */
+/* Explicit placement: slots map to columns/rows */
+/* slot1 col1 row1, slot2 col2 row1, slot3 col3 row1, slot4 col4 row1 */
+/* slot5 col6 row1 (right strip top) */
+/* slot6 col1 row2, slot7 col2 row2, slot8 col3 row2, slot9 col4 row2 */
+/* slot10 col6 row2 (right strip bottom) */
 .kunaal-about-page .hero-photo--1 {
   grid-column: 1;
   grid-row: 1;
 }
 
-/* Photo 2: top-middle (column 2, row 1) */
 .kunaal-about-page .hero-photo--2 {
   grid-column: 2;
   grid-row: 1;
 }
 
-/* Photo 3: column 3, row 1 - THIS GETS THE ACCENT on desktop (third picture in first row) */
 .kunaal-about-page .hero-photo--3 {
   grid-column: 3;
   grid-row: 1;
 }
 
-/* Photo 4: column 4, row 1 */
 .kunaal-about-page .hero-photo--4 {
   grid-column: 4;
   grid-row: 1;
 }
 
-/* Photo 5: right strip, row 1 (column 6, row 1) */
 .kunaal-about-page .hero-photo--5 {
   grid-column: 6;
   grid-row: 1;
 }
 
-/* Photo 6: row 2, column 1 */
 .kunaal-about-page .hero-photo--6 {
   grid-column: 1;
   grid-row: 2;
 }
 
-/* Photo 7: row 2, column 2 */
 .kunaal-about-page .hero-photo--7 {
   grid-column: 2;
   grid-row: 2;
 }
 
-/* Photo 8: row 2, column 3 */
 .kunaal-about-page .hero-photo--8 {
   grid-column: 3;
   grid-row: 2;
 }
 
-/* Photo 9: row 2, column 4 */
 .kunaal-about-page .hero-photo--9 {
   grid-column: 4;
   grid-row: 2;
 }
 
-/* Photo 10: row 2, column 6 (right strip) */
 .kunaal-about-page .hero-photo--10 {
   grid-column: 6;
   grid-row: 2;
 }
 
-.hero-photo {
+/* Tiles */
+.kunaal-about-page .hero-photo {
   position: relative;
-  overflow: hidden; /* Match reference - ensures proper clipping while allowing accent to show */
+  overflow: hidden;
+  min-height: 0;
   background: var(--bgAlt);
 }
-/* Dog-ear accent needs visible overflow - scoped to About page for specificity */
-.hero-photo img {
+
+.kunaal-about-page .hero-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center; /* Default - optimized for wider screens */
+  display: block;
   filter: grayscale(100%);
   transition: filter 0.15s ease;
   will-change: transform;
-  /* REMOVED position:relative and z-index:1 - they created stacking context above ::before pseudo-element */
 }
 
 /* First photo: reveal more from left as screen widens */
-.hero-photo--1 img {
+.kunaal-about-page .hero-photo--1 img {
   object-position: left center;
 }
-.hero-photo.color-active img { filter: none; }
-.hero-photo:hover img { filter: none; }
-.hero-photo::after {
+
+.kunaal-about-page .hero-photo.color-active img { 
+  filter: none; 
+}
+
+.kunaal-about-page .hero-photo:hover img { 
+  filter: none; 
+}
+
+.kunaal-about-page .hero-photo::after {
   content: '';
   position: absolute;
-  top: 0; bottom: 0; left: 0;
+  top: 0; 
+  bottom: 0; 
+  left: 0;
   width: 3px;
   background: var(--blue);
   transform: scaleY(0);
   transition: transform 0.2s ease;
   z-index: 2;
 }
-.hero-photo:hover::after { transform: scaleY(1); }
-.hero-photo.color-active::after { transform: scaleY(1); }
-/* Dog-ear accent - robust border triangle implementation */
-/* Desktop: Photo 3 (hero-photo--3) gets the accent */
-.kunaal-about-page .hero-photo.has-accent {
-  position: relative; /* Ensure ::before can be positioned absolutely */
-  overflow: visible; /* Prevent any clipping of accent */
+
+.kunaal-about-page .hero-photo:hover::after { 
+  transform: scaleY(1); 
 }
 
+.kunaal-about-page .hero-photo.color-active::after { 
+  transform: scaleY(1); 
+}
+
+/* Dog-ear: make it impossible to "not render" - use clip-path overlay INSIDE the tile */
 .kunaal-about-page .hero-photo.has-accent::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
+  top: 0; 
   left: 0;
-  width: 0;
-  height: 0;
-  border-top: var(--k-dogear, 28px) solid var(--blue, #1E5AFF);
-  border-right: var(--k-dogear, 28px) solid transparent;
-  z-index: 10; /* Above image */
+  width: 28px; 
+  height: 28px;
+  background: var(--blue);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  z-index: 2;
   pointer-events: none;
 }
 
-.hero-text {
+/* Hero text spans rows, in column 5 */
+.kunaal-about-page .hero-text {
   grid-column: 5;
   grid-row: 1 / 3;
   background: var(--bg);
@@ -432,30 +442,18 @@ a:focus-visible, button:focus-visible {
   color: var(--ink);
 }
 
-/* Scroll indicator - positioned absolutely within hero section */
-.scroll-indicator {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+/* Scroll indicator is now IN FLOW (not fixed) - sits under Reading meta */
+.kunaal-about-page .hero-scroll {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  z-index: 20;
-  opacity: 1;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
+  margin-top: 1.5rem;
   color: var(--warm);
-  width: auto;
-  /* Ensure it doesn't overlap hero text - position near bottom of viewport */
-  margin-bottom: 0;
+  pointer-events: none;
 }
-.scroll-indicator.hidden { 
-  opacity: 0;
-  pointer-events: none; 
-}
-.scroll-indicator-text {
+
+.kunaal-about-page .hero-scroll__label {
   font-family: var(--mono);
   font-size: 7px;
   text-transform: uppercase;
@@ -464,8 +462,9 @@ a:focus-visible, button:focus-visible {
   opacity: 0.65;
   font-weight: 400;
 }
+
 /* Scroll indicator line - animation with subtle bounce */
-.scroll-indicator-line {
+.kunaal-about-page .hero-scroll__line {
   width: 1px;
   height: 32px;
   background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
@@ -483,6 +482,11 @@ a:focus-visible, button:focus-visible {
     transform: translateY(3px);
     opacity: 0.8;
   }
+}
+
+/* Legacy scroll-indicator class (for backward compatibility with JS) */
+.kunaal-about-page .scroll-indicator {
+  display: none; /* Hidden - replaced by hero-scroll */
 }
 
 /* Ultra-wide handling: prevent comically stretched layouts */
@@ -506,114 +510,71 @@ a:focus-visible, button:focus-visible {
   }
 }
 
-/* Medium breakpoint: 1000px-1200px (thin desktop) */
-@media (max-width: 1200px) and (min-width: 901px) {
-  .kunaal-about-page .hero {
-    grid-template-columns: clamp(12px, 2vw, 40px) repeat(4, minmax(0, 1fr)) minmax(240px, 320px) clamp(48px, 6vw, 80px) clamp(12px, 2vw, 40px);
-    gap: 1px;
+/* Mid breakpoint: 901px-1100px - avoid "everything gets too narrow" */
+@media (min-width: 901px) and (max-width: 1100px) {
+  /* Hide right strip column (slots 5/10) and use 4 photos + text */
+  .kunaal-about-page .hero-grid {
+    grid-template-columns:
+      minmax(0, 0.55fr)  /* slot 1 / slot 6 */
+      minmax(0, 1.0fr)   /* slot 2 / slot 7 */
+      minmax(0, 1.0fr)   /* slot 3 / slot 8 */
+      minmax(0, 1.0fr)   /* slot 4 / slot 9 */
+      minmax(280px, 360px); /* hero text - reduced min width */
   }
-  .hero-text {
+  
+  /* Hide right strip slots */
+  .kunaal-about-page .hero-photo--5,
+  .kunaal-about-page .hero-photo--10 {
+    display: none;
+  }
+  
+  .kunaal-about-page .hero-text {
     padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.75rem);
   }
 }
 
 /* Mobile breakpoint */
 @media (max-width: 900px) {
-  /* Mobile hero - must match scoped selector */
+  /* Mobile hero - disable height forcing to avoid giant blank gap */
   .kunaal-about-page .hero {
-    overflow-x: visible; /* Allow dog-ear accent to show on mobile */
+    height: auto;
+    min-height: 0;
+    margin-top: 0; /* or keep if header overlays; but must not create blank space */
+    overflow-x: hidden;
   }
+  
+  /* Make hero-grid normal width */
   .kunaal-about-page .hero-grid {
-    width: 100%; /* Full width on mobile */
-    grid-template-columns: 1fr 1fr; /* Remove side margins - photos fill full width */
-    grid-template-rows: minmax(180px, 1fr) minmax(180px, 1fr) auto;
-    height: auto; /* Remove fixed height on mobile */
-    max-height: none; /* Remove max-height on mobile */
-    padding: 0; /* Remove all padding */
-    margin: 0; /* Remove all margin */
-    gap: 0; /* Remove gap between rows - pictures should stick together like collage */
-    row-gap: 0; /* Explicitly remove row gap */
-    /* Ensure grid doesn't create implicit rows - all photos must be in rows 1-2 */
-    grid-auto-rows: 0;
-  }
-  .hero-text {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    padding: 1.6rem 1.2rem;
-    box-shadow: none;
-    border: 1px solid var(--hair2);
-    border-radius: 8px;
+    width: 100%;
+    left: auto;
+    transform: none;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
   }
   
-  /* Mobile: Ensure hero text is visible even if GSAP doesn't load or ScrollTrigger doesn't fire */
-  /* This is a critical fallback for content visibility */
-  .hero-text [data-reveal] {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
+  /* Place slots 1-4 in a 2x2 grid */
+  .kunaal-about-page .hero-photo--1 {
+    grid-column: 1;
+    grid-row: 1;
   }
   
-  /* Explicitly ensure hero intro and meta are visible on mobile */
-  .hero-text .hero-intro,
-  .hero-text .hero-meta {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
+  .kunaal-about-page .hero-photo--2 {
+    grid-column: 2;
+    grid-row: 1;
   }
   
-  /* Mobile: ensure hero photos fill width without whitespace */
-  /* Increased height to reduce cropping, maintain aspect ratio */
-  .hero-photo {
-    min-height: 180px;
-    max-height: 200px;
-    height: 100%; /* Fill grid cell */
+  .kunaal-about-page .hero-photo--3 {
+    grid-column: 1;
+    grid-row: 2;
   }
   
-  /* Top row photos: center crop to preserve important content */
-  .hero-photo--1 img,
-  .hero-photo--2 img {
-    object-position: center center;
+  .kunaal-about-page .hero-photo--4 {
+    grid-column: 2;
+    grid-row: 2;
   }
   
-  /* Bottom row photos: can use default center crop */
-  .hero-photo--3 img,
-  .hero-photo--4 img {
-    object-position: center center;
-  }
-  
-  /* Mobile: Hero photo with dog-ear (photo 3) - keep in grid but ensure accent shows */
-  .kunaal-about-page .hero-photo.has-accent {
-    /* Keep in normal grid flow - don't force full width */
-    overflow: visible; /* Ensure accent shows */
-    z-index: 2; /* Ensure accent is above other elements */
-  }
-  
-  /* Prevent clipping at top for hero photo */
-  .hero-photo.has-accent img {
-    object-position: center top;
-  }
-  
-  /* Mobile: Ensure first 4 photos stay in rows 1-2, not below text */
-  /* Photo 1 - row 1, column 1 */
-  .hero-photo--1 { 
-    grid-column: 1; 
-    grid-row: 1; 
-  }
-  /* Photo 2 - row 1, column 2 */
-  .hero-photo--2 { 
-    grid-column: 2; 
-    grid-row: 1; 
-  }
-  /* Photo 3 (has accent - bottom-left) - row 2, column 1 */
-  .hero-photo--3 { 
-    grid-column: 1; 
-    grid-row: 2; 
-  }
-  /* Photo 4 - row 2, column 2 */
-  .hero-photo--4 { 
-    grid-column: 2; 
-    grid-row: 2; 
-  }
-  
-  /* Hide all photos beyond the first 4 on mobile to prevent overflow below text */
+  /* Hide slots 5-10 on mobile (right strip and bottom row) */
   .kunaal-about-page .hero-photo--5,
   .kunaal-about-page .hero-photo--6,
   .kunaal-about-page .hero-photo--7,
@@ -623,19 +584,31 @@ a:focus-visible, button:focus-visible {
     display: none;
   }
   
-  /* Mobile: Smaller dog-ear accent */
-  .hero-photo.has-accent::before {
-    width: 20px;
-    height: 20px;
+  /* Give tiles a predictable aspect ratio to avoid squish */
+  .kunaal-about-page .hero-photo {
+    aspect-ratio: 4 / 3;
   }
   
-  /* Mobile: Move scroll indicator to right side, near bottom of viewport */
-  .scroll-indicator {
-    position: fixed;
-    left: auto;
-    right: 1.5rem;
-    bottom: 2rem;
-    transform: none;
+  /* Ensure hero-text spans full width below mosaic */
+  .kunaal-about-page .hero-text {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    padding: 1.6rem 1.2rem;
+    box-shadow: none;
+    border: 1px solid var(--hair2);
+    border-radius: 8px;
+  }
+  
+  /* Mobile: Ensure hero text is visible even if GSAP doesn't load */
+  .kunaal-about-page .hero-text [data-reveal] {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Mobile: Smaller dog-ear accent */
+  .kunaal-about-page .hero-photo.has-accent::before {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -1409,27 +1382,8 @@ a:focus-visible, button:focus-visible {
 
 /* Progress bar, container, header, nav styles are in style.css - no About-specific overrides needed */
 
-/* Blue underline system - deprecated, use canonical .u-underline-double from utilities.css */
-/* Legacy .uBlue class kept for backward compatibility but should be replaced */
-.uBlue {
-  display: inline-block;
-  background-image: linear-gradient(var(--blue), var(--blue));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 2px;
-  padding-bottom: 2px;
-  transition: background-size 240ms cubic-bezier(0.4,0,0.2,1) 40ms,
-             color 240ms cubic-bezier(0.4,0,0.2,1),
-             letter-spacing 200ms cubic-bezier(0.4,0,0.2,1);
-}
-.uBlue:hover, .uBlue:focus-visible { 
-  background-size: 100% 2px; 
-  letter-spacing: .01em; 
-}
-.nav a.active.uBlue { 
-  background-size: 100% 2px; 
-  color: var(--ink); 
-}
+/* Underline system: Use canonical .u-underline-double from utilities.css */
+/* .uBlue is now an alias defined in utilities.css - no duplicate definitions here */
 
 /* =============================================
    FOOTER (matches main theme exactly - no overrides)

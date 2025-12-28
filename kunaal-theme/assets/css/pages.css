@@ -360,3 +360,4 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   stroke-width: 1.5;
 }
 
+} /* End @layer pages */

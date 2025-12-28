@@ -6,7 +6,7 @@
  *
  * @package Kunaal_Theme
  * @since 1.0.0
- * @version 4.32.0
+ * @version 4.33.0
  */
 
 if (!defined('ABSPATH')) {
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.32.0');
+define('KUNAAL_THEME_VERSION', '4.33.0');
 
 // ============================================================================
 // SETUP (Platform)
@@ -47,45 +47,49 @@ require_once KUNAAL_THEME_DIR . '/inc/setup/customizer.php';
 require_once KUNAAL_THEME_DIR . '/inc/setup/editor-assets.php';
 
 // ============================================================================
-// FEATURES (Site Behavior) — Will be reorganized in Phase 2
+// FEATURES (Site Behavior)
 // ============================================================================
 
 // Post types and taxonomies
-require_once KUNAAL_THEME_DIR . '/inc/post-types/post-types.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/PostTypes/post-types.php';
 
 // Meta boxes and meta field registration
 require_once KUNAAL_THEME_DIR . '/inc/meta/meta-boxes.php';
 
 // Validation (essay/jotting publish validation)
-require_once KUNAAL_THEME_DIR . '/inc/validation/validation.php';
+require_once KUNAAL_THEME_DIR . '/inc/Support/validation.php';
 
-// AJAX handlers (filter, debug log)
-require_once KUNAAL_THEME_DIR . '/inc/ajax/ajax-handlers.php';
+// AJAX handlers
+require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/filter-content.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/debug-log.php';
 
 // Email handlers (contact form, subscribe, SMTP)
-require_once KUNAAL_THEME_DIR . '/inc/email/email-handlers.php';
-require_once KUNAAL_THEME_DIR . '/inc/email/subscribe-handler.php';
-require_once KUNAAL_THEME_DIR . '/inc/email/smtp-config.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/email-handlers.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/subscribe-handler.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-config.php';
 
 // SEO (Open Graph, Twitter Cards)
-require_once KUNAAL_THEME_DIR . '/inc/seo/seo.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Seo/open-graph.php';
 
 // ============================================================================
-// BLOCKS (Content System) — Will be reorganized in Phase 2
+// BLOCKS (Content System)
 // ============================================================================
 
 // Block helpers (must load before block registration)
-require_once KUNAAL_THEME_DIR . '/inc/block-helpers.php';
+require_once KUNAAL_THEME_DIR . '/inc/Blocks/helpers.php';
 
 // Block registration
-require_once KUNAAL_THEME_DIR . '/inc/blocks.php';
+require_once KUNAAL_THEME_DIR . '/inc/Blocks/register.php';
+
+// Block styles
+require_once KUNAAL_THEME_DIR . '/inc/Blocks/styles.php';
 
 // ============================================================================
-// SUPPORT (Utilities) — Will be reorganized in Phase 2
+// SUPPORT (Utilities)
 // ============================================================================
 
 // Helper Functions (must load before other modules that depend on them)
-require_once KUNAAL_THEME_DIR . '/inc/helpers.php';
+require_once KUNAAL_THEME_DIR . '/inc/Support/helpers.php';
 
 // Customizer Section Helpers
 require_once KUNAAL_THEME_DIR . '/inc/customizer-sections.php';

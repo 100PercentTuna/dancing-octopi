@@ -7,6 +7,7 @@
  * @since 4.20.8
  */
 
+@layer blocks {
 /* ========================================
    WORDPRESS CORE BLOCK OVERRIDES
    ======================================== */
@@ -460,3 +461,4 @@
   color: var(--warm);
 }
 
+} /* End @layer blocks */

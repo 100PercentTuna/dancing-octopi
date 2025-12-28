@@ -3,7 +3,7 @@
    ======================================== */
 
 /* CSS Cascade Layers */
-@layer tokens, base, utilities, components, blocks;
+@layer tokens, base, utilities, components, blocks, pages;
 
 @layer utilities {
 /* ========================================
@@ -198,20 +198,29 @@
     to { transform: scaleX(1); }
   }
 
-  /* Legacy single blue underline (deprecated - use .u-underline-double) */
+  /* Legacy .uBlue alias (deprecated - use .u-underline-double) */
+  /* Path B: Make it match .u-underline-double (double underline), NOT the old single underline */
   .uBlue {
-    display: inline-block;
-    background-image: linear-gradient(var(--blue), var(--blue));
+    display: inline;
+    text-decoration: underline;
+    text-decoration-color: var(--k-underline-gray-color, var(--hair2));
+    text-decoration-thickness: var(--k-underline-gray-thickness, 1px);
+    text-underline-offset: var(--k-underline-gray-offset, 0px);
+    background-image: linear-gradient(
+      var(--k-underline-blue-color, var(--blue)),
+      var(--k-underline-blue-color, var(--blue))
+    );
     background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 2px;
-    padding-bottom: 2px;
-    transition: background-size 240ms cubic-bezier(0.4,0,0.2,1) 40ms, 
-                color 240ms cubic-bezier(0.4,0,0.2,1), 
-                letter-spacing 200ms cubic-bezier(0.4,0,0.2,1);
+    background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
+    background-size: 0% var(--k-underline-blue-thickness, 2px);
+    padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
+    box-decoration-break: clone;
+    transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms;
   }
-  .uBlue:hover, .uBlue:focus-visible, .uBlue.current {
-    background-size: 100% 2px;
+  .uBlue:hover, 
+  .uBlue:focus-visible, 
+  .uBlue.current {
+    background-size: 100% var(--k-underline-blue-thickness, 2px);
     letter-spacing: .01em;
   }
 
