@@ -114,26 +114,35 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
       <header class="articleHeader reveal">
         <div class="articleMeta">
           <span><?php echo esc_html(get_the_date('j F Y')); ?></span>
-          <?php if ($topics && !is_wp_error($topics)) : ?>
-            <?php foreach ($topics as $topic) : ?>
+          <?php if ($topics && !is_wp_error($topics)) {
+              foreach ($topics as $topic) {
+                  ?>
               <span class="dot"></span>
               <a href="<?php echo esc_url(get_term_link($topic)); ?>">#<?php echo esc_html($topic->name); ?></a>
-            <?php endforeach; ?>
-          <?php endif; ?>
+                  <?php
+              }
+          }
+          ?>
         </div>
         
         <h1 class="articleTitle"><?php the_title(); ?></h1>
         
-        <?php if ($subtitle) : ?>
+        <?php if ($subtitle) {
+            ?>
           <p class="articleDek"><?php echo esc_html($subtitle); ?></p>
-        <?php endif; ?>
+            <?php
+        }
+        ?>
       </header>
 
-      <?php if (has_post_thumbnail()) : ?>
+      <?php if (has_post_thumbnail()) {
+          ?>
         <figure class="heroImage reveal">
           <?php the_post_thumbnail('essay-hero'); ?>
         </figure>
-      <?php endif; ?>
+          <?php
+      }
+      ?>
 
       <div class="articleContent">
         <div class="prose" id="articleProse">

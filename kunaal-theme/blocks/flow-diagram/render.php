@@ -43,16 +43,25 @@ $block_id = 'flow-' . wp_unique_id();
         data-currency-symbol="<?php echo esc_attr($currency_symbol); ?>"
         data-value-unit="<?php echo esc_attr($value_unit); ?>">
     
-    <?php if ($title || $subtitle) : ?>
+    <?php if ($title || $subtitle) {
+        ?>
     <header class="flow-header">
-        <?php if ($title) : ?>
+        <?php if ($title) {
+            ?>
         <h3 id="<?php echo esc_attr($block_id); ?>-title" class="flow-title"><?php echo esc_html($title); ?></h3>
-        <?php endif; ?>
-        <?php if ($subtitle) : ?>
+            <?php
+        }
+        ?>
+        <?php if ($subtitle) {
+            ?>
         <p class="flow-subtitle"><?php echo esc_html($subtitle); ?></p>
-        <?php endif; ?>
+            <?php
+        }
+        ?>
     </header>
-    <?php endif; ?>
+        <?php
+    }
+    ?>
     
     <div class="flow-chart" style="min-height: 300px;">
         <svg class="flow-svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
@@ -63,11 +72,14 @@ $block_id = 'flow-' . wp_unique_id();
         </svg>
     </div>
     
-    <?php if ($source_note) : ?>
+    <?php if ($source_note) {
+        ?>
     <footer class="flow-footer">
         <p class="flow-source"><?php echo esc_html($source_note); ?></p>
     </footer>
-    <?php endif; ?>
+        <?php
+    }
+    ?>
     
     <details class="flow-data-table">
         <summary><?php esc_html_e('View flow data', 'kunaal-theme'); ?></summary>

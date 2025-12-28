@@ -85,16 +85,25 @@ $max_value = !empty($all_values) ? max($all_values) : 100;
         data-currency-symbol="<?php echo esc_attr($currency_symbol); ?>"
         data-value-suffix="<?php echo esc_attr($value_suffix); ?>">
     
-    <?php if ($title || $subtitle) : ?>
+    <?php if ($title || $subtitle) {
+        ?>
     <header class="map-header">
-        <?php if ($title) : ?>
+        <?php if ($title) {
+            ?>
         <h3 id="<?php echo esc_attr($block_id); ?>-title" class="map-title"><?php echo esc_html($title); ?></h3>
-        <?php endif; ?>
-        <?php if ($subtitle) : ?>
+            <?php
+        }
+        ?>
+        <?php if ($subtitle) {
+            ?>
         <p class="map-subtitle"><?php echo esc_html($subtitle); ?></p>
-        <?php endif; ?>
+            <?php
+        }
+        ?>
     </header>
-    <?php endif; ?>
+        <?php
+    }
+    ?>
     
     <div class="map-container" style="height: <?php echo esc_attr($height); ?>px;">
         <div id="<?php echo esc_attr($block_id); ?>" 

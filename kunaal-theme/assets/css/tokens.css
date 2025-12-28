@@ -34,10 +34,8 @@
     --k-color-accent-ring: rgba(30,90,255,0.22);
     --k-color-accent-shadow: rgba(30,90,255,0.10);
     --k-color-accent-muted: #5B7BA8;
-  }
 
-  /* Legacy variable mappings for backward compatibility */
-  :root {
+    /* Legacy variable mappings for backward compatibility */
     --bg: var(--k-color-bg);
     --bg-alt: var(--k-color-bg-alt);
     --bgWarm: var(--k-color-bg-warm);
@@ -60,11 +58,6 @@
   }
 }
 
-/* ========================================
-   UNDERLINE TOKENS - Double Underline Motif
-   ======================================== */
-@layer tokens {
-  :root {
     /* Double underline: thick blue over thin gray */
     --k-underline-gray-thickness: 1px;
     --k-underline-blue-thickness: 2px;
@@ -72,14 +65,7 @@
     --k-underline-blue-offset: -1px; /* Positioned above gray line */
     --k-underline-gray-color: var(--k-color-hair-2);
     --k-underline-blue-color: var(--k-color-accent);
-  }
-}
 
-/* ========================================
-   SPACING TOKENS
-   ======================================== */
-@layer tokens {
-  :root {
     /* 8px spacing system */
     --k-space-1: 8px;
     --k-space-2: 16px;
@@ -93,7 +79,7 @@
     --k-space-15: 120px;
     --k-space-20: 160px;
 
-    /* Legacy mappings */
+    /* Legacy spacing mappings */
     --space-1: var(--k-space-1);
     --space-2: var(--k-space-2);
     --space-3: var(--k-space-3);
@@ -105,37 +91,24 @@
     --space-12: var(--k-space-12);
     --space-15: var(--k-space-15);
     --space-20: var(--k-space-20);
-  }
-}
 
-/* ========================================
-   TYPOGRAPHY TOKENS
-   ======================================== */
-@layer tokens {
-  :root {
     /* Three-font system */
     --k-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     --k-font-serif: "Newsreader", ui-serif, Georgia, serif;
     --k-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-    /* Legacy mappings */
+    /* Legacy typography mappings */
     --sans: var(--k-font-sans);
     --serif: var(--k-font-serif);
     --mono: var(--k-font-mono);
-  }
-}
 
-/* ========================================
-   LAYOUT TOKENS
-   ======================================== */
-@layer tokens {
-  :root {
+    /* Layout tokens */
     --k-layout-max: 1140px;
     --k-layout-prose: 620px;
     --k-layout-wide: 880px;
     --k-layout-mast-height: 100px;
 
-    /* Legacy mappings */
+    /* Legacy layout mappings */
     --max: var(--k-layout-max);
     --prose: var(--k-layout-prose);
     --wide: var(--k-layout-wide);

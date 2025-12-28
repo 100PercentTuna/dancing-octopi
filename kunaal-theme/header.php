@@ -6,10 +6,13 @@
   <?php
   // Custom favicon
   $favicon = kunaal_mod('kunaal_favicon', '');
-  if ($favicon) : ?>
+  if ($favicon) {
+      ?>
     <link rel="icon" type="image/png" href="<?php echo esc_url($favicon); ?>">
     <link rel="apple-touch-icon" href="<?php echo esc_url($favicon); ?>">
-  <?php endif; ?>
+      <?php
+  }
+  ?>
   <?php
   // Inline script to set theme before render (prevents flash)
   ?>
@@ -52,9 +55,12 @@ $initials = kunaal_get_initials();
   <div class="container mastInner">
     <a class="brand" href="<?php echo esc_url(home_url('/')); ?>" aria-label="Home">
       <div class="avatar<?php echo empty($avatar_url) ? ' noImg' : ''; ?>" id="avatar" data-initials="<?php echo esc_attr($initials); ?>">
-        <?php if (!empty($avatar_url)) : ?>
+        <?php if (!empty($avatar_url)) {
+            ?>
           <img id="avatarImg" src="<?php echo esc_url($avatar_url); ?>" alt="<?php echo esc_attr($first_name . ' ' . $last_name); ?>" />
-        <?php endif; ?>
+            <?php
+        }
+        ?>
       </div>
       <div class="nameWrap">
         <p class="nameLine">
