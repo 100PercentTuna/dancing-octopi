@@ -171,10 +171,6 @@
     box-decoration-break: clone;
   }
 
-  .is-style-double-underline:hover,
-  .is-style-double-underline:focus-visible {
-    /* Already at 100% - no transition needed for block style */
-  }
 
   /* Section heading underline motif - canonical implementation */
   .u-section-underline {
