@@ -259,29 +259,13 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
 <!-- READING + LISTENING -->
 <section class="media-section section">
     <div class="section-inner">
-        <div class="media-row">
-            <?php if ($books_show && !empty($books)) : ?>
-            <div class="media-col">
-                <div class="media-col-header">
-                    <h3 class="media-col-title">On the nightstand</h3>
-                </div>
-            </div>
-            <?php endif; ?>
-            
-            <div class="media-spacer"></div>
-            
-            <?php if ($digital_show && !empty($digital)) : ?>
-            <div class="media-col">
-                <div class="media-col-header">
-                    <h3 class="media-col-title">On repeat</h3>
-                </div>
-            </div>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Unified grid for both columns to ensure row alignment -->
+        <!-- Grid with separate columns for proper row alignment -->
         <div class="media-grid-combined">
             <?php if ($books_show && !empty($books)) : ?>
+            <div class="media-col--books">
+                <div class="media-col-header">
+                    <h3 class="media-col-title u-section-underline">On the nightstand</h3>
+                </div>
                 <?php foreach ($books as $book) : ?>
                 <div class="media-item media-item--book" data-reveal="up">
                     <div class="media-cover book">
@@ -293,9 +277,16 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                     <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
                 </div>
                 <?php endforeach; ?>
+            </div>
             <?php endif; ?>
             
+            <div class="media-spacer"></div>
+            
             <?php if ($digital_show && !empty($digital)) : ?>
+            <div class="media-col--digital">
+                <div class="media-col-header">
+                    <h3 class="media-col-title u-section-underline">On repeat</h3>
+                </div>
                 <?php foreach ($digital as $item) :
                     $link_type_label = ucfirst($item['link_type']);
                     if ($item['link_type'] === 'apple') {
@@ -326,6 +317,7 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                     <?php endif; ?>
                 </<?php echo $tag; ?>>
                 <?php endforeach; ?>
+            </div>
             <?php endif; ?>
         </div>
     </div>

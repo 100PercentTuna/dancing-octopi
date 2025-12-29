@@ -925,43 +925,62 @@ a:focus-visible, button:focus-visible {
   transform: translateY(-2px);
 }
 
-/* Unified grid for both columns - ensures row alignment */
+/* Unified grid for both columns - uses CSS subgrid for row alignment */
 .media-grid-combined {
   display: grid;
-  grid-template-columns: repeat(6, 1fr); /* 3 columns left (1-3), 3 columns right (4-6) */
+  grid-template-columns: 1fr 80px 1fr; /* Left column, spacer, Right column */
+  gap: 0 0;
+  align-items: start;
+}
+
+/* Column wrappers - each contains its own grid */
+.media-col--books,
+.media-col--digital {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem 1rem;
   align-items: start;
-  grid-auto-flow: row;
 }
 
-/* Books go in left 3 columns (1-3) - use nth-of-type to count only books */
-.media-item--book {
-  grid-column: span 1;
+.media-col--books {
+  grid-column: 1;
 }
-.media-item--book:nth-of-type(3n+1) { grid-column: 1; }
-.media-item--book:nth-of-type(3n+2) { grid-column: 2; }
-.media-item--book:nth-of-type(3n+3) { grid-column: 3; }
 
-/* Digital items go in right 3 columns (4-6) - use nth-of-type to count only digital */
+.media-col--digital {
+  grid-column: 3;
+}
+
+/* Spacer for consistent gap between columns */
+.media-grid-combined > .media-spacer {
+  grid-column: 2;
+  display: block;
+}
+
+/* Items span their column's subgrid */
+.media-item--book,
 .media-item--digital {
   grid-column: span 1;
 }
-.media-item--digital:nth-of-type(3n+1) { grid-column: 4; }
-.media-item--digital:nth-of-type(3n+2) { grid-column: 5; }
-.media-item--digital:nth-of-type(3n+3) { grid-column: 6; }
 
 @media (max-width: 900px) {
   .media-grid-combined {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+    grid-template-columns: 1fr; /* Stack columns on mobile */
+    gap: 2rem 0;
   }
-  .media-item--book,
-  .media-item--digital {
-    grid-column: span 1;
+  .media-col--books,
+  .media-col--digital {
+    grid-column: 1;
+    grid-template-columns: repeat(3, 1fr); /* Keep 3-up within each column */
   }
-  /* Reset auto-placement on mobile - let grid auto-place */
-  .media-item--book:nth-of-type(n),
-  .media-item--digital:nth-of-type(n) {
-    grid-column: span 1;
+  .media-grid-combined > .media-spacer {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .media-col--books,
+  .media-col--digital {
+    grid-template-columns: repeat(2, 1fr); /* 2-up on narrow mobile */
   }
 }
 
@@ -1109,13 +1128,19 @@ a:focus-visible, button:focus-visible {
 .map-section .section-inner {
   max-width: 1000px;
 }
-.world-map-container {
+/* Map container - matches template class .map-container */
+.kunaal-about-page .map-container {
   width: 100%;
   height: 360px;
   margin-top: 0.5rem;
   position: relative;
+  /* Explicitly remove any border that might leak from global styles */
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
 }
-.world-map-container svg {
+.kunaal-about-page .map-container svg {
   width: 100%;
   height: 100%;
 }
@@ -1263,9 +1288,9 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 1rem;
+  padding: 1.25rem;
   background: var(--bg);
-  border: 1px solid var(--warmBorder);
+  border: 1px solid var(--hair2, rgba(125,107,93,0.2));
   border-radius: 8px;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   position: relative;
@@ -1273,6 +1298,7 @@ a:focus-visible, button:focus-visible {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .inspiration-item:hover {
   transform: translateY(-3px);
