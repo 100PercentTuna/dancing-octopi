@@ -15,12 +15,12 @@
   // Only active when debug is enabled via localized config
   function debugLog(location, message, data, hypothesisId) {
     // Gate behind debug config - no-op if debug is false
-    if (!window.kunaalAboutV22 || !window.kunaalAboutV22.debug) {
+    if (!window.kunaalAbout || !window.kunaalAbout.debug) {
       return; // Debug logging disabled by default
     }
     
     // Verify required config is available
-    if (!window.kunaalAboutV22.ajaxUrl || !window.kunaalAboutV22.nonce) {
+    if (!window.kunaalAbout.ajaxUrl || !window.kunaalAbout.nonce) {
       return; // Skip if config incomplete
     }
     
@@ -36,8 +36,8 @@
     const formData = new FormData();
     formData.append('action', 'kunaal_debug_log');
     formData.append('log_data', JSON.stringify(logData));
-    formData.append('nonce', window.kunaalAboutV22.nonce);
-    fetch(window.kunaalAboutV22.ajaxUrl, {
+      formData.append('nonce', window.kunaalAbout.nonce);
+      fetch(window.kunaalAbout.ajaxUrl, {
       method: 'POST',
       body: formData
     }).catch(function(error) {
@@ -73,12 +73,12 @@
 
   function init() {
     // #region agent log
-    debugLog('about-page-v22.js:33', 'init() called', {viewportWidth:window.innerWidth,viewportHeight:window.innerHeight}, 'H2.1,H3.1,H4.1');
+    debugLog('about-page.js:33', 'init() called', {viewportWidth:window.innerWidth,viewportHeight:window.innerHeight}, 'H2.1,H3.1,H4.1');
     // #endregion
     
     const gsapOk = hasGSAP();
     // #region agent log
-    debugLog('about-page-v22.js:36', 'GSAP check', {gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger}, 'H2.1');
+    debugLog('about-page.js:36', 'GSAP check', {gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger}, 'H2.1');
     // #endregion
     
     // Mark elements as GSAP-ready only if GSAP is available
@@ -92,7 +92,7 @@
           console.warn('GSAP ScrollTrigger registration failed:', e);
         }
         // #region agent log
-        debugLog('about-page-v22.js:40', 'GSAP registration error', {error:e.message}, 'H2.1');
+        debugLog('about-page.js:40', 'GSAP registration error', {error:e.message}, 'H2.1');
         // #endregion
       }
     }
@@ -124,12 +124,12 @@
         const img = accentPhoto.querySelector('img');
         const before = window.getComputedStyle(accentPhoto, '::before');
         const imgStyles = window.getComputedStyle(img);
-        debugLog('about-page-v22.js:58', 'Dog-ear styles check', {hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow}, 'H1.1,H1.2,H1.3,H1.5');
+        debugLog('about-page.js:58', 'Dog-ear styles check', {hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow}, 'H1.1,H1.2,H1.3,H1.5');
       }
       if (scrollIndicator) {
         const siStyles = window.getComputedStyle(scrollIndicator);
         const rect = scrollIndicator.getBoundingClientRect();
-        debugLog('about-page-v22.js:65', 'Scroll indicator check', {exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H2.2,H2.3,H2.5');
+        debugLog('about-page.js:65', 'Scroll indicator check', {exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H2.2,H2.3,H2.5');
       }
     }, 1000);
     // #endregion
@@ -140,14 +140,14 @@
   // =============================================
   function initPageLoad(gsapOk) {
     // #region agent log
-    debugLog('about-page-v22.js:113', 'initPageLoad called', {gsapOk:gsapOk,reduceMotion:reduceMotion}, 'H2.1');
+    debugLog('about-page.js:113', 'initPageLoad called', {gsapOk:gsapOk,reduceMotion:reduceMotion}, 'H2.1');
     // #endregion
     
     if (reduceMotion || !gsapOk) return;
     try {
       const scrollIndicator = document.getElementById('scrollIndicator');
       // #region agent log
-      debugLog('about-page-v22.js:120', 'Scroll indicator before GSAP', {exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null}, 'H2.1');
+      debugLog('about-page.js:120', 'Scroll indicator before GSAP', {exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null}, 'H2.1');
       // #endregion
       
       const tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
@@ -198,7 +198,7 @@
       tl.eventCallback('onComplete', function() {
         if (scrollIndicator) {
           const finalStyles = window.getComputedStyle(scrollIndicator);
-          debugLog('about-page-v22.js:137', 'Scroll indicator after GSAP animation', {opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility}, 'H2.1');
+          debugLog('about-page.js:137', 'Scroll indicator after GSAP animation', {opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility}, 'H2.1');
         }
       });
       // #endregion
@@ -207,7 +207,7 @@
         console.warn('Page load animation failed:', e);
       }
       // #region agent log
-      debugLog('about-page-v22.js:144', 'Page load animation error', {error:e.message,stack:e.stack}, 'H2.1');
+      debugLog('about-page.js:144', 'Page load animation error', {error:e.message,stack:e.stack}, 'H2.1');
       // #endregion
     }
   }
@@ -617,19 +617,19 @@
   // =============================================
   function initWorldMap() {
     // #region agent log
-    debugLog('about-page-v22.js:442', 'initWorldMap called', {timestamp:Date.now()}, 'H3.1,H3.2');
+    debugLog('about-page.js:442', 'initWorldMap called', {timestamp:Date.now()}, 'H3.1,H3.2');
     // #endregion
     
     const host = document.getElementById('world-map');
     // #region agent log
-    debugLog('about-page-v22.js:447', 'Map element check', {hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null}, 'H3.2,H3.5');
+    debugLog('about-page.js:447', 'Map element check', {hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null}, 'H3.2,H3.5');
     // #endregion
     
     if (!host) return;
 
     // D3 and TopoJSON should already be loaded via WordPress enqueue
     // #region agent log
-    debugLog('about-page-v22.js:454', 'D3/TopoJSON check', {hasD3:!!window.d3,hasTopojson:!!window.topojson}, 'H3.1');
+    debugLog('about-page.js:454', 'D3/TopoJSON check', {hasD3:!!window.d3,hasTopojson:!!window.topojson}, 'H3.1');
     // #endregion
     
     if (!window.d3 || !window.topojson) {
@@ -641,11 +641,11 @@
 
     function draw() {
       // #region agent log
-      debugLog('about-page-v22.js:464', 'Map draw() called', {timestamp:Date.now()}, 'H3.3,H3.4');
+      debugLog('about-page.js:464', 'Map draw() called', {timestamp:Date.now()}, 'H3.3,H3.4');
       // #endregion
       
       // Get places data from WordPress localization
-      const placesData = (window.kunaalAboutV22 && window.kunaalAboutV22.places) || {
+      const placesData = (window.kunaalAbout && window.kunaalAbout.places) || {
         current: [],
         lived: [],
         visited: []
@@ -657,7 +657,7 @@
       const visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
       
       // #region agent log
-      debugLog('about-page-v22.js:480', 'Places data check', {hasKunaalAboutV22:!!window.kunaalAboutV22,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited}, 'H3.3');
+      debugLog('about-page.js:480', 'Places data check', {hasKunaalAbout:!!window.kunaalAbout,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited}, 'H3.3');
       // #endregion
       
       // Debug: log if no places data (helpful for troubleshooting)
@@ -742,12 +742,12 @@
       const tooltip = document.getElementById('mapTooltip');
 
       // #region agent log
-      debugLog('about-page-v22.js:563', 'Starting D3.json fetch', {width:width,height:height}, 'H3.4');
+      debugLog('about-page.js:563', 'Starting D3.json fetch', {width:width,height:height}, 'H3.4');
       // #endregion
       
       window.d3.json('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then(function (world) {
         // #region agent log
-        debugLog('about-page-v22.js:568', 'D3.json success', {hasWorld:!!world,hasObjects:!!world.objects}, 'H3.4');
+        debugLog('about-page.js:568', 'D3.json success', {hasWorld:!!world,hasObjects:!!world.objects}, 'H3.4');
         // #endregion
         
         const countries = window.topojson.feature(world, world.objects.countries);
@@ -821,14 +821,23 @@
           const py = pt[1];
           const g = svg.append('g').attr('transform', 'translate(' + px + ',' + py + ')');
 
-          // Get beacon color - orange (inverse of blue) in dark mode, blue in light mode
+          // Get beacon color from CSS variables (respects dark mode)
           function getBeaconColor() {
+            const styles = window.getComputedStyle(document.documentElement);
+            // Use --blue for light mode, or read a dark mode variant if available
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            // Orange color (inverse/complement of blue) for dark mode
             if (isDark) {
-              return '#FF6B35'; // Orange - inverse of blue
+              // In dark mode, use orange (inverse of blue) - check if CSS variable exists
+              const darkBeacon = styles.getPropertyValue('--blue-dark-beacon')?.trim();
+              if (darkBeacon) {
+                return darkBeacon;
+              }
+              // Fallback: use CSS variable for orange if defined, otherwise use computed --blue and invert
+              const orange = styles.getPropertyValue('--orange')?.trim() || '#FF6B35';
+              return orange;
             } else {
-              return '#1E5AFF'; // Blue for light mode
+              // Light mode: use --blue CSS variable
+              return styles.getPropertyValue('--blue')?.trim() || '#1E5AFF';
             }
           }
           
@@ -883,12 +892,12 @@
           console.warn('World map data load failed:', err);
         }
         // #region agent log
-        debugLog('about-page-v22.js:699', 'D3.json error', {error:err.message,stack:err.stack}, 'H3.4');
+        debugLog('about-page.js:699', 'D3.json error', {error:err.message,stack:err.stack}, 'H3.4');
         // #endregion
       });
       } catch (drawError) {
         // #region agent log
-        debugLog('about-page-v22.js:704', 'Map draw() error', {error:drawError.message,stack:drawError.stack}, 'H3.4');
+        debugLog('about-page.js:704', 'Map draw() error', {error:drawError.message,stack:drawError.stack}, 'H3.4');
         // #endregion
         if (window.kunaalTheme?.debug) {
           console.warn('Map draw() failed:', drawError);
@@ -913,7 +922,7 @@
       }
       
       // Check for places data (wp_localize_script might need a moment)
-      if (!window.kunaalAboutV22 || !window.kunaalAboutV22.places) {
+      if (!window.kunaalAbout || !window.kunaalAbout.places) {
         if (attempts < 50) { // Wait up to 5 seconds
           setTimeout(function() { tryDraw(attempts + 1); }, 100);
           return;

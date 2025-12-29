@@ -10,6 +10,30 @@
   document.documentElement.classList.add('js-ready');
 
   // ========================================
+  // DYNAMIC HEADER HEIGHT (--mastH)
+  // ========================================
+  function updateMastHeight() {
+    const mast = document.querySelector('.mast');
+    if (mast) {
+      const rect = mast.getBoundingClientRect();
+      const height = rect.bottom;
+      document.documentElement.style.setProperty('--mastH', height + 'px');
+    }
+  }
+  
+  // Update on load and resize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateMastHeight);
+  } else {
+    updateMastHeight();
+  }
+  window.addEventListener('resize', updateMastHeight);
+  // Also update after fonts load (header height may change)
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateMastHeight);
+  }
+
+  // ========================================
   // DOM REFERENCES
   // ========================================
   const progressFill = document.getElementById('progressFill');
@@ -297,21 +321,20 @@
       const action = e.target.closest('[data-action]')?.dataset.action;
       if (!action) return;
 
-      if (action === 'toggle') {
-        // Toggle filter panel or topic menu
+      if (action === 'panel-toggle') {
+        // Toggle filter panel (mobile only)
         const panel = filterContainer.querySelector('[data-role="panel"]');
-        const topicMenu = filterContainer.querySelector('[data-role="topic-menu"]');
-        const clickedBtn = e.target.closest('[data-action="toggle"]');
-        
-        if (clickedBtn === filterContainer.querySelector('.filterToggle')) {
-          // Main filter toggle button
-          if (panel) {
-            const isOpen = panel.classList.toggle('open');
-            clickedBtn.classList.toggle('active', isOpen);
-            clickedBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-          }
-        } else if (clickedBtn && topicMenu) {
-          // Topic dropdown button
+        const clickedBtn = e.target.closest('[data-action="panel-toggle"]');
+        if (panel && clickedBtn) {
+          const isOpen = panel.classList.toggle('open');
+          clickedBtn.classList.toggle('active', isOpen);
+          clickedBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      } else if (action === 'topics-toggle') {
+        // Toggle topic dropdown
+        const clickedBtn = e.target.closest('[data-action="topics-toggle"]');
+        const topicMenu = clickedBtn?.closest('[data-role="topic-menu"]');
+        if (clickedBtn && topicMenu) {
           e.stopPropagation();
           const dropdown = topicMenu.querySelector('.topicDropdown');
           if (dropdown) {
@@ -393,7 +416,7 @@
       if (!topicMenu) return;
       
       const dropdown = topicMenu.querySelector('.topicDropdown');
-      const topicBtn = topicMenu.querySelector('[data-action="toggle"]');
+      const topicBtn = topicMenu.querySelector('[data-action="topics-toggle"]');
       
       if (dropdown && topicBtn && !dropdown.contains(e.target) && !topicBtn.contains(e.target)) {
         dropdown.classList.remove('open');
@@ -1131,7 +1154,7 @@
       initAccordions();
       initInlineFormatTouch();
       initSubscribeForms(); // Initialize built-in subscribe flow if subscribe forms are present
-      // About page functionality is handled by about-page-v22.js
+      // About page functionality is handled by about-page.js
 
       // Initial scroll effect
       lastY = window.scrollY || 0;

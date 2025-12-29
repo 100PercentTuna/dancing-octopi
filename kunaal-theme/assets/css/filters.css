@@ -19,9 +19,9 @@
   gap: var(--space-1);
 }
 
-/* Filter toggle button - RIGHT SIDE */
+/* Filter toggle button - RIGHT SIDE (mobile only) */
 .filterToggle {
-  display: flex;
+  display: none; /* Hidden on desktop */
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
@@ -59,14 +59,11 @@
   stroke: #fff;
 }
 
-/* Filter panel - hidden by default */
+/* Filter panel - visible by default on desktop, hidden on mobile */
 .filterPanel {
-  display: none;
+  display: flex;
   gap: var(--space-1);
   align-items: center;
-}
-.filterPanel.open {
-  display: flex;
 }
 
 /* Topics dropdown (multi-select) */
@@ -263,13 +260,23 @@
 @media (max-width: 640px) {
   .toolbar { flex-wrap: wrap; justify-content: flex-end; }
   .filterControls { width: 100%; justify-content: flex-end; }
-  .filterPanel { width: 100%; flex-wrap: wrap; }
-  .filterPanel.open { gap: 8px; }
+  .filterPanel { 
+    width: 100%; 
+    flex-wrap: wrap;
+    display: none; /* Hidden on mobile by default */
+  }
+  .filterPanel.open { 
+    display: flex; /* Show when toggled open on mobile */
+    gap: 8px; 
+  }
   .modernSelect { flex: 1; min-width: 0; padding-right: 28px; }
   .searchWrap { flex: 1; min-width: 0; }
   .searchInput { width: 100%; }
   .searchInput:focus { width: 100%; }
-  .filterToggle { padding: 8px 10px; }
+  .filterToggle { 
+    display: flex; /* Show toggle button on mobile */
+    padding: 8px 10px; 
+  }
   .filterToggle span { display: none; }
 }
 

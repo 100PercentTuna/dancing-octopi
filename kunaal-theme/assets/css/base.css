@@ -26,16 +26,14 @@ body {
   font-feature-settings: 'ss01' 1, 'cv02' 1, 'cv05' 1;
   font-optical-sizing: auto;
   line-height: 1.6;
-  padding-top: var(--mastH);
+  padding-top: var(--mastH, 100px); /* Fallback, JS will override */
 }
 
-/* Admin bar offset */
-.admin-bar { --mastH: 132px; }
+/* Admin bar offset - JS will measure actual height, these are fallbacks */
 .admin-bar .mast { top: 32px; }
 .admin-bar .progress { top: 32px; }
-.admin-bar .actionDock { top: calc(132px + var(--space-4)); }
+.admin-bar .actionDock { top: calc(var(--mastH, 132px) + var(--space-4)); }
 @media screen and (max-width: 782px) {
-  .admin-bar { --mastH: 146px; }
   .admin-bar .mast { top: 46px; }
   .admin-bar .progress { top: 46px; }
 }

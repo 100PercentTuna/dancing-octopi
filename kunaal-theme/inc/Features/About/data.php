@@ -1,8 +1,8 @@
 <?php
 /**
- * About Page Helper Functions (V22)
+ * About Page Data Getters
  * 
- * Helper functions for the About page v22 template.
+ * Helper functions for retrieving About page data from customizer.
  *
  * @package Kunaal_Theme
  * @since 4.30.0

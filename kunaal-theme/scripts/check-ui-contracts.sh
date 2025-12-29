@@ -220,7 +220,7 @@ else
     echo "==================================="
     echo ""
     echo "Fix the issues above before committing."
-    echo "See architecture.mdc and coding-standards.mdc for guidance."
+    echo "See .cursor/rules/architecture.mdc, .cursor/rules/coding-standards.mdc, and .cursor/rules/UI_CONTRACTS.md for guidance."
     exit 1
 fi
 

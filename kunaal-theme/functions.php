@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.34.2');
+define('KUNAAL_THEME_VERSION', '4.36.0');
 
 // ============================================================================
 // SETUP (Platform)
@@ -94,11 +94,10 @@ require_once KUNAAL_THEME_DIR . '/inc/Support/helpers.php';
 // Customizer Section Helpers
 require_once KUNAAL_THEME_DIR . '/inc/customizer-sections.php';
 
-// About Page Customizer V22
-require_once KUNAAL_THEME_DIR . '/inc/about-customizer-v22.php';
-require_once KUNAAL_THEME_DIR . '/inc/about-customizer-sections.php';
-require_once KUNAAL_THEME_DIR . '/inc/about-helpers.php';
-require_once KUNAAL_THEME_DIR . '/inc/about/about-helpers.php';
+// About Page Feature Module
+require_once KUNAAL_THEME_DIR . '/inc/Features/About/data.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/About/render.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/About/customizer.php';
 
 // PDF Generator
 require_once KUNAAL_THEME_DIR . '/pdf-generator.php';

@@ -1,8 +1,8 @@
 <?php
 /**
- * About Page Helper Functions
+ * About Page Render Helpers
  *
- * Reusable functions for About page template
+ * Reusable functions for rendering About page template components
  *
  * @package Kunaal_Theme
  * @since 4.28.0

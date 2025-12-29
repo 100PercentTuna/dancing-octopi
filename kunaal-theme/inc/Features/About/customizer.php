@@ -26,7 +26,7 @@ if (!defined('KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL')) {
  */
 function kunaal_about_customizer_v22(WP_Customize_Manager $wp_customize): void {
     // Load section helpers
-    require_once KUNAAL_THEME_DIR . '/inc/about-customizer-sections.php';
+    require_once KUNAAL_THEME_DIR . '/inc/Features/About/customizer-sections.php';
     
     // ============================
     // PANEL: About Page

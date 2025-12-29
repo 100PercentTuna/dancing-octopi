@@ -159,13 +159,7 @@ function kunaal_enqueue_page_css(): void {
         kunaal_asset_version('assets/css/compatibility.css')
     );
 
-    // 15. About Page V2
-    wp_enqueue_style(
-        'kunaal-theme-about-page',
-        KUNAAL_THEME_URI . '/assets/css/about-page.css',
-        array('kunaal-theme-base'),
-        kunaal_asset_version('assets/css/about-page.css')
-    );
+    // About page CSS is enqueued conditionally in kunaal_enqueue_page_specific_assets()
 }
 
 /**
@@ -176,7 +170,7 @@ function kunaal_enqueue_main_styles(): void {
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
-        array('kunaal-google-fonts', 'kunaal-theme-tokens', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections', 'kunaal-theme-pages', 'kunaal-theme-blocks', 'kunaal-theme-wordpress-blocks', 'kunaal-theme-motion', 'kunaal-theme-compatibility', 'kunaal-theme-about-page'),
+        array('kunaal-google-fonts', 'kunaal-theme-tokens', 'kunaal-theme-variables', 'kunaal-theme-base', 'kunaal-theme-dark-mode', 'kunaal-theme-layout', 'kunaal-theme-header', 'kunaal-theme-components', 'kunaal-theme-utilities', 'kunaal-theme-filters', 'kunaal-theme-sections', 'kunaal-theme-pages', 'kunaal-theme-blocks', 'kunaal-theme-wordpress-blocks', 'kunaal-theme-motion', 'kunaal-theme-compatibility'),
         kunaal_asset_version('style.css')
     );
     
@@ -231,24 +225,24 @@ function kunaal_enqueue_page_specific_assets(): void {
     
     // About page specific assets (heavier libraries)
     if ($is_about_page) {
-        // About page V22 CSS (must be enqueued before wp_add_inline_style)
+        // About page CSS (must be enqueued before wp_add_inline_style)
         wp_enqueue_style(
-            'kunaal-about-page-v22',
-            KUNAAL_THEME_URI . '/assets/css/about-page-v22.css',
+            'kunaal-about-page',
+            KUNAAL_THEME_URI . '/assets/css/about-page.css',
             array('kunaal-theme-style'),
-            kunaal_asset_version('assets/css/about-page-v22.css')
+            kunaal_asset_version('assets/css/about-page.css')
         );
         
         // About page: Generate CSS variables for category colors (must be AFTER enqueue)
         if (function_exists('kunaal_get_categories_v22')) {
             $categories = kunaal_get_categories_v22();
             if (!empty($categories)) {
-                $css_vars = ".kunaal-about-v22 {\n";
+                $css_vars = ".kunaal-about-page {\n";
                 foreach ($categories as $slug => $category) {
                     $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
                 }
                 $css_vars .= "}";
-                wp_add_inline_style('kunaal-about-page-v22', $css_vars);
+                wp_add_inline_style('kunaal-about-page', $css_vars);
             }
         }
         
@@ -288,19 +282,19 @@ function kunaal_enqueue_page_specific_assets(): void {
             true
         );
         
-        // About page V22 JS (depends on GSAP, D3, TopoJSON)
+        // About page JS (depends on GSAP, D3, TopoJSON)
         wp_enqueue_script(
-            'kunaal-about-page-v22',
-            KUNAAL_THEME_URI . '/assets/js/about-page-v22.js',
+            'kunaal-about-page',
+            KUNAAL_THEME_URI . '/assets/js/about-page.js',
             array('gsap-scrolltrigger', 'd3-js', 'topojson-js'),
-            kunaal_asset_version('assets/js/about-page-v22.js'),
+            kunaal_asset_version('assets/js/about-page.js'),
             true
         );
         
         // Localize script with places data for map and debug config
         if (function_exists('kunaal_get_places_v22')) {
             $places = kunaal_get_places_v22();
-            wp_localize_script('kunaal-about-page-v22', 'kunaalAboutV22', array(
+            wp_localize_script('kunaal-about-page', 'kunaalAbout', array(
                 'places' => $places,
                 'debug' => defined('WP_DEBUG') && WP_DEBUG, // Gate debug logging behind WP_DEBUG
                 'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -397,7 +391,7 @@ function kunaal_add_defer_to_scripts(string $tag, string $handle): string {
         'kunaal-lib-loader',
         'gsap-core',
         'gsap-scrolltrigger',
-        'kunaal-about-page-v22',
+        'kunaal-about-page',
         'd3-js',
         'topojson-js',
     );

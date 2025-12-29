@@ -1,635 +1,1448 @@
 /**
- * About Page V2 CSS
+ * About Page V22 Polished Design Styles
  * 
- * Styles for the About page v2 modular sections
+ * Extracted from kunaal-about-page-polished.html
+ * Matches reference design exactly including all effects, animations, and styles
+ * 
+ * Scoped to .kunaal-about-page to avoid conflicts with other pages
+ * 
+ * NOTE: Design tokens (CSS variables) are centralized in style.css
+ * This file only contains About-page-specific styles
  *
  * @package Kunaal_Theme
- * @since 4.20.8
+ * @since 4.21.0
  */
 
-@layer pages {
-/* ========================================
-   ABOUT PAGE V2 - Modular Sections
-   ======================================== */
-
-.about-page-v2 {
-  --section-spacing: clamp(4rem, 8vw, 7rem);
+/* About-page-specific color variables (not in global design system) */
+.kunaal-about-page {
+  --warmDark: #5C4D42;
+  --warmBorder: rgba(125,107,93,0.12);
+  --transition: 0.25s ease;
+  --k-dogear-size: 28px; /* Dog-ear accent size - desktop */
+  
+  /* Category colors are set dynamically from customizer via inline <style> in page-about.php */
+  /* Fallback colors for when customizer hasn't set them yet */
+  --cat-media: #C4715B;
+  --cat-knowledge: #5B8A72;
+  --cat-craft: #8B7355;
+  --cat-culture: #7A6B99;
+  --cat-tech: #5A7FA8;
 }
 
-/* ========================================
-   HERO SECTION
-   ======================================== */
-.about-hero {
+:root[data-theme="dark"] .kunaal-about-page {
+  --warmDark: #A89585;
+  --warmBorder: rgba(201,184,168,0.12);
+}
+
+/* Base styles are in style.css - only About-specific overrides here */
+
+/* Ensure all text elements use CSS variables for dark mode compatibility */
+.hero-title,
+.hero-intro,
+.hero-meta-row .value,
+.section-title,
+.number-value,
+.number-label,
+.capsule-text,
+.media-title,
+.media-subtitle,
+.person-name,
+.person-role,
+.say-hello-email,
+.map-legend-item {
+  color: var(--ink);
+}
+
+.hero-label,
+.section-label,
+.legend-item {
+  color: var(--warm);
+}
+
+.hero-meta-row .label,
+.media-subtitle,
+.number-label,
+.legend-item,
+.person-role {
+  color: var(--muted2);
+}
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.018;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* Selection */
+::selection { background: rgba(125,107,93,0.18); }
+
+/* Skip link styles are in style.css - no About-specific overrides needed */
+
+/* Scroll-reveal primitives (animated via GSAP) */
+/* Progressive enhancement: content visible by default */
+/* Only hide if JS successfully loads AND GSAP is available */
+[data-reveal] {
+  /* Default: visible - let JS hide if needed */
+  opacity: 1;
+  transform: none;
+  will-change: transform, opacity;
+}
+
+/* If JS fails or GSAP doesn't load, keep everything visible */
+body:not(.js) [data-reveal],
+body.js:not(.gsap-ready) [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Big, faint "gallery label" words drifting behind sections */
+.section-inner {
   position: relative;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.section-bgword{
+  position:absolute;
+  left: 50%;
+  top: -0.25rem;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(2.25rem, 8vw, 4.5rem);
+  letter-spacing: -0.04em;
+  color: rgba(11,18,32,0.06);
+  pointer-events:none;
+  user-select:none;
+  white-space: nowrap;
+  z-index: 0;
+}
+.section-inner > * { position: relative; z-index: 1; }
+
+/* Panorama as "portal bands" */
+.panorama {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  transform: rotate(-0.25deg);
+  transform-origin: center;
+  border-top: 1px solid rgba(125,107,93,0.10);
+  border-bottom: 1px solid rgba(125,107,93,0.10);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.04);
+  background: var(--bg);
+}
+/* Panorama slants - subtle skew for visual interest */
+.panorama.cut-left { 
+  transform: rotate(0.25deg) skewY(-0.5deg);
+  transform-origin: center;
+}
+.panorama.cut-right { 
+  transform: rotate(-0.25deg) skewY(0.5deg);
+  transform-origin: center;
+}
+.panorama-inner { 
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  position: relative;
   overflow: hidden;
 }
-
-.about-hero-bg {
+.panorama-img {
+  width: 100%;
+  /* More vertical pixels than the mask so the parallax never "runs out of image" */
+  height: 220%;
+  object-fit: cover;
+  /* Start lower so the first frame shows the lower portion, then scroll reveals upward */
+  object-position: center 65%;
+  filter: grayscale(100%);
   position: absolute;
-  inset: -20%;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  filter: blur(25px) brightness(0.35);
-  transform: scale(1.1);
+  top: -60%;
+  left: 0;
+  /* Performance optimizations for smooth parallax */
+  will-change: transform;
+  transform: translateZ(0); /* Force GPU acceleration */
+  backface-visibility: hidden; /* Improve rendering performance */
+  contain: layout style paint; /* Isolate rendering context */
+}
+/* Remove white overlay - panorama should flow seamlessly */
+.panorama::after {
+  display: none;
+}
+/* Dynamic panorama heights (20px to 200px) */
+.panorama.h-20 { height: 20px; }
+.panorama.h-30 { height: 30px; }
+.panorama.h-40 { height: 40px; }
+.panorama.h-50 { height: 50px; }
+.panorama.h-60 { height: 60px; }
+.panorama.h-70 { height: 70px; }
+.panorama.h-80 { height: 80px; }
+.panorama.h-90 { height: 90px; }
+.panorama.h-100 { height: 100px; }
+.panorama.h-110 { height: 110px; }
+.panorama.h-120 { height: 120px; }
+.panorama.h-130 { height: 130px; }
+.panorama.h-140 { height: 140px; }
+.panorama.h-150 { height: 150px; }
+.panorama.h-160 { height: 160px; }
+.panorama.h-170 { height: 170px; }
+.panorama.h-180 { height: 180px; }
+.panorama.h-190 { height: 190px; }
+.panorama.h-200 { height: 200px; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-indicator-chevron { animation: none; }
+  body::after { display:none; }
+  .capsule-inner { animation: none !important; }
 }
 
-@media (max-width: 768px) {
-  .about-hero-bg {
-    background-attachment: scroll;
-  }
+/* Focus states for accessibility */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 
-.about-hero-overlay {
+/* =============================================
+   HERO - Bleed collage layout
+   Scoped to about page to avoid conflicts
+============================================= */
+/* Wrapper controls height + clipping */
+.kunaal-about-page .hero {
+  position: relative;
+  margin-top: calc(-1 * var(--mastH, 100px));
+  /* Fill viewport BELOW fixed header - no white gap */
+  min-height: calc(100svh - var(--mastH, 100px));
+  overflow-x: clip; /* fallback to hidden if needed */
+  overflow-y: visible;
+  background: var(--bg);
+}
+
+/* Grid controls bleed + column ratios */
+.kunaal-about-page .hero-grid {
+  display: grid;
+  height: 100%;
+  /* Bleed: wider than viewport, centered, clipped by wrapper */
+  width: min(1800px, 110vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 2px;
+  grid-template-rows: 1fr 1fr;
+
+  /* Non-equal widths: outer narrow, inner wider, text fixed-ish, right strip narrow */
+  grid-template-columns:
+    minmax(0, 0.55fr)  /* slot 1 / slot 6 (outer left) */
+    minmax(0, 1.0fr)   /* slot 2 / slot 7 */
+    minmax(0, 1.0fr)   /* slot 3 / slot 8 */
+    minmax(0, 1.0fr)   /* slot 4 / slot 9 */
+    minmax(320px, 420px) /* hero text */
+    minmax(0, 0.55fr); /* slot 5 / slot 10 (outer right strip) */
+}
+
+/* Explicit placement: slots map to columns/rows */
+/* slot1 col1 row1, slot2 col2 row1, slot3 col3 row1, slot4 col4 row1 */
+/* slot5 col6 row1 (right strip top) */
+/* slot6 col1 row2, slot7 col2 row2, slot8 col3 row2, slot9 col4 row2 */
+/* slot10 col6 row2 (right strip bottom) */
+.kunaal-about-page .hero-photo--1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.kunaal-about-page .hero-photo--2 {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.kunaal-about-page .hero-photo--3 {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* Tile 3: adjust object-position for better cropping/focal point */
+.kunaal-about-page .hero-photo--3 img {
+  object-position: center 40%; /* Adjust focal point to show subject better */
+}
+
+.kunaal-about-page .hero-photo--4 {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.kunaal-about-page .hero-photo--5 {
+  grid-column: 6;
+  grid-row: 1;
+}
+
+.kunaal-about-page .hero-photo--6 {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.kunaal-about-page .hero-photo--7 {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.kunaal-about-page .hero-photo--8 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.kunaal-about-page .hero-photo--9 {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+.kunaal-about-page .hero-photo--10 {
+  grid-column: 6;
+  grid-row: 2;
+}
+
+/* Tiles */
+.kunaal-about-page .hero-photo {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  background: var(--bgAlt);
+}
+
+/* Placeholder for missing images - ensure no blank white tiles */
+.kunaal-about-page .hero-photo:empty::after,
+.kunaal-about-page .hero-photo:not(:has(img))::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 20%, transparent) 0%, color-mix(in srgb, var(--ink) 45%, transparent) 100%);
+  background: linear-gradient(135deg, var(--bgAlt) 0%, var(--warmLight) 100%);
+  opacity: 0.5;
 }
 
-.about-hero-content {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: var(--space-8) var(--space-4);
-}
-
-.about-avatar {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  margin: 0 auto var(--space-5);
-  overflow: hidden;
-  border: 4px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-}
-
-.about-avatar img {
+.kunaal-about-page .hero-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+  transition: filter 0.15s ease;
+  will-change: transform;
 }
 
-.about-avatar .initials {
+/* First photo: reveal more from left as screen widens */
+.kunaal-about-page .hero-photo--1 img {
+  object-position: left center;
+}
+
+.kunaal-about-page .hero-photo.color-active img { 
+  filter: none; 
+}
+
+.kunaal-about-page .hero-photo:hover img { 
+  filter: none; 
+}
+
+.kunaal-about-page .hero-photo::after {
+  content: '';
+  position: absolute;
+  top: 0; 
+  bottom: 0; 
+  left: 0;
+  width: 3px;
+  background: var(--blue);
+  transform: scaleY(0);
+  transition: transform 0.2s ease;
+  z-index: 2;
+}
+
+.kunaal-about-page .hero-photo:hover::after { 
+  transform: scaleY(1); 
+}
+
+.kunaal-about-page .hero-photo.color-active::after { 
+  transform: scaleY(1); 
+}
+
+/* Dog-ear: robust CSS triangle via borders (more reliable than clip-path) */
+.kunaal-about-page .hero-photo.has-accent {
+  overflow: visible; /* Ensure accent is visible */
+  z-index: 1;
+  position: relative;
+}
+
+.kunaal-about-page .hero-photo.has-accent::before {
+  content: "";
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 0;
+  height: 0;
+  /* CSS triangle using borders - more reliable than clip-path */
+  border-style: solid;
+  border-width: var(--k-dogear-size, 28px) var(--k-dogear-size, 28px) 0 0;
+  border-color: var(--blue) transparent transparent transparent;
+  z-index: 10; /* High z-index to ensure visibility above header */
+  pointer-events: none;
+}
+
+/* Hero text spans rows, in column 5 */
+.kunaal-about-page .hero-text {
+  grid-column: 5;
+  grid-row: 1 / 3;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2.5rem);
+  box-shadow: -12px 0 40px rgba(0,0,0,0.03);
+  position: relative;
+  min-width: 0; /* Prevent flex/grid overflow */
+}
+
+.hero-label {
+  font-family: var(--mono);
+  font-size: 11px; /* Increased from 10px - mono font too small */
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--warm);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.hero-label::after {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--warm);
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+}
+.hero-title .name { color: var(--blue); }
+.hero-intro {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.hero-intro .hand-note {
+  font-family: var(--hand);
+  font-size: 1.15em;
+  color: var(--warm);
+}
+.hero-meta {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--warmBorder);
+}
+.hero-meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+}
+.hero-meta-row .label {
+  font-family: var(--mono);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted2);
+  width: 65px;
+}
+.hero-meta-row .value {
+  font-family: var(--serif);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* Scroll indicator is now IN FLOW (not fixed) - sits under Reading meta */
+.kunaal-about-page .hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  color: var(--warm);
+  pointer-events: none;
+}
+
+.kunaal-about-page .hero-scroll__label {
+  font-family: var(--mono);
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--warm);
+  opacity: 0.65;
+  font-weight: 400;
+}
+
+/* Scroll indicator line - animation with subtle bounce */
+.kunaal-about-page .hero-scroll__line {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
+  position: relative;
+  opacity: 0.6;
+  animation: scrollLineBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollLineBounce {
+  0%, 100% { 
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translateY(3px);
+    opacity: 0.8;
+  }
+}
+
+/* Legacy scroll-indicator class (for backward compatibility with JS) */
+.kunaal-about-page .scroll-indicator {
+  display: none; /* Hidden - replaced by hero-scroll */
+}
+
+/* Ultra-wide handling: prevent comically stretched layouts */
+@media (min-width: 1800px) {
+  .kunaal-about-page .hero {
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-label, .hero-title, .hero-intro, .hero-meta {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Wide viewport fallback - ensure hero text is visible at >1600px */
+@media (min-width: 1600px) and (max-width: 1799px) {
+  .hero-label, .hero-title, .hero-intro, .hero-meta {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Mid breakpoint: 901px-1100px - avoid "everything gets too narrow" */
+@media (min-width: 901px) and (max-width: 1100px) {
+  /* Hide right strip column (slots 5/10) and use 4 photos + text */
+  .kunaal-about-page .hero-grid {
+    grid-template-columns:
+      minmax(0, 0.55fr)  /* slot 1 / slot 6 */
+      minmax(0, 1.0fr)   /* slot 2 / slot 7 */
+      minmax(0, 1.0fr)   /* slot 3 / slot 8 */
+      minmax(0, 1.0fr)   /* slot 4 / slot 9 */
+      minmax(280px, 360px); /* hero text - reduced min width */
+  }
+  
+  /* Hide right strip slots */
+  .kunaal-about-page .hero-photo--5,
+  .kunaal-about-page .hero-photo--10 {
+    display: none;
+  }
+  
+  .kunaal-about-page .hero-text {
+    padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.75rem);
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 900px) {
+  /* Mobile hero - auto height, no forced viewport height */
+  .kunaal-about-page .hero {
+    min-height: 0;
+    margin-top: 0; /* No negative margin on mobile */
+    overflow-x: hidden;
+  }
+  
+  /* Make hero-grid normal width */
+  .kunaal-about-page .hero-grid {
+    width: 100%;
+    left: auto;
+    transform: none;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+  }
+  
+  /* Place slots 1-4 in a 2x2 grid */
+  .kunaal-about-page .hero-photo--1 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  .kunaal-about-page .hero-photo--2 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  
+  .kunaal-about-page .hero-photo--3 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  
+  .kunaal-about-page .hero-photo--4 {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  
+  /* Hide slots 5-10 on mobile (right strip and bottom row) */
+  .kunaal-about-page .hero-photo--5,
+  .kunaal-about-page .hero-photo--6,
+  .kunaal-about-page .hero-photo--7,
+  .kunaal-about-page .hero-photo--8,
+  .kunaal-about-page .hero-photo--9,
+  .kunaal-about-page .hero-photo--10 {
+    display: none;
+  }
+  
+  /* Give tiles a predictable aspect ratio to avoid squish */
+  .kunaal-about-page .hero-photo {
+    aspect-ratio: 4 / 3;
+  }
+  
+  /* Ensure hero-text spans full width below mosaic */
+  .kunaal-about-page .hero-text {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    padding: 1.6rem 1.2rem;
+    box-shadow: none;
+    border: 1px solid var(--hair2);
+    border-radius: 8px;
+  }
+  
+  /* Mobile: Ensure hero text is visible even if GSAP doesn't load */
+  .kunaal-about-page .hero-text [data-reveal] {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Mobile: Smaller dog-ear accent - maintain border triangle approach */
+  .kunaal-about-page .hero-photo.has-accent::before {
+    border-width: 20px 20px 0 0; /* Smaller on mobile */
+  }
+}
+
+/* =============================================
+   SECTIONS
+============================================= */
+.section {
+  position: relative;
+  z-index: 5;
+  background: var(--bg);
+  padding: 3.5rem 2rem;
+}
+.section.warm { background: var(--bgWarm); }
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px; /* Increased from 10px - mono font too small */
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--warm);
+  margin-bottom: 0.4rem;
+}
+/* Section titles use canonical underline motif from utilities.css */
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.5rem;
+}
+/* Extend canonical utility class for About page specificity */
+.kunaal-about-page .section-title {
+  padding-bottom: 10px;
+}
+
+/* =============================================
+   NUMBERS - Compact, no pinning
+============================================= */
+.numbers {
+  padding: 3rem 2rem;
+  background: var(--bg);
+}
+.numbers-inner {
+  max-width: 750px;
+  margin: 0 auto;
+  text-align: center;
+}
+.numbers-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.number-item {
+  text-align: center;
+  min-width: 85px;
+}
+.number-value {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 2.5rem);
+  font-weight: 300;
+  color: var(--warm);
+  line-height: 1;
+}
+.number-label {
+  font-family: var(--mono);
+  font-size: 10px; /* Increased from 9px - mono font too small */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted2);
+  margin-top: 0.4rem;
+}
+.infinity-value {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.5vw, 2.5rem);
+  font-weight: 300;
+  color: var(--warm);
+  line-height: 1;
+}
+
+/* =============================================
+   RABBIT HOLES - Redesigned cloud
+============================================= */
+.rabbit-holes {
+  padding: 3.5rem 2rem;
+  background: var(--bgWarm);
+}
+.rabbit-holes.section{ padding-bottom: 2.2rem; }
+.rabbit-holes .section-inner {
+  max-width: 850px;
+}
+/* Scoped to About page for higher specificity */
+.kunaal-about-page .capsules-cloud,
+.kunaal-about-page .capsules-cloud {
+  position: relative;
+  padding: 1rem 0;
+  border-radius: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.kunaal-about-page .capsules-cloud::before {
+  content: none;
+  display: none;
+}
+
+/* Outer wrapper: layout + GSAP reveal target */
+.kunaal-about-page .capsule {
+  position: relative;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  height: auto;
+  transform: none;
+  display: inline-block;
+}
+.kunaal-about-page .capsule:hover {
+  transform: none;
+}
+
+/* Inner pill: floats independently so it doesn't fight GSAP transforms */
+.capsule-inner{
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  height:32px;
+  padding:0 0.75rem 0 0.35rem;
+  background:var(--bg);
+  border:1px solid var(--warmBorder);
+  border-radius:100px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.04);
+  font-family:var(--sans);
+  font-size:11px;
+  line-height:1;
+  color:var(--ink);
+  transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
+  animation:capsuleFloat var(--floatDur, 6.4s) ease-in-out infinite;
+}
+@keyframes capsuleFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-2px)}
+}
+
+/* Float duration now set via data attribute or inline style in PHP */
+.capsule .capsule-inner {
+  animation-duration: var(--float-dur, 6s);
+}
+
+.capsule:hover .capsule-inner{
+  animation-play-state:paused;
+  transform:translateY(-3px);
+  box-shadow:0 6px 16px rgba(0,0,0,0.08);
+  border-color:var(--warmLight);
+}
+
+.capsule-img{
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Category dot lives INSIDE the moving inner wrapper */
+.kunaal-about-page .capsule::after {
+  content: none;
+}
+
+.capsule-dot{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  margin-left:0.3rem;
+  flex-shrink:0;
+  background:var(--cat-tech);
+}
+/* Category colors use CSS variables (set from customizer) */
+/* Dynamic selector - works for any category slug */
+.kunaal-about-page .capsule[data-cat] .capsule-dot {
+  background: var(--cat-var, var(--warm));
+}
+/* Set variable per category slug */
+.kunaal-about-page .capsule[data-cat="media"] .capsule-dot {
+  background: var(--cat-media, #C4715B);
+}
+.kunaal-about-page .capsule[data-cat="knowledge"] .capsule-dot {
+  background: var(--cat-knowledge, #5B8A72);
+}
+.kunaal-about-page .capsule[data-cat="craft"] .capsule-dot {
+  background: var(--cat-craft, #8B7355);
+}
+.kunaal-about-page .capsule[data-cat="culture"] .capsule-dot {
+  background: var(--cat-culture, #7A6B99);
+}
+.kunaal-about-page .capsule[data-cat="tech"] .capsule-dot {
+  background: var(--cat-tech, #5A7FA8);
+}
+
+/* Dark mode category colors - auto-brighten for visibility */
+/* Use CSS color-mix to brighten customizer colors in dark mode */
+:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-var, var(--warm)) 100%, white 20%);
+}
+:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat="media"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-media, #C4715B) 100%, white 20%);
+}
+:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat="knowledge"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-knowledge, #5B8A72) 100%, white 20%);
+}
+:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat="craft"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-craft, #8B7355) 100%, white 20%);
+}
+:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat="culture"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-culture, #7A6B99) 100%, white 20%);
+}
+:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat="tech"] .capsule-dot {
+  background: color-mix(in srgb, var(--cat-tech, #5A7FA8) 100%, white 20%);
+}
+
+.capsule-text {
+  white-space: nowrap;
+}
+
+.capsules-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 9px;
+  color: var(--muted2);
+}
+.legend-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+
+/* =============================================
+   MEDIA SECTION - Aligned rows
+============================================= */
+.media-section {
+  padding: 3.5rem 2rem;
+  padding-top: 2.4rem;
+  background: var(--bg);
+}
+.media-section .section-inner {
+  max-width: 1000px;
+}
+.media-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 1fr;
+  align-items: start; /* Ensure columns align at top */
+}
+.media-spacer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 3rem;
+}
+.media-spacer::before {
+  content: '';
+  width: 1px;
+  height: 200px;
+  background: linear-gradient(to bottom, var(--warmBorder), transparent);
+}
+@media (max-width: 900px) {
+  .media-row { grid-template-columns: 1fr; }
+  .media-spacer { height: 2.5rem; padding: 0; }
+  .media-spacer::before { width: 80px; height: 1px; background: var(--warmBorder); }
+}
+
+.media-col-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--warmBorder);
+  padding-bottom: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+.media-col-title{
+  position: relative;
+  font-family: var(--serif);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding-bottom: 0.2rem;
+  font-size: 1.1rem;
+}
+.media-col-title::after{
+  content:'';
+  position:absolute;
+  left: 0;
+  bottom: -0.65rem;
+  width: 28px;
+  height: 2px;
+  background: var(--blue);
+  border-radius: 2px;
+}
+.media-col-count{
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--muted2);
+  transform: translateY(-2px);
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns for consistency */
+  gap: 1.25rem 1rem;
+  /* Align items to start so second row starts at same vertical position */
+  align-items: start;
+}
+
+/* Ensure both columns align their second rows by using same grid structure */
+.media-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevent overflow */
+}
+.media-grid {
+  min-width: 0; /* Ensure grid children can shrink */
+}
+
+/* Align second rows: ensure both grids start at same vertical position */
+.media-row {
+  align-items: start; /* Align columns to top */
+  /* Use subgrid if supported, otherwise rely on consistent item heights */
+}
+
+/* Ensure media items have consistent structure for alignment */
+.media-item {
+  /* Items will naturally align if both grids have same structure */
+}
+.media-col:last-child .media-grid {
+  gap: 1rem;
+}
+.media-col:last-child .media-item {
+  margin-bottom: 0;
+}
+
+.media-item { 
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0; /* Prevent overflow */
+  max-width: 100%;
+  height: 100%; /* Ensure consistent height for alignment */
+  /* Ensure consistent height for alignment across columns */
+  align-self: start; /* Align to start of grid cell */
+}
+.media-cover {
+  position: relative;
+  overflow: hidden;
+  background: var(--bgAlt);
+  border-radius: 2px;
+  transition: transform var(--transition), box-shadow var(--transition);
+  width: 100%;
+  flex-shrink: 0; /* Prevent shrinking to ensure consistent sizing */
+}
+.media-item:hover .media-cover {
+  transform: translateY(-4px) rotate(-1deg);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.media-cover img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter var(--transition);
+}
+.media-item:hover .media-cover img { filter: none; }
+.media-cover::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 3px;
+  background: var(--blue);
+  transform: scaleY(0);
+  transition: transform 0.2s;
+}
+.media-item:hover .media-cover::after { transform: scaleY(1); }
+
+.media-cover.book { aspect-ratio: 2/3; }
+.media-cover.album{
+  /* Force consistent square sizing for all album covers */
+  position: relative;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bgAlt);
+  border: 1px solid var(--hair2);
+  aspect-ratio: 1;
+  /* Add explicit height constraint for older browsers */
+  height: 0;
+  padding-bottom: 100%; /* Fallback for browsers without aspect-ratio support */
+}
+.media-cover.album::before{
+  content: '';
+  display: block;
+  padding-top: 100%;
+  height: 0;
+}
+.media-cover.album img{
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+  border-radius: 0;
+}
+/* Remove nth-child overrides - not needed if grid is consistent */
+.media-cover .play-icon {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--blue);
+  background: rgba(0,0,0,0.3);
   color: white;
-  font-size: 48px;
-  font-weight: 600;
-  font-family: var(--serif);
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity var(--transition);
 }
+.media-item:hover .play-icon { opacity: 1; }
 
-.about-greeting {
+.media-title {
   font-family: var(--serif);
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-size: 11px;
   font-weight: 500;
-  color: white;
-  margin: 0 0 var(--space-3);
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
-}
-
-.about-tagline {
-  font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-
-/* ========================================
-   SECTION BASE STYLES
-   ======================================== */
-.about-section {
-  padding: var(--section-spacing) var(--space-4);
-}
-
-.about-section:nth-child(even) {
-  background: var(--bgWarm);
-}
-
-.section-container {
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.section-container.wide {
-  max-width: 1000px;
-}
-
-.section-title {
-  font-family: var(--serif);
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--ink);
-  text-align: center;
-  margin: 0 0 var(--space-8);
-}
-
-/* ========================================
-   BIO SECTION
-   ======================================== */
-.bio-content {
-  font-size: 1.1rem;
-  line-height: 1.9;
-  color: var(--muted);
-}
-
-.bio-content p {
-  margin-bottom: var(--space-4);
-}
-
-.bio-content p:first-child {
-  font-size: 1.25rem;
-  color: var(--ink);
-}
-
-/* ========================================
-   WORLD MAP SECTION
-   ======================================== */
-.about-map-section {
+  margin-top: 0.5rem;
+  line-height: 1.3;
+  /* Ensure space for at least 2 lines - prevents row misalignment */
+  min-height: calc(2 * 11px * 1.3); /* 2 lines × font-size × line-height = ~28.6px */
+  /* Fix text wrapping - prevent overflow and awkward truncation */
+  overflow-wrap: anywhere; /* Better wrapping for long unbroken text */
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  /* Limit to 2 lines with ellipsis */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
+  line-clamp: 2;
+}
+.media-subtitle {
+  overflow-wrap: anywhere; /* Prevent overflow for long text */
+}
+.media-subtitle {
+  font-family: var(--mono);
+  font-size: 10px; /* Increased from 9px - mono font too small */
+  color: var(--muted2);
+}
+.media-link {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.map-wrapper {
-  position: relative;
-  background: var(--bg);
-  border-radius: 16px;
-  padding: var(--space-6);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-.world-map {
-  position: relative;
-}
-
-.world-map svg {
-  width: 100%;
-  height: auto;
+/* Add explicit SVG sizing for media links */
+.media-link svg {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
   display: block;
 }
 
-.world-map .country {
-  fill: #e8e8e8;
-  stroke: #fff;
-  stroke-width: 0.5;
-  transition: fill 0.3s ease;
-  cursor: pointer;
+/* =============================================
+   MAP
+============================================= */
+.map-section {
+  padding: 3.5rem 2rem;
+  background: var(--bgWarm);
+}
+.map-section .section-inner {
+  max-width: 1000px;
+}
+.world-map-container {
+  width: 100%;
+  height: 360px;
+  margin-top: 0.5rem;
+  position: relative;
+}
+.world-map-container svg {
+  width: 100%;
+  height: 100%;
+}
+/* Map country colors - scoped to About page for specificity */
+.kunaal-about-page .country {
+  fill: #E8E4DF;
+  stroke: #F9F7F4;
+  stroke-width: 0.3;
+  transition: fill var(--transition);
+}
+.kunaal-about-page .country.visited {
+  fill: #B8A99A;
+}
+.kunaal-about-page .country.lived {
+  fill: #7D6B5D;
+}
+.kunaal-about-page .country.current {
+  fill: #1E5AFF;
+}
+/* Hover: darken warm colors, NOT blue */
+.kunaal-about-page .country.visited:hover {
+  fill: #9A8B7C;
+}
+.kunaal-about-page .country.lived:hover {
+  fill: #5C4D42;
 }
 
-.world-map .country:hover {
-  fill: #d0d0d0;
+/* Dark mode map colors - scoped to About page */
+:root[data-theme="dark"] .kunaal-about-page .country {
+  fill: #2F2F2F;
+  stroke: #3A3A3A;
+}
+:root[data-theme="dark"] .kunaal-about-page .country.visited {
+  fill: #8B7D6F;
+}
+:root[data-theme="dark"] .kunaal-about-page .country.lived {
+  fill: #C9B8A8;
+}
+:root[data-theme="dark"] .kunaal-about-page .country.current {
+  fill: #FF6B35; /* Orange beacon in dark mode */
+}
+:root[data-theme="dark"] .kunaal-about-page .country.visited:hover {
+  fill: #7A6B5D;
+}
+:root[data-theme="dark"] .kunaal-about-page .country.lived:hover {
+  fill: #A89585;
 }
 
-.world-map .country.visited {
-  fill: rgba(30, 90, 255, 0.35);
+/* Legend dots use same category variables as capsule dots */
+.kunaal-about-page .legend-dot[data-cat] {
+  background: var(--cat-var, var(--warm));
+}
+.kunaal-about-page .legend-dot[data-cat="media"] {
+  background: var(--cat-media, #C4715B);
+}
+.kunaal-about-page .legend-dot[data-cat="knowledge"] {
+  background: var(--cat-knowledge, #5B8A72);
+}
+.kunaal-about-page .legend-dot[data-cat="craft"] {
+  background: var(--cat-craft, #8B7355);
+}
+.kunaal-about-page .legend-dot[data-cat="culture"] {
+  background: var(--cat-culture, #7A6B99);
+}
+.kunaal-about-page .legend-dot[data-cat="tech"] {
+  background: var(--cat-tech, #5A7FA8);
 }
 
-.world-map .country.visited:hover {
-  fill: rgba(30, 90, 255, 0.55);
-}
-
-.world-map .country.lived {
-  fill: var(--blue);
-}
-
-.world-map .country.lived:hover {
-  fill: #0040dd;
+/* Dark mode category colors - auto-brighten for better visibility */
+:root[data-theme="dark"] .kunaal-about-page .legend-dot[data-cat],
+:root[data-theme="dark"] .kunaal-about-page .capsule-dot {
+  filter: brightness(1.3) saturate(1.1);
 }
 
 .map-tooltip {
-  position: absolute;
+  position: fixed;
+  padding: 0.4rem 0.65rem;
   background: var(--ink);
-  color: white;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-  max-width: 240px;
-  z-index: 100;
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 10px;
+  border-radius: 4px;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(8px);
-  transition: all 0.2s ease;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: opacity 0.15s;
+  z-index: 1000;
+  white-space: nowrap;
 }
-
-.map-tooltip.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.map-tooltip .tooltip-name {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.map-tooltip .tooltip-status {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 6px;
-}
-
-.map-tooltip .tooltip-note {
-  font-style: italic;
-  opacity: 0.9;
-}
+.map-tooltip.visible { opacity: 1; }
 
 .map-legend {
   display: flex;
   justify-content: center;
-  gap: var(--space-6);
-  margin-top: var(--space-4);
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
-
-.legend-item {
+.map-legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 0.35rem;
+  font-size: 10px;
   color: var(--muted);
 }
-
-.legend-dot {
-  width: 12px;
-  height: 12px;
+.map-legend-dot {
+  width: 8px; height: 8px;
   border-radius: 50%;
 }
-
-.legend-dot.visited {
-  background: rgba(30, 90, 255, 0.4);
+.map-legend-dot.current { background: var(--blue); }
+.map-legend-dot.lived { background: var(--warm); }
+.map-legend-dot.visited { background: var(--warmLight); }
+/* Dark mode legend dot colors */
+:root[data-theme="dark"] .kunaal-about-page .map-legend-dot.current {
+  background: #FF6B35; /* Orange in dark mode */
 }
 
-.legend-dot.lived {
-  background: var(--blue);
-}
-
-/* ========================================
-   BOOKSHELF SECTION
-   ======================================== */
-.bookshelf {
-  position: relative;
-  padding-bottom: 20px;
-}
-
-.shelf-books {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding-bottom: 16px;
-}
-
-.book {
-  position: relative;
-  text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: bottom center;
-  animation: book-appear 0.5s ease forwards;
-  animation-delay: var(--delay, 0s);
-  opacity: 0;
-}
-
-@keyframes book-appear {
-  from { opacity: 0; transform: translateY(20px) rotateY(-10deg); }
-  to { opacity: 1; transform: translateY(0) rotateY(0); }
-}
-
-.book:hover {
-  transform: translateY(-12px) scale(1.05);
-  z-index: 10;
-}
-
-.book-cover {
-  width: 120px;
-  height: 180px;
-  border-radius: 2px 6px 6px 2px;
-  overflow: hidden;
-  box-shadow: 
-    2px 4px 8px rgba(0,0,0,0.15),
-    4px 8px 16px rgba(0,0,0,0.1);
-  transition: box-shadow 0.3s ease;
-}
-
-.book:hover .book-cover {
-  box-shadow: 
-    4px 8px 16px rgba(0,0,0,0.2),
-    8px 16px 32px rgba(0,0,0,0.15);
-}
-
-.book-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.book-spine {
-  width: 30px;
-  height: 180px;
-  background: linear-gradient(135deg, var(--blue) 0%, #0040dd 100%);
-  border-radius: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 2px 4px 8px rgba(0,0,0,0.15);
-}
-
-.book-spine-title {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.book-info {
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  width: 140px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.book:hover .book-info {
-  opacity: 1;
-}
-
-.book-title {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.book-author {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.shelf-wood {
-  height: 12px;
-  background: linear-gradient(180deg, #8B7355 0%, #6B5344 100%);
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  margin-top: 8px;
-}
-
-/* ========================================
-   INTERESTS CLOUD SECTION
-   ======================================== */
-.interests-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  perspective: 1000px;
-}
-
-.interest-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+/* =============================================
+   INSPIRATIONS
+============================================= */
+.inspirations {
+  padding: 3.5rem 2rem;
   background: var(--bg);
-  padding: 10px 18px;
-  border-radius: 30px;
-  border: 1px solid var(--hair);
-  font-size: 14px;
-  color: var(--ink);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: float-in 0.5s ease forwards, gentle-float 6s ease-in-out infinite;
-  animation-delay: var(--delay, 0s), calc(var(--delay, 0s) + 0.5s);
-  opacity: 0;
-  cursor: default;
 }
-
-@keyframes float-in {
-  from { opacity: 0; transform: translateY(20px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.inspirations .section-inner {
+  max-width: 800px;
 }
-
-@keyframes gentle-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(var(--float-offset, -5px)); }
-}
-
-.interest-tag:hover {
-  border-color: var(--blue);
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 24px rgba(30, 90, 255, 0.15);
-}
-
-.interest-tag.size-2 {
-  font-size: 16px;
-  padding: 12px 22px;
-}
-
-.interest-tag.size-3 {
-  font-size: 18px;
-  padding: 14px 26px;
-  font-weight: 500;
-}
-
-.interest-icon {
-  font-size: 1.2em;
-}
-
-.interest-name {
-  font-weight: 500;
-}
-
-/* ========================================
-   STATS SECTION
-   ======================================== */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: var(--space-6);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.stat-card {
-  text-align: center;
-  padding: var(--space-5);
-  background: var(--bg);
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  animation: stat-appear 0.5s ease forwards;
-  animation-delay: var(--delay, 0s);
-  opacity: 0;
-}
-
-@keyframes stat-appear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.stat-number {
-  display: block;
-  font-family: var(--serif);
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: var(--blue);
-  line-height: 1.1;
-  margin-bottom: var(--space-2);
-}
-
-.stat-label {
-  font-size: 13px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* ========================================
-   INSPIRATIONS SECTION
-   ======================================== */
 .inspirations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-5);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 600px) {
+  .inspirations-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.person-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem;
+  background: var(--bgWarm);
+  border-radius: 8px;
+  transition: transform var(--transition), box-shadow var(--transition);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.person-card a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.person-card::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 3px;
+  background: var(--blue);
+  border-radius: 8px 0 0 8px;
+  transform: scaleY(0);
+  transition: transform 0.2s;
+}
+.person-card:hover::before { transform: scaleY(1); }
+.person-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+.person-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bgAlt);
+}
+.person-avatar img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter var(--transition);
+}
+.person-card:hover .person-avatar img { filter: none; }
+.person-info { flex: 1; min-width: 0; }
+.person-name {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.person-role {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--muted2);
+  text-transform: uppercase;
 }
 
-.inspiration-card {
+/* =============================================
+   SAY HELLO
+============================================= */
+.say-hello {
+  padding: 2.5rem 2rem;
+  background: var(--bg);
+  text-align: center;
+  border-top: 1px solid var(--warmBorder);
+}
+
+/* Ensure say-hello section is properly centered */
+.kunaal-about-page .say-hello .section-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--space-5);
-  background: var(--bg);
-  border-radius: 12px;
-  border: 1px solid var(--hair);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  animation: card-appear 0.5s ease forwards;
-  animation-delay: var(--delay, 0s);
-  opacity: 0;
-}
-
-@keyframes card-appear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.inspiration-card:hover {
-  border-color: var(--blue);
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
-}
-
-.inspiration-photo {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-bottom: var(--space-4);
-  border: 2px solid var(--hair);
-  transition: border-color 0.3s ease;
-}
-
-.inspiration-card:hover .inspiration-photo {
-  border-color: var(--blue);
-}
-
-.inspiration-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.inspiration-photo.placeholder {
-  background: var(--bgWarm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--muted);
-  font-family: var(--serif);
-}
-
-.inspiration-info {
   text-align: center;
 }
-
-.inspiration-name {
-  display: block;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 4px;
+.say-hello-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--blue);
+  margin-bottom: 0.75rem;
 }
-
-.inspiration-role {
-  font-size: 12px;
+/* Remove border-bottom line from say-hello section title */
+.say-hello .section-title {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 1rem;
+}
+.say-hello .section-title::after {
+  display: none; /* Remove blue line animation */
+}
+.say-hello-text {
+  margin-bottom: 1.25rem; /* Add spacing between email and social icons */
+}
+.say-hello-text a {
+  font-family: var(--mono);
+  font-size: 11px; /* Smaller, matches theme */
   color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color var(--transition);
 }
-
-/* ========================================
-   CONNECT SECTION
-   ======================================== */
-.connect-links {
+.say-hello-text a:hover {
+  color: var(--ink);
+}
+.say-hello-links,
+.say-hello-social {
   display: flex;
   justify-content: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: center; /* Ensure vertical alignment */
 }
-
-.connect-link {
+.say-hello-link {
+  width: 36px; height: 36px;
+  border: 1px solid var(--warmBorder);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 24px;
-  background: var(--bg);
-  border: 1px solid var(--hair);
-  border-radius: 10px;
-  text-decoration: none;
-  color: var(--ink);
-  font-weight: 500;
-  transition: all 0.3s ease;
+  justify-content: center;
+  color: var(--muted);
+  transition: all var(--transition);
 }
-
-.connect-link:hover {
+.say-hello-link:hover {
   border-color: var(--blue);
   color: var(--blue);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  background: var(--blueTint);
+  transform: translateY(-2px);
 }
-
-.connect-link svg {
-  width: 22px;
-  height: 22px;
+/* Hard-scope SVG sizing for about page - prevent 900px explosion */
+/* High specificity selector to override any global SVG styles */
+.kunaal-about-page .say-hello-link svg,
+.kunaal-about-page .say-hello-links svg,
+.kunaal-about-page .say-hello-social-link svg,
+.kunaal-about-page .say-hello .say-hello-link svg,
+.kunaal-about-page .say-hello .say-hello-links svg,
+.kunaal-about-page .say-hello .say-hello-social-link svg {
+  width: 15px;
+  height: 15px;
+  max-width: 15px;
+  max-height: 15px;
+  min-width: 15px;
+  min-height: 15px;
+  display: block;
+  flex-shrink: 0;
 }
-
-/* ========================================
-   REVEAL ANIMATIONS
-   ======================================== */
-.about-page-v2 .reveal-up {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+.say-hello-email {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted2);
 }
+.say-hello-email a { color: var(--blue); }
 
-.about-page-v2 .reveal-up.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* Progress bar, container, header, nav styles are in style.css - no About-specific overrides needed */
 
-} /* End @layer pages */
+/* Underline system: Use canonical .u-underline-double from utilities.css */
+/* .uBlue is now an alias defined in utilities.css - no duplicate definitions here */
+
+/* =============================================
+   FOOTER (matches main theme exactly - no overrides)
+============================================= */
+/* Footer uses main theme styles - no overrides needed */
+/* Links use canonical underline from utilities.css */
+
+/* Reduce "dead air" between Rabbit Holes and Media */
+.panorama.squeeze-after-rabbit{ height: 120px; }
+.panorama.squeeze-after-rabbit .panorama-inner{ height: 160%; }
+

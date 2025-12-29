@@ -198,6 +198,7 @@
     position: absolute;
     left: 0;
     bottom: -1px; /* Position to overlap the .sectionHead border-bottom */
+    width: 75%; /* Blue segment is ~75% of current length */
     width: 30px; /* 75% of previous 40px - shorter blue segment */
     height: 3px; /* Thicker than gray line (2px vs 1px) */
     background: var(--k-underline-blue-color, var(--blue));

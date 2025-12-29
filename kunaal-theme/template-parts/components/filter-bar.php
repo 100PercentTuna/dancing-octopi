@@ -37,7 +37,7 @@ if (!empty($class)) {
       <?php if (!empty($topics)) : ?>
       <!-- Topics dropdown -->
       <div class="topicSelect" data-role="topic-menu" aria-label="<?php esc_attr_e('Filter by topic', 'kunaal-theme'); ?>">
-        <button class="topicDropdownBtn" data-action="toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+        <button class="topicDropdownBtn" data-action="topics-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
           <span class="topicSummary" data-role="count"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
           <svg class="caret" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -83,8 +83,8 @@ if (!empty($class)) {
       <?php endif; ?>
     </div>
     
-    <!-- Filter toggle button -->
-    <button class="filterToggle" data-action="toggle" type="button">
+    <!-- Filter toggle button (mobile only) -->
+    <button class="filterToggle" data-action="panel-toggle" type="button" aria-label="<?php esc_attr_e('Toggle filter panel', 'kunaal-theme'); ?>">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <path d="M3 6h18M7 12h10M10 18h4"/>
       </svg>
