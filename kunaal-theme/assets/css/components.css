@@ -121,6 +121,7 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: 8px;
+  min-width: 0; /* Prevent text overflow in flex child */
 }
 .card:hover .overlay, .card:focus-visible .overlay {
   backdrop-filter: blur(2px);
@@ -171,6 +172,7 @@
   transition: max-height 320ms cubic-bezier(0.4,0,0.2,1),
               opacity 240ms cubic-bezier(0.4,0,0.2,1),
               transform 320ms cubic-bezier(0.4,0,0.2,1);
+  min-width: 0; /* Prevent text overflow in flex child */
 }
 .card:hover .details, .card:focus-visible .details {
   max-height: 120px;
@@ -303,6 +305,9 @@
   position: relative;
   text-decoration: none;
   color: var(--ink);
+}
+.jContent {
+  min-width: 0; /* Prevent text overflow in grid child */
 }
 .jRow:last-child { border-bottom: none; }
 .jRow:hover,

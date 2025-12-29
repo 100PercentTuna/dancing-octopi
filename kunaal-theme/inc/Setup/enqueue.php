@@ -234,16 +234,14 @@ function kunaal_enqueue_page_specific_assets(): void {
         );
         
         // About page: Generate CSS variables for category colors (must be AFTER enqueue)
-        if (function_exists('kunaal_get_categories_v22')) {
-            $categories = kunaal_get_categories_v22();
-            if (!empty($categories)) {
-                $css_vars = ".kunaal-about-page {\n";
-                foreach ($categories as $slug => $category) {
-                    $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
-                }
-                $css_vars .= "}";
-                wp_add_inline_style('kunaal-about-page', $css_vars);
+        $categories = kunaal_get_categories();
+        if (!empty($categories)) {
+            $css_vars = ".kunaal-about-page {\n";
+            foreach ($categories as $slug => $category) {
+                $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
             }
+            $css_vars .= "}";
+            wp_add_inline_style('kunaal-about-page', $css_vars);
         }
         
         // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
@@ -292,15 +290,13 @@ function kunaal_enqueue_page_specific_assets(): void {
         );
         
         // Localize script with places data for map and debug config
-        if (function_exists('kunaal_get_places_v22')) {
-            $places = kunaal_get_places_v22();
-            wp_localize_script('kunaal-about-page', 'kunaalAbout', array(
-                'places' => $places,
-                'debug' => defined('WP_DEBUG') && WP_DEBUG, // Gate debug logging behind WP_DEBUG
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('kunaal_debug_log_nonce'),
-            ));
-        }
+        $places = kunaal_get_places();
+        wp_localize_script('kunaal-about-page', 'kunaalAbout', array(
+            'places' => $places,
+            'debug' => defined('WP_DEBUG') && WP_DEBUG, // Gate debug logging behind WP_DEBUG
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('kunaal_debug_log_nonce'),
+        ));
     }
 }
 
@@ -358,10 +354,10 @@ function kunaal_enqueue_assets(): void {
         'nonce' => wp_create_nonce('kunaal_theme_nonce'),
         'pdfNonce' => wp_create_nonce('kunaal_pdf_nonce'),
         'homeUrl' => home_url('/'),
-        'shareText' => function_exists('kunaal_mod') ? kunaal_mod('kunaal_share_text', '') : '',
-        'twitterHandle' => function_exists('kunaal_mod') ? kunaal_mod('kunaal_twitter_handle', '') : '',
-        'linkedinUrl' => function_exists('kunaal_mod') ? kunaal_mod('kunaal_linkedin_handle', '') : '',
-        'authorName' => function_exists('kunaal_mod') ? (kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa')) : 'Kunaal Wadhwa',
+            'shareText' => kunaal_mod('kunaal_share_text', ''),
+            'twitterHandle' => kunaal_mod('kunaal_twitter_handle', ''),
+            'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
+            'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
         'debug' => defined('WP_DEBUG') && WP_DEBUG, // Add debug flag for console statement guards
     ));
     

@@ -15,16 +15,16 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Get hero photos for v22 About page
+ * Get hero photos for About page
  * Returns array keyed by slot number 1..10 (stable slots, no reindex shifting)
  * 
  * @return array<int, string> Array keyed by slot number (1-10) => photo URL
- * @deprecated Use kunaal_get_hero_photo_ids_v22() for better performance with srcset
+ * @deprecated Use kunaal_get_hero_photo_ids() for better performance with srcset
  */
-function kunaal_get_hero_photos_v22(): array {
+function kunaal_get_hero_photos(): array {
     $photos = array();
     for ($i = 1; $i <= 10; $i++) {
-        $photo_id = (int) kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
+        $photo_id = (int) kunaal_mod("kunaal_about_hero_photo_{$i}", 0);
         if ($photo_id) {
             $photo_url = wp_get_attachment_image_url($photo_id, 'full');
             if ($photo_url) {
@@ -36,15 +36,15 @@ function kunaal_get_hero_photos_v22(): array {
 }
 
 /**
- * Get hero photo attachment IDs for v22 About page
+ * Get hero photo attachment IDs for About page
  * Returns array keyed by slot number 1..10 for use with wp_get_attachment_image()
  * 
  * @return array<int, int> Array keyed by slot number (1-10) => attachment ID
  */
-function kunaal_get_hero_photo_ids_v22(): array {
+function kunaal_get_hero_photo_ids(): array {
     $photo_ids = array();
     for ($i = 1; $i <= 10; $i++) {
-        $photo_id = (int) kunaal_mod("kunaal_about_v22_hero_photo_{$i}", 0);
+        $photo_id = (int) kunaal_mod("kunaal_about_hero_photo_{$i}", 0);
         if ($photo_id) {
             $photo_ids[$i] = $photo_id;
         }
@@ -53,26 +53,26 @@ function kunaal_get_hero_photo_ids_v22(): array {
 }
 
 /**
- * Get numbers data for v22 About page
+ * Get numbers data for About page
  * Returns array of number items (up to 8) plus infinity option
  */
-function kunaal_get_numbers_v22(): array {
+function kunaal_get_numbers(): array {
     $numbers = array();
     for ($i = 1; $i <= 8; $i++) {
-        $value = kunaal_mod("kunaal_about_v22_number_{$i}_value", '');
-        $label = kunaal_mod("kunaal_about_v22_number_{$i}_label", '');
+        $value = kunaal_mod("kunaal_about_number_{$i}_value", '');
+        $label = kunaal_mod("kunaal_about_number_{$i}_label", '');
         if (!empty($value) && !empty($label)) {
             $numbers[] = array(
                 'value' => $value,
-                'suffix' => kunaal_mod("kunaal_about_v22_number_{$i}_suffix", ''),
+                'suffix' => kunaal_mod("kunaal_about_number_{$i}_suffix", ''),
                 'label' => $label,
             );
         }
     }
     
     // Add infinity if enabled
-    if (kunaal_mod('kunaal_about_v22_numbers_infinity_show', true)) {
-        $infinity_label = kunaal_mod('kunaal_about_v22_numbers_infinity_label', 'Rabbit holes');
+    if (kunaal_mod('kunaal_about_numbers_infinity_show', true)) {
+        $infinity_label = kunaal_mod('kunaal_about_numbers_infinity_label', 'Rabbit holes');
         if (!empty($infinity_label)) {
             $numbers[] = array(
                 'value' => 'infinity',
@@ -86,18 +86,18 @@ function kunaal_get_numbers_v22(): array {
 }
 
 /**
- * Get categories for v22 About page
+ * Get categories for About page
  * Returns array of category definitions (up to 12)
  */
-function kunaal_get_categories_v22(): array {
+function kunaal_get_categories(): array {
     $categories = array();
     for ($i = 1; $i <= 12; $i++) {
-        $name = kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
+        $name = kunaal_mod("kunaal_about_category_{$i}_name", '');
         if (!empty($name)) {
             $slug = sanitize_title($name);
             $categories[$slug] = array(
                 'name' => $name,
-                'color' => kunaal_mod("kunaal_about_v22_category_{$i}_color", '#7D6B5D'),
+                'color' => kunaal_mod("kunaal_about_category_{$i}_color", '#7D6B5D'),
             );
         }
     }
@@ -105,18 +105,18 @@ function kunaal_get_categories_v22(): array {
 }
 
 /**
- * Get rabbit holes for v22 About page
+ * Get rabbit holes for About page
  * Returns array of rabbit hole items (up to 200)
  */
-function kunaal_get_rabbit_holes_v22(): array {
+function kunaal_get_rabbit_holes(): array {
     $rabbit_holes = array();
     for ($i = 1; $i <= 200; $i++) {
-        $text = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_text", '');
+        $text = kunaal_mod("kunaal_about_rabbit_hole_{$i}_text", '');
         if (!empty($text)) {
-            $image_id = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_image", 0);
+            $image_id = kunaal_mod("kunaal_about_rabbit_hole_{$i}_image", 0);
             $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
-            $category = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_category", '');
-            $url = kunaal_mod("kunaal_about_v22_rabbit_hole_{$i}_url", '');
+            $category = kunaal_mod("kunaal_about_rabbit_hole_{$i}_category", '');
+            $url = kunaal_mod("kunaal_about_rabbit_hole_{$i}_url", '');
             
             $rabbit_holes[] = array(
                 'image' => $image_url,
@@ -130,10 +130,10 @@ function kunaal_get_rabbit_holes_v22(): array {
 }
 
 /**
- * Get panoramas for v22 About page
+ * Get panoramas for About page
  * Returns array organized by position
  */
-function kunaal_get_panoramas_v22(): array {
+function kunaal_get_panoramas(): array {
     $panoramas_by_position = array(
         'after_hero' => array(),
         'after_numbers' => array(),
@@ -144,18 +144,18 @@ function kunaal_get_panoramas_v22(): array {
     );
     
     for ($i = 1; $i <= 10; $i++) {
-        $position = kunaal_mod("kunaal_about_v22_panorama_{$i}_position", 'none');
+        $position = kunaal_mod("kunaal_about_panorama_{$i}_position", 'none');
         if ($position !== 'none' && isset($panoramas_by_position[$position])) {
-            $image_id = kunaal_mod("kunaal_about_v22_panorama_{$i}_image", 0);
+            $image_id = kunaal_mod("kunaal_about_panorama_{$i}_image", 0);
             if ($image_id) {
                 $image_url = wp_get_attachment_image_url($image_id, 'full');
                 if ($image_url) {
                     $panoramas_by_position[$position][] = array(
                         'image' => $image_url,
-                        'height' => kunaal_mod("kunaal_about_v22_panorama_{$i}_height", '140'),
-                        'cut' => kunaal_mod("kunaal_about_v22_panorama_{$i}_cut", 'none'),
-                        'bg' => kunaal_mod("kunaal_about_v22_panorama_{$i}_bg", 'default'),
-                        'speed' => kunaal_mod("kunaal_about_v22_panorama_{$i}_speed", '2.0'),
+                        'height' => kunaal_mod("kunaal_about_panorama_{$i}_height", '140'),
+                        'cut' => kunaal_mod("kunaal_about_panorama_{$i}_cut", 'none'),
+                        'bg' => kunaal_mod("kunaal_about_panorama_{$i}_bg", 'default'),
+                        'speed' => kunaal_mod("kunaal_about_panorama_{$i}_speed", '2.0'),
                     );
                 }
             }
@@ -166,22 +166,22 @@ function kunaal_get_panoramas_v22(): array {
 }
 
 /**
- * Get books for v22 About page
+ * Get books for About page
  * Returns array of book items (up to 6)
  */
-function kunaal_get_books_v22(): array {
+function kunaal_get_books(): array {
     $books = array();
     for ($i = 1; $i <= 6; $i++) {
-        $title = kunaal_mod("kunaal_about_v22_book_{$i}_title", '');
+        $title = kunaal_mod("kunaal_about_book_{$i}_title", '');
         if (!empty($title)) {
-            $cover_id = kunaal_mod("kunaal_about_v22_book_{$i}_cover", 0);
+            $cover_id = kunaal_mod("kunaal_about_book_{$i}_cover", 0);
             $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
             
             $books[] = array(
                 'cover' => $cover_url,
                 'title' => $title,
-                'author' => kunaal_mod("kunaal_about_v22_book_{$i}_author", ''),
-                'url' => kunaal_mod("kunaal_about_v22_book_{$i}_url", ''),
+                'author' => kunaal_mod("kunaal_about_book_{$i}_author", ''),
+                'url' => kunaal_mod("kunaal_about_book_{$i}_url", ''),
             );
         }
     }
@@ -189,24 +189,24 @@ function kunaal_get_books_v22(): array {
 }
 
 /**
- * Get digital media for v22 About page
+ * Get digital media for About page
  * Returns array of digital items (up to 6)
  */
-function kunaal_get_digital_media_v22(): array {
+function kunaal_get_digital_media(): array {
     $digital = array();
     for ($i = 1; $i <= 6; $i++) {
-        $title = kunaal_mod("kunaal_about_v22_digital_{$i}_title", '');
+        $title = kunaal_mod("kunaal_about_digital_{$i}_title", '');
         if (!empty($title)) {
-            $cover_id = kunaal_mod("kunaal_about_v22_digital_{$i}_cover", 0);
+            $cover_id = kunaal_mod("kunaal_about_digital_{$i}_cover", 0);
             $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
-            $link_type = kunaal_mod("kunaal_about_v22_digital_{$i}_link_type", 'spotify');
+            $link_type = kunaal_mod("kunaal_about_digital_{$i}_link_type", 'spotify');
             
             $digital[] = array(
                 'cover' => $cover_url,
                 'title' => $title,
-                'artist' => kunaal_mod("kunaal_about_v22_digital_{$i}_artist", ''),
+                'artist' => kunaal_mod("kunaal_about_digital_{$i}_artist", ''),
                 'link_type' => $link_type,
-                'url' => kunaal_mod("kunaal_about_v22_digital_{$i}_url", ''),
+                'url' => kunaal_mod("kunaal_about_digital_{$i}_url", ''),
             );
         }
     }
@@ -214,13 +214,13 @@ function kunaal_get_digital_media_v22(): array {
 }
 
 /**
- * Get places data for v22 About page
+ * Get places data for About page
  * Returns array with lived, visited, and current location ISO codes
  */
-function kunaal_get_places_v22(): array {
-    $lived_str = kunaal_mod('kunaal_about_v22_places_lived', '');
-    $visited_str = kunaal_mod('kunaal_about_v22_places_visited', '');
-    $current = kunaal_mod('kunaal_about_v22_places_current', '');
+function kunaal_get_places(): array {
+    $lived_str = kunaal_mod('kunaal_about_places_lived', '');
+    $visited_str = kunaal_mod('kunaal_about_places_visited', '');
+    $current = kunaal_mod('kunaal_about_places_current', '');
     
     $lived = array();
     if (!empty($lived_str)) {
@@ -251,23 +251,23 @@ function kunaal_get_places_v22(): array {
 }
 
 /**
- * Get inspirations for v22 About page
+ * Get inspirations for About page
  * Returns array of inspiration items (up to 10)
  */
-function kunaal_get_inspirations_v22(): array {
+function kunaal_get_inspirations(): array {
     $inspirations = array();
     for ($i = 1; $i <= 10; $i++) {
-        $name = kunaal_mod("kunaal_about_v22_inspiration_{$i}_name", '');
+        $name = kunaal_mod("kunaal_about_inspiration_{$i}_name", '');
         if (!empty($name)) {
-            $photo_id = kunaal_mod("kunaal_about_v22_inspiration_{$i}_photo", 0);
+            $photo_id = kunaal_mod("kunaal_about_inspiration_{$i}_photo", 0);
             $photo_url = $photo_id ? wp_get_attachment_image_url($photo_id, 'medium') : '';
             
             $inspirations[] = array(
                 'photo' => $photo_url,
                 'name' => $name,
-                'role' => kunaal_mod("kunaal_about_v22_inspiration_{$i}_role", ''),
-                'note' => kunaal_mod("kunaal_about_v22_inspiration_{$i}_note", ''),
-                'url' => kunaal_mod("kunaal_about_v22_inspiration_{$i}_url", ''),
+                'role' => kunaal_mod("kunaal_about_inspiration_{$i}_role", ''),
+                'note' => kunaal_mod("kunaal_about_inspiration_{$i}_note", ''),
+                'url' => kunaal_mod("kunaal_about_inspiration_{$i}_url", ''),
             );
         }
     }

@@ -24,14 +24,14 @@ if (!defined('KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL')) {
  * Main function that creates the panel and delegates to section-specific functions.
  * This reduces the function length from 777 lines to ~30 lines.
  */
-function kunaal_about_customizer_v22(WP_Customize_Manager $wp_customize): void {
+function kunaal_about_customizer(WP_Customize_Manager $wp_customize): void {
     // Load section helpers
     require_once KUNAAL_THEME_DIR . '/inc/Features/About/customizer-sections.php';
     
     // ============================
     // PANEL: About Page
     // ============================
-    $wp_customize->add_panel('kunaal_about_v22_panel', array(
+    $wp_customize->add_panel('kunaal_about_panel', array(
         'title' => 'About Page',
         'priority' => 50,
         'description' => 'Configure your About page sections. All fields are intuitive - no JSON required.',
@@ -49,7 +49,7 @@ function kunaal_about_customizer_v22(WP_Customize_Manager $wp_customize): void {
     kunaal_register_about_inspirations_section($wp_customize);
     kunaal_register_about_say_hello_section($wp_customize);
 }
-add_action('customize_register', 'kunaal_about_customizer_v22', 20);
+add_action('customize_register', 'kunaal_about_customizer', 20);
 
 /**
  * Helper: Get category choices for dropdown
@@ -58,10 +58,10 @@ add_action('customize_register', 'kunaal_about_customizer_v22', 20);
  * @param WP_Customize_Manager $wp_customize Optional. Customizer instance for live preview.
  * @return array Category choices for select dropdown
  */
-function kunaal_get_category_choices_v22(): array {
+function kunaal_get_category_choices(): array {
     $choices = array('' => '-- Select Category --');
     for ($i = 1; $i <= 12; $i++) {
-        $name = kunaal_mod("kunaal_about_v22_category_{$i}_name", '');
+        $name = kunaal_mod("kunaal_about_category_{$i}_name", '');
         if (!empty($name)) {
             // Use slugified version as key
             $slug = sanitize_title($name);

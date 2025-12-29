@@ -2,7 +2,7 @@
 
 This document tracks known technical debt in the codebase. Review this before starting work and update it with every commit.
 
-**Last Updated**: YYYY-MM-DD
+**Last Updated**: 2025-01-27
 
 ---
 
@@ -79,7 +79,11 @@ Track recently resolved items here for reference, then archive monthly.
 
 | Item | Location | Resolved Date | Resolution |
 |------|----------|---------------|------------|
-| _Example_ | `path/to/file.php` | YYYY-MM-DD | Brief description of how it was resolved |
+| Duplicate validation file | `inc/validation/validation.php` | 2025-01-27 | Deleted duplicate - `inc/Support/validation.php` is canonical |
+| Inline jotting markup | `archive-jotting.php` | 2025-01-27 | Replaced with `kunaal_render_jotting_row()` helper function |
+| Inline card markup | `index.php`, `taxonomy-topic.php` | 2025-01-27 | Replaced with `kunaal_render_essay_card()` helper function |
+| Duplicate CSS underline implementations | `contact-page.css`, `editor-style.css` | 2025-01-27 | Removed duplicates - now uses canonical pattern from `utilities.css` |
+| V22 function naming | `inc/Features/About/data.php`, `customizer.php`, `page-about.php`, `enqueue.php`, `customizer-sections.php` | 2025-01-27 | Renamed all 11 functions to remove `_v22` suffix |
 
 ---
 

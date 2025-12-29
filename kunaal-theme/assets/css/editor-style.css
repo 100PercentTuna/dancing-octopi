@@ -51,16 +51,8 @@
 /* Links - use canonical animated underline pattern from utilities.css */
 .editor-styles-wrapper a {
   color: var(--ink);
-  text-decoration: none;
-  /* Canonical animated underline pattern */
-  background-image: linear-gradient(
-    var(--k-underline-blue-color, var(--blue)),
-    var(--k-underline-blue-color, var(--blue))
-  );
-  background-repeat: no-repeat;
-  background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
-  background-size: 100% var(--k-underline-blue-thickness, 2px);
-  padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
+  /* Use canonical underline pattern - utilities.css handles underline via :where() selectors */
+  /* Editor links inherit the global link underline pattern automatically */
 }
 
 /* Quotes */

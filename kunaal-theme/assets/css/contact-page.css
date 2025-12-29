@@ -786,22 +786,7 @@
   margin-top: 10px;
   font-size: 13px;
   color: var(--blue);
-  text-decoration: none;
-  /* Canonical animated underline pattern */
-  background-image: linear-gradient(
-    var(--k-underline-blue-color, var(--blue)),
-    var(--k-underline-blue-color, var(--blue))
-  );
-  background-repeat: no-repeat;
-  background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
-  background-size: 0% var(--k-underline-blue-thickness, 2px);
-  padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
-  transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms;
-}
-
-.ledgerQrOpen:hover,
-.ledgerQrOpen:focus-visible {
-  background-size: 100% var(--k-underline-blue-thickness, 2px);
+  /* Underline pattern inherited from utilities.css global link styles */
 }
 
 @media (max-width: 740px) {

@@ -26,38 +26,38 @@ $last_name = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
 $full_name = trim($first_name . ' ' . $last_name);
 
 // Get photo IDs for optimized rendering with srcset
-$hero_photo_ids = kunaal_get_hero_photo_ids_v22();
-$hero_intro = kunaal_mod('kunaal_about_v22_hero_intro', 'A curiosity about humans and human collectives — how we organize, what we believe, why we do what we do.');
-$hero_hand_note = kunaal_mod('kunaal_about_v22_hero_hand_note', 'slightly alarming?');
-$hero_location = kunaal_mod('kunaal_about_v22_hero_location', 'Singapore');
-$hero_listening = kunaal_mod('kunaal_about_v22_hero_listening', 'Ezra Klein Show');
-$hero_reading = kunaal_mod('kunaal_about_v22_hero_reading', 'Master of the Senate');
+$hero_photo_ids = kunaal_get_hero_photo_ids();
+$hero_intro = kunaal_mod('kunaal_about_hero_intro', 'A curiosity about humans and human collectives — how we organize, what we believe, why we do what we do.');
+$hero_hand_note = kunaal_mod('kunaal_about_hero_hand_note', 'slightly alarming?');
+$hero_location = kunaal_mod('kunaal_about_hero_location', 'Singapore');
+$hero_listening = kunaal_mod('kunaal_about_hero_listening', 'Ezra Klein Show');
+$hero_reading = kunaal_mod('kunaal_about_hero_reading', 'Master of the Senate');
 
-$numbers = kunaal_get_numbers_v22();
-$numbers_show = kunaal_mod('kunaal_about_v22_numbers_show', true);
+$numbers = kunaal_get_numbers();
+$numbers_show = kunaal_mod('kunaal_about_numbers_show', true);
 
-$categories = kunaal_get_categories_v22();
-$rabbit_holes = kunaal_get_rabbit_holes_v22();
-$rabbit_holes_show = kunaal_mod('kunaal_about_v22_rabbit_holes_show', true);
-$rabbit_holes_title = kunaal_mod('kunaal_about_v22_rabbit_holes_title', "Things I can't stop exploring");
+$categories = kunaal_get_categories();
+$rabbit_holes = kunaal_get_rabbit_holes();
+$rabbit_holes_show = kunaal_mod('kunaal_about_rabbit_holes_show', true);
+$rabbit_holes_title = kunaal_mod('kunaal_about_rabbit_holes_title', "Things I can't stop exploring");
 
-$panoramas = kunaal_get_panoramas_v22();
+$panoramas = kunaal_get_panoramas();
 
-$books = kunaal_get_books_v22();
-$books_show = kunaal_mod('kunaal_about_v22_books_show', true);
+$books = kunaal_get_books();
+$books_show = kunaal_mod('kunaal_about_books_show', true);
 
-$digital = kunaal_get_digital_media_v22();
-$digital_show = kunaal_mod('kunaal_about_v22_digital_show', true);
+$digital = kunaal_get_digital_media();
+$digital_show = kunaal_mod('kunaal_about_digital_show', true);
 
-$places = kunaal_get_places_v22();
-$places_show = kunaal_mod('kunaal_about_v22_places_show', true);
-$places_title = kunaal_mod('kunaal_about_v22_places_title', "Where I've been");
+$places = kunaal_get_places();
+$places_show = kunaal_mod('kunaal_about_places_show', true);
+$places_title = kunaal_mod('kunaal_about_places_title', "Where I've been");
 
-$inspirations = kunaal_get_inspirations_v22();
-$inspirations_show = kunaal_mod('kunaal_about_v22_inspirations_show', true);
-$inspirations_title = kunaal_mod('kunaal_about_v22_inspirations_title', "People I learn from");
+$inspirations = kunaal_get_inspirations();
+$inspirations_show = kunaal_mod('kunaal_about_inspirations_show', true);
+$inspirations_title = kunaal_mod('kunaal_about_inspirations_title', "People I learn from");
 
-$say_hello_show = kunaal_mod('kunaal_about_v22_say_hello_show', true);
+$say_hello_show = kunaal_mod('kunaal_about_say_hello_show', true);
 $contact_email = kunaal_mod('kunaal_contact_email', '');
 $linkedin_url = kunaal_mod('kunaal_linkedin_handle', '');
 $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
