@@ -5,39 +5,62 @@
 @layer components {
 /* ========================================
    CARDS (Essay Cards)
+   
+   Canonical owner: components.css (this file)
+   
+   Reveal animation: Cards are visible by default (progressive enhancement).
+   When JS is ready, cards without .revealed class are hidden and animate in
+   on scroll via IntersectionObserver adding .revealed class.
    ======================================== */
+
+/* Base card styles */
+.card {
+  background: var(--bg);
+  display: block;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  
+  /* Performance optimization */
+  content-visibility: auto;
+  contain-intrinsic-size: 360px 280px;
+  
+  /* Staggered delays via CSS custom property (set by JS) */
+  transition-delay: var(--card-delay, 0ms);
+  
+  /* Unified transitions for all animated properties */
+  transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 400ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 400ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 600ms ease,
+              filter 600ms ease;
+}
+
+/* Initial hidden state - only when JS is ready (progressive enhancement) */
+.js-ready .card:not(.revealed) {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  filter: blur(4px);
+}
+
+/* Revealed state - cards visible after scroll intersection */
 .card.revealed {
   opacity: 1;
   transform: translateY(0) scale(1);
   filter: blur(0);
 }
+
+/* Hover state - only applies when card is revealed */
 .card.revealed:hover {
-  transform: translateY(-10px) scale(1.01);
-}
-
-/* Staggered delays - now using CSS custom property set via inline style */
-.card {
-  transition-delay: var(--card-delay, 0ms);
-}
-
-.card {
-  background: var(--bg);
-  display: block;
-  border: 1px solid transparent;
-  transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 400ms cubic-bezier(0.4,0,0.2,1),
-              border-color 300ms ease;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-  text-decoration: none;
-  color: inherit;
-}
-.card:hover {
   border-color: var(--blueHover);
-  transform: translateY(-8px);
+  transform: translateY(-10px) scale(1.01);
   box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.06);
 }
+
+/* Focus state */
 .card:focus-visible {
   border-color: var(--blueHover);
   transform: scale(1.008);
@@ -46,6 +69,7 @@
   outline-offset: 2px;
 }
 
+/* Blue accent line on hover/focus */
 .card::before {
   content: "";
   position: absolute;
@@ -55,13 +79,16 @@
   width: 2px;
   background: var(--blue);
   opacity: 0;
-  transition: height 400ms cubic-bezier(0.4,0,0.2,1), opacity 300ms ease;
-  z-index: 2;
+  transition: height 320ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 5;
 }
 
-.card:hover::before, .card:focus-visible::before {
+.card:hover::before,
+.card:focus-visible::before {
   height: 100%;
-  opacity: .95;
+  opacity: 0.95;
 }
 
 /* Media frames - 4:5 aspect ratio */

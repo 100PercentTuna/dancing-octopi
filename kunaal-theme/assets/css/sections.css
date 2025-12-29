@@ -105,25 +105,10 @@ main.container > .section:first-of-type {
 
 /* ========================================
    SCROLL REVEAL ANIMATIONS
+   
+   NOTE: Card reveal animations are owned by components.css.
+   This section only contains generic reveal utility classes.
    ======================================== */
-.js-ready .card:not(.revealed) {
-  opacity: 0;
-  transform: translateY(80px) scale(0.92);
-  filter: blur(4px);
-}
-.card.revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
-.card.revealed:hover {
-  transform: translateY(-10px) scale(1.01);
-}
-
-/* Staggered delays - now using CSS custom property set via inline style */
-.card {
-  transition-delay: var(--card-delay, 0ms);
-}
 
 /* Generic reveal classes */
 .js-ready .reveal {
