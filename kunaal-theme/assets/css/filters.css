@@ -131,7 +131,7 @@
   box-shadow: 0 12px 40px rgba(0,0,0,.12);
   padding: 8px;
   display: none;
-  z-index: 50;
+  z-index: 9999; /* Above mast (9998) */
 }
 .topicDropdown.open { display: block; }
 

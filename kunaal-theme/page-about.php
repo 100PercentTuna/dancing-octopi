@@ -2,8 +2,7 @@
 /**
  * Template Name: About Page
  *
- * V22 Polished Design - About page template
- * Matches kunaal-about-v22-polished.html exactly
+ * About page template with hero mosaic, rabbit holes, media shelves, map, and inspirations.
  *
  * @package Kunaal_Theme
  * @since 4.21.0
@@ -266,19 +265,6 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                 <div class="media-col-header">
                     <h3 class="media-col-title">On the nightstand</h3>
                 </div>
-                <div class="media-grid">
-                    <?php foreach ($books as $book) : ?>
-                    <div class="media-item" data-reveal="up">
-                        <div class="media-cover book">
-                            <?php if (!empty($book['cover'])) : ?>
-                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
-                            <?php endif; ?>
-                        </div>
-                        <div class="media-title"><?php echo esc_html($book['title']); ?></div>
-                        <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
             </div>
             <?php endif; ?>
             
@@ -289,39 +275,57 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                 <div class="media-col-header">
                     <h3 class="media-col-title">On repeat</h3>
                 </div>
-                <div class="media-grid">
-                    <?php foreach ($digital as $item) :
-                        $link_type_label = ucfirst($item['link_type']);
-                        if ($item['link_type'] === 'apple') {
-                            $link_type_label = 'Apple Podcasts';
-                        }
-                        $has_link = !empty($item['url']);
-                        $tag = $has_link ? 'a' : 'div';
-                    ?>
-                    <<?php echo $tag; ?> class="media-item" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
-                        <div class="media-cover album">
-                            <?php if (!empty($item['cover'])) : ?>
-                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
-                            <?php endif; ?>
-                            <?php if ($has_link) : ?>
-                            <span class="play-icon">▶</span>
-                            <?php endif; ?>
-                        </div>
-                        <div class="media-title"><?php echo esc_html($item['title']); ?></div>
-                        <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
-                        <?php if ($has_link) : ?>
-                        <div class="media-link">
-                            <?php echo esc_html($link_type_label); ?>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <line x1="7" y1="17" x2="17" y2="7"></line>
-                                <polyline points="7 7 17 7 17 17"></polyline>
-                            </svg>
-                        </div>
-                        <?php endif; ?>
-                    </<?php echo $tag; ?>>
-                    <?php endforeach; ?>
-                </div>
             </div>
+            <?php endif; ?>
+        </div>
+        
+        <!-- Unified grid for both columns to ensure row alignment -->
+        <div class="media-grid-combined">
+            <?php if ($books_show && !empty($books)) : ?>
+                <?php foreach ($books as $book) : ?>
+                <div class="media-item media-item--book" data-reveal="up">
+                    <div class="media-cover book">
+                        <?php if (!empty($book['cover'])) : ?>
+                        <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
+                        <?php endif; ?>
+                    </div>
+                    <div class="media-title"><?php echo esc_html($book['title']); ?></div>
+                    <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
+                </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            
+            <?php if ($digital_show && !empty($digital)) : ?>
+                <?php foreach ($digital as $item) :
+                    $link_type_label = ucfirst($item['link_type']);
+                    if ($item['link_type'] === 'apple') {
+                        $link_type_label = 'Apple Podcasts';
+                    }
+                    $has_link = !empty($item['url']);
+                    $tag = $has_link ? 'a' : 'div';
+                ?>
+                <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
+                    <div class="media-cover album">
+                        <?php if (!empty($item['cover'])) : ?>
+                        <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
+                        <?php endif; ?>
+                        <?php if ($has_link) : ?>
+                        <span class="play-icon">▶</span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="media-title"><?php echo esc_html($item['title']); ?></div>
+                    <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
+                    <?php if ($has_link) : ?>
+                    <div class="media-link">
+                        <?php echo esc_html($link_type_label); ?>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="7" y1="17" x2="17" y2="7"></line>
+                            <polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                    </div>
+                    <?php endif; ?>
+                </<?php echo $tag; ?>>
+                <?php endforeach; ?>
             <?php endif; ?>
         </div>
     </div>
@@ -376,12 +380,20 @@ kunaal_render_panoramas($places_panoramas);
         <div class="section-label" data-reveal="up">Inspirations</div>
         <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($inspirations_title); ?></h2>
         <div class="inspirations-grid">
-            <?php foreach ($inspirations as $inspiration) : ?>
-            <div class="inspiration-item" data-reveal="up">
+            <?php foreach ($inspirations as $inspiration) :
+                $has_url = !empty($inspiration['url']);
+                $tag = $has_url ? 'a' : 'div';
+            ?>
+            <<?php echo $tag; ?> class="inspiration-item" <?php echo $has_url ? 'href="' . esc_url($inspiration['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
+                <?php if (!empty($inspiration['photo'])) : ?>
+                <div class="inspiration-photo">
+                    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($inspiration['photo']); ?>"/>
+                </div>
+                <?php endif; ?>
                 <div class="inspiration-name"><?php echo esc_html($inspiration['name']); ?></div>
                 <div class="inspiration-role"><?php echo esc_html($inspiration['role']); ?></div>
                 <div class="inspiration-note"><?php echo esc_html($inspiration['note']); ?></div>
-            </div>
+            </<?php echo $tag; ?>>
             <?php endforeach; ?>
         </div>
     </div>

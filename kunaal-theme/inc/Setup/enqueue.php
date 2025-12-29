@@ -240,7 +240,16 @@ function kunaal_enqueue_page_specific_assets(): void {
             foreach ($categories as $slug => $category) {
                 $css_vars .= "  --cat-" . esc_attr($slug) . ": " . esc_attr($category['color']) . ";\n";
             }
-            $css_vars .= "}";
+            $css_vars .= "}\n";
+            // Add slug-scoped selectors for capsule dots and legend dots
+            foreach ($categories as $slug => $category) {
+                $css_vars .= ".kunaal-about-page .capsule[data-cat=\"" . esc_attr($slug) . "\"] .capsule-dot {\n";
+                $css_vars .= "  background: var(--cat-" . esc_attr($slug) . ");\n";
+                $css_vars .= "}\n";
+                $css_vars .= ".kunaal-about-page .legend-dot[data-cat=\"" . esc_attr($slug) . "\"] {\n";
+                $css_vars .= "  background: var(--cat-" . esc_attr($slug) . ");\n";
+                $css_vars .= "}\n";
+            }
             wp_add_inline_style('kunaal-about-page', $css_vars);
         }
         

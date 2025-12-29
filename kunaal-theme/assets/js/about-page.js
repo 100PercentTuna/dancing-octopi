@@ -795,31 +795,25 @@
             tooltip.setAttribute('aria-hidden', 'true');
           });
 
-        // Add pin for current location (use first current location)
+        // Add beacon for current location (use first current location)
         if (current.length > 0) {
-          // Coordinates for common locations (expandable)
-          const coordsMap = {
-            'SGP': [103.8198, 1.3521],
-            'USA': [-95.7129, 37.0902],
-            'IND': [78.9629, 20.5937],
-            'GBR': [-3.4360, 55.3781],
-            'THA': [100.9925, 15.8700],
-            'PHL': [121.7740, 12.8797],
-            'CHE': [8.2275, 46.8182],
-            'CAN': [-106.3468, 56.1304],
-            'MYS': [101.9758, 4.2105],
-            'MDV': [73.2207, 3.2028],
-            'BRA': [-51.9253, -14.2350],
-            'MEX': [-102.5528, 23.6345],
-            'ZAF': [22.9375, -30.5595]
-          };
-
-          const currentIso = current[0];
-          const coords = coordsMap[currentIso] || coordsMap['SGP']; // Default to Singapore
-          const pt = projection(coords);
-          const px = pt[0];
-          const py = pt[1];
-          const g = svg.append('g').attr('transform', 'translate(' + px + ',' + py + ')');
+          const currentIso = current[0].toUpperCase();
+          // Find the feature for current ISO
+          let currentFeature = null;
+          for (var i = 0; i < countries.features.length; i++) {
+            const iso = idToIso[countries.features[i].id];
+            if (iso && iso.toUpperCase() === currentIso) {
+              currentFeature = countries.features[i];
+              break;
+            }
+          }
+          
+          if (currentFeature) {
+            // Compute centroid using path.centroid
+            const centroid = path.centroid(currentFeature);
+            const px = centroid[0];
+            const py = centroid[1];
+            const g = svg.append('g').attr('class', 'current-marker-group').attr('transform', 'translate(' + px + ',' + py + ')');
 
           // Get beacon color from CSS variables (respects dark mode)
           function getBeaconColor() {
@@ -842,10 +836,12 @@
           }
           
           const beaconColor = getBeaconColor();
-          const beaconSize = 7; // Bigger beacon (was 5)
+          const beaconSize = 7;
           
+          // Pulsing outer circle
           function pulse() {
             g.append('circle')
+              .attr('class', 'current-pulse')
               .attr('r', beaconSize)
               .attr('fill', 'none')
               .attr('stroke', beaconColor)
@@ -853,39 +849,37 @@
               .attr('opacity', 0.7)
               .transition()
               .duration(1200)
-              .attr('r', 22) // Bigger pulse (was 18)
+              .attr('r', 22)
               .attr('opacity', 0)
               .remove()
               .on('end', pulse);
           }
           pulse();
 
-          g.append('circle').attr('r', beaconSize).attr('fill', beaconColor);
-          g.append('circle').attr('r', 3).attr('fill', '#fff'); // Bigger inner dot
+          // Main marker circle
+          g.append('circle')
+            .attr('class', 'current-marker')
+            .attr('r', beaconSize)
+            .attr('fill', beaconColor);
+          
+          // Inner white dot
+          g.append('circle')
+            .attr('r', 3)
+            .attr('fill', '#fff');
           
           // Listen for theme changes and update beacon color
           const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-                beaconColor = getBeaconColor();
+                const newBeaconColor = getBeaconColor();
                 // Update existing circles
-                g.selectAll('circle').attr('fill', function() {
-                  const r = d3.select(this).attr('r');
-                  if (parseFloat(r) === beaconSize) {
-                    return beaconColor;
-                  }
-                  return '#fff';
-                }).attr('stroke', function() {
-                  const r = d3.select(this).attr('r');
-                  if (parseFloat(r) > beaconSize) {
-                    return beaconColor;
-                  }
-                  return null;
-                });
+                g.selectAll('.current-marker').attr('fill', newBeaconColor);
+                g.selectAll('.current-pulse').attr('stroke', newBeaconColor);
               }
             });
           });
           observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+          }
         }
       }).catch(function (err) {
         if (window.kunaalTheme?.debug) {
