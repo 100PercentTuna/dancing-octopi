@@ -979,8 +979,8 @@
   // Header nav (mobile toggle)
   // =============================================
   function initHeaderNav(){
-    const toggle = document.getElementById('navToggle');
-    const nav = document.getElementById('mainNav');
+    const toggle = document.querySelector('[data-ui="nav-toggle"]');
+    const nav = document.querySelector('[data-ui="nav"]');
     if(!toggle || !nav) return;
 
     function close(){

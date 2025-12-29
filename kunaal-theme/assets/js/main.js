@@ -36,26 +36,24 @@
   // ========================================
   // DOM REFERENCES
   // ========================================
+  // Unique page elements (acceptable to use IDs)
   const progressFill = document.getElementById('progressFill');
-  const navToggle = document.getElementById('navToggle');
-  const nav = document.getElementById('nav');
   const avatar = document.getElementById('avatar');
   const avatarImg = document.getElementById('avatarImg');
-  // Filter elements - now using data-* hooks via event delegation
-  // Keep IDs for backward compatibility with count labels (essayCountShown, jotCountShown, etc.)
-  const essayGrid = document.getElementById('essayGrid');
-  const jotList = document.getElementById('jotList');
-  
-  // New unified dock system
-  const actionDock = document.getElementById('actionDock');
-  const shareToggle = document.getElementById('shareToggle');
-  const subscribeToggle = document.getElementById('subscribeToggle');
   const downloadButton = document.getElementById('downloadButton');
-  const sharePanel = document.getElementById('sharePanel');
-  const subscribePanel = document.getElementById('subscribePanel');
-  
   const tocList = document.getElementById('tocList');
   const infiniteLoader = document.getElementById('infiniteLoader');
+  
+  // Reusable components (using data-* hooks instead of IDs)
+  const navToggle = document.querySelector('[data-ui="nav-toggle"]');
+  const nav = document.querySelector('[data-ui="nav"]');
+  const actionDock = document.querySelector('[data-ui="action-dock"]');
+  const shareToggle = document.querySelector('[data-ui="share-toggle"]');
+  const subscribeToggle = document.querySelector('[data-ui="subscribe-toggle"]');
+  const sharePanel = document.querySelector('[data-ui="share-panel"]');
+  const subscribePanel = document.querySelector('[data-ui="subscribe-panel"]');
+  const essayGrid = document.querySelector('[data-ui="essay-grid"]');
+  const jotList = document.querySelector('[data-ui="jot-list"]');
   
   // Early exit if critical DOM elements are missing
   if (!navToggle || !nav) {

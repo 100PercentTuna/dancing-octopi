@@ -25,16 +25,18 @@ $all_topics = kunaal_get_all_topics();
 
   <!-- Section header - EXACTLY like home page with blue underline and count -->
   <section class="section" id="essays" aria-label="Essays">
-    <div class="sectionHead">
-      <h2 class="u-section-underline">Essays</h2>
-      <span class="sectionCount">
-        <span id="essayCountShown"><?php echo esc_html($total_essays); ?></span>
-        <span id="essayLabel"><?php echo esc_html($total_essays == 1 ? 'essay' : 'essays'); ?></span>
-      </span>
-    </div>
+    <?php
+    get_template_part('template-parts/components/section-head', null, array(
+      'title' => 'Essays',
+      'count' => $total_essays,
+      'count_label' => $total_essays == 1 ? 'essay' : 'essays',
+      'count_id' => 'essayCountShown',
+      'label_id' => 'essayLabel',
+    ));
+    ?>
 
     <?php if (have_posts()) : ?>
-      <ul class="grid" id="essayGrid" data-post-type="essay">
+      <ul class="grid" id="essayGrid" data-ui="essay-grid" data-post-type="essay">
         <?php while (have_posts()) : the_post(); ?>
           <?php kunaal_render_essay_card(get_the_ID()); ?>
         <?php endwhile; ?>

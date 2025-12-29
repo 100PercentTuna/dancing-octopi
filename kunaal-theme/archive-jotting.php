@@ -25,16 +25,18 @@ $all_topics = kunaal_get_all_topics();
 
   <!-- Section header - EXACTLY like home page with blue underline and count -->
   <section class="section" id="jottings" aria-label="Jottings">
-    <div class="sectionHead">
-      <h2 class="u-section-underline">Jottings</h2>
-      <span class="sectionCount">
-        <span id="jotCountShown"><?php echo esc_html($total_jottings); ?></span>
-        <span id="jotLabel"><?php echo esc_html($total_jottings == 1 ? 'quick jotted-down rough idea' : 'quick jotted-down rough ideas'); ?></span>
-      </span>
-    </div>
+    <?php
+    get_template_part('template-parts/components/section-head', null, array(
+      'title' => 'Jottings',
+      'count' => $total_jottings,
+      'count_label' => $total_jottings == 1 ? 'quick jotted-down rough idea' : 'quick jotted-down rough ideas',
+      'count_id' => 'jotCountShown',
+      'label_id' => 'jotLabel',
+    ));
+    ?>
 
     <?php if (have_posts()) : ?>
-      <ul class="ledger" id="jotList" data-post-type="jotting">
+      <ul class="ledger" id="jotList" data-ui="jot-list" data-post-type="jotting">
         <?php while (have_posts()) : the_post(); ?>
           <?php
           $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);

@@ -78,13 +78,9 @@ h2, .articleTitle { font-family: var(--sans); font-weight: 600; letter-spacing: 
     color 300ms ease;
 }
 
-/* Opt-out for elements that shouldn't transition */
-.no-theme-transition,
-.chart-canvas,
-.map-container,
-img,
-video {
-  transition: none !important;
+/* Opt-out for elements that shouldn't transition - using :where() for lower specificity */
+:where(.no-theme-transition, .chart-canvas, .map-container, img, video) {
+  transition: none;
 }
 
 /* Reduced motion preference */
@@ -97,30 +93,17 @@ video {
 /* ========================================
    TITLE CASE FIXES
    ======================================== */
-/* CRITICAL FIX: Force titles to display in their natural case */
-.tTitle, .jTitle, 
+/* CRITICAL FIX: Force titles to display in their natural case
+ * Using :where() for lower specificity - no !important needed
+ */
+:where(.tTitle, .jTitle, 
 .parallax-split-text h3,
 .split-label,
 .subscribe-section h3,
-.subscribePanelContent h4 {
-  text-transform: none !important;
-}
-
-/* EXPLICIT: Titles display exactly as typed by author */
-.tTitle {
-  text-transform: none !important;
-  font-variant: normal !important;
-  font-variant-caps: normal !important;
-}
-
-.jTitle {
-  text-transform: none !important;
-  font-variant: normal !important;
-  font-variant-caps: normal !important;
-}
-
-h3.tTitle, h3.jTitle {
-  text-transform: none !important;
+.subscribePanelContent h4) {
+  text-transform: none;
+  font-variant: normal;
+  font-variant-caps: normal;
 }
 
 } /* End @layer base */

@@ -123,7 +123,7 @@ The canonical double underline implementation is in `utilities.css`:
 ### Adding Block Styles
 
 1. Add to `blocks.css` within `@layer blocks`
-2. Register block style in `inc/blocks.php` if needed
+2. Register block style in `inc/Blocks/register.php` if needed
 3. Use tokens for consistency
 
 ## Enqueue Order

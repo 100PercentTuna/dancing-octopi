@@ -19,7 +19,7 @@ $status_labels = ['untested' => 'Untested', 'validated' => 'Validated', 'invalid
             <tr>
                 <th scope="col">Assumption</th>
                 <th scope="col">Confidence</th>
-                <th scope="col">Status</th>
+                <th scope="col" class="ar-status">Status</th>
             </tr>
         </thead>
         <tbody>

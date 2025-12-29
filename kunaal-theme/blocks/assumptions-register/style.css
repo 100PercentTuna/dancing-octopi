@@ -134,8 +134,9 @@
 }
 
 @media (max-width: 640px) {
-    .ar-table th:nth-child(3),
-    .ar-table td:nth-child(3) {
+    /* Hide Status column on mobile - using explicit class instead of nth-child */
+    .ar-table th.ar-status,
+    .ar-table td.ar-status {
         display: none;
     }
 }

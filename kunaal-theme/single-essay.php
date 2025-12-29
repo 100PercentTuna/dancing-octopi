@@ -9,9 +9,9 @@ get_header();
 ?>
 
 <!-- Unified Action Dock (Right Side) - Share, Subscribe, Download -->
-<div class="actionDock" id="actionDock">
+<div class="actionDock" id="actionDock" data-ui="action-dock">
   <!-- Share Button -->
-  <button class="dockButton" id="shareToggle" aria-label="<?php esc_attr_e('Share this essay', 'kunaal-theme'); ?>" data-action="share">
+  <button class="dockButton" id="shareToggle" data-ui="share-toggle" aria-label="<?php esc_attr_e('Share this essay', 'kunaal-theme'); ?>" data-action="share">
     <span class="tip"><?php esc_html_e('Share', 'kunaal-theme'); ?></span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
@@ -23,7 +23,7 @@ get_header();
   <?php
   $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
   if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) {
-      echo '<button class="dockButton" id="subscribeToggle" aria-label="' . esc_attr__('Subscribe to updates', 'kunaal-theme') . '" data-action="subscribe">';
+      echo '<button class="dockButton" id="subscribeToggle" data-ui="subscribe-toggle" aria-label="' . esc_attr__('Subscribe to updates', 'kunaal-theme') . '" data-action="subscribe">';
       echo '<span class="tip">';
       esc_html_e('Subscribe', 'kunaal-theme');
       echo '</span>';
@@ -47,7 +47,7 @@ get_header();
 </div>
 
 <!-- Share Panel (slides out when share button clicked) -->
-<div class="sharePanel" id="sharePanel">
+<div class="sharePanel" id="sharePanel" data-ui="share-panel">
   <button class="shareItem" data-share="linkedin" aria-label="<?php esc_attr_e('Share on LinkedIn', 'kunaal-theme'); ?>">
     <span class="tip"><?php esc_html_e('LinkedIn', 'kunaal-theme'); ?></span>
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -88,7 +88,7 @@ $sub_location = kunaal_mod('kunaal_subscribe_location', 'both');
 $sub_mode = kunaal_mod('kunaal_subscribe_mode', 'builtin');
 if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, array('dock', 'both'))) {
     ?>
-<div class="subscribePanel" id="subscribePanel">
+<div class="subscribePanel" id="subscribePanel" data-ui="subscribe-panel">
   <div class="subscribePanelContent">
     <h4><?php echo esc_html(kunaal_mod('kunaal_subscribe_heading', 'Stay updated')); ?></h4>
     <p><?php echo esc_html(kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays are published.')); ?></p>

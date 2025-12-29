@@ -97,10 +97,11 @@ img { display: block; max-width: 100%; }
 }
 
 /* If JS fails or GSAP doesn't load, keep everything visible */
+/* Reveal animations - no JS or GSAP ready: show immediately */
 body:not(.js) [data-reveal],
 body.js:not(.gsap-ready) [data-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
+  opacity: 1;
+  transform: none;
 }
 
 /* Big, faint "gallery label" words drifting behind sections */
@@ -201,7 +202,7 @@ body.js:not(.gsap-ready) [data-reveal] {
   html { scroll-behavior: auto; }
   .scroll-indicator-chevron { animation: none; }
   body::after { display:none; }
-  .capsule-inner { animation: none !important; }
+  .capsule-inner { animation: none; }
 }
 
 /* Focus states for accessibility */
@@ -520,17 +521,19 @@ a:focus-visible, button:focus-visible {
     margin-left: auto;
     margin-right: auto;
   }
+  /* Progressive enhancement: ensure hero text visible if GSAP fails */
   .hero-label, .hero-title, .hero-intro, .hero-meta {
-    opacity: 1 !important;
-    transform: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
 
 /* Wide viewport fallback - ensure hero text is visible at >1600px */
 @media (min-width: 1600px) and (max-width: 1799px) {
+  /* Progressive enhancement: ensure hero text visible if GSAP fails */
   .hero-label, .hero-title, .hero-intro, .hero-meta {
-    opacity: 1 !important;
-    transform: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -624,8 +627,8 @@ a:focus-visible, button:focus-visible {
   
   /* Mobile: Ensure hero text is visible even if GSAP doesn't load */
   .kunaal-about-page .hero-text [data-reveal] {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
+    opacity: 1;
+    transform: translateY(0);
   }
   
   /* Mobile: Smaller dog-ear accent - maintain border triangle approach */

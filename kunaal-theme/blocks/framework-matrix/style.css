@@ -79,22 +79,22 @@
     margin: 0;
 }
 
-/* 2x2 colors */
-.matrix-2x2 .fm-cell:nth-child(1) { background: rgba(22, 163, 74, 0.06); } /* High-High */
-.matrix-2x2 .fm-cell:nth-child(2) { background: rgba(234, 179, 8, 0.06); } /* High-Low */
-.matrix-2x2 .fm-cell:nth-child(3) { background: rgba(234, 179, 8, 0.06); } /* Low-High */
-.matrix-2x2 .fm-cell:nth-child(4) { background: rgba(220, 38, 38, 0.06); } /* Low-Low */
+/* 2x2 colors - Using explicit classes instead of nth-child */
+.matrix-2x2 .fm-cell--1 { background: rgba(22, 163, 74, 0.06); } /* High-High */
+.matrix-2x2 .fm-cell--2 { background: rgba(234, 179, 8, 0.06); } /* High-Low */
+.matrix-2x2 .fm-cell--3 { background: rgba(234, 179, 8, 0.06); } /* Low-High */
+.matrix-2x2 .fm-cell--4 { background: rgba(220, 38, 38, 0.06); } /* Low-Low */
 
-/* 3x3 gradient */
-.matrix-3x3 .fm-cell:nth-child(1) { background: rgba(22, 163, 74, 0.08); }
-.matrix-3x3 .fm-cell:nth-child(2) { background: rgba(22, 163, 74, 0.05); }
-.matrix-3x3 .fm-cell:nth-child(3) { background: rgba(234, 179, 8, 0.05); }
-.matrix-3x3 .fm-cell:nth-child(4) { background: rgba(22, 163, 74, 0.05); }
-.matrix-3x3 .fm-cell:nth-child(5) { background: rgba(234, 179, 8, 0.05); }
-.matrix-3x3 .fm-cell:nth-child(6) { background: rgba(234, 179, 8, 0.08); }
-.matrix-3x3 .fm-cell:nth-child(7) { background: rgba(234, 179, 8, 0.05); }
-.matrix-3x3 .fm-cell:nth-child(8) { background: rgba(234, 179, 8, 0.08); }
-.matrix-3x3 .fm-cell:nth-child(9) { background: rgba(220, 38, 38, 0.06); }
+/* 3x3 gradient - Using explicit classes instead of nth-child */
+.matrix-3x3 .fm-cell--1 { background: rgba(22, 163, 74, 0.08); }
+.matrix-3x3 .fm-cell--2 { background: rgba(22, 163, 74, 0.05); }
+.matrix-3x3 .fm-cell--3 { background: rgba(234, 179, 8, 0.05); }
+.matrix-3x3 .fm-cell--4 { background: rgba(22, 163, 74, 0.05); }
+.matrix-3x3 .fm-cell--5 { background: rgba(234, 179, 8, 0.05); }
+.matrix-3x3 .fm-cell--6 { background: rgba(234, 179, 8, 0.08); }
+.matrix-3x3 .fm-cell--7 { background: rgba(234, 179, 8, 0.05); }
+.matrix-3x3 .fm-cell--8 { background: rgba(234, 179, 8, 0.08); }
+.matrix-3x3 .fm-cell--9 { background: rgba(220, 38, 38, 0.06); }
 
 @media (max-width: 640px) {
     .fm-cell {

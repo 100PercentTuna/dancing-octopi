@@ -35,20 +35,20 @@ $shown_jottings = $jottings_query->post_count;
 
   <!-- Essays Section -->
   <section class="section" id="essays" aria-label="<?php esc_attr_e('Essays', 'kunaal-theme'); ?>">
-    <div class="sectionHead">
-      <h2 class="u-section-underline"><?php esc_html_e('Essays', 'kunaal-theme'); ?></h2>
-      <span class="sectionCount">
-        <span id="essayCountShown"><?php echo esc_html($shown_essays); ?></span>
-        <span id="essayLabel"><?php echo $shown_essays === 1 ? esc_html__('essay', 'kunaal-theme') : esc_html__('essays', 'kunaal-theme'); ?></span>
-        <?php if ($total_essays > $home_posts_limit) : ?>
-          &nbsp;&middot;&nbsp;
-          <a href="<?php echo esc_url(get_post_type_archive_link('essay')); ?>" class="u-underline-double"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
-        <?php endif; ?>
-      </span>
-    </div>
+    <?php
+    get_template_part('template-parts/components/section-head', null, array(
+      'title' => __('Essays', 'kunaal-theme'),
+      'count' => $shown_essays,
+      'count_label' => $shown_essays === 1 ? __('essay', 'kunaal-theme') : __('essays', 'kunaal-theme'),
+      'count_id' => 'essayCountShown',
+      'label_id' => 'essayLabel',
+      'more_link' => $total_essays > $home_posts_limit ? get_post_type_archive_link('essay') : '',
+      'more_text' => __('more', 'kunaal-theme'),
+    ));
+    ?>
 
     <?php if ($essays_query->have_posts()) : ?>
-      <ul class="grid" id="essayGrid" data-post-type="essay">
+      <ul class="grid" id="essayGrid" data-ui="essay-grid" data-post-type="essay">
         <?php while ($essays_query->have_posts()) : $essays_query->the_post(); ?>
           <?php kunaal_render_essay_card(get_the_ID()); ?>
         <?php endwhile; ?>
@@ -75,20 +75,20 @@ $shown_jottings = $jottings_query->post_count;
 
   <!-- Jottings Section -->
   <section class="section" id="jottings" aria-label="<?php esc_attr_e('Jottings', 'kunaal-theme'); ?>">
-    <div class="sectionHead">
-      <h2 class="u-section-underline"><?php esc_html_e('Jottings', 'kunaal-theme'); ?></h2>
-      <span class="sectionCount">
-        <span id="jotCountShown"><?php echo esc_html($shown_jottings); ?></span>
-        <span id="jotLabel"><?php echo $shown_jottings === 1 ? esc_html__('quick jotted-down rough idea', 'kunaal-theme') : esc_html__('quick jotted-down rough ideas', 'kunaal-theme'); ?></span>
-        <?php if ($total_jottings > $home_posts_limit) : ?>
-          &nbsp;&middot;&nbsp;
-          <a href="<?php echo esc_url(get_post_type_archive_link('jotting')); ?>" class="u-underline-double"><?php esc_html_e('more', 'kunaal-theme'); ?> &rarr;</a>
-        <?php endif; ?>
-      </span>
-    </div>
+    <?php
+    get_template_part('template-parts/components/section-head', null, array(
+      'title' => __('Jottings', 'kunaal-theme'),
+      'count' => $shown_jottings,
+      'count_label' => $shown_jottings === 1 ? __('quick jotted-down rough idea', 'kunaal-theme') : __('quick jotted-down rough ideas', 'kunaal-theme'),
+      'count_id' => 'jotCountShown',
+      'label_id' => 'jotLabel',
+      'more_link' => $total_jottings > $home_posts_limit ? get_post_type_archive_link('jotting') : '',
+      'more_text' => __('more', 'kunaal-theme'),
+    ));
+    ?>
 
     <?php if ($jottings_query->have_posts()) : ?>
-      <ul class="ledger" id="jotList" data-post-type="jotting">
+      <ul class="ledger" id="jotList" data-ui="jot-list" data-post-type="jotting">
         <?php while ($jottings_query->have_posts()) : $jottings_query->the_post(); ?>
           <?php kunaal_render_jotting_row(get_the_ID()); ?>
         <?php endwhile; ?>
@@ -98,7 +98,7 @@ $shown_jottings = $jottings_query->post_count;
       $jotting_ids = kunaal_home_recent_ids('jotting', $home_posts_limit);
       ?>
       <?php if (!empty($jotting_ids)) : ?>
-      <ul class="ledger" id="jotListFallback" data-post-type="jotting">
+      <ul class="ledger" id="jotListFallback" data-ui="jot-list" data-post-type="jotting">
         <?php foreach ($jotting_ids as $post_id) : ?>
           <?php kunaal_render_jotting_row($post_id); ?>
         <?php endforeach; ?>

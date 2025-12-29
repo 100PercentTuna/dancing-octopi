@@ -69,7 +69,7 @@ $initials = kunaal_get_initials();
       </div>
     </a>
 
-    <nav class="nav" id="nav" role="navigation">
+    <nav class="nav" id="nav" data-ui="nav" role="navigation">
       <?php
       // Use constant from inc/Setup/constants.php (single source of truth)
       $current_class = KUNAAL_NAV_CURRENT_CLASS;
@@ -95,7 +95,7 @@ $initials = kunaal_get_initials();
     </nav>
 
     <div class="mastControls">
-      <button class="navToggle" id="navToggle" aria-label="<?php esc_attr_e('Toggle navigation', 'kunaal-theme'); ?>" aria-expanded="false">
+      <button class="navToggle" id="navToggle" data-ui="nav-toggle" aria-label="<?php esc_attr_e('Toggle navigation', 'kunaal-theme'); ?>" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <path d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
