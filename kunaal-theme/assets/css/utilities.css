@@ -131,7 +131,17 @@
 
   /* Global link underline - canonical implementation using :where() for low specificity */
   /* Default: no underline visible - links look like normal text */
-  :where(.nav a, .footer a, .prose a:not([class*="button"]):not([class*="btn"]), .articleMeta a, .mailWrap, .say-hello-text a) {
+  /* Covers: nav, footer, prose/content, article meta, contact sections, archive/tile titles */
+  :where(
+    .nav a,
+    .footer a,
+    .prose a:not([class*="button"]):not([class*="btn"]),
+    .articleMeta a,
+    .mailWrap,
+    .say-hello-text a,
+    .section-inner a:not([class*="button"]):not([class*="btn"]):not(.capsule):not(.inspiration-item):not(.media-item),
+    .entry-content a:not([class*="button"]):not([class*="btn"])
+  ) {
     display: inline;
     text-decoration: none; /* No underline at rest */
     background-image: linear-gradient(
@@ -147,8 +157,26 @@
   }
 
   /* Hover/focus: animated blue underline appears */
-  :where(.nav a, .footer a, .prose a:not([class*="button"]):not([class*="btn"]), .articleMeta a, .mailWrap, .say-hello-text a):hover,
-  :where(.nav a, .footer a, .prose a:not([class*="button"]):not([class*="btn"]), .articleMeta a, .mailWrap, .say-hello-text a):focus-visible {
+  :where(
+    .nav a,
+    .footer a,
+    .prose a:not([class*="button"]):not([class*="btn"]),
+    .articleMeta a,
+    .mailWrap,
+    .say-hello-text a,
+    .section-inner a:not([class*="button"]):not([class*="btn"]):not(.capsule):not(.inspiration-item):not(.media-item),
+    .entry-content a:not([class*="button"]):not([class*="btn"])
+  ):hover,
+  :where(
+    .nav a,
+    .footer a,
+    .prose a:not([class*="button"]):not([class*="btn"]),
+    .articleMeta a,
+    .mailWrap,
+    .say-hello-text a,
+    .section-inner a:not([class*="button"]):not([class*="btn"]):not(.capsule):not(.inspiration-item):not(.media-item),
+    .entry-content a:not([class*="button"]):not([class*="btn"])
+  ):focus-visible {
     background-size: 100% var(--k-underline-blue-thickness, 2px);
   }
 

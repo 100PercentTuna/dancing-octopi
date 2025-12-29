@@ -819,15 +819,14 @@ a:focus-visible, button:focus-visible {
 }
 /* Category colors use CSS variables (set from customizer via inline style) */
 /* Dynamic selectors are generated in enqueue.php for each category slug */
-/* Fallback to warm color if no category is set */
-.kunaal-about-page .capsule[data-cat] .capsule-dot {
+/* Fallback only for empty data-cat (no category assigned) */
+.kunaal-about-page .capsule[data-cat=""] .capsule-dot {
   background: var(--warm);
 }
 
 /* Dark mode category colors - auto-brighten for visibility */
 /* Dynamic selectors are generated in enqueue.php for each category slug */
-/* Fallback: use color-mix to brighten if no specific dark mode color is set */
-:root[data-theme="dark"] .kunaal-about-page .capsule[data-cat] .capsule-dot {
+:root[data-theme="dark"] .kunaal-about-page .capsule-dot {
   filter: brightness(1.3) saturate(1.1);
 }
 
