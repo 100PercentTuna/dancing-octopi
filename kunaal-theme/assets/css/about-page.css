@@ -444,6 +444,7 @@ a:focus-visible, button:focus-visible {
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
+  font-style: italic;
   font-size: 1.15em;
   color: var(--warm);
 }
