@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: flex-end;
   padding: var(--space-1) 0;
+  margin-top: var(--space-3, 24px); /* Ensure filters appear below fixed header */
   margin-bottom: var(--space-2);
   gap: var(--space-2);
 }
@@ -267,7 +268,9 @@
   }
   .filterPanel.open { 
     display: flex; /* Show when toggled open on mobile */
-    gap: 8px; 
+    gap: 8px;
+    position: relative;
+    z-index: 9999; /* Above mast (9998) */
   }
   .modernSelect { flex: 1; min-width: 0; padding-right: 28px; }
   .searchWrap { flex: 1; min-width: 0; }

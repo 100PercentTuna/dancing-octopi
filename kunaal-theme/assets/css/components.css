@@ -128,7 +128,9 @@
   -webkit-backdrop-filter: blur(2px);
 }
 
-/* Title styling */
+/* Title styling
+   CRITICAL: Color must be white for legibility on dark image backgrounds
+   in BOTH light and dark theme modes. Do not override with var(--ink) */
 .tTitle {
   margin: 0;
   font-weight: 650;
@@ -143,7 +145,7 @@
   text-shadow: 0 2px 22px rgba(0,0,0,.6), 0 1px 3px rgba(0,0,0,.4);
   min-height: calc(1.15em * 2);
   position: relative;
-  color: #fff;
+  color: #fff; /* Always white - on dark image backgrounds */
   transition: transform 240ms cubic-bezier(0.4,0,0.2,1);
 }
 .tTitle::after {
@@ -161,6 +163,17 @@
 }
 .card:hover .tTitle::after, .card:focus-visible .tTitle::after {
   width: 100%;
+}
+
+/* Card overlay text must ALWAYS be white for legibility on image backgrounds
+   This applies regardless of light/dark theme - the scrim ensures contrast */
+.overlay,
+.overlay *,
+.card .tTitle,
+.card .tTitle span,
+.card .details,
+.card .details span {
+  color: #fff;
 }
 
 /* Details reveal */

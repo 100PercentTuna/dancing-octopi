@@ -129,18 +129,20 @@
     background-size: 100% var(--k-underline-blue-thickness, 2px);
   }
 
-  /* Global link underline - canonical implementation using :where() for low specificity */
-  /* Default: no underline visible - links look like normal text */
-  /* Covers: nav, footer, prose/content, article meta, contact sections, archive/tile titles */
+  /* ========================================
+     GLOBAL LINK UNDERLINE - ANIMATED LEFT-TO-RIGHT
+     ========================================
+     Strategy: Apply to ALL links globally with opt-out exclusions.
+     Animation: Blue underline animates from 0% to 100% width (left to right)
+     
+     EXCLUDED ELEMENTS (opt-out):
+     - Buttons: [class*="button"], [class*="btn"]
+     - Cards: .card, .capsule, .media-item, .inspiration-item
+     - Special elements: .u-link-plain, .skip-link
+     - Image-related: Links containing only images
+     ======================================== */
   :where(
-    .nav a,
-    .footer a,
-    .prose a:not([class*="button"]):not([class*="btn"]),
-    .articleMeta a,
-    .mailWrap,
-    .say-hello-text a,
-    .section-inner a:not([class*="button"]):not([class*="btn"]):not(.capsule):not(.inspiration-item):not(.media-item),
-    .entry-content a:not([class*="button"]):not([class*="btn"])
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child))
   ) {
     display: inline;
     text-decoration: none; /* No underline at rest */
@@ -149,41 +151,36 @@
       var(--k-underline-blue-color, var(--blue))
     );
     background-repeat: no-repeat;
+    /* Position at bottom, offset slightly for visual clarity */
     background-position: 0 calc(100% + var(--k-underline-blue-offset, -1px));
+    /* Start with 0% width - this is the key to L-to-R animation */
     background-size: 0% var(--k-underline-blue-thickness, 2px);
     padding-bottom: calc(var(--k-underline-blue-thickness, 2px) + 1px);
     box-decoration-break: clone;
+    /* Animation: ease-out cubic for smooth L-to-R motion */
     transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms;
   }
 
-  /* Hover/focus: animated blue underline appears */
+  /* Hover/focus: underline animates to 100% width (left-to-right reveal) */
   :where(
-    .nav a,
-    .footer a,
-    .prose a:not([class*="button"]):not([class*="btn"]),
-    .articleMeta a,
-    .mailWrap,
-    .say-hello-text a,
-    .section-inner a:not([class*="button"]):not([class*="btn"]):not(.capsule):not(.inspiration-item):not(.media-item),
-    .entry-content a:not([class*="button"]):not([class*="btn"])
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child))
   ):hover,
   :where(
-    .nav a,
-    .footer a,
-    .prose a:not([class*="button"]):not([class*="btn"]),
-    .articleMeta a,
-    .mailWrap,
-    .say-hello-text a,
-    .section-inner a:not([class*="button"]):not([class*="btn"]):not(.capsule):not(.inspiration-item):not(.media-item),
-    .entry-content a:not([class*="button"]):not([class*="btn"])
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child))
   ):focus-visible {
     background-size: 100% var(--k-underline-blue-thickness, 2px);
   }
 
-  /* Nav-specific: letter spacing on hover */
-  :where(.nav a):hover,
-  :where(.nav a):focus-visible,
-  :where(.nav a.current) {
+  /* Opt-out utility class - use on links that should NOT have animated underline */
+  .u-link-plain {
+    background-image: none !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Nav-specific enhancements - letter spacing on hover for visual polish */
+  .nav a:hover,
+  .nav a:focus-visible,
+  .nav a.current {
     letter-spacing: .01em;
   }
 

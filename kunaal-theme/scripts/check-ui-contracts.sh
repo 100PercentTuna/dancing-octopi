@@ -206,6 +206,41 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# CHECK 6: Hardcoded colors (should use tokens)
+#
+# ALLOWED FILES:
+#   - tokens.css, variables.css (token definitions)
+#   - dark-mode.css (dark mode token overrides)
+#   - print.css, pdf-ebook.css (print-specific colors)
+#
+# FORBIDDEN:
+#   - #000, #111, #1E5AFF, color: black in regular CSS
+# -----------------------------------------------------------------------------
+
+echo ""
+echo "[6/6] Checking for hardcoded colors..."
+
+HARDCODED_COLORS=$(grep -rn "#000[^0]\|#111\|#1E5AFF\|color:\s*black" "$THEME_DIR/assets/css" \
+    --include="*.css" \
+    | grep -v "tokens.css" \
+    | grep -v "variables.css" \
+    | grep -v "dark-mode.css" \
+    | grep -v "print.css" \
+    | grep -v "pdf-ebook.css" \
+    | grep -v "/* EXCEPTION" \
+    || true)
+
+if [ -n "$HARDCODED_COLORS" ]; then
+    echo "  ⚠ WARNING: Hardcoded colors found (should use tokens):"
+    echo "$HARDCODED_COLORS" | while read -r line; do
+        echo "    $line"
+    done
+    echo "  (Review manually - replace with var(--ink), var(--bg), var(--blue), etc.)"
+else
+    echo "  ✓ No hardcoded colors outside token files"
+fi
+
+# -----------------------------------------------------------------------------
 # SUMMARY
 # -----------------------------------------------------------------------------
 
@@ -220,7 +255,7 @@ else
     echo "==================================="
     echo ""
     echo "Fix the issues above before committing."
-    echo "See .cursor/rules/architecture.mdc, .cursor/rules/coding-standards.mdc, and .cursor/rules/UI_CONTRACTS.md for guidance."
+    echo "See kunaal-theme/UI_CONTRACTS.md for guidance."
     exit 1
 fi
 
