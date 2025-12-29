@@ -942,27 +942,29 @@ a:focus-visible, button:focus-visible {
 .media-grid-combined {
   display: grid;
   grid-template-columns: repeat(3, 1fr) 60px repeat(3, 1fr);
-  /* Auto rows - grid calculates row heights based on tallest item in each row */
-  grid-auto-rows: max-content;
+  /* Auto rows - each row's height is determined by the tallest item in that row
+     This ensures items in the same grid-row value share the same row track height */
+  grid-auto-rows: auto;
   gap: 1.25rem 1rem;
+  /* Start alignment ensures items align to top of their row track */
   align-items: start;
 }
 
-/* Headers: row 1, span their column groups */
+/* Headers: row 1, span their column groups
+   No margin-bottom - use grid gap for spacing instead */
 .media-col-header--books {
   grid-column: 1 / 4;
   grid-row: 1;
-  margin-bottom: 0.75rem;
 }
 
 .media-col-header--digital {
   grid-column: 5 / 8;
   grid-row: 1;
-  margin-bottom: 0.75rem;
 }
 
 /* Items use inline styles for grid placement (set in PHP)
-   This ensures items in the same row share row track heights */
+   This ensures items in the same row share row track heights.
+   Each item must have explicit grid-row value matching its logical row. */
 
 @media (max-width: 900px) {
   .media-grid-combined {

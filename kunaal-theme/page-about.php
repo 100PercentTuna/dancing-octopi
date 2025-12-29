@@ -274,24 +274,27 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
             </div>
             <?php endif; ?>
             
-            <!-- Items: interleaved by row for alignment -->
+            <!-- Items: output in row order to ensure proper grid alignment -->
             <?php
             // Calculate max items to determine number of rows
-            $max_items = max(count($books ?? []), count($digital ?? []));
+            $books_count = count($books ?? []);
+            $digital_count = count($digital ?? []);
+            $max_items = max($books_count, $digital_count);
             $items_per_row = 3;
             $num_rows = ceil($max_items / $items_per_row);
             
-            // Output items row by row
+            // Output items row by row - books and digital in same row share same grid-row value
             for ($row = 0; $row < $num_rows; $row++) {
-                // Books row
+                $grid_row = $row + 2; // Row 1 is headers, items start at row 2
+                
+                // Output all books for this row (columns 1-3)
                 for ($col = 0; $col < $items_per_row; $col++) {
                     $index = ($row * $items_per_row) + $col;
                     if (isset($books[$index])) {
                         $book = $books[$index];
-                        $grid_col = $col + 1;
-                        $grid_row = $row + 2; // Row 1 is headers
+                        $grid_col = $col + 1; // Columns 1, 2, 3
                         ?>
-                        <div class="media-item media-item--book" data-reveal="up" style="grid-column: <?php echo $grid_col; ?>; grid-row: <?php echo $grid_row; ?>;">
+                        <div class="media-item media-item--book" data-reveal="up" style="grid-column: <?php echo esc_attr($grid_col); ?>; grid-row: <?php echo esc_attr($grid_row); ?>;">
                             <div class="media-cover book">
                                 <?php if (!empty($book['cover'])) : ?>
                                 <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
@@ -304,7 +307,7 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                     }
                 }
                 
-                // Digital row
+                // Output all digital items for this row (columns 5-7) - SAME grid-row value
                 for ($col = 0; $col < $items_per_row; $col++) {
                     $index = ($row * $items_per_row) + $col;
                     if (isset($digital[$index])) {
@@ -315,10 +318,10 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                         }
                         $has_link = !empty($item['url']);
                         $tag = $has_link ? 'a' : 'div';
-                        $grid_col = $col + 5; // Columns 5-7
-                        $grid_row = $row + 2; // Row 1 is headers
+                        $grid_col = $col + 5; // Columns 5, 6, 7
+                        // Use SAME grid-row as books in this row iteration
                         ?>
-                        <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up" style="grid-column: <?php echo $grid_col; ?>; grid-row: <?php echo $grid_row; ?>;">
+                        <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up" style="grid-column: <?php echo esc_attr($grid_col); ?>; grid-row: <?php echo esc_attr($grid_row); ?>;">
                             <div class="media-cover album">
                                 <?php if (!empty($item['cover'])) : ?>
                                 <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
