@@ -31,26 +31,26 @@ if (!empty($class)) {
     $toolbar_classes .= ' ' . esc_attr($class);
 }
 ?>
-<div class="<?php echo esc_attr($toolbar_classes); ?>">
+<div class="<?php echo esc_attr($toolbar_classes); ?>" data-ui="filter">
   <div class="filterControls">
-    <div class="filterPanel" id="filterPanel">
+    <div class="filterPanel" data-role="panel">
       <?php if (!empty($topics)) : ?>
       <!-- Topics dropdown -->
-      <div class="topicSelect" id="topicsWrap" aria-label="<?php esc_attr_e('Filter by topic', 'kunaal-theme'); ?>">
-        <button class="topicDropdownBtn" id="topicBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-          <span class="topicSummary" id="topicSummary"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
+      <div class="topicSelect" data-role="topic-menu" aria-label="<?php esc_attr_e('Filter by topic', 'kunaal-theme'); ?>">
+        <button class="topicDropdownBtn" data-action="toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span class="topicSummary" data-role="count"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
           <svg class="caret" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <ul class="topicDropdown" id="topicMenu" role="listbox" aria-multiselectable="true">
-          <li class="topicOpt" data-tag="__ALL__" role="option" aria-selected="true">
+        <ul class="topicDropdown" role="listbox" aria-multiselectable="true">
+          <li class="topicOpt" data-tag="__ALL__" data-role="topic-item" role="option" aria-selected="true">
             <input type="checkbox" checked tabindex="-1" />
             <span class="tName"><?php esc_html_e('all topics', 'kunaal-theme'); ?></span>
           </li>
           <li class="topicDivider"><hr></li>
           <?php foreach ($topics as $topic) : ?>
-          <li class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" role="option" aria-selected="false">
+          <li class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" data-role="topic-item" role="option" aria-selected="false">
             <input type="checkbox" tabindex="-1" />
             <span class="tName">#<?php echo esc_html($topic['name']); ?></span>
             <span class="tCount"><?php echo esc_html($topic['count']); ?></span>
@@ -61,7 +61,7 @@ if (!empty($class)) {
       <?php endif; ?>
       
       <!-- Sort -->
-      <select class="modernSelect" id="sortSelect" aria-label="<?php esc_attr_e('Sort by', 'kunaal-theme'); ?>">
+      <select class="modernSelect" data-role="sort" aria-label="<?php esc_attr_e('Sort by', 'kunaal-theme'); ?>">
         <option value="new"><?php esc_html_e('newest first', 'kunaal-theme'); ?></option>
         <option value="old"><?php esc_html_e('oldest first', 'kunaal-theme'); ?></option>
         <option value="title"><?php esc_html_e('alphabetical', 'kunaal-theme'); ?></option>
@@ -73,18 +73,18 @@ if (!empty($class)) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
         </svg>
-        <input type="search" class="searchInput" id="searchInput" placeholder="<?php esc_attr_e('search…', 'kunaal-theme'); ?>" autocomplete="off" />
+        <input type="search" class="searchInput" data-role="search" placeholder="<?php esc_attr_e('search…', 'kunaal-theme'); ?>" autocomplete="off" />
       </div>
       <?php endif; ?>
       
       <?php if ($show_reset) : ?>
       <!-- Reset -->
-      <button class="resetBtn" id="resetBtn" type="button"><?php esc_html_e('reset', 'kunaal-theme'); ?></button>
+      <button class="resetBtn" data-action="reset" type="button"><?php esc_html_e('reset', 'kunaal-theme'); ?></button>
       <?php endif; ?>
     </div>
     
     <!-- Filter toggle button -->
-    <button class="filterToggle" id="filterBtn" type="button">
+    <button class="filterToggle" data-action="toggle" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <path d="M3 6h18M7 12h10M10 18h4"/>
       </svg>

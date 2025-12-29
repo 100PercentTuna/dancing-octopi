@@ -1,0 +1,195 @@
+---
+description: Target architecture for kunaal-theme — contract-first UI, data-* behavior contracts, optional placeholders, and drift prevention
+globs: ["kunaal-theme/**/*"]
+alwaysApply: true
+---
+
+# Kunaal Theme — Target Architecture
+
+This theme must behave like a **system**, not a collection of "pages that happen to look similar".
+
+The recurring failure mode to eliminate:
+- UI behaves like a **prototype** (works in one viewport/page; breaks elsewhere),
+- multiple implementations of the same motif **fight** (underlines/rules/cards),
+- refactors "pass tests" but **regress visuals** silently.
+
+**North-star rule:** every change must reduce drift and increase determinism.
+
+---
+
+## 1) Non-negotiable principles
+
+### 1.1 One source of truth per motif
+A motif is any repeated visual/behavioral pattern (link underline, section rule, card hover, filter UI, etc).
+
+Each motif must have:
+1) **one canonical markup contract** (component partial),
+2) **one canonical CSS owner** (single file/section),
+3) **one canonical JS owner** (if behavior exists),
+4) **enforcement** (drift checks).
+
+Everything else is deleted or a temporary alias with a removal date.
+
+**Canonical ownership is documented in `kunaal-theme/UI_CONTRACTS.md`.**
+
+### 1.2 Contract-first components (markup is the contract)
+CSS/JS may only assume DOM structure that templates guarantee.
+
+- If CSS needs `.capsule__inner`, PHP renders it.
+- JS may enhance behavior; it must not create required DOM.
+- Never rely on incidental DOM order (`nth-child`) for layout.
+
+### 1.3 Low specificity by default
+Use:
+- cascade layers: `@layer tokens, base, utilities, components, blocks, pages;`
+- component classes for non-trivial styling
+- `:where()` for low-specificity selector groups
+
+Rules:
+- no `!important`
+- no deep nested selectors
+- no "global element styling" beyond base typography
+
+### 1.4 Stable page scoping
+Never guess WP body classes.
+
+Add stable page scope classes via a `body_class` filter, e.g.:
+- `.kunaal-about-page`
+- `.kunaal-essays-archive`
+- `.kunaal-jottings-archive`
+
+All page CSS must be scoped under stable classes.
+
+### 1.5 Progressive enhancement
+Without JS the site must remain usable:
+- filters: server renders content; JS upgrades to AJAX
+- rabbit holes: server renders pills; JS animates/reflows
+
+If JS fails, UI must degrade gracefully (no disappearing controls).
+
+### 1.6 Data-* behavior contracts (avoid brittle IDs)
+JS must not depend on element IDs as primary contracts, because IDs become brittle when components are reused.
+
+Prefer:
+- `data-ui="filter"`
+- `data-action="toggle|apply|reset"`
+- `data-role="search|sort|topic-menu|topic-item|results|count"`
+
+IDs remain acceptable only for:
+- anchor targets,
+- ARIA relationships (`aria-controls`, `aria-labelledby`),
+- unique form inputs.
+
+### 1.7 Optional fields + placeholders must be deliberate
+Many components have optional fields (subtitle, source link, count, image).
+
+Default behavior:
+- **omit** missing optional elements (no broken placeholders).
+
+If placeholders are desired (e.g., while editing), gate behind a single flag:
+- WP constant: `KUNAAL_SHOW_PLACEHOLDERS`
+- or theme mod: `kunaal_show_placeholders`
+
+Placeholders must be subtle and `aria-hidden="true"`.
+
+---
+
+## 2) Target structure (incremental migration)
+
+```
+kunaal-theme/
+  functions.php                 # bootstrap only (constants + module requires)
+  theme.json                    # tokens + editor settings (do not fight CSS contracts)
+  style.css                     # theme header only (+ tiny base if needed)
+
+  inc/
+    Setup/
+      body-classes.php          # stable page scope classes
+      enqueue.php               # scripts/styles + inline vars + deps
+      theme-support.php
+    Features/
+      Ajax/                     # filter, subscribe, contact
+      About/                    # data + helpers
+    Support/
+      components.php            # render helpers
+      placeholders.php          # placeholder policy (optional)
+
+  template-parts/
+    components/
+      section-head.php          # canonical section header markup
+      card.php                  # canonical tile markup
+      filter-bar.php            # canonical filter UI markup
+      capsule.php               # canonical rabbit-hole capsule markup (optional)
+
+  assets/css/
+    tokens.css
+    base.css
+    utilities.css
+    components.css
+    sections.css                # section rule (single source)
+    header.css
+    pages/
+      about.css                 # about-only layout (scoped)
+```
+
+---
+
+## 3) UI contracts (single source of truth)
+
+**All UI contracts are defined in `kunaal-theme/UI_CONTRACTS.md`.**
+
+Minimum required contracts:
+- Link interaction (no underline at rest; animated underline on hover/focus-visible)
+- Section header rule (thin gray base + short blue segment overlay)
+- Card/tile markup + overlay readability
+- Filter bar markup + data-* hooks + optional controls
+- About hero mosaic slotting + dog-ear behavior
+
+---
+
+## 4) Prototype → Product rules (layout determinism)
+
+### 4.1 No nth-child layout
+Never use `:nth-child()` or DOM order for layout-critical positioning.
+Use explicit classes or data attributes (e.g., `.hero-photo--3`).
+
+### 4.2 Definite height semantics
+If you use `fr` tracks for rows/cols, the container must have a definite size when the design requires it.
+Viewport sections should use `100svh` with `100vh` fallback and account for header height via tokens.
+
+### 4.3 JS must not construct required DOM
+JS may:
+- attach events
+- animate
+- fetch/update content (AJAX filters)
+
+JS must not create structural wrappers required for CSS (e.g., no "wrap pill contents in JS so CSS works").
+
+### 4.4 Avoid fixed positioning for in-flow UI
+If an element belongs in the content flow, do not use `position: fixed`.
+Use layout containers and spacing instead.
+
+---
+
+## 5) Enforcement (required automation)
+
+### 5.1 Drift checks script
+Maintain `kunaal-theme/scripts/check-ui-contracts.sh` that fails if:
+- `theme.json` forces link underline (textDecoration underline)
+- default underline styles appear outside the canonical link owner section
+- section rules are implemented outside `assets/css/sections.css`
+- filter JS binds to IDs for contracts that should be data-* (at least for the filter module)
+- deprecated classes persist past their removal date
+
+### 5.2 CI must run drift checks
+Quality gates workflow must run drift checks alongside existing checks (php lint, BOM scan, etc).
+
+---
+
+## 6) Definition of done (UI work)
+A UI change is done only when:
+- motif updated in one owner only,
+- templates use canonical component markup,
+- `UI_CONTRACTS.md` updated if contracts changed,
+- drift checks pass,
+- viewport matrix checked: 375/768/1024/1440 in light + dark.

@@ -15,54 +15,13 @@ $all_topics = kunaal_get_all_topics();
 <main class="container" id="top">
   
   <!-- Toolbar: Filter controls ABOVE section header -->
-  <div class="toolbar">
-    <div class="filterControls">
-      <div class="filterPanel" id="filterPanel">
-        <?php if (!empty($all_topics)) : ?>
-        <div class="topicSelect" id="topicsWrap" aria-label="Filter by topic">
-          <button class="topicDropdownBtn" id="topicBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
-            <span class="topicSummary" id="topicSummary">all topics</span>
-            <svg class="caret" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <ul class="topicDropdown" id="topicMenu" role="listbox" aria-multiselectable="true">
-            <li class="topicOpt" data-tag="__ALL__" role="option" aria-selected="true">
-              <input type="checkbox" checked tabindex="-1" />
-              <span class="tName">all topics</span>
-            </li>
-            <li class="topicDivider"><hr></li>
-            <?php foreach ($all_topics as $topic) : ?>
-            <li class="topicOpt" data-tag="<?php echo esc_attr($topic['slug']); ?>" role="option" aria-selected="false">
-              <input type="checkbox" tabindex="-1" />
-              <span class="tName">#<?php echo esc_html($topic['name']); ?></span>
-              <span class="tCount"><?php echo esc_html($topic['count']); ?></span>
-            </li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-        <?php endif; ?>
-        <select class="modernSelect" id="sortSelect" aria-label="Sort by">
-          <option value="new">newest first</option>
-          <option value="old">oldest first</option>
-          <option value="title">alphabetical</option>
-        </select>
-        <div class="searchWrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <input type="search" class="searchInput" id="searchInput" placeholder="search…" autocomplete="off" />
-        </div>
-        <button class="resetBtn" id="resetBtn" type="button">reset</button>
-      </div>
-      <button class="filterToggle" id="filterBtn" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M3 6h18M7 12h10M10 18h4"/>
-        </svg>
-        <span>filter</span>
-      </button>
-    </div>
-  </div>
+  <?php
+  get_template_part('template-parts/components/filter-bar', null, array(
+    'topics' => $all_topics,
+    'show_search' => true,
+    'show_reset' => true,
+  ));
+  ?>
 
   <!-- Section header - EXACTLY like home page with blue underline and count -->
   <section class="section" id="jottings" aria-label="Jottings">

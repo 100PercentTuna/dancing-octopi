@@ -17,14 +17,8 @@
   const nav = document.getElementById('nav');
   const avatar = document.getElementById('avatar');
   const avatarImg = document.getElementById('avatarImg');
-  const filterBtn = document.getElementById('filterBtn');
-  const filterPanel = document.getElementById('filterPanel');
-  const topicBtn = document.getElementById('topicBtn');
-  const topicMenu = document.getElementById('topicMenu');
-  const topicSummary = document.getElementById('topicSummary');
-  const sortSelect = document.getElementById('sortSelect');
-  const searchInput = document.getElementById('searchInput');
-  const resetBtn = document.getElementById('resetBtn');
+  // Filter elements - now using data-* hooks via event delegation
+  // Keep IDs for backward compatibility with count labels (essayCountShown, jotCountShown, etc.)
   const essayGrid = document.getElementById('essayGrid');
   const jotList = document.getElementById('jotList');
   
@@ -291,71 +285,100 @@
   }
 
   // ========================================
-  // FILTERS
+  // FILTERS - Event delegation via data-* hooks
   // ========================================
   function initFilters() {
-    // Filter toggle button (right side)
-    if (filterBtn && filterPanel) {
-      filterBtn.addEventListener('click', () => {
-        const isOpen = filterPanel.classList.toggle('open');
-        filterBtn.classList.toggle('active', isOpen);
-        filterBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
-    }
+    // Find filter container using data-ui="filter"
+    const filterContainer = document.querySelector('[data-ui="filter"]');
+    if (!filterContainer) return;
 
-    // Topics dropdown
-    if (topicBtn && topicMenu) {
-      topicBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = topicMenu.classList.toggle('open');
-        topicBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
+    // Event delegation: handle all filter actions on the container
+    filterContainer.addEventListener('click', (e) => {
+      const action = e.target.closest('[data-action]')?.dataset.action;
+      if (!action) return;
 
-      // Topic options
-      if (!topicMenu) return;
-      topicMenu.querySelectorAll('.topicOpt').forEach(opt => {
-        opt.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const tag = opt.dataset.tag;
-          const checkbox = opt.querySelector('input[type="checkbox"]');
-          
-          if (tag === '__ALL__') {
-            selectedTopics.clear();
-            topicMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-              cb.checked = (cb.closest('.topicOpt').dataset.tag === '__ALL__');
-            });
-          } else {
-            checkbox.checked = !checkbox.checked;
-            if (checkbox.checked) {
-              selectedTopics.add(tag);
-            } else {
-              selectedTopics.delete(tag);
-            }
-            // Uncheck "all" if specific topics selected
-            const allCheckbox = topicMenu.querySelector('[data-tag="__ALL__"] input');
-            if (allCheckbox) allCheckbox.checked = selectedTopics.size === 0;
+      if (action === 'toggle') {
+        // Toggle filter panel or topic menu
+        const panel = filterContainer.querySelector('[data-role="panel"]');
+        const topicMenu = filterContainer.querySelector('[data-role="topic-menu"]');
+        const clickedBtn = e.target.closest('[data-action="toggle"]');
+        
+        if (clickedBtn === filterContainer.querySelector('.filterToggle')) {
+          // Main filter toggle button
+          if (panel) {
+            const isOpen = panel.classList.toggle('open');
+            clickedBtn.classList.toggle('active', isOpen);
+            clickedBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
           }
-          
-          updateTopicSummary();
-          triggerFilter();
-        });
-      });
-
-      // Close dropdown on outside click
-      document.addEventListener('click', (e) => {
-        if (!topicMenu.contains(e.target) && !topicBtn.contains(e.target)) {
-          topicMenu.classList.remove('open');
-          topicBtn.setAttribute('aria-expanded', 'false');
+        } else if (clickedBtn && topicMenu) {
+          // Topic dropdown button
+          e.stopPropagation();
+          const dropdown = topicMenu.querySelector('.topicDropdown');
+          if (dropdown) {
+            const isOpen = dropdown.classList.toggle('open');
+            clickedBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          }
         }
-      });
-    }
+      } else if (action === 'reset') {
+        // Reset all filters
+        selectedTopics.clear();
+        const sortSelect = filterContainer.querySelector('[data-role="sort"]');
+        const searchInput = filterContainer.querySelector('[data-role="search"]');
+        const topicMenu = filterContainer.querySelector('[data-role="topic-menu"]');
+        
+        if (sortSelect) sortSelect.value = 'new';
+        if (searchInput) searchInput.value = '';
+        if (topicMenu) {
+          topicMenu.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
+            cb.checked = (i === 0); // Only "all" checked
+          });
+        }
+        updateTopicSummary(filterContainer);
+        triggerFilter();
+      }
+    });
 
-    // Sort
+    // Handle topic item selection
+    filterContainer.addEventListener('click', (e) => {
+      const topicItem = e.target.closest('[data-role="topic-item"]');
+      if (!topicItem) return;
+      
+      e.stopPropagation();
+      const tag = topicItem.dataset.tag;
+      const checkbox = topicItem.querySelector('input[type="checkbox"]');
+      const topicMenu = filterContainer.querySelector('[data-role="topic-menu"]');
+      
+      if (!topicMenu) return;
+      
+      if (tag === '__ALL__') {
+        selectedTopics.clear();
+        topicMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.checked = (cb.closest('[data-role="topic-item"]')?.dataset.tag === '__ALL__');
+        });
+      } else {
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+          selectedTopics.add(tag);
+        } else {
+          selectedTopics.delete(tag);
+        }
+        // Uncheck "all" if specific topics selected
+        const allCheckbox = topicMenu.querySelector('[data-tag="__ALL__"] input');
+        if (allCheckbox) allCheckbox.checked = selectedTopics.size === 0;
+      }
+      
+      updateTopicSummary(filterContainer);
+      triggerFilter();
+    });
+
+    // Sort change
+    const sortSelect = filterContainer.querySelector('[data-role="sort"]');
     if (sortSelect) {
       sortSelect.addEventListener('change', triggerFilter);
     }
 
     // Search with debounce
+    const searchInput = filterContainer.querySelector('[data-role="search"]');
     if (searchInput) {
       let searchTimeout;
       searchInput.addEventListener('input', () => {
@@ -364,23 +387,27 @@
       });
     }
 
-    // Reset
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        selectedTopics.clear();
-        if (sortSelect) sortSelect.value = 'new';
-        if (searchInput) searchInput.value = '';
-        topicMenu?.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
-          cb.checked = (i === 0); // Only "all" checked
-        });
-        updateTopicSummary();
-        triggerFilter();
-      });
-    }
+    // Close topic dropdown on outside click
+    document.addEventListener('click', (e) => {
+      const topicMenu = filterContainer.querySelector('[data-role="topic-menu"]');
+      if (!topicMenu) return;
+      
+      const dropdown = topicMenu.querySelector('.topicDropdown');
+      const topicBtn = topicMenu.querySelector('[data-action="toggle"]');
+      
+      if (dropdown && topicBtn && !dropdown.contains(e.target) && !topicBtn.contains(e.target)) {
+        dropdown.classList.remove('open');
+        topicBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
   }
 
-  function updateTopicSummary() {
+  function updateTopicSummary(filterContainer) {
+    // Find topic summary within the filter container (or document if container not provided)
+    const container = filterContainer || document;
+    const topicSummary = container.querySelector('[data-role="count"]');
     if (!topicSummary) return;
+    
     if (selectedTopics.size === 0) {
       topicSummary.textContent = 'all topics';
     } else if (selectedTopics.size === 1) {
@@ -427,6 +454,10 @@
 
     const source = postType === 'essay' ? (initialEssayItems || []) : (initialJotItems || []);
     const topics = Array.from(selectedTopics);
+    // Find filter container to get search and sort elements
+    const filterContainer = document.querySelector('[data-ui="filter"]');
+    const searchInput = filterContainer?.querySelector('[data-role="search"]');
+    const sortSelect = filterContainer?.querySelector('[data-role="sort"]');
     const search = (searchInput?.value || '').trim().toLowerCase();
     const sort = sortSelect?.value || 'new';
 
@@ -508,6 +539,11 @@
     // Only send nonce if present; backend allows missing nonce for backwards-compat.
     const nonce = window.kunaalTheme?.nonce;
     if (nonce) formData.append('nonce', nonce);
+    // Find filter container to get search and sort elements
+    const filterContainer = document.querySelector('[data-ui="filter"]');
+    const searchInput = filterContainer?.querySelector('[data-role="search"]');
+    const sortSelect = filterContainer?.querySelector('[data-role="sort"]');
+    
     formData.append('post_type', postType);
     formData.append('topics', Array.from(selectedTopics));
     formData.append('sort', sortSelect?.value || 'new');

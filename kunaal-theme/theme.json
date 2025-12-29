@@ -194,7 +194,7 @@
           "text": "var(--wp--preset--color--ink)"
         },
         "typography": {
-          "textDecoration": "underline"
+          "textDecoration": "none"
         },
         ":hover": {
           "color": {
