@@ -1166,49 +1166,51 @@ a:focus-visible, button:focus-visible {
   height: 100%;
 }
 /* Map country colors - scoped to About page for specificity */
-/* Use design tokens where possible, but map colors need specific values for contrast */
-.kunaal-about-page .country {
-  fill: var(--warmLight, #E8E4DF);
-  stroke: var(--bgWarm, #F9F7F4);
+/* Use explicit color values to ensure SVG paths are styled correctly */
+.kunaal-about-page .map-container svg path.country {
+  fill: #E8E4DF;
+  stroke: #F9F7F4;
   stroke-width: 0.3;
   transition: fill var(--transition);
 }
-.kunaal-about-page .country.visited {
-  fill: var(--warm, #B8A99A);
+.kunaal-about-page .map-container svg path.country.visited {
+  fill: #B8A99A;
 }
-.kunaal-about-page .country.lived {
-  fill: var(--warmDark, #7D6B5D);
+.kunaal-about-page .map-container svg path.country.lived {
+  fill: #7D6B5D;
 }
-.kunaal-about-page .country.current {
-  fill: var(--blue);
+/* Current country should NOT have blue fill - only the marker is blue */
+.kunaal-about-page .map-container svg path.country.current {
+  fill: #E8E4DF;
 }
-/* Hover: darken warm colors, NOT blue */
-.kunaal-about-page .country.visited:hover {
-  fill: color-mix(in srgb, var(--warm, #B8A99A) 100%, black 15%);
+/* Hover: darken warm colors */
+.kunaal-about-page .map-container svg path.country.visited:hover {
+  fill: #9D8D7E;
 }
-.kunaal-about-page .country.lived:hover {
-  fill: color-mix(in srgb, var(--warmDark, #7D6B5D) 100%, black 15%);
+.kunaal-about-page .map-container svg path.country.lived:hover {
+  fill: #6A5A4A;
 }
 
 /* Dark mode map colors - scoped to About page */
-:root[data-theme="dark"] .kunaal-about-page .country {
-  fill: color-mix(in srgb, var(--bg) 100%, var(--ink) 10%);
-  stroke: color-mix(in srgb, var(--bg) 100%, var(--ink) 15%);
+:root[data-theme="dark"] .kunaal-about-page .map-container svg path.country {
+  fill: #2A2A2A;
+  stroke: #333333;
 }
-:root[data-theme="dark"] .kunaal-about-page .country.visited {
-  fill: var(--warm, #8B7D6F);
+:root[data-theme="dark"] .kunaal-about-page .map-container svg path.country.visited {
+  fill: #8B7D6F;
 }
-:root[data-theme="dark"] .kunaal-about-page .country.lived {
-  fill: var(--warmLight, #C9B8A8);
+:root[data-theme="dark"] .kunaal-about-page .map-container svg path.country.lived {
+  fill: #C9B8A8;
 }
-:root[data-theme="dark"] .kunaal-about-page .country.current {
-  fill: var(--blue);
+/* Current country should NOT have blue fill in dark mode either - only the marker is blue */
+:root[data-theme="dark"] .kunaal-about-page .map-container svg path.country.current {
+  fill: #2A2A2A;
 }
-:root[data-theme="dark"] .kunaal-about-page .country.visited:hover {
-  fill: color-mix(in srgb, var(--warm, #8B7D6F) 100%, white 10%);
+:root[data-theme="dark"] .kunaal-about-page .map-container svg path.country.visited:hover {
+  fill: #9B8D7F;
 }
-:root[data-theme="dark"] .kunaal-about-page .country.lived:hover {
-  fill: color-mix(in srgb, var(--warmLight, #C9B8A8) 100%, white 5%);
+:root[data-theme="dark"] .kunaal-about-page .map-container svg path.country.lived:hover {
+  fill: #D9C8B8;
 }
 
 /* Legend dots use same category variables as capsule dots */

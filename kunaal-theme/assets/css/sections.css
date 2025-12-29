@@ -10,6 +10,11 @@
   padding-top: var(--space-8); 
 }
 
+/* First section in main gets top padding to account for toolbar */
+main.container > .section:first-of-type {
+  padding-top: var(--space-4);
+}
+
 /* ========================================
    SECTION HEADER RULE - CANONICAL IMPLEMENTATION (Part 1/2)
    Gray line lives here. Blue segment is in utilities.css on .u-section-underline::after
