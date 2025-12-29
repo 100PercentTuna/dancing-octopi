@@ -222,11 +222,17 @@
     content: "";
     position: absolute;
     left: 0;
-    bottom: -1px; /* Position to overlap the .sectionHead border-bottom */
+    /* Center the 3px blue segment on the 1px gray border
+       Border center is at 0.5px from parent bottom edge
+       Blue center (1.5px from blue bottom) should align with border center (0.5px)
+       So blue bottom edge: 0.5px - 1.5px = -1px from border
+       Since border is at padding edge (8px below content), adjust for alignment */
+    bottom: -1.5px; /* Positioned to center 3px blue segment on 1px gray border */
     width: 75%; /* Blue segment is ~75% of current length */
     width: 30px; /* 75% of previous 40px - shorter blue segment */
-    height: 3px; /* Thicker than gray line (2px vs 1px) */
+    height: 3px; /* Thicker than gray line (1px vs 3px) */
     background: var(--k-underline-blue-color, var(--blue));
+    border-radius: 1.5px; /* Rounded ends (half of height for pill shape) */
     transform-origin: left;
     transform: scaleX(0);
     animation: growLine 600ms ease 350ms forwards;
