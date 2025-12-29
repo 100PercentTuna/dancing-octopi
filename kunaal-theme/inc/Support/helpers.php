@@ -434,13 +434,26 @@ function kunaal_render_jotting_row(int|WP_Post $post): void {
     $subtitle = $data['subtitle'] ?? '';
     $topics = $data['topics'] ?? [];
     $topic_slugs = $data['topic_slugs'] ?? [];
+    
+    // Check if this is the current post being viewed
+    $is_current = false;
+    if (is_singular('jotting')) {
+        $current_post_id = get_queried_object_id();
+        $is_current = ($current_post_id === $post_id);
+    }
+    
+    $row_classes = 'jRow';
+    if ($is_current) {
+        $row_classes .= ' current';
+    }
     ?>
     <li>
-    <a href="<?php echo esc_url($permalink); ?>" class="jRow"
+    <a href="<?php echo esc_url($permalink); ?>" class="<?php echo esc_attr($row_classes); ?>"
        data-title="<?php echo esc_attr($title); ?>"
        data-text="<?php echo esc_attr($subtitle); ?>"
        data-date="<?php echo esc_attr($date); ?>"
-       data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
+       data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>"
+       <?php if ($is_current) : ?>aria-current="page"<?php endif; ?>>
       <span class="jDate"><?php echo esc_html($date_display); ?></span>
       <div class="jContent">
         <h3 class="jTitle"><?php echo esc_html($title); ?></h3>

@@ -6,7 +6,7 @@
  *
  * @package Kunaal_Theme
  * @since 1.0.0
- * @version 4.33.0
+ * @version 4.40.1
  */
 
 if (!defined('ABSPATH')) {
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.40.0');
+define('KUNAAL_THEME_VERSION', '4.40.1');
 
 // ============================================================================
 // SETUP (Platform)

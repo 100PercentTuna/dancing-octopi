@@ -1426,11 +1426,10 @@ a:focus-visible, button:focus-visible {
   color: var(--muted);
   text-decoration: none;
   letter-spacing: 0.05em;
-  transition: color var(--transition);
+  /* No color transition - underline animation only (handled by utilities.css) */
 }
-.say-hello-text a:hover {
-  color: var(--ink);
-}
+/* Link color does NOT change on hover - only blue underline animates (see utilities.css) */
+/* .say-hello-text a:hover { color: var(--ink); } - REMOVED: links should not change color */
 .say-hello-links,
 .say-hello-social {
   display: flex;

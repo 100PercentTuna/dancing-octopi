@@ -517,9 +517,10 @@
   font-size: 13px;
   color: var(--muted);
   border-bottom: 1px solid var(--hair2);
-  transition: color 150ms ease;
+  /* No color transition - underline animation only (handled by utilities.css) */
 }
-.tocList a:hover { color: var(--ink); }
+/* Link color does NOT change on hover - only blue underline animates (see utilities.css) */
+/* .tocList a:hover { color: var(--ink); } - REMOVED: links should not change color */
 .tocList a:last-child { border-bottom: none; }
 .tocList .num {
   font-family: var(--mono);

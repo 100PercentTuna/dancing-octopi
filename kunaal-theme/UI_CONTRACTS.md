@@ -29,10 +29,12 @@ All z-index values must follow this scale. Do not use values outside this scale 
 **Canonical owner**: `assets/css/utilities.css`
 
 **Behavior**:
-- Default state: No underline visible
+- Default state: No underline visible, color remains unchanged
 - Hover/focus-visible: Blue underline animates left-to-right (280ms)
+- **CRITICAL**: Link color does NOT change on hover - only the underline animates
 - Uses `background-image` gradient technique (not `text-decoration`)
 - Animation: `background-size: 0% → 100%` with `cubic-bezier(0.4, 0, 0.2, 1)`
+- Letter-spacing may increase slightly on hover for visual polish (nav links only)
 
 **Excluded automatically** (via `:not()` selectors):
 - Buttons: `[class*="button"]`, `[class*="btn"]`
