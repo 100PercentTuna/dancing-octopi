@@ -900,8 +900,10 @@ a:focus-visible, button:focus-visible {
   align-items:flex-end;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid var(--warmBorder);
-  padding-bottom: 0.65rem;
+  /* CANONICAL: Gray line for section underline (matches sections.css pattern) */
+  border-bottom: 1px solid rgba(125, 107, 93, 0.35);
+  padding-bottom: var(--space-1);
+  margin-bottom: 0;
 }
 .media-col-title{
   position: relative;
@@ -909,18 +911,10 @@ a:focus-visible, button:focus-visible {
   font-weight: 300;
   letter-spacing: -0.02em;
   margin: 0;
-  padding-bottom: 0.2rem;
   font-size: 1.1rem;
-}
-.media-col-title::after{
-  content:'';
-  position:absolute;
-  left: 0;
-  bottom: -0.65rem;
-  width: 28px;
-  height: 2px;
-  background: var(--blue);
-  border-radius: 2px;
+  /* Use canonical u-section-underline - padding-bottom is set in utilities.css */
+  /* Custom ::after removed - uses canonical .u-section-underline::after from utilities.css */
+  /* Canonical positioning (bottom: -1px) works correctly with media-col-header padding */
 }
 .media-col-count{
   font-family: var(--mono);
@@ -949,6 +943,8 @@ a:focus-visible, button:focus-visible {
   gap: 1.25rem 1rem;
   /* Start alignment ensures items align to top of their row track */
   align-items: start;
+  /* Row-based flow ensures items fill rows before moving to next */
+  grid-auto-flow: row;
 }
 
 /* Headers: row 1, span their column groups
@@ -965,7 +961,20 @@ a:focus-visible, button:focus-visible {
 
 /* Items use inline styles for grid placement (set in PHP)
    This ensures items in the same row share row track heights.
-   Each item must have explicit grid-row value matching its logical row. */
+   Each item must have explicit grid-row value matching its logical row.
+   
+   CRITICAL: The PHP template MUST generate inline grid-column and grid-row styles.
+   The template code in page-about.php lines 297 and 324 should output:
+   style="grid-column: 1; grid-row: 2;" for books
+   style="grid-column: 5; grid-row: 2;" for digital items
+   
+   If styles are missing or empty, check:
+   1. PHP is executing (view page source, not browser inspector)
+   2. $grid_col and $grid_row variables are set correctly
+   3. Template is being used (not cached HTML)
+   
+   Without valid inline styles, CSS Grid cannot properly align rows across columns.
+   The grid structure requires explicit positioning for the two-column layout. */
 
 @media (max-width: 900px) {
   .media-grid-combined {
@@ -1127,11 +1136,13 @@ a:focus-visible, button:focus-visible {
 }
 .media-link {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 10px;
   color: var(--blue);
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-top: 0.3rem;
+  text-transform: capitalize;
 }
 
 /* Add explicit SVG sizing for media links */
