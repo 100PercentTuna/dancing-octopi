@@ -259,66 +259,91 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
 <!-- READING + LISTENING -->
 <section class="media-section section">
     <div class="section-inner">
-        <!-- Grid with separate columns for proper row alignment -->
+        <!-- Flat grid structure for proper row alignment across columns -->
         <div class="media-grid-combined">
+            <!-- Headers: row 1 -->
             <?php if ($books_show && !empty($books)) : ?>
-            <div class="media-col--books">
-                <div class="media-col-header">
-                    <h3 class="media-col-title u-section-underline">On the nightstand</h3>
-                </div>
-                <?php foreach ($books as $book) : ?>
-                <div class="media-item media-item--book" data-reveal="up">
-                    <div class="media-cover book">
-                        <?php if (!empty($book['cover'])) : ?>
-                        <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
-                        <?php endif; ?>
-                    </div>
-                    <div class="media-title"><?php echo esc_html($book['title']); ?></div>
-                    <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
-                </div>
-                <?php endforeach; ?>
+            <div class="media-col-header media-col-header--books">
+                <h3 class="media-col-title u-section-underline">On the nightstand</h3>
             </div>
             <?php endif; ?>
-            
-            <div class="media-spacer"></div>
             
             <?php if ($digital_show && !empty($digital)) : ?>
-            <div class="media-col--digital">
-                <div class="media-col-header">
-                    <h3 class="media-col-title u-section-underline">On repeat</h3>
-                </div>
-                <?php foreach ($digital as $item) :
-                    $link_type_label = ucfirst($item['link_type']);
-                    if ($item['link_type'] === 'apple') {
-                        $link_type_label = 'Apple Podcasts';
-                    }
-                    $has_link = !empty($item['url']);
-                    $tag = $has_link ? 'a' : 'div';
-                ?>
-                <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
-                    <div class="media-cover album">
-                        <?php if (!empty($item['cover'])) : ?>
-                        <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
-                        <?php endif; ?>
-                        <?php if ($has_link) : ?>
-                        <span class="play-icon">▶</span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="media-title"><?php echo esc_html($item['title']); ?></div>
-                    <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
-                    <?php if ($has_link) : ?>
-                    <div class="media-link">
-                        <?php echo esc_html($link_type_label); ?>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <line x1="7" y1="17" x2="17" y2="7"></line>
-                            <polyline points="7 7 17 7 17 17"></polyline>
-                        </svg>
-                    </div>
-                    <?php endif; ?>
-                </<?php echo $tag; ?>>
-                <?php endforeach; ?>
+            <div class="media-col-header media-col-header--digital">
+                <h3 class="media-col-title u-section-underline">On repeat</h3>
             </div>
             <?php endif; ?>
+            
+            <!-- Items: interleaved by row for alignment -->
+            <?php
+            // Calculate max items to determine number of rows
+            $max_items = max(count($books ?? []), count($digital ?? []));
+            $items_per_row = 3;
+            $num_rows = ceil($max_items / $items_per_row);
+            
+            // Output items row by row
+            for ($row = 0; $row < $num_rows; $row++) {
+                // Books row
+                for ($col = 0; $col < $items_per_row; $col++) {
+                    $index = ($row * $items_per_row) + $col;
+                    if (isset($books[$index])) {
+                        $book = $books[$index];
+                        $grid_col = $col + 1;
+                        $grid_row = $row + 2; // Row 1 is headers
+                        ?>
+                        <div class="media-item media-item--book" data-reveal="up" style="grid-column: <?php echo $grid_col; ?>; grid-row: <?php echo $grid_row; ?>;">
+                            <div class="media-cover book">
+                                <?php if (!empty($book['cover'])) : ?>
+                                <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
+                                <?php endif; ?>
+                            </div>
+                            <div class="media-title"><?php echo esc_html($book['title']); ?></div>
+                            <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
+                        </div>
+                        <?php
+                    }
+                }
+                
+                // Digital row
+                for ($col = 0; $col < $items_per_row; $col++) {
+                    $index = ($row * $items_per_row) + $col;
+                    if (isset($digital[$index])) {
+                        $item = $digital[$index];
+                        $link_type_label = ucfirst($item['link_type']);
+                        if ($item['link_type'] === 'apple') {
+                            $link_type_label = 'Apple Podcasts';
+                        }
+                        $has_link = !empty($item['url']);
+                        $tag = $has_link ? 'a' : 'div';
+                        $grid_col = $col + 5; // Columns 5-7
+                        $grid_row = $row + 2; // Row 1 is headers
+                        ?>
+                        <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up" style="grid-column: <?php echo $grid_col; ?>; grid-row: <?php echo $grid_row; ?>;">
+                            <div class="media-cover album">
+                                <?php if (!empty($item['cover'])) : ?>
+                                <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
+                                <?php endif; ?>
+                                <?php if ($has_link) : ?>
+                                <span class="play-icon">▶</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="media-title"><?php echo esc_html($item['title']); ?></div>
+                            <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
+                            <?php if ($has_link) : ?>
+                            <div class="media-link">
+                                <?php echo esc_html($link_type_label); ?>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                                    <polyline points="7 7 17 7 17 17"></polyline>
+                                </svg>
+                            </div>
+                            <?php endif; ?>
+                        </<?php echo $tag; ?>>
+                        <?php
+                    }
+                }
+            }
+            ?>
         </div>
     </div>
 </section>
