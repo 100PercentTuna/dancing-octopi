@@ -310,8 +310,8 @@ li .card h3 {
 /* ========================================
    JOTTINGS NOTEBOOK (LEDGER)
    
-   ARCHITECTURE: Notebook-style list with date column and vertical margin line.
-   Uses CSS Grid for date/content layout. Vertical line positioned after date column.
+   ARCHITECTURE: Ruled notebook-style list with light gray horizontal lines.
+   Equal spacing between entries. Text turns blue on hover, no underline.
    
    Canonical owner: components.css (this file)
    ======================================== */
@@ -319,10 +319,8 @@ li .card h3 {
   /* Date column width - adjustable via CSS custom property */
   --dateCol: 130px;
   
-  /* Container styling - subtle border, rounded corners */
-  border: 1px solid var(--hair2);
+  /* Container styling - clean look, no border */
   background: var(--bg);
-  border-radius: 4px;
   position: relative;
   list-style: none;
   margin: 0;
@@ -335,9 +333,7 @@ li .card h3 {
   padding: 0;
 }
 
-/* Vertical notebook margin line - classic blue rule
-   Positioned after date column + spacing
-   Uses color-mix to derive 25% opacity from --blue token */
+/* Vertical margin line - subtle gray (not blue) */
 .ledger::before {
   content: "";
   position: absolute;
@@ -345,10 +341,7 @@ li .card h3 {
   top: 0;
   bottom: 0;
   width: 1px;
-  /* Fallback for browsers without color-mix support */
-  background: rgba(30, 90, 255, 0.25);
-  /* Use color-mix to create 25% opacity blue from token (modern browsers) */
-  background: color-mix(in srgb, var(--blue) 25%, transparent);
+  background: var(--hair);
   pointer-events: none;
   z-index: 1;
 }
@@ -367,30 +360,34 @@ li .card h3 {
   transition-delay: var(--jotting-delay, 0ms);
 }
 
-/* Jotting row */
+/* Jotting row - ruled notebook style with light gray lines */
 .jRow {
   display: grid;
   grid-template-columns: var(--dateCol) 1fr;
   gap: var(--space-2);
-  padding: 12px var(--space-2);
-  border-bottom: 1px solid var(--hair2);
-  transition: background 200ms ease, opacity 400ms ease, transform 400ms ease;
+  padding: 16px var(--space-2);
+  /* Light gray ruled lines like notebook paper */
+  border-bottom: 1px solid var(--hair);
+  transition: opacity 400ms ease, transform 400ms ease;
   align-items: start;
   position: relative;
   text-decoration: none;
   color: var(--ink);
+  /* Disable underline animation */
+  background-image: none !important;
 }
 .jContent {
   min-width: 0; /* Prevent text overflow in grid child */
 }
-.jRow:last-child { border-bottom: none; }
+/* Keep ruled line on last item for consistent notebook look */
+.jRow:last-child { border-bottom: 1px solid var(--hair); }
 .jRow:hover,
 .jRow:focus-visible { 
-  background: var(--blueTint); 
   outline: none;
+  /* No background change - text turns blue instead */
 }
 
-/* Blue accent on hover */
+/* Blue accent on hover - subtle left border */
 .jRow::before {
   content: "";
   position: absolute;
@@ -404,15 +401,11 @@ li .card h3 {
 }
 .jRow:hover::before { opacity: 1; }
 
-/* Active/Current entry - persistent highlight */
+/* Active/Current entry - blue text + left border indicator */
 .jRow.current,
 .jRow.is-active,
 .jRow[aria-current="page"] {
-  background: var(--blueTint);
-  padding-left: calc(var(--space-2) + 3px);
-  margin-left: calc(-1 * var(--space-2));
-  padding-right: var(--space-2);
-  margin-right: calc(-1 * var(--space-2));
+  /* No background - just blue text and left border */
 }
 
 .jRow.current::before,
@@ -423,7 +416,13 @@ li .card h3 {
 
 .jRow.current .jTitle,
 .jRow.is-active .jTitle,
-.jRow[aria-current="page"] .jTitle {
+.jRow[aria-current="page"] .jTitle,
+.jRow.current .jText,
+.jRow.is-active .jText,
+.jRow[aria-current="page"] .jText,
+.jRow.current .jDate,
+.jRow.is-active .jDate,
+.jRow[aria-current="page"] .jDate {
   color: var(--blue);
 }
 
@@ -436,6 +435,7 @@ li .card h3 {
   font-variant-numeric: tabular-nums;
   text-align: right;
   padding-right: var(--space-2);
+  transition: color 200ms ease;
 }
 
 /* Jotting content */
@@ -452,7 +452,6 @@ li .card h3 {
   color: var(--ink);
   transition: color 200ms ease;
 }
-.jRow:hover .jTitle { color: var(--blue); }
 
 /* Jottings text */
 .jText {
@@ -461,6 +460,7 @@ li .card h3 {
   font-size: 13px;
   line-height: 1.65;
   max-width: 80ch;
+  transition: color 200ms ease;
 }
 
 /* Jottings tags */
@@ -472,6 +472,15 @@ li .card h3 {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  transition: color 200ms ease;
+}
+
+/* Jottings hover - text turns blue, no underline */
+.jRow:hover .jTitle,
+.jRow:hover .jText,
+.jRow:hover .jTags,
+.jRow:hover .jDate { 
+  color: var(--blue); 
 }
 
 @media (max-width: 640px) {

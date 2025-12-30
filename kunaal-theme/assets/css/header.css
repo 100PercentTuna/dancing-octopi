@@ -258,6 +258,9 @@
   max-width: 78ch;
   font-size: calc(12px - (2px * var(--p)));
   opacity: calc(1 - (0.5 * var(--p)));
+  /* Disable underline animation on hover */
+  background-image: none;
+  padding-bottom: 0;
   line-height: 1.4;
   text-shadow: 0 0 20px var(--bg);
 }
@@ -273,13 +276,13 @@
 /* Color does NOT change on hover - only blue underline animates (see utilities.css) */
 .nav a {
   font-size: 12.5px;
-  color: var(--muted);
+  color: var(--muted); /* Dark gray, not black */
   padding: 8px 0;
   position: relative;
   /* No color transition - underline animation only (handled by utilities.css) */
 }
 .nav a:hover, .nav a:focus-visible, .nav a.current {
-  /* Color remains unchanged - only underline animates */
+  color: var(--muted); /* Keep same color - only underline animates */
 }
 
 /* Mobile nav toggle */

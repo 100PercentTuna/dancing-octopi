@@ -198,7 +198,7 @@
         },
         ":hover": {
           "color": {
-            "text": "var(--wp--preset--color--blue)"
+            "text": "var(--wp--preset--color--ink)"
           }
         }
       },

@@ -142,7 +142,7 @@
      - Image-related: Links containing only images
      ======================================== */
   :where(
-    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child))
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle))
   ) {
     display: inline;
     text-decoration: none; /* No underline at rest */
@@ -163,10 +163,10 @@
 
   /* Hover/focus: underline animates to 100% width (left-to-right reveal) */
   :where(
-    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child))
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle))
   ):hover,
   :where(
-    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child))
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle))
   ):focus-visible {
     background-size: 100% var(--k-underline-blue-thickness, 2px);
   }
