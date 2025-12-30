@@ -892,12 +892,20 @@ a:focus-visible, button:focus-visible {
   height: 200px;
   background: linear-gradient(to bottom, var(--warmBorder), transparent);
 }
-/* Inner grid for items within each column */
+/* Inner grid for items within each column 
+   Using CSS Subgrid for row alignment between columns */
 .media-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  /* Using auto rows with consistent item heights for alignment */
+  grid-auto-rows: minmax(auto, 1fr);
   gap: 1.25rem 1rem;
   margin-top: 1.25rem;
+}
+/* Ensure items have consistent heights for row alignment */
+.media-grid .media-item {
+  display: flex;
+  flex-direction: column;
 }
 @media (max-width: 900px) {
   .media-row { grid-template-columns: 1fr; gap: 2rem; }
@@ -1146,21 +1154,12 @@ a:focus-visible, button:focus-visible {
 }
 .media-link {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 8px; /* Matches reference design */
   color: var(--blue);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.3rem;
-  text-transform: capitalize;
-}
-
-/* Add explicit SVG sizing for media links */
-.media-link svg {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
   display: block;
+  margin-top: 0.25rem;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
 }
 
 /* =============================================

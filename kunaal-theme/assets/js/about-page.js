@@ -798,6 +798,32 @@
         // Add beacon for current location (use first current location)
         if (current.length > 0) {
           const currentIso = current[0].toUpperCase();
+          
+          // Fallback coordinates for small countries not in 110m TopoJSON
+          // [longitude, latitude] format for D3 geo projection
+          var smallCountryCoords = {
+            'SGP': [103.8198, 1.3521],   // Singapore
+            'MDV': [73.2207, 3.2028],    // Maldives
+            'BHR': [50.5577, 26.0667],   // Bahrain
+            'MLT': [14.3754, 35.9375],   // Malta
+            'LUX': [6.1296, 49.8153],    // Luxembourg
+            'MCO': [7.4246, 43.7384],    // Monaco
+            'SMR': [12.4578, 43.9424],   // San Marino
+            'LIE': [9.5554, 47.1660],    // Liechtenstein
+            'AND': [1.6016, 42.5063],    // Andorra
+            'VAT': [12.4534, 41.9029],   // Vatican City
+            'MUS': [57.5522, -20.3484],  // Mauritius
+            'SYC': [55.4540, -4.6796],   // Seychelles
+            'BRB': [-59.5432, 13.1939],  // Barbados
+            'ATG': [-61.7964, 17.0608],  // Antigua and Barbuda
+            'GRD': [-61.6790, 12.1165],  // Grenada
+            'LCA': [-60.9789, 13.9094],  // Saint Lucia
+            'VCT': [-61.1971, 13.2528],  // Saint Vincent
+            'KNA': [-62.7830, 17.3578],  // Saint Kitts and Nevis
+            'BRN': [114.7277, 4.5353],   // Brunei
+            'QAT': [51.1839, 25.3548],   // Qatar
+          };
+          
           // Find the feature for current ISO
           let currentFeature = null;
           for (var i = 0; i < countries.features.length; i++) {
@@ -808,11 +834,24 @@
             }
           }
           
+          // Calculate position - use feature centroid or fallback coordinates
+          var px, py;
           if (currentFeature) {
-            // Compute centroid using path.centroid
+            // Use TopoJSON feature centroid
             const centroid = path.centroid(currentFeature);
-            const px = centroid[0];
-            const py = centroid[1];
+            px = centroid[0];
+            py = centroid[1];
+          } else if (smallCountryCoords[currentIso]) {
+            // Use manual coordinates for small countries via projection
+            const coords = projection(smallCountryCoords[currentIso]);
+            if (coords) {
+              px = coords[0];
+              py = coords[1];
+            }
+          }
+          
+          // Only create beacon if we have valid coordinates
+          if (px && py && !isNaN(px) && !isNaN(py)) {
             const g = svg.append('g').attr('class', 'current-marker-group').attr('transform', 'translate(' + px + ',' + py + ')');
 
           // Get beacon color from CSS variables (respects dark mode)

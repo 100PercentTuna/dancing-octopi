@@ -104,14 +104,16 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  filter: grayscale(calc(var(--p) * 0.85)) saturate(.85) contrast(1.02) brightness(1.00);
+  /* Cards are grayscale by default and colorize on hover
+     Using fixed value - NOT tied to scroll position */
+  filter: grayscale(0.85) saturate(0.85) contrast(1.02) brightness(1.00);
   transition: transform 500ms cubic-bezier(0.4,0,0.2,1), filter 500ms ease;
   --ps: 1;
   transform: scale(var(--ps));
 }
 .card:hover .media img, .card:hover .media svg,
 .card:focus-visible .media img, .card:focus-visible .media svg {
-  filter: grayscale(0) contrast(1.00) brightness(1.00);
+  filter: grayscale(0) saturate(1) contrast(1.00) brightness(1.00);
   --ps: 1.03;
 }
 
@@ -277,10 +279,11 @@
   text-shadow: 0 2px 14px rgba(0,0,0,.55);
 }
 
-/* Touch devices - show details by default */
+/* Touch devices - show details by default, keep grayscale for visual interest */
 @media (hover: none) {
   .details { max-height: 120px; opacity: 1; transform: none; }
-  .media img, .media svg { filter: saturate(.85) contrast(1.02) brightness(1.00); }
+  /* Keep grayscale filter on touch - colorize happens on tap/focus */
+  .media img, .media svg { filter: grayscale(0.85) saturate(0.85) contrast(1.02) brightness(1.00); }
   .overlay { 
     backdrop-filter: blur(4px); 
     -webkit-backdrop-filter: blur(4px); 

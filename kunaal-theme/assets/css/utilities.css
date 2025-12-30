@@ -222,14 +222,15 @@
     content: "";
     position: absolute;
     left: 0;
-    /* Center the 3px blue segment on the 1px gray border
-       Border center is at 0.5px from parent bottom edge
-       Blue center (1.5px from blue bottom) should align with border center (0.5px)
-       So blue bottom edge: 0.5px - 1.5px = -1px from border
-       Since border is at padding edge (8px below content), adjust for alignment */
-    bottom: -1.5px; /* Positioned to center 3px blue segment on 1px gray border */
-    width: 75%; /* Blue segment is ~75% of current length */
-    width: 30px; /* 75% of previous 40px - shorter blue segment */
+    /* Position blue segment to OVERLAP the gray border on parent .sectionHead
+       The gray border is on .sectionHead which has padding-bottom: var(--space-1) = 8px
+       So the gray border is 8px below the h2's bottom edge.
+       To center 3px blue on 1px gray: bottom of blue = gray center - blue half height
+       Gray center = 8px + 0.5px = 8.5px below h2 bottom
+       Blue bottom = 8.5px - 1.5px = 7px below h2 bottom = bottom: -7px
+       But CSS bottom is relative to containing block's bottom edge, so: */
+    bottom: -9px; /* Extends to overlap the gray border on parent .sectionHead */
+    width: 30px; /* Short blue segment */
     height: 3px; /* Thicker than gray line (1px vs 3px) */
     background: var(--k-underline-blue-color, var(--blue));
     border-radius: 1.5px; /* Rounded ends (half of height for pill shape) */
