@@ -216,11 +216,15 @@ function kunaal_get_digital_media(): array {
 /**
  * Get places data for About page
  * Returns array with lived, visited, and current location ISO codes
+ * 
+ * Note: Defaults must match customizer-sections.php add_setting() defaults
+ * to ensure map shows data even before customizer values are explicitly saved.
  */
 function kunaal_get_places(): array {
-    $lived_str = kunaal_mod('kunaal_about_places_lived', '');
-    $visited_str = kunaal_mod('kunaal_about_places_visited', '');
-    $current = kunaal_mod('kunaal_about_places_current', '');
+    // Defaults synchronized with customizer-sections.php kunaal_register_about_places_section()
+    $lived_str = kunaal_mod('kunaal_about_places_lived', 'USA,IND,GBR');
+    $visited_str = kunaal_mod('kunaal_about_places_visited', 'THA,PHL,CHE,CAN,MYS,MDV,BRA,MEX,ZAF');
+    $current = kunaal_mod('kunaal_about_places_current', 'SGP');
     
     $lived = array();
     if (!empty($lived_str)) {

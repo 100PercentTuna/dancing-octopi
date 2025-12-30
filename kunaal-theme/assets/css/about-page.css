@@ -875,7 +875,10 @@ a:focus-visible, button:focus-visible {
   display: grid;
   grid-template-columns: 1fr 120px 1fr;
   align-items: start;
-  margin-bottom: 1.25rem;
+}
+.media-col {
+  display: flex;
+  flex-direction: column;
 }
 .media-spacer {
   display: flex;
@@ -889,10 +892,17 @@ a:focus-visible, button:focus-visible {
   height: 200px;
   background: linear-gradient(to bottom, var(--warmBorder), transparent);
 }
+/* Inner grid for items within each column */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem 1rem;
+  margin-top: 1.25rem;
+}
 @media (max-width: 900px) {
-  .media-row { grid-template-columns: 1fr; }
-  .media-spacer { height: 2.5rem; padding: 0; }
-  .media-spacer::before { width: 80px; height: 1px; background: var(--warmBorder); }
+  .media-row { grid-template-columns: 1fr; gap: 2rem; }
+  .media-spacer { display: none; } /* Hide spacer on mobile - stacking is enough */
+  .media-grid { gap: 1rem; }
 }
 
 .media-col-header{
