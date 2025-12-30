@@ -10,6 +10,8 @@
   padding: var(--space-1) 0;
   margin-bottom: var(--space-2);
   gap: var(--space-2);
+  position: relative;
+  z-index: 100; /* Ensure toolbar is above other content but below header */
 }
 
 /* Filter controls container */
@@ -19,9 +21,9 @@
   gap: var(--space-1);
 }
 
-/* Filter toggle button - RIGHT SIDE (mobile only) */
+/* Filter toggle button - ALWAYS VISIBLE (both mobile and desktop) */
 .filterToggle {
-  display: none; /* Hidden on desktop */
+  display: flex; /* Always visible */
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
@@ -33,6 +35,8 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 200ms ease;
+  position: relative;
+  z-index: 100; /* Ensure visibility above other elements */
 }
 .filterToggle:hover, .filterToggle:focus-visible {
   border-color: var(--blueStroke);
@@ -59,11 +63,16 @@
   stroke: #fff;
 }
 
-/* Filter panel - visible by default on desktop, hidden on mobile */
+/* Filter panel - HIDDEN by default, shown when .open class added */
 .filterPanel {
-  display: flex;
+  display: none; /* Hidden by default - toggle button opens it */
   gap: var(--space-1);
   align-items: center;
+  position: relative;
+  z-index: 100;
+}
+.filterPanel.open {
+  display: flex;
 }
 
 /* Topics dropdown (multi-select) */
@@ -260,23 +269,16 @@
 @media (max-width: 640px) {
   .toolbar { flex-wrap: wrap; justify-content: flex-end; }
   .filterControls { width: 100%; justify-content: flex-end; }
-  .filterPanel { 
+  .filterPanel.open { 
     width: 100%; 
     flex-wrap: wrap;
-    display: none; /* Hidden on mobile by default */
-  }
-  .filterPanel.open { 
-    display: flex; /* Show when toggled open on mobile */
     gap: 8px;
-    position: relative;
-    z-index: 9999; /* Above mast (9998) */
   }
   .modernSelect { flex: 1; min-width: 0; padding-right: 28px; }
   .searchWrap { flex: 1; min-width: 0; }
   .searchInput { width: 100%; }
   .searchInput:focus { width: 100%; }
   .filterToggle { 
-    display: flex; /* Show toggle button on mobile */
     padding: 8px 10px; 
   }
   .filterToggle span { display: none; }

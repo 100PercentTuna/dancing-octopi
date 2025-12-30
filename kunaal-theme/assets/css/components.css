@@ -104,9 +104,9 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  /* Cards are grayscale by default and colorize on hover
-     Using fixed value - NOT tied to scroll position */
-  filter: grayscale(0.85) saturate(0.85) contrast(1.02) brightness(1.00);
+  /* Cards are FULLY grayscale by default and colorize on hover
+     100% grayscale (1.0) for completely desaturated black-and-white look */
+  filter: grayscale(1) saturate(0) contrast(1.05) brightness(1.02);
   transition: transform 500ms cubic-bezier(0.4,0,0.2,1), filter 500ms ease;
   --ps: 1;
   transform: scale(var(--ps));
@@ -195,13 +195,30 @@
 }
 
 /* Card overlay text must ALWAYS be white for legibility on image backgrounds
-   This applies regardless of light/dark theme - the scrim ensures contrast */
+   This applies regardless of light/dark theme - the scrim ensures contrast
+   CRITICAL: Override theme.json heading color (h1-h6 are set to --ink) */
 .overlay,
 .overlay *,
+.card .overlay,
+.card .overlay *,
 .card .tTitle,
+.card h3.tTitle,
 .card .tTitle span,
 .card .details,
-.card .details span {
+.card .details *,
+.card .details span,
+.card .meta,
+.card .meta *,
+.card .metaTags,
+.card .metaTags *,
+.card .dek {
+  color: #fff;
+}
+/* Extra specificity to override WordPress theme.json heading styles */
+.card h3,
+.grid .card h3,
+ul.grid .card h3,
+li .card h3 {
   color: #fff;
 }
 
@@ -279,11 +296,11 @@
   text-shadow: 0 2px 14px rgba(0,0,0,.55);
 }
 
-/* Touch devices - show details by default, keep grayscale for visual interest */
+/* Touch devices - show details by default, keep FULL grayscale */
 @media (hover: none) {
   .details { max-height: 120px; opacity: 1; transform: none; }
-  /* Keep grayscale filter on touch - colorize happens on tap/focus */
-  .media img, .media svg { filter: grayscale(0.85) saturate(0.85) contrast(1.02) brightness(1.00); }
+  /* Keep full grayscale filter on touch - colorize happens on tap/focus */
+  .media img, .media svg { filter: grayscale(1) saturate(0) contrast(1.05) brightness(1.02); }
   .overlay { 
     backdrop-filter: blur(4px); 
     -webkit-backdrop-filter: blur(4px); 
