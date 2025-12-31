@@ -256,67 +256,64 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
 ?>
 
 <?php if (($books_show && !empty($books)) || ($digital_show && !empty($digital))) : ?>
-<!-- READING + LISTENING - Unified grid for row alignment -->
+<!-- READING + LISTENING - Two-column layout with aligned rows -->
 <section class="media-section section">
     <div class="section-inner">
-        <!-- Unified grid: 7 columns (3 books + 1 gap + 3 digital), rows align across columns -->
-        <div class="media-unified-grid">
-            <!-- Row 1: Headers -->
+        <div class="media-row-layout">
+            <!-- Books Column -->
             <?php if ($books_show && !empty($books)) : ?>
-            <div class="media-col-header media-col-header--books">
-                <h3 class="media-col-title u-section-underline">On the nightstand</h3>
+            <div class="media-column media-column--books">
+                <div class="media-col-header">
+                    <h3 class="media-col-title u-section-underline">On the nightstand</h3>
+                </div>
+                <div class="media-items-grid">
+                    <?php foreach ($books as $book) : ?>
+                    <div class="media-item media-item--book" data-reveal="up">
+                        <div class="media-cover book">
+                            <?php if (!empty($book['cover'])) : ?>
+                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
+                            <?php endif; ?>
+                        </div>
+                        <div class="media-title"><?php echo esc_html($book['title']); ?></div>
+                        <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <?php endif; ?>
             
+            <!-- Digital Column -->
             <?php if ($digital_show && !empty($digital)) : ?>
-            <div class="media-col-header media-col-header--digital">
-                <h3 class="media-col-title u-section-underline">On repeat</h3>
+            <div class="media-column media-column--digital">
+                <div class="media-col-header">
+                    <h3 class="media-col-title u-section-underline">On repeat</h3>
+                </div>
+                <div class="media-items-grid">
+                    <?php foreach ($digital as $item) :
+                        $link_type_label = ucfirst($item['link_type']);
+                        if ($item['link_type'] === 'apple') {
+                            $link_type_label = 'Apple Podcasts';
+                        }
+                        $has_link = !empty($item['url']);
+                        $tag = $has_link ? 'a' : 'div';
+                    ?>
+                    <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
+                        <div class="media-cover album">
+                            <?php if (!empty($item['cover'])) : ?>
+                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
+                            <?php endif; ?>
+                            <?php if ($has_link) : ?>
+                            <span class="play-icon">▶</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="media-title"><?php echo esc_html($item['title']); ?></div>
+                        <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
+                        <span class="media-link">↗ <?php echo esc_html($link_type_label); ?></span>
+                    </<?php echo $tag; ?>>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <?php endif; ?>
-            
-            <!-- Book items with explicit grid placement -->
-            <?php if ($books_show && !empty($books)) : 
-                foreach ($books as $index => $book) :
-                    $col = ($index % 3) + 1; // Columns 1-3
-                    $row = floor($index / 3) + 2; // Rows 2+
-            ?>
-            <div class="media-item media-item--book" style="grid-column: <?php echo $col; ?>; grid-row: <?php echo $row; ?>;" data-reveal="up">
-                <div class="media-cover book">
-                    <?php if (!empty($book['cover'])) : ?>
-                    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
-                    <?php endif; ?>
-                </div>
-                <div class="media-title"><?php echo esc_html($book['title']); ?></div>
-                <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
-            </div>
-            <?php endforeach; endif; ?>
-            
-            <!-- Digital items with explicit grid placement -->
-            <?php if ($digital_show && !empty($digital)) : 
-                foreach ($digital as $index => $item) :
-                    $link_type_label = ucfirst($item['link_type']);
-                    if ($item['link_type'] === 'apple') {
-                        $link_type_label = 'Apple Podcasts';
-                    }
-                    $has_link = !empty($item['url']);
-                    $tag = $has_link ? 'a' : 'div';
-                    $col = ($index % 3) + 5; // Columns 5-7 (after gap column 4)
-                    $row = floor($index / 3) + 2; // Rows 2+
-            ?>
-            <<?php echo $tag; ?> class="media-item media-item--digital" style="grid-column: <?php echo $col; ?>; grid-row: <?php echo $row; ?>;" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
-                <div class="media-cover album">
-                    <?php if (!empty($item['cover'])) : ?>
-                    <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
-                    <?php endif; ?>
-                    <?php if ($has_link) : ?>
-                    <span class="play-icon">▶</span>
-                    <?php endif; ?>
-                </div>
-                <div class="media-title"><?php echo esc_html($item['title']); ?></div>
-                <div class="media-subtitle"><?php echo esc_html($item['artist']); ?></div>
-                <span class="media-link">↗ <?php echo esc_html($link_type_label); ?></span>
-            </<?php echo $tag; ?>>
-            <?php endforeach; endif; ?>
         </div>
     </div>
 </section>

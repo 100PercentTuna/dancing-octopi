@@ -196,7 +196,8 @@
 
 /* Card overlay text must ALWAYS be white for legibility on image backgrounds
    This applies regardless of light/dark theme - the scrim ensures contrast
-   CRITICAL: Override theme.json heading color (h1-h6 are set to --ink) */
+   CRITICAL: Override WordPress theme.json h3 color (set to var(--ink))
+   Using !important is necessary here to override WP global styles we don't control */
 .overlay,
 .overlay *,
 .card .overlay,
@@ -212,14 +213,19 @@
 .card .metaTags,
 .card .metaTags *,
 .card .dek {
-  color: #fff;
+  color: #fff !important;
 }
-/* Extra specificity to override WordPress theme.json heading styles */
+/* Override WordPress theme.json heading styles - h3 is set to var(--ink) globally
+   !important required because WP generates high-specificity inline styles */
 .card h3,
+.card h3.tTitle,
+h3.tTitle,
 .grid .card h3,
 ul.grid .card h3,
-li .card h3 {
-  color: #fff;
+li .card h3,
+.wp-site-blocks .card h3,
+body .card h3 {
+  color: #fff !important;
 }
 
 /* Details reveal */

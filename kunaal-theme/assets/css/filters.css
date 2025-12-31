@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: flex-end;
   padding: var(--space-1) 0;
+  margin-top: var(--space-2); /* Spacing from top of content area */
   margin-bottom: var(--space-2);
   gap: var(--space-2);
   position: relative;
@@ -21,12 +22,22 @@
   gap: var(--space-1);
 }
 
+/* Consistent height for all filter controls */
+.filterToggle,
+.topicDropdownBtn,
+.modernSelect,
+.searchWrap,
+.resetBtn {
+  height: 36px; /* Consistent height across all filter controls */
+  box-sizing: border-box;
+}
+
 /* Filter toggle button - ALWAYS VISIBLE (both mobile and desktop) */
 .filterToggle {
   display: flex; /* Always visible */
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 0 12px; /* Use height for vertical sizing */
   border: 1px solid var(--hair);
   background: var(--bg);
   color: var(--muted);
@@ -91,7 +102,7 @@
   min-width: 190px;
   font-size: 12px;
   font-weight: 400;
-  padding: 8px 32px 8px 12px;
+  padding: 0 32px 0 12px; /* Use height for vertical sizing */
   border: 1px solid var(--hair);
   background: var(--bg);
   color: var(--muted);
@@ -177,7 +188,7 @@
 .modernSelect {
   font-size: 12px;
   font-weight: 400;
-  padding: 8px 32px 8px 12px;
+  padding: 0 32px 0 12px; /* Use height for vertical sizing */
   border: 1px solid var(--hair);
   background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230b1220' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
   color: var(--muted);
@@ -206,7 +217,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0 12px;
+  padding: 0 12px; /* Use height for vertical sizing */
   background: var(--bg);
   border: 1px solid var(--hair);
   border-radius: 6px;
@@ -227,9 +238,10 @@
 .searchInput {
   border: none;
   background: transparent;
-  padding: 8px 0;
+  padding: 0; /* Parent controls height */
   font-size: 12px;
   width: 100px;
+  height: 100%;
   color: var(--ink);
   outline: none;
   transition: width 200ms ease;
@@ -243,7 +255,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 0 12px; /* Use height for vertical sizing */
   border: 1px solid var(--hair);
   background: var(--bg);
   color: var(--muted);
@@ -277,9 +289,9 @@
   .modernSelect { flex: 1; min-width: 0; padding-right: 28px; }
   .searchWrap { flex: 1; min-width: 0; }
   .searchInput { width: 100%; }
-  .searchInput:focus { width: 100%; }
+  .searchInput:focus { width: 100%; outline: none; }
   .filterToggle { 
-    padding: 8px 10px; 
+    padding: 0 10px; /* Use height for vertical sizing */
   }
   .filterToggle span { display: none; }
 }

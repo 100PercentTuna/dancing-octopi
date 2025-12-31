@@ -861,7 +861,7 @@ a:focus-visible, button:focus-visible {
 }
 
 /* =============================================
-   MEDIA SECTION - Aligned rows
+   MEDIA SECTION - Two-column layout with aligned rows
 ============================================= */
 .media-section {
   padding: 3.5rem 2rem;
@@ -871,67 +871,48 @@ a:focus-visible, button:focus-visible {
 .media-section .section-inner {
   max-width: 1000px;
 }
-/* UNIFIED GRID for row alignment across book and digital columns
-   7 columns: 3 books | 1 gap | 3 digital
-   Items in the same grid-row share the same row track height */
-.media-unified-grid {
+
+/* Two-column layout container */
+.media-row-layout {
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+/* Each column takes equal width */
+.media-column {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 3-column grid for items within each column */
+.media-items-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr) 80px repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem 1rem;
   align-items: start;
 }
 
-/* Headers span their column groups */
-.media-col-header--books {
-  grid-column: 1 / 4;
-  grid-row: 1;
-}
-.media-col-header--digital {
-  grid-column: 5 / 8;
-  grid-row: 1;
-}
-
-/* Gap column visual separator */
-.media-unified-grid::before {
-  content: '';
-  grid-column: 4;
-  grid-row: 1 / -1;
-  width: 1px;
-  height: 200px;
-  margin: 3rem auto 0;
-  background: linear-gradient(to bottom, var(--warmBorder), transparent);
-}
-
-/* Book items use columns 1-3, digital items use columns 5-7
-   Row placement via inline styles from PHP */
+/* Media items */
 .media-item--book,
 .media-item--digital {
   display: flex;
   flex-direction: column;
   align-self: start;
 }
+
+/* Responsive: stack columns on smaller screens */
 @media (max-width: 900px) {
-  .media-unified-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem 1rem;
+  .media-row-layout {
+    flex-direction: column;
+    gap: 2.5rem;
   }
-  .media-unified-grid::before { display: none; }
-  .media-col-header--books,
-  .media-col-header--digital {
-    grid-column: 1 / -1;
-  }
-  .media-col-header--digital {
-    margin-top: 2rem;
-  }
-  /* Reset item positions for single-column flow */
-  .media-item--book,
-  .media-item--digital {
-    grid-column: auto !important;
-    grid-row: auto !important;
+  .media-column--digital {
+    margin-top: 0;
   }
 }
 @media (max-width: 600px) {
-  .media-unified-grid {
+  .media-items-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
