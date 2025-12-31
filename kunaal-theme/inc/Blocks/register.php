@@ -246,13 +246,23 @@ function kunaal_register_editor_scripts(string $blocks_dir, string $blocks_uri, 
  */
 function kunaal_register_view_scripts(string $blocks_dir, string $blocks_uri, string $version): void {
     $view_blocks = kunaal_get_view_script_blocks();
+    
+    // Blocks that require the lib-loader for D3/Leaflet
+    $lib_loader_blocks = array('network-graph', 'flow-diagram', 'data-map');
+    
     foreach ($view_blocks as $block) {
         $view_path = $blocks_dir . '/' . $block . '/view.js';
         if (file_exists($view_path)) {
+            // Add lib-loader dependency for blocks that use D3/Leaflet
+            $dependencies = array();
+            if (in_array($block, $lib_loader_blocks, true)) {
+                $dependencies[] = 'kunaal-lib-loader';
+            }
+            
             wp_register_script(
                 'kunaal-' . $block . '-view',
                 $blocks_uri . '/' . $block . '/view.js',
-                array(),
+                $dependencies,
                 $version,
                 true
             );

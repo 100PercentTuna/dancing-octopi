@@ -776,7 +776,9 @@
         });
       }
       
-      window.d3.json('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then(function (world) {
+      // Use locally bundled world atlas data (or fallback to CDN)
+      const worldAtlasUrl = window.kunaalLibConfig?.worldAtlasUrl || 'https://unpkg.com/world-atlas@2.0.2/countries-110m.json';
+      window.d3.json(worldAtlasUrl).then(function (world) {
         const countries = window.topojson.feature(world, world.objects.countries);
 
         svg.selectAll('path')

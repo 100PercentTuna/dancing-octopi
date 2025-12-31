@@ -962,12 +962,19 @@
     }
     
     const postId = postIdMatch[1];
-    // Generate nonce for PDF download (use existing nonce from kunaalTheme or create new one)
     const nonce = window.kunaalTheme?.pdfNonce || '';
-    const pdfUrl = window.location.origin + '/?kunaal_pdf=1&post_id=' + postId + '&nonce=' + encodeURIComponent(nonce);
+    
+    // Build URL using localized homeUrl (supports subdirectory installs)
+    const base = window.kunaalTheme?.homeUrl || (window.location.origin + '/');
+    const url = new URL(base);
+    url.searchParams.set('kunaal_pdf', '1');
+    url.searchParams.set('post_id', postId);
+    if (nonce) {
+      url.searchParams.set('nonce', nonce);
+    }
     
     // Open PDF in new window
-    window.open(pdfUrl, '_blank', 'noopener');
+    window.open(url.toString(), '_blank', 'noopener');
   }
 
   // ========================================

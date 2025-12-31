@@ -5,6 +5,20 @@
 (function() {
   'use strict';
 
+  /**
+   * Safe JSON parse helper - prevents crashes from malformed data
+   * @param {string} raw - The raw JSON string to parse
+   * @param {*} fallback - Fallback value if parsing fails
+   * @returns {*} Parsed value or fallback
+   */
+  function safeJsonParse(raw, fallback) {
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   // Use centralized library loader
   async function loadD3() {
     if (window.kunaalLibLoader && window.kunaalLibLoader.loadD3) {
@@ -18,8 +32,8 @@
   }
 
   async function initNetworkGraph(block) {
-    const nodes = JSON.parse(block.dataset.nodes || '[]');
-    const edges = JSON.parse(block.dataset.edges || '[]');
+    const nodes = safeJsonParse(block.dataset.nodes || '[]', []);
+    const edges = safeJsonParse(block.dataset.edges || '[]', []);
     const layout = block.dataset.layout || 'force';
     const showLabels = block.dataset.showLabels === 'true';
     const enableDrag = block.dataset.enableDrag === 'true';
@@ -27,7 +41,7 @@
     const chargeStrength = parseInt(block.dataset.chargeStrength) || -300;
     const linkDistance = parseInt(block.dataset.linkDistance) || 100;
     const colorByGroup = block.dataset.colorByGroup === 'true';
-    const groupColors = JSON.parse(block.dataset.groupColors || '{}');
+    const groupColors = safeJsonParse(block.dataset.groupColors || '{}', {});
 
     if (nodes.length === 0) {
       const svg = block.querySelector('.network-svg');
@@ -215,30 +229,37 @@
       tooltip.style.top = (event.pageY - rect.top + 10) + 'px';
     }
 
-    // Zoom controls
+    // Zoom controls - use DOM element, not D3 selection
+    const svgEl = block.querySelector('.network-svg');
     const zoomIn = block.querySelector('.network-zoom-in');
     const zoomOut = block.querySelector('.network-zoom-out');
     const reset = block.querySelector('.network-reset');
     let currentZoom = 1;
 
+    function applyZoom() {
+      if (!svgEl) return;
+      svgEl.style.transformOrigin = '50% 50%';
+      svgEl.style.transform = `scale(${currentZoom})`;
+    }
+
     if (zoomIn) {
       zoomIn.addEventListener('click', () => {
         currentZoom = Math.min(currentZoom * 1.2, 3);
-        svg.style.transform = `scale(${currentZoom})`;
+        applyZoom();
       });
     }
 
     if (zoomOut) {
       zoomOut.addEventListener('click', () => {
         currentZoom = Math.max(currentZoom / 1.2, 0.5);
-        svg.style.transform = `scale(${currentZoom})`;
+        applyZoom();
       });
     }
 
     if (reset) {
       reset.addEventListener('click', () => {
         currentZoom = 1;
-        svg.style.transform = 'scale(1)';
+        applyZoom();
         simulation.alpha(1).restart();
       });
     }

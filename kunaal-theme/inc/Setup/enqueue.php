@@ -356,6 +356,18 @@ function kunaal_enqueue_assets(): void {
         kunaal_asset_version('assets/js/lib-loader.js'),
         true
     );
+    
+    // Configure lib-loader to use locally bundled libraries (before lib-loader runs)
+    wp_add_inline_script(
+        'kunaal-lib-loader',
+        'window.kunaalLibConfig = {
+            d3Src: "' . esc_js(KUNAAL_THEME_URI . '/assets/libs/d3.v7.min.js') . '",
+            leafletJs: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+            leafletCss: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+            worldAtlasUrl: "' . esc_js(KUNAAL_THEME_URI . '/assets/data/countries-110m.json') . '"
+        };',
+        'before'
+    );
 
     // Localize script with data
     // Always localize to ensure kunaalTheme is available on all pages

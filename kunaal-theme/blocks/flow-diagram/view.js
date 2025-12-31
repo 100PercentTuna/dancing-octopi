@@ -5,6 +5,20 @@
 (function() {
   'use strict';
 
+  /**
+   * Safe JSON parse helper - prevents crashes from malformed data
+   * @param {string} raw - The raw JSON string to parse
+   * @param {*} fallback - Fallback value if parsing fails
+   * @returns {*} Parsed value or fallback
+   */
+  function safeJsonParse(raw, fallback) {
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   // Use centralized library loader
   async function loadD3() {
     if (window.kunaalLibLoader && window.kunaalLibLoader.loadD3) {
@@ -19,8 +33,8 @@
 
   async function initFlowDiagram(block) {
     const diagramType = block.dataset.diagramType || 'sankey';
-    const nodes = JSON.parse(block.dataset.nodes || '[]');
-    const links = JSON.parse(block.dataset.links || '[]');
+    const nodes = safeJsonParse(block.dataset.nodes || '[]', []);
+    const links = safeJsonParse(block.dataset.links || '[]', []);
     
     if (nodes.length === 0 || links.length === 0) {
       const svg = block.querySelector('.flow-svg');

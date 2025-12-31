@@ -2,9 +2,22 @@
  * Centralized Library Loader
  * Prevents duplicate loading of external libraries (D3, Leaflet)
  * Handles CSS loading for libraries that require it (Leaflet)
+ * 
+ * Configuration: Set window.kunaalLibConfig before this script loads to override URLs:
+ * {
+ *   d3Src: '/path/to/d3.v7.min.js',
+ *   leafletJs: '/path/to/leaflet.js',
+ *   leafletCss: '/path/to/leaflet.css'
+ * }
  */
 (function() {
   'use strict';
+
+  // Configuration with CDN fallbacks
+  const config = window.kunaalLibConfig || {};
+  const D3_SRC = config.d3Src || 'https://d3js.org/d3.v7.min.js';
+  const LEAFLET_JS = config.leafletJs || 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  const LEAFLET_CSS = config.leafletCss || 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 
   let leafletLoaded = false;
   let leafletLoading = false;
@@ -75,7 +88,7 @@
       d3Loading = true;
       return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = 'https://d3js.org/d3.v7.min.js';
+        script.src = D3_SRC;
         script.onload = () => {
           d3Loaded = true;
           d3Loading = false;
@@ -87,7 +100,7 @@
         };
         script.onerror = () => {
           d3Loading = false;
-          reject(new Error('Failed to load D3.js'));
+          reject(new Error('Failed to load D3.js from ' + D3_SRC));
         };
         document.head.appendChild(script);
       });
@@ -103,7 +116,7 @@
         leafletLoaded = true;
         // Ensure CSS is loaded if library exists but CSS wasn't tracked
         if (!leafletCssLoaded) {
-          return loadCSS('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
+          return loadCSS(LEAFLET_CSS)
             .then(() => {
               leafletCssLoaded = true;
               return Promise.resolve(window.L);
@@ -133,12 +146,12 @@
       leafletLoading = true;
       
       // Load CSS first, then JS (ensure CSS loads exactly once)
-      return loadCSS('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
+      return loadCSS(LEAFLET_CSS)
         .then(() => {
           leafletCssLoaded = true;
           return new Promise((resolve, reject) => {
             const script = document.createElement('script');
-            script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+            script.src = LEAFLET_JS;
             script.onload = () => {
               leafletLoaded = true;
               leafletLoading = false;
@@ -150,7 +163,7 @@
             };
             script.onerror = () => {
               leafletLoading = false;
-              reject(new Error('Failed to load Leaflet.js'));
+              reject(new Error('Failed to load Leaflet.js from ' + LEAFLET_JS));
             };
             document.head.appendChild(script);
           });

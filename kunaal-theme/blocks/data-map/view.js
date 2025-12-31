@@ -5,6 +5,20 @@
 (function() {
   'use strict';
 
+  /**
+   * Safe JSON parse helper - prevents crashes from malformed data
+   * @param {string} raw - The raw JSON string to parse
+   * @param {*} fallback - Fallback value if parsing fails
+   * @returns {*} Parsed value or fallback
+   */
+  function safeJsonParse(raw, fallback) {
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   // Use centralized library loader
   async function loadLeaflet() {
     if (window.kunaalLibLoader && window.kunaalLibLoader.loadLeaflet) {
@@ -25,8 +39,8 @@
     const initialZoom = parseInt(block.dataset.initialZoom) || 2;
     const enableZoom = block.dataset.enableZoom === 'true';
     const enablePan = block.dataset.enablePan === 'true';
-    const regionData = JSON.parse(block.dataset.regionData || '[]');
-    const pointData = JSON.parse(block.dataset.pointData || '[]');
+    const regionData = safeJsonParse(block.dataset.regionData || '[]', []);
+    const pointData = safeJsonParse(block.dataset.pointData || '[]', []);
     const colorScale = block.dataset.colorScale || 'sequential';
     const colorLow = block.dataset.colorLow || '#F5F0EB';
     const colorHigh = block.dataset.colorHigh || '#7D6B5D';

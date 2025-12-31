@@ -6,11 +6,6 @@
         "php": ">=8.0",
         "dompdf/dompdf": "^2.0"
     },
-    "autoload": {
-        "psr-4": {
-            "Kunaal\\Theme\\": "src/"
-        }
-    },
     "config": {
         "optimize-autoloader": true
     }
