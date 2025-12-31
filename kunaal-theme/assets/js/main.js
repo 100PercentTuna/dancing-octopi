@@ -566,7 +566,9 @@
     const sortSelect = filterContainer?.querySelector('[data-role="sort"]');
     
     formData.append('post_type', postType);
-    formData.append('topics', Array.from(selectedTopics));
+    // Append topics as topics[] array entries for proper PHP parsing
+    const topicsArray = Array.from(selectedTopics);
+    topicsArray.forEach(topic => formData.append('topics[]', topic));
     formData.append('sort', sortSelect?.value || 'new');
     formData.append('search', searchInput?.value || '');
     formData.append('page', currentPage);

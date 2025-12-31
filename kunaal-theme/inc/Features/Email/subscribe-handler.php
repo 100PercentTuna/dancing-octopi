@@ -64,7 +64,12 @@ function kunaal_send_subscribe_confirmation(string $email, string $token): bool 
  * @return array|WP_Error Returns error array on failure, null on success
  */
 function kunaal_validate_subscribe_request(): array|null {
-    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+    if (empty($_POST['nonce'])) {
+        return array('message' => 'Security check failed. Please refresh and try again.');
+    }
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified below
+    $nonce = sanitize_text_field(wp_unslash($_POST['nonce']));
+    if (!wp_verify_nonce($nonce, 'kunaal_theme_nonce')) {
         return array('message' => 'Security check failed. Please refresh and try again.');
     }
 
@@ -82,7 +87,8 @@ function kunaal_validate_subscribe_request(): array|null {
  * @return string|WP_Error Valid email address or error
  */
 function kunaal_validate_subscribe_email(): string|WP_Error {
-    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below
+    $email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
     if (!is_email($email)) {
         return new WP_Error('invalid_email', 'Please enter a valid email address.');
     }
@@ -175,7 +181,7 @@ function kunaal_handle_subscribe(): void {
 
         wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription.'));
         wp_die();
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         kunaal_theme_log('Subscribe error', array('error' => $e->getMessage()));
         wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
         wp_die();

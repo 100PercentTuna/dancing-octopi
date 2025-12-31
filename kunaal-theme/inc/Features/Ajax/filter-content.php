@@ -18,7 +18,12 @@ if (!defined('ABSPATH')) {
  * Helper: Validate filter request
  */
 function kunaal_validate_filter_request(): bool {
-    if (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'kunaal_theme_nonce')) {
+    if (empty($_POST['nonce'])) {
+        return false;
+    }
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified below
+    $nonce = sanitize_text_field(wp_unslash($_POST['nonce']));
+    if (!wp_verify_nonce($nonce, 'kunaal_theme_nonce')) {
         return false;
     }
     return true;
@@ -30,7 +35,8 @@ function kunaal_validate_filter_request(): bool {
 function kunaal_parse_filter_topics(): array {
     $topics = array();
     if (isset($_POST['topics'])) {
-        $topics_raw = $_POST['topics'];
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below
+        $topics_raw = wp_unslash($_POST['topics']);
         if (is_array($topics_raw)) {
             $topics = array_filter(array_map('sanitize_text_field', $topics_raw));
         } elseif (is_string($topics_raw) && !empty($topics_raw)) {
@@ -157,12 +163,14 @@ function kunaal_filter_content(): void {
             wp_die();
         }
         
-        $post_type = isset($_POST['post_type']) ? sanitize_text_field($_POST['post_type']) : 'essay';
+        // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- all values sanitized below
+        $post_type = isset($_POST['post_type']) ? sanitize_text_field(wp_unslash($_POST['post_type'])) : 'essay';
         $topics = kunaal_parse_filter_topics();
-        $sort = isset($_POST['sort']) ? sanitize_text_field($_POST['sort']) : 'new';
-        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
-        $page = isset($_POST['page']) ? absint($_POST['page']) : 1;
-        $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
+        $sort = isset($_POST['sort']) ? sanitize_text_field(wp_unslash($_POST['sort'])) : 'new';
+        $search = isset($_POST['search']) ? sanitize_text_field(wp_unslash($_POST['search'])) : '';
+        $page = isset($_POST['page']) ? absint(wp_unslash($_POST['page'])) : 1;
+        $per_page = isset($_POST['per_page']) ? absint(wp_unslash($_POST['per_page'])) : 12;
+        // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         
         $args = kunaal_build_filter_query_args($post_type, $topics, $sort, $search, $page, $per_page);
         $query = new WP_Query($args);
@@ -186,7 +194,7 @@ function kunaal_filter_content(): void {
             'page' => $page,
         ));
         wp_die();
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         kunaal_theme_log('AJAX filter error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
         wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
         wp_die();

@@ -116,7 +116,14 @@
           const label = point.label || `${point.lat}, ${point.lng}`;
           const formattedValue = formatValue(value, valueFormat, currencySymbol, valueSuffix);
           
-          circle.bindPopup(`<strong>${label}</strong><br>${formattedValue}`);
+          // Build popup content using DOM methods to prevent XSS
+          const popupContent = document.createElement('div');
+          const labelEl = document.createElement('strong');
+          labelEl.textContent = label;
+          popupContent.appendChild(labelEl);
+          popupContent.appendChild(document.createElement('br'));
+          popupContent.appendChild(document.createTextNode(formattedValue));
+          circle.bindPopup(popupContent);
         });
       }
 

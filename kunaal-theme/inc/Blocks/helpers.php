@@ -59,7 +59,7 @@ function kunaal_register_single_block(string $block_path, string $block): bool {
             } else {
                 kunaal_theme_log('Block registration failed', array('block' => $block));
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             kunaal_theme_log('Block registration exception', array('block' => $block, 'error' => $e->getMessage()));
         }
     }

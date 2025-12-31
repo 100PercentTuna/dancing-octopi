@@ -20,7 +20,12 @@ if (!defined('ABSPATH')) {
  * @return bool True if valid, false otherwise
  */
 function kunaal_validate_contact_request(): bool {
-    if (!isset($_POST['kunaal_contact_nonce']) || !wp_verify_nonce($_POST['kunaal_contact_nonce'], 'kunaal_contact_form')) {
+    if (!isset($_POST['kunaal_contact_nonce'])) {
+        return false;
+    }
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce verified below
+    $nonce = sanitize_text_field(wp_unslash($_POST['kunaal_contact_nonce']));
+    if (!wp_verify_nonce($nonce, 'kunaal_contact_form')) {
         return false;
     }
     return true;
@@ -30,12 +35,14 @@ function kunaal_validate_contact_request(): bool {
  * Helper: Sanitize contact form inputs
  */
 function kunaal_sanitize_contact_inputs(): array {
+    // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- all values sanitized below
     return array(
-        'name' => isset($_POST['contact_name']) ? sanitize_text_field($_POST['contact_name']) : '',
-        'email' => isset($_POST['contact_email']) ? sanitize_email($_POST['contact_email']) : '',
-        'message' => isset($_POST['contact_message']) ? sanitize_textarea_field($_POST['contact_message']) : '',
-        'honeypot' => isset($_POST['contact_company']) ? sanitize_text_field($_POST['contact_company']) : '',
+        'name' => isset($_POST['contact_name']) ? sanitize_text_field(wp_unslash($_POST['contact_name'])) : '',
+        'email' => isset($_POST['contact_email']) ? sanitize_email(wp_unslash($_POST['contact_email'])) : '',
+        'message' => isset($_POST['contact_message']) ? sanitize_textarea_field(wp_unslash($_POST['contact_message'])) : '',
+        'honeypot' => isset($_POST['contact_company']) ? sanitize_text_field(wp_unslash($_POST['contact_company'])) : '',
     );
+    // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 }
 
 /**
@@ -52,12 +59,14 @@ function kunaal_check_contact_honeypot(string $honeypot): bool {
  * Helper: Get client IP address
  */
 function kunaal_get_client_ip(): string {
+    // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $forwarded = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        return sanitize_text_field(trim($forwarded[0]));
+        $forwarded = explode(',', sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR'])));
+        return trim($forwarded[0]);
     } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-        return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
     }
+    // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
     return '';
 }
 
@@ -200,7 +209,7 @@ function kunaal_handle_contact_form(): void {
         } else {
             kunaal_handle_contact_email_error($email_data['to'], $email_data['subject']);
         }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         kunaal_theme_log('Contact form error', array('error' => $e->getMessage(), 'trace' => $e->getTraceAsString()));
         wp_send_json_error(array('message' => KUNAAL_ERROR_MESSAGE_GENERIC));
         wp_die();
