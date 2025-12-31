@@ -71,3 +71,50 @@ jobs:
         echo "Running UI contracts drift check..."
         chmod +x kunaal-theme/scripts/check-ui-contracts.sh
         kunaal-theme/scripts/check-ui-contracts.sh
+
+    - name: Version Consistency Check
+      run: |
+        echo "Checking version consistency between style.css and functions.php..."
+        STYLE_VERSION=$(grep -oP 'Version:\s*\K[\d.]+' kunaal-theme/style.css)
+        FUNC_VERSION=$(grep -oP "define\('KUNAAL_THEME_VERSION',\s*'\K[\d.]+" kunaal-theme/functions.php)
+        if [ "$STYLE_VERSION" != "$FUNC_VERSION" ]; then
+          echo "✗ Version mismatch: style.css=$STYLE_VERSION, functions.php=$FUNC_VERSION"
+          exit 1
+        fi
+        echo "✓ Version consistent: $STYLE_VERSION"
+
+    - name: Duplicated Constant Check
+      run: |
+        echo "Checking for duplicated constant definitions..."
+        # Check for KUNAAL_THEME_VERSION defined in multiple places (should only be in functions.php)
+        DEFINE_COUNT=$(grep -r "define('KUNAAL_THEME_VERSION'" kunaal-theme --include="*.php" | wc -l)
+        if [ "$DEFINE_COUNT" -gt 1 ]; then
+          echo "✗ KUNAAL_THEME_VERSION defined in multiple files:"
+          grep -r "define('KUNAAL_THEME_VERSION'" kunaal-theme --include="*.php"
+          exit 1
+        fi
+        echo "✓ No duplicated constant definitions"
+
+    - name: HTML Closure Check
+      run: |
+        echo "Checking for unclosed main tags in templates..."
+        for file in kunaal-theme/*.php kunaal-theme/template-parts/*.php; do
+          if [ -f "$file" ]; then
+            MAIN_OPEN=$(grep -c '<main' "$file" 2>/dev/null || echo 0)
+            MAIN_CLOSE=$(grep -c '</main>' "$file" 2>/dev/null || echo 0)
+            if [ "$MAIN_OPEN" -gt 0 ] && [ "$MAIN_CLOSE" -lt "$MAIN_OPEN" ]; then
+              echo "✗ Unclosed <main> tag in $file (opens: $MAIN_OPEN, closes: $MAIN_CLOSE)"
+              exit 1
+            fi
+          fi
+        done
+        echo "✓ All main tags properly closed"
+
+    - name: Secrets in Customizer Check
+      run: |
+        echo "Checking for secrets in Customizer..."
+        if grep -rn "smtp_password\|api_key\|secret_key" kunaal-theme/inc/customizer-sections.php | grep -v "// "; then
+          echo "✗ Found potential secret fields in Customizer (should be in wp-config.php)"
+          exit 1
+        fi
+        echo "✓ No secrets stored in Customizer"

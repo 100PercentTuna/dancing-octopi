@@ -341,14 +341,46 @@ function kunaal_customize_register_contact_page_section(WP_Customize_Manager $wp
 
 /**
  * Register Email Delivery (SMTP) section and controls
+ * 
+ * SECURITY: SMTP credentials (host, username, password, port, encryption) are read
+ * from wp-config.php constants to avoid storing secrets in the database.
+ * 
+ * Required constants in wp-config.php:
+ *   define('KUNAAL_SMTP_HOST', 'smtp.example.com');
+ *   define('KUNAAL_SMTP_PORT', 587);
+ *   define('KUNAAL_SMTP_USER', 'your-username');
+ *   define('KUNAAL_SMTP_PASS', 'your-password');
+ *   define('KUNAAL_SMTP_SECURE', 'tls'); // 'tls', 'ssl', or ''
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
 function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $wp_customize): void {
+    // Build status message
+    $smtp_status = '';
+    if (defined('KUNAAL_SMTP_HOST') && defined('KUNAAL_SMTP_USER') && defined('KUNAAL_SMTP_PASS')) {
+        $smtp_status = sprintf(
+            '<p style="color: green; font-weight: bold;">✓ SMTP credentials configured in wp-config.php</p><p><strong>Host:</strong> %s<br><strong>Port:</strong> %s<br><strong>Encryption:</strong> %s</p>',
+            esc_html(KUNAAL_SMTP_HOST),
+            esc_html(defined('KUNAAL_SMTP_PORT') ? KUNAAL_SMTP_PORT : '587'),
+            esc_html(defined('KUNAAL_SMTP_SECURE') ? KUNAAL_SMTP_SECURE : 'tls')
+        );
+    } else {
+        $smtp_status = '<p style="color: #d63638; font-weight: bold;">⚠ SMTP credentials not configured</p>';
+    }
+
+    $description = sprintf(
+        '%s<p><strong>To enable SMTP:</strong></p><ol><li>Add these constants to your wp-config.php:</li></ol><pre style="background: #f0f0f0; padding: 8px; font-size: 11px; overflow-x: auto;">define(\'KUNAAL_SMTP_HOST\', \'smtp.example.com\');
+define(\'KUNAAL_SMTP_PORT\', 587);
+define(\'KUNAAL_SMTP_USER\', \'your-username\');
+define(\'KUNAAL_SMTP_PASS\', \'your-password\');
+define(\'KUNAAL_SMTP_SECURE\', \'tls\');</pre><p>Then enable the toggle below.</p>',
+        $smtp_status
+    );
+
     $wp_customize->add_section('kunaal_email_delivery', array(
         'title' => 'Email Delivery (SMTP)',
         'priority' => 52,
-        'description' => 'Configure SMTP so contact + subscribe emails deliver reliably on shared hosts.',
+        'description' => $description,
     ));
 
     $wp_customize->add_setting('kunaal_smtp_enabled', array(
@@ -357,6 +389,7 @@ function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $
     ));
     $wp_customize->add_control('kunaal_smtp_enabled', array(
         'label' => 'Enable SMTP',
+        'description' => 'Requires SMTP credentials in wp-config.php (see section description above).',
         'section' => 'kunaal_email_delivery',
         'type' => 'checkbox',
     ));
@@ -380,70 +413,6 @@ function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $
         'label' => 'From Name',
         'section' => 'kunaal_email_delivery',
         'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('kunaal_smtp_host', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_smtp_host', array(
-        'label' => 'SMTP Host',
-        'description' => 'Example (Brevo): smtp-relay.brevo.com',
-        'section' => 'kunaal_email_delivery',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('kunaal_smtp_port', array(
-        'default' => 587,
-        'sanitize_callback' => 'absint',
-    ));
-    $wp_customize->add_control('kunaal_smtp_port', array(
-        'label' => 'SMTP Port',
-        'description' => '587 (TLS) is typical; 465 for SSL.',
-        'section' => 'kunaal_email_delivery',
-        'type' => 'number',
-        'input_attrs' => array('min' => 1, 'max' => 65535),
-    ));
-
-    $wp_customize->add_setting('kunaal_smtp_encryption', array(
-        'default' => 'tls',
-        'sanitize_callback' => function ($value) {
-            $allowed = array('none', 'tls', 'ssl');
-            return in_array($value, $allowed, true) ? $value : 'tls';
-        },
-    ));
-    $wp_customize->add_control('kunaal_smtp_encryption', array(
-        'label' => 'Encryption',
-        'section' => 'kunaal_email_delivery',
-        'type' => 'select',
-        'choices' => array(
-            'none' => 'None',
-            'tls'  => 'TLS',
-            'ssl'  => 'SSL',
-        ),
-    ));
-
-    $wp_customize->add_setting('kunaal_smtp_username', array(
-        'default' => '',
-        'sanitize_callback' => 'sanitize_text_field',
-    ));
-    $wp_customize->add_control('kunaal_smtp_username', array(
-        'label' => 'SMTP Username',
-        'section' => 'kunaal_email_delivery',
-        'type' => 'text',
-    ));
-
-    $wp_customize->add_setting('kunaal_smtp_password', array(
-        'default' => '',
-        'sanitize_callback' => function ($value) {
-            // Allow most characters; keep as plain text (shared-host reality). Avoid stripping symbols.
-            return is_string($value) ? $value : '';
-        },
-    ));
-    $wp_customize->add_control('kunaal_smtp_password', array(
-        'label' => 'SMTP Password / Key',
-        'section' => 'kunaal_email_delivery',
-        'type' => 'password',
     ));
 }
 

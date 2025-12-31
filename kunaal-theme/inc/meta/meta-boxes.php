@@ -156,7 +156,7 @@ function kunaal_card_image_meta_box_callback(WP_Post $post): void {
  * @param int $post_id Post ID
  * @return int Reading time in minutes
  */
-function kunaal_calculate_reading_time(int $post_id): string {
+function kunaal_calculate_reading_time(int $post_id): int {
     $content = get_post_field('post_content', $post_id);
     
     // Strip shortcodes and HTML tags
@@ -168,14 +168,15 @@ function kunaal_calculate_reading_time(int $post_id): string {
     
     // Calculate reading time using constant
     $wpm = defined('KUNAAL_READING_SPEED_WPM') ? KUNAAL_READING_SPEED_WPM : 200;
-    return max(1, ceil($word_count / $wpm));
+    return (int) max(1, ceil($word_count / $wpm));
 }
 
 /**
  * Save Meta Box Data
  */
 function kunaal_save_meta_box_data(int $post_id): void {
-    if (!isset($_POST['kunaal_meta_nonce']) || !wp_verify_nonce($_POST['kunaal_meta_nonce'], 'kunaal_save_meta')) {
+    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce is verified below
+    if (!isset($_POST['kunaal_meta_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['kunaal_meta_nonce'])), 'kunaal_save_meta')) {
         return;
     }
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
@@ -186,7 +187,7 @@ function kunaal_save_meta_box_data(int $post_id): void {
     }
 
     if (isset($_POST['kunaal_subtitle'])) {
-        update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field($_POST['kunaal_subtitle']));
+        update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field(wp_unslash($_POST['kunaal_subtitle'])));
     }
     
     // Auto-calculate reading time for essays
@@ -197,7 +198,7 @@ function kunaal_save_meta_box_data(int $post_id): void {
     }
     
     if (isset($_POST['kunaal_card_image'])) {
-        update_post_meta($post_id, 'kunaal_card_image', absint($_POST['kunaal_card_image']));
+        update_post_meta($post_id, 'kunaal_card_image', absint(wp_unslash($_POST['kunaal_card_image'])));
     }
 }
 add_action('save_post', 'kunaal_save_meta_box_data');
@@ -210,6 +211,7 @@ function kunaal_register_meta_fields(): void {
         'show_in_rest' => true,
         'single' => true,
         'type' => 'integer',
+        'sanitize_callback' => 'absint',
         'auth_callback' => function() {
             return current_user_can('edit_posts');
         },
@@ -229,6 +231,7 @@ function kunaal_register_meta_fields(): void {
         'show_in_rest' => true,
         'single' => true,
         'type' => 'integer',
+        'sanitize_callback' => 'absint',
         'auth_callback' => function() {
             return current_user_can('edit_posts');
         },
@@ -248,6 +251,7 @@ function kunaal_register_meta_fields(): void {
         'show_in_rest' => true,
         'single' => true,
         'type' => 'string',
+        'sanitize_callback' => 'sanitize_textarea_field',
         'auth_callback' => function() {
             return current_user_can('edit_posts');
         },
@@ -257,6 +261,7 @@ function kunaal_register_meta_fields(): void {
         'show_in_rest' => true,
         'single' => true,
         'type' => 'string',
+        'sanitize_callback' => 'sanitize_textarea_field',
         'auth_callback' => function() {
             return current_user_can('edit_posts');
         },

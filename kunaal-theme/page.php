@@ -49,5 +49,6 @@ if (is_front_page()) {
       </div>
     </article>
   <?php endwhile; ?>
+</main>
 
 <?php get_footer(); ?>

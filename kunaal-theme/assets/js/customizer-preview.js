@@ -18,7 +18,7 @@
         let timeout;
         return function() {
             const context = this;
-                args = arguments;
+            const args = arguments;
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 func.apply(context, args);

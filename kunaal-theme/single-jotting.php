@@ -149,5 +149,6 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
       </div>
     </article>
   <?php endwhile; ?>
+</main>
 
 <?php get_footer(); ?>

@@ -30,5 +30,6 @@ $term = get_queried_object();
   <?php else : ?>
     <p class="no-posts">No posts found.</p>
   <?php endif; ?>
+</div>
 
 <?php get_footer(); ?>

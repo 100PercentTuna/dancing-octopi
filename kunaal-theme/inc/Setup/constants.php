@@ -2,7 +2,9 @@
 /**
  * Theme Constants
  * 
- * Defines all theme constants used throughout the codebase.
+ * Defines configurable theme constants used throughout the codebase.
+ * Core constants (KUNAAL_THEME_VERSION, KUNAAL_THEME_DIR, KUNAAL_THEME_URI)
+ * are defined in functions.php as the single source of truth.
  *
  * @package Kunaal_Theme
  * @since 4.30.0
@@ -13,11 +15,6 @@ declare(strict_types=1);
 if (!defined('ABSPATH')) {
     exit;
 }
-
-// Core theme constants
-define('KUNAAL_THEME_VERSION', '4.34.2');
-define('KUNAAL_THEME_DIR', get_template_directory());
-define('KUNAAL_THEME_URI', get_template_directory_uri());
 
 // Theme constants for configurable values
 if (!defined('KUNAAL_READING_SPEED_WPM')) {

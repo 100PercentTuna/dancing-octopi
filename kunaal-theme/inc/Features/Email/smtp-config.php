@@ -2,7 +2,16 @@
 /**
  * SMTP Configuration
  * 
- * Configures PHPMailer for SMTP email delivery if enabled in Customizer.
+ * Configures PHPMailer for SMTP email delivery.
+ * 
+ * SECURITY: SMTP credentials (host, username, password) are read from wp-config.php
+ * constants to avoid storing secrets in the database. Define these constants:
+ * 
+ *   define('KUNAAL_SMTP_HOST', 'smtp.example.com');
+ *   define('KUNAAL_SMTP_PORT', 587);
+ *   define('KUNAAL_SMTP_USER', 'your-username');
+ *   define('KUNAAL_SMTP_PASS', 'your-password');
+ *   define('KUNAAL_SMTP_SECURE', 'tls'); // 'tls', 'ssl', or ''
  *
  * @package Kunaal_Theme
  * @since 4.30.0
@@ -16,9 +25,20 @@ if (!defined('ABSPATH')) {
 
 /**
  * Check if SMTP is enabled
+ * 
+ * SMTP is enabled if the required constants are defined in wp-config.php
+ * and the Customizer toggle is enabled.
  */
 function kunaal_smtp_is_enabled(): bool {
-    return (bool) kunaal_mod('kunaal_smtp_enabled', false);
+    // Check if Customizer toggle is enabled
+    if (!(bool) kunaal_mod('kunaal_smtp_enabled', false)) {
+        return false;
+    }
+    
+    // Check if required constants are defined
+    return defined('KUNAAL_SMTP_HOST') && 
+           defined('KUNAAL_SMTP_USER') && 
+           defined('KUNAAL_SMTP_PASS');
 }
 
 /**
@@ -47,17 +67,20 @@ add_filter('wp_mail_from_name', 'kunaal_filter_wp_mail_from_name');
 
 /**
  * Action: Configure PHPMailer for SMTP
+ * 
+ * Reads credentials from wp-config.php constants for security.
  */
 function kunaal_action_phpmailer_init(PHPMailer\PHPMailer\PHPMailer $phpmailer): void {
     if (!kunaal_smtp_is_enabled()) {
         return;
     }
 
-    $host = trim((string) kunaal_mod('kunaal_smtp_host', ''));
-    $user = (string) kunaal_mod('kunaal_smtp_username', '');
-    $pass = (string) kunaal_mod('kunaal_smtp_password', '');
-    $port = (int) kunaal_mod('kunaal_smtp_port', 587);
-    $enc  = (string) kunaal_mod('kunaal_smtp_encryption', 'tls');
+    // Read credentials from constants (defined in wp-config.php)
+    $host = defined('KUNAAL_SMTP_HOST') ? (string) KUNAAL_SMTP_HOST : '';
+    $user = defined('KUNAAL_SMTP_USER') ? (string) KUNAAL_SMTP_USER : '';
+    $pass = defined('KUNAAL_SMTP_PASS') ? (string) KUNAAL_SMTP_PASS : '';
+    $port = defined('KUNAAL_SMTP_PORT') ? (int) KUNAAL_SMTP_PORT : 587;
+    $enc  = defined('KUNAAL_SMTP_SECURE') ? (string) KUNAAL_SMTP_SECURE : 'tls';
 
     if (empty($host) || empty($user) || empty($pass) || $port <= 0) {
         // Fail-safe: do not partially configure SMTP.
