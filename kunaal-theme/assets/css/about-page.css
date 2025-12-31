@@ -981,7 +981,15 @@ a:focus-visible, button:focus-visible {
 }
 
 /* Media items - height synced via JavaScript (digital copies book height)
-   Books are taller due to 2:3 cover aspect ratio vs 1:1 for albums */
+   Books are taller due to 2:3 cover aspect ratio vs 1:1 for albums
+   
+   CSS provides initial min-height to prevent layout shift before JS runs:
+   - Book cover at 140px width with 2:3 ratio = 210px height
+   - Plus title (2 lines × 11px × 1.3) = ~29px
+   - Plus subtitle (2 lines × 10px × 1.2) = 24px
+   - Plus link (~20px with margin)
+   - Plus gaps (~10px)
+   Total: ~293px minimum */
 .media-item--book,
 .media-item--digital {
   display: flex;
@@ -991,6 +999,12 @@ a:focus-visible, button:focus-visible {
   width: 100%;
   max-width: 140px; /* Consistent width */
   box-sizing: border-box;
+}
+
+/* Digital items: min-height prevents layout shift before JS syncs heights
+   Set to approximate book height so there's no visual jump when JS applies final height */
+.media-item--digital {
+  min-height: 290px; /* Approximate book height - prevents layout shift */
 }
 
 /* Responsive: stack columns on smaller screens */
@@ -1005,6 +1019,10 @@ a:focus-visible, button:focus-visible {
   }
   .media-column--digital {
     margin-top: 0;
+  }
+  /* Reset min-height on mobile - columns stack, no need for height sync */
+  .media-item--digital {
+    min-height: auto;
   }
 }
 @media (max-width: 600px) {

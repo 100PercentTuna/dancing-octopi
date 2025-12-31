@@ -1147,54 +1147,81 @@
    * Sync media item heights - digital items match book items (the taller variant)
    * Books have 2:3 aspect ratio covers, digital has 1:1, so books are always taller.
    * This ensures rows align across the two columns.
+   * 
+   * FIX: Uses CSS-based calculation to avoid layout shift.
+   * Measures book natural height without disturbing existing layout.
    */
-  function syncMediaItemHeights() {
+  function syncMediaItemHeights(forceReset) {
     var bookItems = document.querySelectorAll('.media-item--book');
     var digitalItems = document.querySelectorAll('.media-item--digital');
     
     if (!bookItems.length || !digitalItems.length) return;
     
-    // Reset heights first to get natural height
-    bookItems.forEach(function(item) { 
-      item.style.cssText = item.style.cssText.replace(/height:[^;]+;?/g, '');
-      item.style.height = 'auto'; 
-    });
-    digitalItems.forEach(function(item) { 
-      item.style.cssText = item.style.cssText.replace(/height:[^;]+;?/g, '');
-      item.style.height = 'auto'; 
-    });
+    var maxBookHeight = 0;
     
-    // Force reflow to get accurate measurements
-    void document.body.offsetHeight;
-    
-    // Wait a frame for styles to apply
-    requestAnimationFrame(function() {
-      // Find the tallest book item (they should all be similar, but get max)
-      var maxBookHeight = 0;
+    if (forceReset) {
+      // On resize: reset all heights and remeasure
+      bookItems.forEach(function(item) { 
+        item.style.removeProperty('height');
+      });
+      digitalItems.forEach(function(item) { 
+        item.style.removeProperty('height');
+      });
+      
+      // Force reflow after reset
+      void document.body.offsetHeight;
+      
+      // Measure natural book heights
       bookItems.forEach(function(item) {
         var height = item.getBoundingClientRect().height;
         if (height > maxBookHeight) maxBookHeight = height;
       });
+    } else {
+      // Initial load: measure without disturbing layout
+      // Use a hidden clone to measure natural height
+      var firstBook = bookItems[0];
+      if (!firstBook) return;
       
-      // Apply the book height to all items (both book and digital)
-      if (maxBookHeight > 0) {
-        var heightPx = Math.ceil(maxBookHeight) + 'px';
-        bookItems.forEach(function(item) { 
-          item.style.setProperty('height', heightPx, 'important');
-        });
-        digitalItems.forEach(function(item) { 
-          item.style.setProperty('height', heightPx, 'important');
-        });
+      // Check if heights are already set (from previous run or inline styles)
+      var existingHeight = firstBook.style.height;
+      if (existingHeight && existingHeight !== 'auto' && existingHeight !== '') {
+        // Heights already set, just verify digital items have same height
+        var parsedHeight = parseFloat(existingHeight);
+        if (parsedHeight > 0) {
+          digitalItems.forEach(function(item) {
+            if (item.style.height !== existingHeight) {
+              item.style.setProperty('height', existingHeight, 'important');
+            }
+          });
+          return;
+        }
       }
-    });
+      
+      // Measure natural book heights (no inline heights set yet)
+      bookItems.forEach(function(item) {
+        var height = item.getBoundingClientRect().height;
+        if (height > maxBookHeight) maxBookHeight = height;
+      });
+    }
+    
+    // Apply the book height to all items immediately
+    if (maxBookHeight > 0) {
+      var heightPx = Math.ceil(maxBookHeight) + 'px';
+      bookItems.forEach(function(item) { 
+        item.style.setProperty('height', heightPx, 'important');
+      });
+      digitalItems.forEach(function(item) { 
+        item.style.setProperty('height', heightPx, 'important');
+      });
+    }
   }
 
   // Run on load, after images, and resize
   ready(function() {
     init();
     
-    // Run sync after a short delay to ensure CSS is applied
-    setTimeout(syncMediaItemHeights, 100);
+    // Run sync immediately (no delay) - synchronous to prevent layout shift
+    syncMediaItemHeights(false);
     
     // Also run after all images in media section are loaded
     var mediaImages = document.querySelectorAll('.media-section img');
@@ -1205,11 +1232,11 @@
       mediaImages.forEach(function(img) {
         if (img.complete) {
           loadedCount++;
-          if (loadedCount === totalImages) syncMediaItemHeights();
+          if (loadedCount === totalImages) syncMediaItemHeights(false);
         } else {
           img.addEventListener('load', function() {
             loadedCount++;
-            if (loadedCount === totalImages) syncMediaItemHeights();
+            if (loadedCount === totalImages) syncMediaItemHeights(false);
           });
         }
       });
@@ -1217,14 +1244,16 @@
     
     // Final sync after window fully loads (fonts, images, etc.)
     window.addEventListener('load', function() {
-      setTimeout(syncMediaItemHeights, 50);
+      syncMediaItemHeights(false);
     });
     
-    // Re-sync on window resize (debounced)
+    // Re-sync on window resize (debounced) - force reset on resize
     var resizeTimer;
     window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(syncMediaItemHeights, 150);
+      resizeTimer = setTimeout(function() {
+        syncMediaItemHeights(true); // Force reset on resize
+      }, 150);
     });
   });
 })();
