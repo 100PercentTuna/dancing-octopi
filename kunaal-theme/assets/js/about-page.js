@@ -384,7 +384,7 @@
   //
   // CSS coordination:
   // - Image is 280% height, positioned at top: -90%
-  // - Parallax amplitude: ±30% ensures image never exposes empty edges
+  // - Parallax amplitude: +/-30% ensures image never exposes empty edges
   // - Math: at -90% + 30% = -60%, bottom is at 280% - 60% = 220% (covers 100%)
   //         at -90% - 30% = -120%, bottom is at 280% - 120% = 160% (covers 100%)
   // =============================================
