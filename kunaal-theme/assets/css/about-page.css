@@ -98,7 +98,7 @@
 
 /* Hero photo accent - bright orange in dark mode */
 :root[data-theme="dark"] .kunaal-about-page .hero-photo.has-accent::before {
-  background: var(--k-color-dark-accent, #E8A87C) !important;
+  background: var(--k-color-dark-accent, #E8A87C);
 }
 
 /* Base styles are in style.css - only About-specific overrides here */
@@ -134,7 +134,9 @@
   color: var(--muted2);
 }
 
-/* Grain overlay */
+/* Grain overlay - subtle texture effect
+   z-index: 100 (elevated content) - below header/modals but above page content
+   See UI_CONTRACTS.md for z-index scale */
 body::after {
   content: '';
   position: fixed;
@@ -142,7 +144,7 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: 0.018;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 100;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -171,23 +173,29 @@ body.js:not(.gsap-ready) [data-reveal] {
   transform: none;
 }
 
-/* After animation completes, force visibility regardless of GSAP state
-   This uses animation-delay to override stuck states */
-@keyframes forceVisible {
-  to {
-    opacity: 1 !important;
-    transform: none !important;
-  }
+/* =============================================
+   HERO TEXT VISIBILITY GUARANTEES
+   =============================================
+   Progressive enhancement approach:
+   1. CSS sets default visible state
+   2. JS adds .gsap-ready class when GSAP loads
+   3. GSAP animates elements
+   4. Fallback: CSS ensures visibility after animation duration
+   
+   This replaces the brittle @keyframes forceVisible approach
+   ============================================= */
+
+/* Default: all hero text elements are visible */
+.hero-title,
+.hero-label,
+.hero-intro,
+.hero-meta {
+  opacity: 1;
+  transform: none;
 }
 
-/* CRITICAL: Hero title must NEVER be invisible/partially visible
-   This overrides any stuck GSAP animation state after 1.5s */
-.hero-title {
-  animation: forceVisible 0.01s 1.5s forwards;
-}
-
-/* Allow GSAP to animate initially by not forcing opacity/transform */
-/* After 1.5s, the forceVisible animation kicks in as a failsafe */
+/* When GSAP is animating, it controls opacity/transform via inline styles */
+/* After animation, JS clears props and these CSS defaults take over */
 
 /* Big, faint "gallery label" words drifting behind sections */
 .section-inner {
@@ -216,7 +224,22 @@ body.js:not(.gsap-ready) [data-reveal] {
 }
 .section-inner > * { position: relative; z-index: 1; }
 
-/* Panorama as "portal bands" */
+/* =============================================
+   PANORAMA - "Portal band" parallax sections
+   =============================================
+   ARCHITECTURE:
+   - Container (.panorama) defines visible viewport
+   - Image (.panorama-img) is taller than container to allow parallax movement
+   - GSAP moves image within container based on scroll position
+   
+   MATH FOR "NEVER RUNS OUT":
+   - Parallax amplitude in JS: ±25% of image height (50% total travel)
+   - Image height: 280% of container = extra 180% for movement
+   - Starting position: top: -90% (centered within the 280% height)
+   - Movement range: -25% to +25% = top: -115% to -65%
+   - At top: -115% + 280% = 165% bottom → still covers 100% container
+   - At bottom: -65% + 280% = 215% bottom → still covers 100% container
+   ============================================= */
 .panorama {
   position: relative;
   width: 100%;
@@ -228,42 +251,41 @@ body.js:not(.gsap-ready) [data-reveal] {
   box-shadow: 0 14px 40px rgba(0,0,0,0.04);
   background: var(--bg);
 }
+
 /* Panorama slants - subtle skew for visual interest */
-.panorama.cut-left { 
+.panorama.cut-left {
   transform: rotate(0.25deg) skewY(-0.5deg);
-  transform-origin: center;
 }
-.panorama.cut-right { 
+
+.panorama.cut-right {
   transform: rotate(-0.25deg) skewY(0.5deg);
-  transform-origin: center;
 }
-.panorama-inner { 
+
+.panorama-inner {
   width: 100%;
   height: 100%;
-  will-change: transform;
   position: relative;
   overflow: hidden;
 }
+
 .panorama-img {
   width: 100%;
-  /* More vertical pixels than the mask so the parallax never "runs out of image" */
-  height: 220%;
+  /* Height: 280% to allow ±40% parallax movement with buffer */
+  height: 280%;
   object-fit: cover;
-  /* Start lower so the first frame shows the lower portion, then scroll reveals upward */
-  object-position: center 65%;
+  /* Center the visible portion - neutral starting point */
+  object-position: center center;
   filter: grayscale(100%);
   position: absolute;
-  top: -60%;
+  /* Starting position: center the 280% image in the 100% container
+     -(280% - 100%) / 2 = -90% */
+  top: -90%;
   left: 0;
-  /* Performance optimizations for smooth parallax */
+  /* Performance optimizations */
   will-change: transform;
-  transform: translateZ(0); /* Force GPU acceleration */
-  backface-visibility: hidden; /* Improve rendering performance */
-  contain: layout style paint; /* Isolate rendering context */
-}
-/* Remove white overlay - panorama should flow seamlessly */
-.panorama::after {
-  display: none;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
 /* Dynamic panorama heights (20px to 200px) */
 .panorama.h-20 { height: 20px; }
@@ -426,7 +448,7 @@ a:focus-visible, button:focus-visible {
   transition: filter 0.15s ease;
   will-change: transform;
   position: relative;
-  z-index: 1; /* Below dog-ear pseudo-element (z-index: 100) */
+  z-index: 1; /* Below dog-ear pseudo-element (z-index: 10) */
 }
 
 /* First photo: reveal more from left as screen widens */
@@ -463,39 +485,49 @@ a:focus-visible, button:focus-visible {
   transform: scaleY(1); 
 }
 
-/* Dog-ear: robust CSS triangle via borders (more reliable than clip-path)
-   IMPORTANT: This uses !important on overflow because the base .hero-photo rule
-   sets overflow:hidden for image cropping. The dog-ear MUST be visible outside
-   the tile boundary. This is a documented exception - see UI_CONTRACTS.md */
+/* =============================================
+   DOG-EAR ACCENT - Blue triangle on hero photo
+   =============================================
+   Canonical owner: about-page.css (see UI_CONTRACTS.md)
+   
+   ARCHITECTURE:
+   - Parent (.has-accent) has overflow:visible to allow dog-ear to extend outside
+   - Parent opacity MUST be 1 - JS ensures this by never animating accent photo
+   - ::before creates the triangle via clip-path
+   - Z-index follows UI_CONTRACTS.md scale (10 = local stacking)
+   ============================================= */
 .kunaal-about-page .hero-photo.has-accent {
-  overflow: visible !important; /* REQUIRED: dog-ear extends outside tile bounds */
-  z-index: 2; /* Above other tiles in the grid */
-  position: relative !important;
-  isolation: isolate; /* Create stacking context for the pseudo-element */
-  /* Force visibility after 1s - prevents GSAP from making dog-ear invisible via parent opacity */
-  animation: forceVisible 0.01s 1s forwards;
+  /* CRITICAL: Must be visible for dog-ear to extend outside bounds */
+  overflow: visible !important;
+  /* Local stacking: above sibling tiles (z-index: 1 is base) */
+  z-index: 2;
+  position: relative;
+  /* Create stacking context for predictable pseudo-element layering */
+  isolation: isolate;
+  /* CRITICAL: Parent opacity must be 1 for ::before to be visible
+     CSS inheritance means child opacity is multiplied by parent opacity
+     JS is responsible for never animating this element's opacity */
+  opacity: 1;
 }
 
 .kunaal-about-page .hero-photo.has-accent::before {
-  content: "" !important;
-  position: absolute !important;
-  top: 0 !important; 
-  left: 0 !important;
-  /* Fixed size - using solid dimensions for reliability */
-  width: 40px !important;
-  height: 40px !important;
-  /* CSS triangle using clip-path (more explicit than border trick) */
-  background: var(--blue) !important;
-  clip-path: polygon(0 0, 100% 0, 0 100%) !important;
-  z-index: 9999 !important; /* Very high z-index to ensure visibility */
-  pointer-events: none !important;
-  /* Force visibility - MUST override any GSAP opacity inheritance from parent */
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-  /* Force the dog-ear to render independently of parent opacity */
-  animation: forceVisible 0.01s 1s forwards !important;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Size token from root (default 28px on mobile, larger on desktop) */
+  width: var(--k-dogear-size, 40px);
+  height: var(--k-dogear-size, 40px);
+  /* Triangle via clip-path - most reliable cross-browser */
+  background: var(--blue);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  /* Local stacking: above image (z-index: 1), within isolated context */
+  z-index: 10;
+  pointer-events: none;
+  /* Ensure visibility regardless of any animation state */
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 /* Hero text spans rows, in column 5 */
@@ -740,8 +772,8 @@ a:focus-visible, button:focus-visible {
   
   /* Mobile: Smaller dog-ear accent */
   .kunaal-about-page .hero-photo.has-accent::before {
-    width: 28px !important;
-    height: 28px !important;
+    width: 28px;
+    height: 28px;
   }
 }
 
@@ -963,100 +995,134 @@ a:focus-visible, button:focus-visible {
 }
 
 /* =============================================
-   MEDIA SECTION - Two-column layout with aligned rows
-============================================= */
+   MEDIA SECTION - Two-column layout with CSS-aligned rows
+   =============================================
+   ARCHITECTURE:
+   - Two columns (books + digital) side by side
+   - Each column has its own grid for items
+   - Row alignment is achieved via CSS Grid with consistent item sizing
+   - NO JavaScript height sync needed - pure CSS solution
+   
+   Height alignment strategy:
+   - Use CSS Grid with align-items: start (items align to top)
+   - Use min-height on items based on calculated component heights
+   - Book cover: 2:3 aspect ratio at ~110px width = ~165px height
+   - Album cover: 1:1 aspect ratio at ~110px width = ~110px height
+   - Text content: consistent min-height reserves space
+   - Result: items naturally align because container widths match
+   ============================================= */
 .media-section {
-  padding: 3.5rem 0; /* Remove horizontal padding - full width */
+  padding: 3.5rem 0;
   padding-top: 2.4rem;
   background: var(--bg);
 }
+
 .media-section .section-inner {
-  max-width: none; /* Full width */
+  max-width: none;
   padding: 0;
 }
 
-/* Two-column layout container - equal spacing from edges */
+/* Two-column flexbox layout */
 .media-row-layout {
   display: flex;
-  justify-content: center; /* Center the columns */
-  align-items: flex-start;
-  /* Equal spacing: edge | books | gap | digital | edge */
-  padding: 0 var(--media-edge-spacing, 10vw);
-  gap: var(--media-col-gap, 12vw); /* Gap between columns = edge spacing */
+  justify-content: center;
+  align-items: flex-start; /* Top alignment for columns */
+  padding: 0 max(2rem, 8vw); /* Responsive edge spacing */
+  gap: max(2rem, 8vw); /* Gap matches edge spacing */
 }
 
-/* Each column takes equal width */
+/* Each column */
 .media-column {
-  flex: 0 1 auto; /* Don't grow, shrink if needed, natural width */
+  flex: 0 0 auto; /* Don't grow or shrink */
+  width: min(380px, 42vw); /* Responsive max width */
   min-width: 0;
-  max-width: 380px; /* Limit column width */
 }
 
-/* 3-column grid for items within each column */
+/* Column header */
+.media-col-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(125, 107, 93, 0.35);
+  padding-bottom: var(--space-1, 8px);
+  margin-bottom: 0;
+}
+
+.media-col-title {
+  position: relative;
+  font-family: var(--serif);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.media-col-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--muted2);
+  transform: translateY(-2px);
+}
+
+/* 3-column grid within each column */
 .media-items-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* Don't use 1fr rows - JS handles height sync, grid rows should be auto */
   grid-auto-rows: auto;
-  gap: 1.25rem 1rem;
-  /* Align items to TOP of each row - prevents items from being pushed down */
-  align-items: start;
-  margin-top: var(--space-3); /* Space between header and grid */
+  gap: 1.25rem 0.75rem;
+  align-items: start; /* Items align to top of their row */
+  margin-top: var(--space-3, 16px);
 }
 
-/* Media items - height synced via JavaScript (digital copies book height)
-   Books are taller due to 2:3 cover aspect ratio vs 1:1 for albums
-   
-   CSS provides initial min-height to prevent layout shift before JS runs:
-   - Book cover at 140px width with 2:3 ratio = 210px height
-   - Plus title (2 lines × 11px × 1.3) = ~29px
-   - Plus subtitle (2 lines × 10px × 1.2) = 24px
-   - Plus link (~20px with margin)
-   - Plus gaps (~10px)
-   Total: ~293px minimum */
-.media-item--book,
-.media-item--digital {
+/* Base media item styling */
+.media-item {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* CRITICAL: Align content to TOP, not center/stretch */
-  align-items: stretch; /* Children take full width */
-  align-self: start; /* Align item to top of grid cell */
-  /* Height set dynamically by JS syncMediaItemHeights() */
+  justify-content: flex-start;
   width: 100%;
-  max-width: 140px; /* Consistent width */
-  box-sizing: border-box;
-  /* Explicitly remove any transforms that might affect position */
-  margin-top: 0;
-  padding-top: 0;
+  min-width: 0;
+  align-self: start;
 }
 
-/* Digital items: min-height prevents layout shift before JS syncs heights
-   Set to approximate book height so there's no visual jump when JS applies final height */
+/* Book and digital item specific styling
+   Use same width constraint for visual consistency */
+.media-item--book,
 .media-item--digital {
-  min-height: 290px; /* Approximate book height - prevents layout shift */
+  max-width: 110px; /* Narrower for tighter grid */
 }
 
-/* Responsive: stack columns on smaller screens */
+/* Responsive: stack columns on tablet/mobile */
 @media (max-width: 900px) {
   .media-row-layout {
     flex-direction: column;
+    align-items: center;
     gap: 2.5rem;
-    padding: 0 var(--space-3); /* Standard padding on mobile */
+    padding: 0 var(--space-3, 16px);
   }
+  
   .media-column {
-    max-width: none; /* Full width on mobile */
-  }
-  .media-column--digital {
-    margin-top: 0;
-  }
-  /* Reset min-height on mobile - columns stack, no need for height sync */
-  .media-item--digital {
-    min-height: auto;
+    width: 100%;
+    max-width: 400px;
   }
 }
+
+/* Narrower mobile: 2-column grid */
 @media (max-width: 600px) {
   .media-items-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem 1rem;
+  }
+  
+  .media-item--book,
+  .media-item--digital {
+    max-width: 140px;
   }
 }
 
@@ -1090,108 +1156,10 @@ a:focus-visible, button:focus-visible {
   transform: translateY(-2px);
 }
 
-/* Unified grid for row alignment between book and digital columns
-   
-   ARCHITECTURE: Flat grid structure - all items are direct children of the grid.
-   Items are placed with explicit grid-column and grid-row via inline styles (set in PHP).
-   This ensures items in the same row share the same row track height.
-   
-   Layout: 7 columns (3 books | 60px gap | 3 digital)
-   Row 1: Headers
-   Row 2+: Items - rows are explicitly shared across columns for perfect alignment */
-.media-grid-combined {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr) 60px repeat(3, 1fr);
-  /* Auto rows - each row's height is determined by the tallest item in that row
-     This ensures items in the same grid-row value share the same row track height */
-  grid-auto-rows: auto;
-  gap: 1.25rem 1rem;
-  /* Start alignment ensures items align to top of their row track */
-  align-items: start;
-  /* Row-based flow ensures items fill rows before moving to next */
-  grid-auto-flow: row;
-}
-
-/* Headers: row 1, span their column groups
-   No margin-bottom - use grid gap for spacing instead */
-.media-col-header--books {
-  grid-column: 1 / 4;
-  grid-row: 1;
-}
-
-.media-col-header--digital {
-  grid-column: 5 / 8;
-  grid-row: 1;
-}
-
-/* Items use inline styles for grid placement (set in PHP)
-   This ensures items in the same row share row track heights.
-   Each item must have explicit grid-row value matching its logical row.
-   
-   CRITICAL: The PHP template MUST generate inline grid-column and grid-row styles.
-   The template code in page-about.php lines 297 and 324 should output:
-   style="grid-column: 1; grid-row: 2;" for books
-   style="grid-column: 5; grid-row: 2;" for digital items
-   
-   If styles are missing or empty, check:
-   1. PHP is executing (view page source, not browser inspector)
-   2. $grid_col and $grid_row variables are set correctly
-   3. Template is being used (not cached HTML)
-   
-   Without valid inline styles, CSS Grid cannot properly align rows across columns.
-   The grid structure requires explicit positioning for the two-column layout. */
-
-@media (max-width: 900px) {
-  .media-grid-combined {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem 1rem;
-  }
-  
-  /* Headers span full width */
-  .media-col-header--books,
-  .media-col-header--digital {
-    grid-column: 1 / -1;
-  }
-  
-  /* Book items: reset to flow naturally in 3-column grid */
-  .media-item--book {
-    grid-column: auto !important;
-    grid-row: auto !important;
-  }
-  
-  /* Digital items: reset and add top margin for spacing */
-  .media-item--digital {
-    grid-column: auto !important;
-    grid-row: auto !important;
-  }
-  
-  /* Add spacing between book and digital sections on mobile */
-  .media-col-header--digital {
-    margin-top: 2rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .media-grid-combined {
-    grid-template-columns: repeat(2, 1fr); /* 2-up on narrow mobile */
-  }
-}
-
-.media-item { 
-  position: relative;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Align content to TOP of flex container */
-  width: 100%;
-  min-width: 0; /* Prevent overflow */
-  max-width: 100%;
-  height: 100%; /* Ensure consistent height for alignment */
-  /* Ensure consistent height for alignment across columns */
-  align-self: start; /* Align to start of grid cell */
-}
+/* Note: Previous "unified grid" approach (.media-grid-combined) was removed.
+   The current two-column layout uses separate grids per column, which is simpler
+   and more maintainable. Row alignment is achieved through consistent item sizing. */
+/* Media cover container */
 .media-cover {
   position: relative;
   overflow: hidden;
@@ -1199,52 +1167,60 @@ a:focus-visible, button:focus-visible {
   border-radius: 2px;
   transition: transform var(--transition), box-shadow var(--transition);
   width: 100%;
-  flex-shrink: 0; /* Prevent shrinking to ensure consistent sizing */
+  flex-shrink: 0;
 }
+
 .media-item:hover .media-cover {
   transform: translateY(-4px) rotate(-1deg);
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
+
 .media-cover img {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   filter: grayscale(100%);
   transition: filter var(--transition);
 }
-.media-item:hover .media-cover img { filter: none; }
+
+.media-item:hover .media-cover img {
+  filter: none;
+}
+
+/* Blue accent bar on hover */
 .media-cover::after {
   content: '';
   position: absolute;
-  top: 0; bottom: 0; left: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
   width: 3px;
   background: var(--blue);
   transform: scaleY(0);
   transition: transform 0.2s;
 }
-.media-item:hover .media-cover::after { transform: scaleY(1); }
 
-/* Book and album covers - same width (inherited from parent) */
-.media-cover.book,
-.media-cover.album {
-  width: 100%;
-  /* Width controlled by parent .media-item container */
+.media-item:hover .media-cover::after {
+  transform: scaleY(1);
 }
-.media-cover.book { 
-  aspect-ratio: 2/3; 
+
+/* Book cover: 2:3 aspect ratio (taller) */
+.media-cover.book {
+  aspect-ratio: 2 / 3;
 }
+
+/* Album cover: 1:1 aspect ratio (square) */
 .media-cover.album {
+  aspect-ratio: 1;
   border-radius: 6px;
   border: 1px solid var(--hair2);
-  aspect-ratio: 1; /* Square for albums */
 }
+
 .media-cover.album img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 5px; /* Slightly less than container for clean edge */
+  border-radius: 5px;
 }
-/* Remove nth-child overrides - not needed if grid is consistent */
+
+/* Play icon overlay for digital items */
 .media-cover .play-icon {
   position: absolute;
   inset: 0;
@@ -1257,50 +1233,56 @@ a:focus-visible, button:focus-visible {
   opacity: 0;
   transition: opacity var(--transition);
 }
-.media-item:hover .play-icon { opacity: 1; }
 
+.media-item:hover .play-icon {
+  opacity: 1;
+}
+
+/* Media text content */
 .media-title {
   font-family: var(--serif);
   font-size: 11px;
   font-weight: 500;
   margin-top: 0.4rem;
   line-height: 1.3;
-  /* ALWAYS reserve space for 2 lines for consistent alignment */
-  min-height: calc(11px * 1.3 * 2); /* 28.6px */
-  /* Use line clamping for consistent spacing */
-  overflow-wrap: anywhere;
-  word-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  /* Limit to 2 lines with ellipsis */
+  /* Reserve space for 2 lines - consistent alignment across items */
+  min-height: calc(11px * 1.3 * 2);
+  /* Line clamping */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-clamp: 2;
+  /* Word wrapping */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
+
 .media-subtitle {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted2);
-  overflow-wrap: anywhere;
-  word-wrap: break-word;
   margin-top: 0.15rem;
   line-height: 1.2;
-  /* ALWAYS reserve space for 2 lines for consistent alignment */
-  min-height: calc(10px * 1.2 * 2); /* 24px */
+  /* Reserve space for 2 lines */
+  min-height: calc(10px * 1.2 * 2);
+  /* Line clamping */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-clamp: 2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
 .media-link {
   font-family: var(--mono);
-  font-size: 8px; /* Matches reference design */
+  font-size: 8px;
   color: var(--blue);
   display: block;
-  margin-top: 0.5rem; /* Increased spacing from subtitle */
+  margin-top: 0.5rem;
   text-transform: capitalize;
   letter-spacing: 0.02em;
 }

@@ -1,8 +1,8 @@
 /**
- * About Page V22 Polished Design JavaScript
+ * About Page JavaScript
  * 
- * Extracted and adapted from kunaal-about-v22-polished.html
- * All animations, effects, and interactions preserved
+ * Handles animations, scroll effects, and interactive features for the About page.
+ * Progressive enhancement: all content is visible without JS; animations enhance UX.
  *
  * @package Kunaal_Theme
  * @since 4.21.0
@@ -11,52 +11,12 @@
 (function () {
   'use strict';
 
-  // Debug logging helper - uses WordPress AJAX endpoint
-  // Only active when debug is enabled via localized config
-  function debugLog(location, message, data, hypothesisId) {
-    // Gate behind debug config - no-op if debug is false
-    if (!window.kunaalAbout || !window.kunaalAbout.debug) {
-      return; // Debug logging disabled by default
-    }
-    
-    // Verify required config is available
-    if (!window.kunaalAbout.ajaxUrl || !window.kunaalAbout.nonce) {
-      return; // Skip if config incomplete
-    }
-    
-    const logData = {
-      location: location,
-      message: message,
-      data: data || {},
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      runId: 'run1',
-      hypothesisId: hypothesisId || ''
-    };
-    const formData = new FormData();
-    formData.append('action', 'kunaal_debug_log');
-    formData.append('log_data', JSON.stringify(logData));
-      formData.append('nonce', window.kunaalAbout.nonce);
-      fetch(window.kunaalAbout.ajaxUrl, {
-      method: 'POST',
-      body: formData
-    }).catch(function(error) {
-      // Silently fail if logging unavailable - debug logging should never break the page
-      if (window.console && window.console.warn) {
-        window.console.warn('[kunaal-theme] Debug log failed:', error);
-      }
-    });
-  }
-
+  // Check for reduced motion preference
   let reduceMotion = false;
   try {
     reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch (e) {
-    // Fallback if matchMedia is not supported
     reduceMotion = false;
-    if (window.console && window.console.warn) {
-      window.console.warn('[kunaal-theme] matchMedia not supported:', e);
-    }
   }
 
   function ready(fn) {
@@ -72,31 +32,19 @@
   }
 
   function init() {
-    // #region agent log
-    debugLog('about-page.js:33', 'init() called', {viewportWidth:window.innerWidth,viewportHeight:window.innerHeight}, 'H2.1,H3.1,H4.1');
-    // #endregion
-    
     const gsapOk = hasGSAP();
-    // #region agent log
-    debugLog('about-page.js:36', 'GSAP check', {gsapOk:gsapOk,hasGSAP:!!window.gsap,hasScrollTrigger:!!window.ScrollTrigger}, 'H2.1');
-    // #endregion
     
     // Mark elements as GSAP-ready only if GSAP is available
     if (gsapOk) {
-      // Add class to body so CSS knows GSAP is ready
       document.body.classList.add('gsap-ready');
       try { 
         window.gsap.registerPlugin(window.ScrollTrigger); 
       } catch (e) {
-        if (window.kunaalTheme?.debug) {
-          console.warn('GSAP ScrollTrigger registration failed:', e);
-        }
-        // #region agent log
-        debugLog('about-page.js:40', 'GSAP registration error', {error:e.message}, 'H2.1');
-        // #endregion
+        // Fail silently - GSAP is progressive enhancement
       }
     }
 
+    // Initialize all modules
     initPageLoad(gsapOk);
     initScrollReveals(gsapOk);
     initPanoramaParallax(gsapOk);
@@ -104,148 +52,164 @@
     initMarqueeWords(gsapOk);
     initNumbers(gsapOk);
     initWorldMap();
-  
     initProgressBar();
     initHeaderNav();
     initHeroMosaicCycle();
     initCapsuleLife();
     initFooterYear();
     
-    // #region agent log - Check dog-ear and scroll indicator after init
+    // Verify accent photo overflow after init (defensive check)
     setTimeout(function() {
       const accentPhoto = document.querySelector('.hero-photo.has-accent');
-      const scrollIndicator = document.getElementById('scrollIndicator');
       if (accentPhoto) {
-        // Ensure overflow: visible is applied (in case something overrides it)
         const computedOverflow = window.getComputedStyle(accentPhoto).overflow;
         if (computedOverflow !== 'visible') {
           accentPhoto.style.overflow = 'visible';
         }
-        const img = accentPhoto.querySelector('img');
-        const before = window.getComputedStyle(accentPhoto, '::before');
-        const imgStyles = window.getComputedStyle(img);
-        debugLog('about-page.js:58', 'Dog-ear styles check', {hasAccentPhoto:!!accentPhoto,imgZIndex:imgStyles.zIndex,imgPosition:imgStyles.position,imgTransform:imgStyles.transform,accentIsolation:window.getComputedStyle(accentPhoto).isolation,accentOverflow:window.getComputedStyle(accentPhoto).overflow}, 'H1.1,H1.2,H1.3,H1.5');
       }
-      if (scrollIndicator) {
-        const siStyles = window.getComputedStyle(scrollIndicator);
-        const rect = scrollIndicator.getBoundingClientRect();
-        debugLog('about-page.js:65', 'Scroll indicator check', {exists:!!scrollIndicator,opacity:siStyles.opacity,display:siStyles.display,visibility:siStyles.visibility,zIndex:siStyles.zIndex,top:rect.top,left:rect.left,width:rect.width,height:rect.height,inViewport:rect.top>=0&&rect.left>=0&&rect.bottom<=window.innerHeight&&rect.right<=window.innerWidth}, 'H2.2,H2.3,H2.5');
-      }
-    }, 1000);
-    // #endregion
+    }, 100);
   }
 
   // =============================================
   // PAGE LOAD - quiet editorial entrance
   // =============================================
   function initPageLoad(gsapOk) {
-    // #region agent log
-    debugLog('about-page.js:113', 'initPageLoad called', {gsapOk:gsapOk,reduceMotion:reduceMotion}, 'H2.1');
-    // #endregion
-    
     if (reduceMotion || !gsapOk) return;
+    
     try {
       const scrollIndicator = document.getElementById('scrollIndicator');
-      // #region agent log
-      debugLog('about-page.js:120', 'Scroll indicator before GSAP', {exists:!!scrollIndicator,initialOpacity:scrollIndicator?window.getComputedStyle(scrollIndicator).opacity:null}, 'H2.1');
-      // #endregion
-      
-      const tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
-      
-      // CRITICAL: Immediately set .hero-photo.has-accent to opacity:1
-      // This prevents the dog-ear (::before) from being invisible
-      // CSS opacity inheritance means ::before can't override parent opacity
       const accentPhoto = document.querySelector('.hero-photo.has-accent');
+      const heroTextReveals = document.querySelectorAll('.hero-text [data-reveal]');
+      const nonAccentPhotos = document.querySelectorAll('.hero-photo:not(.has-accent)');
+      
+      // CRITICAL: Force accent photo to opacity:1 BEFORE any animation
+      // The dog-ear (::before) inherits opacity from parent - must NEVER be animated
       if (accentPhoto) {
-        accentPhoto.style.opacity = '1';
-        window.gsap.set(accentPhoto, { opacity: 1 });
+        accentPhoto.style.setProperty('opacity', '1', 'important');
       }
       
-      // Animate all hero photos EXCEPT .has-accent (which must stay visible for dog-ear)
-      tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
-        .from('.hero-photo:not(.has-accent)', { 
+      const tl = window.gsap.timeline({ 
+        defaults: { ease: 'power2.out' },
+          onComplete: function() {
+          // Final cleanup: ensure all animated elements are fully visible
+          finalizeAnimatedElements(nonAccentPhotos, heroTextReveals, accentPhoto, scrollIndicator);
+        }
+      });
+      
+      // Nav entrance
+      tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 });
+      
+      // Hero photos - animate ONLY non-accent photos (NodeList, not CSS selector)
+      if (nonAccentPhotos.length > 0) {
+        tl.from(nonAccentPhotos, { 
           opacity: 0, 
           duration: 0.6, 
-          stagger: 0.06,
-          onComplete: function() {
-            // Ensure all hero photos are fully visible after animation
-            document.querySelectorAll('.hero-photo').forEach(function(photo) {
-              photo.style.opacity = '1';
-              window.gsap.set(photo, { opacity: 1, clearProps: 'opacity' });
-            });
-          }
-        }, '<0.05')
-        .from('.hero-text [data-reveal]', { 
+          stagger: 0.06
+        }, '<0.05');
+      }
+      
+      // Hero text elements
+      if (heroTextReveals.length > 0) {
+        tl.from(heroTextReveals, { 
           y: 16, 
           opacity: 0, 
           duration: 0.55, 
-          stagger: 0.08,
-          onComplete: function() {
-            // Ensure all hero text elements are fully visible after animation
-            // This fixes the "Hi, I'm Kunaal" getting stuck at partial opacity
-            document.querySelectorAll('.hero-text [data-reveal]').forEach(function(el) {
-              el.style.opacity = '1';
-              el.style.transform = 'none';
-              window.gsap.set(el, { opacity: 1, y: 0, clearProps: 'all' });
-            });
-          }
-        }, '<0.15')
-        .from('#scrollIndicator', { 
+          stagger: 0.08
+        }, '<0.15');
+      }
+      
+      // Scroll indicator
+      if (scrollIndicator) {
+        tl.from(scrollIndicator, { 
           opacity: 0,
           y: 8,
-          x: 0,
-          duration: 0.35,
-          immediateRender: false,
-          onComplete: function() {
-            if (scrollIndicator) {
-              window.gsap.set(scrollIndicator, { 
-                opacity: 1, 
-                x: 0, 
-                y: 0, 
-                clearProps: 'all'
-              });
-              scrollIndicator.style.opacity = '1';
-            }
-          }
+          duration: 0.35
         }, '<0.25');
-      
-      // Scroll indicator is now in-flow (not fixed) - only adjust opacity if needed
-      // No display toggles to avoid layout shifts
-      if (scrollIndicator) {
-        const scrollFadeHandler = function() {
-          const scrollY = window.scrollY || window.pageYOffset;
-          const fadeStart = 100; // Start fading after 100px scroll
-          const fadeEnd = 300; // Fully faded at 300px
-          let opacity = 1;
-          
-          if (scrollY > fadeStart) {
-            opacity = Math.max(0, 1 - ((scrollY - fadeStart) / (fadeEnd - fadeStart)));
-          }
-          
-          // Only adjust opacity, no display toggles
-          scrollIndicator.style.opacity = opacity.toString();
-        };
         
-        window.addEventListener('scroll', scrollFadeHandler, { passive: true });
-        scrollFadeHandler(); // Initial check
+        // Scroll fade handler - clean passive listener
+        initScrollIndicatorFade(scrollIndicator);
       }
       
-      // #region agent log
-      tl.eventCallback('onComplete', function() {
-        if (scrollIndicator) {
-          const finalStyles = window.getComputedStyle(scrollIndicator);
-          debugLog('about-page.js:137', 'Scroll indicator after GSAP animation', {opacity:finalStyles.opacity,display:finalStyles.display,visibility:finalStyles.visibility}, 'H2.1');
-        }
-      });
-      // #endregion
     } catch (e) {
-      if (window.kunaalTheme?.debug) {
-        console.warn('Page load animation failed:', e);
-      }
-      // #region agent log
-      debugLog('about-page.js:144', 'Page load animation error', {error:e.message,stack:e.stack}, 'H2.1');
-      // #endregion
+      // Fallback: ensure visibility even if animation fails
+      forceAllHeroElementsVisible();
     }
+  }
+  
+  /**
+   * Finalize animated elements after timeline completes
+   * Sets explicit inline styles to guarantee visibility, then clears GSAP state
+   */
+  function finalizeAnimatedElements(photos, textEls, accentPhoto, scrollIndicator) {
+    // Non-accent photos: set visible, then clear GSAP state
+    photos.forEach(function(photo) {
+      photo.style.opacity = '1';
+      window.gsap.set(photo, { clearProps: 'opacity' });
+    });
+    
+    // Hero text: set visible, clear all GSAP state
+    textEls.forEach(function(el) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      window.gsap.set(el, { clearProps: 'all' });
+    });
+    
+    // Accent photo: NEVER clear - keep explicit opacity:1
+    if (accentPhoto) {
+      accentPhoto.style.setProperty('opacity', '1', 'important');
+    }
+    
+    // Scroll indicator
+        if (scrollIndicator) {
+      scrollIndicator.style.opacity = '1';
+      window.gsap.set(scrollIndicator, { clearProps: 'all' });
+    }
+  }
+  
+  /**
+   * Initialize scroll indicator fade behavior
+   */
+  function initScrollIndicatorFade(scrollIndicator) {
+    let ticking = false;
+    
+    function updateFade() {
+      ticking = false;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const fadeStart = 100;
+      const fadeEnd = 300;
+      
+      if (scrollY <= fadeStart) {
+        scrollIndicator.style.opacity = '1';
+      } else if (scrollY >= fadeEnd) {
+        scrollIndicator.style.opacity = '0';
+      } else {
+        const progress = (scrollY - fadeStart) / (fadeEnd - fadeStart);
+        scrollIndicator.style.opacity = (1 - progress).toFixed(3);
+      }
+    }
+    
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateFade);
+      }
+    }
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateFade(); // Initial state
+  }
+  
+  /**
+   * Fallback: force all hero elements visible if animation fails
+   */
+  function forceAllHeroElementsVisible() {
+    document.querySelectorAll('.hero-photo').forEach(function(p) {
+      p.style.opacity = '1';
+    });
+    document.querySelectorAll('.hero-text [data-reveal]').forEach(function(el) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
   }
 
   // =============================================
@@ -253,193 +217,186 @@
   // =============================================
   function initScrollReveals(gsapOk) {
     if (reduceMotion || !gsapOk) return;
-    const els = document.querySelectorAll('[data-reveal]');
-    let isMobile = window.innerWidth < 900;
     
-    // Skip ScrollTrigger animations on mobile - use CSS fallback instead
+    const isMobile = window.innerWidth < 900;
+    
+    // On mobile, skip ScrollTrigger - CSS handles visibility
     if (isMobile) {
-      window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
-        opacity: 1, 
-        y: 0, 
-        clearProps: 'all'
-      });
-      return; // Don't set up ScrollTrigger on mobile
+      ensureHeroTextVisible();
+      return;
     }
     
-    // Store all ScrollTrigger instances for global resize handler
-    const scrollTriggers = [];
-    const revealElements = [];
+    const els = document.querySelectorAll('[data-reveal]');
+    if (!els.length) return;
     
-    for (var i = 0; i < els.length; i++) {
-      (function (el) {
-        const dir = el.getAttribute('data-reveal') || 'up';
-        let x = 0, y = 14;
-        if (dir === 'left') { x = -18; y = 0; }
-        if (dir === 'right') { x = 18; y = 0; }
-        if (dir === 'down') { x = 0; y = -14; }
-        
-        // Skip scroll indicator - it should not have x transform
-        // Note: scroll indicator is now hero-scroll inside hero-text, not fixed
+    // Categorize elements for different animation behaviors
+    const heroTextEls = [];
+    const otherEls = [];
+    
+    els.forEach(function(el) {
+      // Skip scroll indicator entirely - it's handled in initPageLoad
         if (el.id === 'scrollIndicator' || el.closest('#scrollIndicator') || el.classList.contains('hero-scroll')) {
-          x = 0; // Force no x transform for scroll indicator
-        }
-        
-        // Mobile-specific handling for hero-text elements
-        const isHeroText = el.closest('.hero-text') !== null;
-        const startPos = 'top 86%';
-        const immediateRender = true;
-        
-        // Hero text elements should NEVER reverse - once visible, stay visible
-        // This prevents the "stuck at partial opacity" bug
-        const shouldReverse = !isHeroText;
-        const actions = shouldReverse ? 'play none none reverse' : 'play none none none';
-        
-        try {
-          // Set initial state for animation
-          window.gsap.set(el, { opacity: 0, x: x, y: y });
-          
-          const st = window.gsap.from(el, {
+        return;
+      }
+      
+      if (el.closest('.hero-text')) {
+        heroTextEls.push(el);
+      } else {
+        otherEls.push(el);
+      }
+    });
+    
+    // Hero text elements: NEVER reverse, always end at full visibility
+    // This prevents "stuck at partial opacity" bug
+    heroTextEls.forEach(function(el) {
+      setupRevealAnimation(el, {
+        toggleActions: 'play none none none', // Never reverse
+        onEnter: function() { forceElementVisible(el); },
+        onEnterBack: function() { forceElementVisible(el); }
+      });
+    });
+    
+    // Other elements: can reverse for scroll-based interactivity
+    otherEls.forEach(function(el) {
+      setupRevealAnimation(el, {
+        toggleActions: 'play none none reverse'
+      });
+    });
+    
+    // Global resize handler
+    initScrollRevealResizeHandler(heroTextEls);
+  }
+  
+  /**
+   * Setup a reveal animation for a single element
+   */
+  function setupRevealAnimation(el, options) {
+    const dir = el.getAttribute('data-reveal') || 'up';
+    let x = 0, y = 14;
+    
+    if (dir === 'left') { x = -18; y = 0; }
+    else if (dir === 'right') { x = 18; y = 0; }
+    else if (dir === 'down') { x = 0; y = -14; }
+    
+    try {
+      window.gsap.from(el, {
             x: x,
             y: y,
             opacity: 0,
             duration: 0.55,
             ease: 'power2.out',
-            immediateRender: immediateRender,
             scrollTrigger: {
               trigger: el,
-              start: startPos,
-              toggleActions: actions,
-              refreshPriority: 1,
-              invalidateOnRefresh: true, // Recalculate on resize
-              onEnter: function() {
-                // Ensure final state is always opacity:1, y:0 - use clearProps to remove all GSAP styles
-                window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
+          start: 'top 86%',
+          toggleActions: options.toggleActions || 'play none none reverse',
+          invalidateOnRefresh: true,
+          onEnter: options.onEnter || null,
+          onEnterBack: options.onEnterBack || null
+        }
+      });
+    } catch (e) {
+      // Fallback: make element visible
                 el.style.opacity = '1';
                 el.style.transform = 'none';
-              },
-              onEnterBack: function() {
-                // Ensure final state when scrolling back
-                window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
+    }
+  }
+  
+  /**
+   * Force an element to be visible (used as callback and fallback)
+   */
+  function forceElementVisible(el) {
                 el.style.opacity = '1';
                 el.style.transform = 'none';
-              },
-              onLeave: function() {
-                // Keep visible when scrolling past
+    if (window.gsap) {
                 window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
               }
             }
-          });
-          
-          // Store for global resize handler
-          scrollTriggers.push({ st: st, el: el, isHeroText: isHeroText });
-          revealElements.push(el);
-        } catch (e) {
-          if (window.kunaalTheme?.debug) {
-            console.warn('Scroll reveal failed for element:', e);
-          }
-        }
-      })(els[i]);
+  
+  /**
+   * Ensure hero text elements are visible (mobile fallback)
+   */
+  function ensureHeroTextVisible() {
+    if (window.gsap) {
+      window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
+        opacity: 1, 
+        y: 0, 
+        clearProps: 'all'
+      });
     }
+    // Also set inline styles as backup
+    document.querySelectorAll('.hero-label, .hero-title, .hero-intro, .hero-meta').forEach(function(el) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  }
+  
+  /**
+   * Handle resize for scroll reveals - ensure visibility on viewport changes
+   */
+  function initScrollRevealResizeHandler(heroTextEls) {
+    let resizeTimeout;
     
-    // Single global debounced resize handler for all elements
-    function handleGlobalResize() {
+    function handleResize() {
       if (!window.gsap || !window.ScrollTrigger) return;
       
-      const newIsMobile = window.innerWidth < 900;
+      const isMobile = window.innerWidth < 900;
+      const isWide = window.innerWidth > 1600;
       
-      // Refresh all ScrollTriggers
+      // On mobile or wide viewport, ensure hero text is visible
+      if (isMobile || isWide) {
+        ensureHeroTextVisible();
+      }
+      
+      // Refresh ScrollTrigger calculations
       window.ScrollTrigger.refresh();
       
-      // Check all elements after refresh
+      // Check hero text elements are visible
       setTimeout(function() {
-        for (var j = 0; j < scrollTriggers.length; j++) {
-          const item = scrollTriggers[j];
-          const el = item.el;
-          const st = item.st;
-          const isHeroText = item.isHeroText;
+        heroTextEls.forEach(function(el) {
+          const rect = el.getBoundingClientRect();
+          const isInView = rect.top < window.innerHeight && rect.bottom > 0;
           
-          if (!st || !st.scrollTrigger) continue;
-          
-          const afterRect = el.getBoundingClientRect();
-          const afterIsInViewport = afterRect.top >= 0 && afterRect.left >= 0 && afterRect.bottom <= window.innerHeight && afterRect.right <= window.innerWidth;
-          const isActuallyVisible = afterRect.top < window.innerHeight && afterRect.bottom > 0 && afterRect.left < window.innerWidth && afterRect.right > 0;
-          
-          // For hero text elements, always check if they're in viewport and force visible if needed
-          if (isHeroText && (afterIsInViewport || isActuallyVisible)) {
+          if (isInView) {
             const computed = window.getComputedStyle(el);
-            const currentOpacity = parseFloat(computed.opacity);
-            const currentY = parseFloat(computed.transform.match(/translateY\(([^)]+)\)/) ? computed.transform.match(/translateY\(([^)]+)\)/)[1] : '0') || 0;
-            if (currentOpacity < 0.9 || Math.abs(currentY) > 2 || isNaN(currentOpacity)) {
-              window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
-              el.style.opacity = '1';
-              el.style.transform = 'none';
-              st.scrollTrigger.refresh();
-            }
-          } else if (afterIsInViewport || (isActuallyVisible && afterRect.top > -100)) {
-            // For non-hero elements
-            const computed = window.getComputedStyle(el);
-            const currentOpacity = parseFloat(computed.opacity);
-            if (currentOpacity < 0.9 || isNaN(currentOpacity)) {
-              window.gsap.set(el, { opacity: 1, x: 0, y: 0, clearProps: 'all' });
-              el.style.opacity = '1';
-              el.style.transform = 'none';
-              st.scrollTrigger.refresh();
+            const opacity = parseFloat(computed.opacity);
+            
+            if (isNaN(opacity) || opacity < 0.9) {
+              forceElementVisible(el);
             }
           }
-        }
-      }, 150);
-    }
-    
-    // Debounce helper
-    function debounce(func, wait) {
-      let timeout;
-      return function() {
-        const context = this;
-        const args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-          func.apply(context, args);
-        }, wait);
-      };
-    }
-    
-    // Single global resize listener (replaces per-element listeners)
-    const debouncedResize = debounce(handleGlobalResize, 150);
-    window.addEventListener('resize', debouncedResize, { passive: true });
-    
-    // Handle wide viewport - clear GSAP inline styles that override CSS
-    function handleWideViewport() {
-      if (window.innerWidth > 1600) {
-        window.gsap.set('.hero-label, .hero-title, .hero-intro, .hero-meta', {
-          clearProps: 'all'  // This removes GSAP inline styles
         });
-      }
+      }, 100);
     }
     
-    window.addEventListener('resize', debounce(handleWideViewport, 250), { passive: true });
-    handleWideViewport(); // Run on load too
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 150);
+    }, { passive: true });
   }
 
   // =============================================
-  // Masked "portal band" parallax (fast)
-  // Performance: Disabled on mobile, gated by IntersectionObserver
+  // Panorama parallax effect
+  // =============================================
+  // Performance optimizations:
+  // - Disabled on mobile (touch devices)
+  // - Uses IntersectionObserver to only activate when near viewport
+  // - Uses GSAP scrub for smooth, RAF-synced animation
+  //
+  // CSS coordination:
+  // - Image is 280% height, positioned at top: -90%
+  // - Parallax amplitude: ±30% ensures image never exposes empty edges
+  // - Math: at -90% + 30% = -60%, bottom is at 280% - 60% = 220% (covers 100%)
+  //         at -90% - 30% = -120%, bottom is at 280% - 120% = 160% (covers 100%)
   // =============================================
   function initPanoramaParallax(gsapOk) {
     if (reduceMotion || !gsapOk) return;
     
-    // Disable parallax on mobile for performance
+    // Disable on mobile for performance
     const isMobile = window.innerWidth < 900 || window.matchMedia('(hover: none)').matches;
     if (isMobile) return;
     
     const bands = document.querySelectorAll('.panorama');
     if (!bands.length) return;
-    
-    // Use IntersectionObserver to only activate parallax when bands are near viewport
-    const observerOptions = {
-      root: null,
-      rootMargin: '50%', // Start parallax when band is 50% away from viewport
-      threshold: 0
-    };
     
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
@@ -447,88 +404,27 @@
         
         const band = entry.target;
         const img = band.querySelector('.panorama-img');
-        if (!img) return;
+        if (!img || band.dataset.parallaxInitialized === 'true') return;
         
-        // Only initialize if not already initialized
-        if (band.dataset.parallaxInitialized === 'true') return;
         band.dataset.parallaxInitialized = 'true';
         
-        const speed = parseFloat(band.getAttribute('data-speed') || '1');
-        if (!isFinite(speed)) speed = 1;
-        // Parallax movement: increased amplitude for more dramatic scrollytelling effect
-        // Image is 220% height in CSS, so we have plenty of room for movement
-        const amp = 25 * speed; // percent of the IMAGE height (increased from 10 for more movement)
+        // Speed multiplier from data attribute (default 1)
+        let speed = parseFloat(band.getAttribute('data-speed') || '1');
+        if (!isFinite(speed) || speed <= 0) speed = 1;
+        
+        // Amplitude: 30% base, scaled by speed
+        // This keeps image within bounds (see CSS math above)
+        const amp = 30 * Math.min(speed, 1.5); // Cap speed to prevent edge exposure
+        
         try {
           window.gsap.fromTo(img,
             { yPercent: -amp },
             {
               yPercent: amp,
               ease: 'none',
-              force3D: true, // Force hardware acceleration for smooth performance
+              force3D: true,
               scrollTrigger: {
                 trigger: band,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: true // Smooth, lag-free parallax
-              }
-            }
-          );
-        } catch (e) {
-          if (window.kunaalTheme?.debug) {
-            console.warn('Panorama parallax failed:', e);
-          }
-        }
-      });
-    }, observerOptions);
-    
-    // Observe all bands
-    for (var i = 0; i < bands.length; i++) {
-      observer.observe(bands[i]);
-    }
-  }
-
-  // =============================================
-  // "Sticky scroll" / pinned scene (tasteful)
-  // =============================================
-  function initPinnedScenes(gsapOk) {
-    if (reduceMotion || !gsapOk) return;
-    const pins = document.querySelectorAll('[data-pin="true"]');
-    for (var i = 0; i < pins.length; i++) {
-      try {
-        window.ScrollTrigger.create({
-          trigger: pins[i],
-          start: 'top top',
-          end: '+=140%',
-          pin: true,
-          pinSpacing: true
-        });
-      } catch (e) {
-        if (window.kunaalTheme?.debug) {
-          console.warn('Pinned scene failed:', e);
-        }
-      }
-    }
-  }
-
-  // =============================================
-  // Giant background words drifting horizontally
-  // =============================================
-  function initMarqueeWords(gsapOk) {
-    if (reduceMotion || !gsapOk) return;
-    const words = document.querySelectorAll('[data-marquee]');
-    for (var i = 0; i < words.length; i++) {
-      (function (el) {
-        const dir = (el.getAttribute('data-dir') || 'left').toLowerCase();
-        const dist = (dir === 'right') ? 120 : -120;
-        const container = el.parentElement || el;
-        try {
-          window.gsap.fromTo(el,
-            { x: -dist },
-            {
-              x: dist,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: container,
                 start: 'top bottom',
                 end: 'bottom top',
                 scrub: true
@@ -536,12 +432,72 @@
             }
           );
         } catch (e) {
-          if (window.kunaalTheme?.debug) {
-            console.warn('Marquee word failed:', e);
-          }
+          // Fail silently - parallax is progressive enhancement
         }
-      })(words[i]);
-    }
+      });
+    }, {
+      root: null,
+      rootMargin: '50%',
+      threshold: 0
+    });
+    
+    bands.forEach(function(band) {
+      observer.observe(band);
+    });
+  }
+
+  // =============================================
+  // Pinned scenes (sticky scroll effect)
+  // =============================================
+  function initPinnedScenes(gsapOk) {
+    if (reduceMotion || !gsapOk) return;
+    
+    const pins = document.querySelectorAll('[data-pin="true"]');
+    pins.forEach(function(pin) {
+      try {
+        window.ScrollTrigger.create({
+          trigger: pin,
+          start: 'top top',
+          end: '+=140%',
+          pin: true,
+          pinSpacing: true
+        });
+      } catch (e) {
+        // Fail silently - pinning is progressive enhancement
+      }
+    });
+  }
+
+  // =============================================
+  // Marquee background words (horizontal drift)
+  // =============================================
+  function initMarqueeWords(gsapOk) {
+    if (reduceMotion || !gsapOk) return;
+    
+    const words = document.querySelectorAll('[data-marquee]');
+    words.forEach(function(el) {
+      const dir = (el.getAttribute('data-dir') || 'left').toLowerCase();
+      const dist = (dir === 'right') ? 120 : -120;
+      const container = el.parentElement || el;
+      
+      try {
+        window.gsap.fromTo(el,
+          { x: -dist },
+          {
+            x: dist,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        );
+      } catch (e) {
+        // Fail silently - marquee is progressive enhancement
+      }
+    });
   }
 
   // =============================================
@@ -657,34 +613,13 @@
   // World map (D3) - uses WordPress localized data
   // =============================================
   function initWorldMap() {
-    // #region agent log
-    debugLog('about-page.js:442', 'initWorldMap called', {timestamp:Date.now()}, 'H3.1,H3.2');
-    // #endregion
-    
     const host = document.getElementById('world-map');
-    // #region agent log
-    debugLog('about-page.js:447', 'Map element check', {hostExists:!!host,hostId:host?host.id:null,hostWidth:host?host.clientWidth:null,hostHeight:host?host.clientHeight:null}, 'H3.2,H3.5');
-    // #endregion
-    
     if (!host) return;
 
     // D3 and TopoJSON should already be loaded via WordPress enqueue
-    // #region agent log
-    debugLog('about-page.js:454', 'D3/TopoJSON check', {hasD3:!!window.d3,hasTopojson:!!window.topojson}, 'H3.1');
-    // #endregion
-    
-    if (!window.d3 || !window.topojson) {
-      if (window.kunaalTheme?.debug) {
-        console.warn('D3.js or TopoJSON not loaded');
-      }
-      return;
-    }
+    if (!window.d3 || !window.topojson) return;
 
     function draw() {
-      // #region agent log
-      debugLog('about-page.js:464', 'Map draw() called', {timestamp:Date.now()}, 'H3.3,H3.4');
-      // #endregion
-      
       // Get places data from WordPress localization
       const placesData = (window.kunaalAbout && window.kunaalAbout.places) || {
         current: [],
@@ -696,17 +631,6 @@
       const current = Array.isArray(placesData.current) ? placesData.current : (placesData.current ? [placesData.current] : []);
       const lived = Array.isArray(placesData.lived) ? placesData.lived : (placesData.lived ? [placesData.lived] : []);
       const visited = Array.isArray(placesData.visited) ? placesData.visited : (placesData.visited ? [placesData.visited] : []);
-      
-      // #region agent log
-      debugLog('about-page.js:480', 'Places data check', {hasKunaalAbout:!!window.kunaalAbout,currentCount:current.length,livedCount:lived.length,visitedCount:visited.length,current:current,lived:lived,visited:visited}, 'H3.3');
-      // #endregion
-      
-      // Debug: log if no places data (helpful for troubleshooting)
-      if (current.length === 0 && lived.length === 0 && visited.length === 0) {
-        if (window.kunaalTheme?.debug) {
-          console.warn('About page map: No places data found. Check Customizer settings for Places section.');
-        }
-      }
       
       try {
 
@@ -781,16 +705,8 @@
       const path = window.d3.geoPath().projection(projection);
 
       const tooltip = document.getElementById('mapTooltip');
-
-      // #region agent log
-      debugLog('about-page.js:563', 'Starting D3.json fetch', {width:width,height:height}, 'H3.4');
-      // #endregion
       
       window.d3.json('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then(function (world) {
-        // #region agent log
-        debugLog('about-page.js:568', 'D3.json success', {hasWorld:!!world,hasObjects:!!world.objects}, 'H3.4');
-        // #endregion
-        
         const countries = window.topojson.feature(world, world.objects.countries);
 
         svg.selectAll('path')
@@ -962,20 +878,10 @@
           }
         }
       }).catch(function (err) {
-        if (window.kunaalTheme?.debug) {
-          console.warn('World map data load failed:', err);
-        }
-        // #region agent log
-        debugLog('about-page.js:699', 'D3.json error', {error:err.message,stack:err.stack}, 'H3.4');
-        // #endregion
+        // Fail silently - map is progressive enhancement
       });
       } catch (drawError) {
-        // #region agent log
-        debugLog('about-page.js:704', 'Map draw() error', {error:drawError.message,stack:drawError.stack}, 'H3.4');
-        // #endregion
-        if (window.kunaalTheme?.debug) {
-          console.warn('Map draw() failed:', drawError);
-        }
+        // Fail silently - map is progressive enhancement
       }
     }
 
@@ -989,10 +895,7 @@
           setTimeout(function() { tryDraw(attempts + 1); }, 100);
           return;
         }
-        if (window.kunaalTheme?.debug) {
-          console.warn('World map: D3.js or TopoJSON not loaded after waiting.');
-        }
-        return;
+        return; // Give up silently
       }
       
       // Check for places data (wp_localize_script might need a moment)
@@ -1002,21 +905,15 @@
           return;
         }
         // After waiting, proceed with empty data
-        if (window.kunaalTheme?.debug) {
-          console.warn('About page map: Places data not loaded after waiting. Proceeding with empty data.');
-        }
       }
       
       try {
         draw();
       } catch (e) {
-        if (window.kunaalTheme?.debug) {
-          console.warn('World map draw failed:', e);
-        }
+        // Fail silently - map is progressive enhancement
       }
     }
     
-    // Start trying to draw
     tryDraw();
   }
 
@@ -1184,118 +1081,11 @@
     }
   }
 
-  /**
-   * Sync media item heights - digital items match book items (the taller variant)
-   * Books have 2:3 aspect ratio covers, digital has 1:1, so books are always taller.
-   * This ensures rows align across the two columns.
-   * 
-   * FIX: Uses CSS-based calculation to avoid layout shift.
-   * Measures book natural height without disturbing existing layout.
-   */
-  function syncMediaItemHeights(forceReset) {
-    const bookItems = document.querySelectorAll('.media-item--book');
-    const digitalItems = document.querySelectorAll('.media-item--digital');
-    
-    if (!bookItems.length || !digitalItems.length) return;
-    
-    let maxBookHeight = 0;
-    
-    if (forceReset) {
-      // On resize: reset all heights and remeasure
-      bookItems.forEach(function(item) { 
-        item.style.removeProperty('height');
-      });
-      digitalItems.forEach(function(item) { 
-        item.style.removeProperty('height');
-      });
-      
-      // Force reflow after reset
-      void document.body.offsetHeight;
-      
-      // Measure natural book heights
-      bookItems.forEach(function(item) {
-        const height = item.getBoundingClientRect().height;
-        if (height > maxBookHeight) maxBookHeight = height;
-      });
-    } else {
-      // Initial load: measure without disturbing layout
-      // Use a hidden clone to measure natural height
-      const firstBook = bookItems[0];
-      if (!firstBook) return;
-      
-      // Check if heights are already set (from previous run or inline styles)
-      const existingHeight = firstBook.style.height;
-      if (existingHeight && existingHeight !== 'auto' && existingHeight !== '') {
-        // Heights already set, just verify digital items have same height
-        const parsedHeight = parseFloat(existingHeight);
-        if (parsedHeight > 0) {
-          digitalItems.forEach(function(item) {
-            if (item.style.height !== existingHeight) {
-              item.style.setProperty('height', existingHeight, 'important');
-            }
-          });
-          return;
-        }
-      }
-      
-      // Measure natural book heights (no inline heights set yet)
-      bookItems.forEach(function(item) {
-        const height = item.getBoundingClientRect().height;
-        if (height > maxBookHeight) maxBookHeight = height;
-      });
-    }
-    
-    // Apply the book height to all items immediately
-    if (maxBookHeight > 0) {
-      const heightPx = Math.ceil(maxBookHeight) + 'px';
-      bookItems.forEach(function(item) { 
-        item.style.setProperty('height', heightPx, 'important');
-      });
-      digitalItems.forEach(function(item) { 
-        item.style.setProperty('height', heightPx, 'important');
-      });
-    }
-  }
-
-  // Run on load, after images, and resize
+  // =============================================
+  // INITIALIZATION
+  // =============================================
   ready(function() {
     init();
-    
-    // Run sync immediately (no delay) - synchronous to prevent layout shift
-    syncMediaItemHeights(false);
-    
-    // Also run after all images in media section are loaded
-    const mediaImages = document.querySelectorAll('.media-section img');
-    let loadedCount = 0;
-    const totalImages = mediaImages.length;
-    
-    if (totalImages > 0) {
-      mediaImages.forEach(function(img) {
-        if (img.complete) {
-          loadedCount++;
-          if (loadedCount === totalImages) syncMediaItemHeights(false);
-        } else {
-          img.addEventListener('load', function() {
-            loadedCount++;
-            if (loadedCount === totalImages) syncMediaItemHeights(false);
-          });
-        }
-      });
-    }
-    
-    // Final sync after window fully loads (fonts, images, etc.)
-    window.addEventListener('load', function() {
-      syncMediaItemHeights(false);
-    });
-    
-    // Re-sync on window resize (debounced) - force reset on resize
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() {
-        syncMediaItemHeights(true); // Force reset on resize
-      }, 150);
-    });
   });
 })();
 
