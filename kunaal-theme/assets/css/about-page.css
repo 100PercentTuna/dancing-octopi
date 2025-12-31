@@ -62,16 +62,25 @@
 :root[data-theme="dark"] .kunaal-about-page .say-hello-text a {
   color: var(--ink);
 }
-:root[data-theme="dark"] .kunaal-about-page .say-hello-link {
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link,
+:root[data-theme="dark"] .kunaal-about-page .say-hello-social-link {
   border-color: rgba(201, 184, 168, 0.25);
   color: var(--ink);
+  background: var(--bg);
 }
-:root[data-theme="dark"] .kunaal-about-page .say-hello-link:hover {
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link:hover,
+:root[data-theme="dark"] .kunaal-about-page .say-hello-social-link:hover,
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link:focus-visible,
+:root[data-theme="dark"] .kunaal-about-page .say-hello-social-link:focus-visible {
   border-color: var(--k-color-dark-accent, #E8A87C);
+  color: var(--k-color-dark-accent, #E8A87C);
   background: rgba(232, 168, 124, 0.1);
+  box-shadow: 0 4px 12px rgba(232, 168, 124, 0.15);
+  outline-color: var(--k-color-dark-accent, #E8A87C);
 }
-:root[data-theme="dark"] .kunaal-about-page .say-hello-link svg {
-  fill: var(--ink);
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link svg,
+:root[data-theme="dark"] .kunaal-about-page .say-hello-social-link svg {
+  fill: currentColor;
 }
 
 /* Section title dark mode */
@@ -448,19 +457,19 @@ a:focus-visible, button:focus-visible {
   position: absolute;
   top: 0; 
   left: 0;
-  /* Relative sizing: 15% of the photo width, min 24px, max 50px */
-  --accent-size: clamp(24px, 15%, 50px);
+  /* Fixed size for reliability across all screen sizes */
   width: 0;
   height: 0;
   /* CSS triangle using borders - more reliable than clip-path */
   border-style: solid;
-  border-width: var(--accent-size) var(--accent-size) 0 0;
+  border-width: 32px 32px 0 0;
   border-color: var(--blue) transparent transparent transparent;
-  z-index: 100; /* High z-index within the isolated stacking context */
+  z-index: 9999; /* Very high z-index to ensure visibility */
   pointer-events: none;
   /* Ensure visibility */
-  display: block;
-  opacity: 1;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Hero text spans rows, in column 5 */
@@ -1540,21 +1549,31 @@ a:focus-visible, button:focus-visible {
   margin-bottom: 0.5rem;
   align-items: center; /* Ensure vertical alignment */
 }
-.say-hello-link {
+.say-hello-link,
+.say-hello-social-link {
   width: 36px; height: 36px;
-  border: 1px solid var(--warmBorder);
+  border: 1px solid var(--hair);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--muted);
-  transition: all var(--transition);
+  background: var(--bg);
+  transition: all 200ms ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.say-hello-link:hover {
-  border-color: var(--blue);
+/* Hover: matches theme-toggle hover behavior */
+.say-hello-link:hover,
+.say-hello-social-link:hover,
+.say-hello-link:focus-visible,
+.say-hello-social-link:focus-visible {
+  border-color: var(--blueStroke);
   color: var(--blue);
   background: var(--blueTint);
+  box-shadow: 0 4px 12px rgba(30,90,255,0.12);
   transform: translateY(-2px);
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 /* Hard-scope SVG sizing for about page - prevent 900px explosion */
 /* High specificity selector to override any global SVG styles */

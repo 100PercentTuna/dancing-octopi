@@ -24,41 +24,44 @@
 /* ========================================
    DARK MODE - Navigation
    Comprehensive dark mode overrides
+   Higher specificity to override all other rules
    ======================================== */
 :root[data-theme="dark"] .mast {
-  background: rgba(11, 18, 32, 0.95);
-  border-bottom-color: rgba(201, 184, 168, 0.15);
+  background: rgba(11, 18, 32, 0.95) !important;
+  border-bottom-color: rgba(201, 184, 168, 0.15) !important;
 }
 
-/* Nav links in dark mode - light text, NO blue background */
+/* Nav links in dark mode - light text, warm underline, NO blue anywhere */
+:root[data-theme="dark"] .mast .nav a,
 :root[data-theme="dark"] .nav a {
-  color: var(--ink); /* Uses dark mode ink (light text) */
+  color: #f0f0f0 !important; /* Light text - explicit value for reliability */
   background-image: linear-gradient(
-    var(--k-underline-blue-color),
-    var(--k-underline-blue-color)
-  ); /* Orange underline in dark mode */
+    #E8A87C,
+    #E8A87C
+  ) !important; /* Orange underline - explicit value */
   background-color: transparent !important; /* No blue background */
 }
 
+:root[data-theme="dark"] .mast .nav a:hover,
+:root[data-theme="dark"] .mast .nav a:focus-visible,
+:root[data-theme="dark"] .mast .nav a.current,
 :root[data-theme="dark"] .nav a:hover,
 :root[data-theme="dark"] .nav a:focus-visible,
 :root[data-theme="dark"] .nav a.current {
-  color: var(--ink);
-  background-color: transparent !important;
+  color: #f0f0f0 !important; /* Light text stays */
+  background-color: rgba(232, 168, 124, 0.1) !important; /* Subtle warm hover, not blue */
 }
 
+:root[data-theme="dark"] .mast .navToggle,
 :root[data-theme="dark"] .navToggle {
-  color: var(--ink);
+  color: #f0f0f0 !important;
 }
 
 /* Mobile nav dropdown in dark mode */
+:root[data-theme="dark"] .mast .nav,
 :root[data-theme="dark"] .nav {
-  background: var(--bg);
-  border-color: rgba(201, 184, 168, 0.2);
-}
-
-:root[data-theme="dark"] .nav a:hover {
-  background-color: rgba(232, 168, 124, 0.1) !important; /* Subtle warm hover */
+  background: var(--bg) !important;
+  border-color: rgba(201, 184, 168, 0.2) !important;
 }
 
 /* Ensure header stays fixed on all screen sizes */
