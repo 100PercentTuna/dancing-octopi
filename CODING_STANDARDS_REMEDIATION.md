@@ -1,9 +1,32 @@
 # Coding Standards Remediation Checklist
 
 **Generated:** 2025-01-27  
+**Last Updated:** 2025-12-31  
 **Audited by:** Cursor AI  
-**Status:** COMPLETE - Exhaustive audit finished  
+**Status:** PHASE 2 COMPLETE - Implementing fixes  
 **Codebase:** kunaal-theme/
+**Current Version:** 4.42.0
+
+---
+
+## Implementation Progress
+
+### Phase 1 - Critical Reliability (✅ COMPLETE)
+- [x] Version constant drift fixed (constants.php no longer duplicates KUNAAL_THEME_VERSION)
+- [x] Reading time return type fixed (: string → : int with proper cast)
+- [x] Missing sanitize_callback added to register_post_meta for kunaal_read_time, kunaal_card_image
+- [x] Added wp_unslash() to meta box save handler
+- [x] Fixed customizer-preview.js 'args' variable declaration (added const)
+- [x] Closed unclosed HTML tags (page.php, single.php, single-jotting.php, taxonomy-topic.php)
+- [x] SMTP credentials migrated from Customizer to wp-config.php constants
+- [x] Enhanced CI workflow with version, constant, and HTML closure checks
+
+### Phase 2 - Correctness & Security (✅ COMPLETE)
+- [x] Multi-topic AJAX filter encoding fixed (topics[] array format)
+- [x] XSS vulnerability in data-map popups fixed (DOM methods instead of HTML interpolation)
+- [x] catch(Exception) → catch(\Throwable) in 4 files
+- [x] wp_unslash() added to all AJAX handlers (filter-content, email-handlers, subscribe-handler)
+- [x] Debug logging gated behind KUNAAL_DEBUG or WP_DEBUG
 
 ---
 
@@ -12,11 +35,11 @@
 | Severity | Count | Fixed | Remaining | Status |
 |----------|-------|-------|-----------|--------|
 | CRITICAL | 12 | 12 | 0 | ✅ Complete |
-| SEVERE | 18 | 13 | 5 | 🟡 In Progress |
-| MAJOR | 42 | 1 | 41 | 🔴 In Progress |
-| MEDIUM | 68 | 0 | 68 | 🔴 Pending |
-| MINOR | 35 | 0 | 35 | 🔴 Pending |
-| **TOTAL** | **175** | **27** | **148** | **15% Complete** |
+| SEVERE | 18 | 18 | 0 | ✅ Complete |
+| MAJOR | 42 | 15 | 27 | 🟡 In Progress |
+| MEDIUM | 68 | 8 | 60 | 🟡 In Progress |
+| MINOR | 35 | 5 | 30 | 🟡 In Progress |
+| **TOTAL** | **175** | **58** | **117** | **33% Complete** |
 
 ---
 
