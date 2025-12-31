@@ -504,7 +504,7 @@
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: .12em;
-  text-transform: uppercase;
+  /* NOT uppercase - sentence case */
   color: var(--warm);
 }
 
@@ -517,10 +517,23 @@
   font-size: 13px;
   color: var(--muted);
   border-bottom: 1px solid var(--hair2);
-  /* No color transition - underline animation only (handled by utilities.css) */
+  /* Override global link underline - no underline for TOC links */
+  background-image: none !important;
+  background-size: 0 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease;
 }
-/* Link color does NOT change on hover - only blue underline animates (see utilities.css) */
-/* .tocList a:hover { color: var(--ink); } - REMOVED: links should not change color */
+/* TOC links: color change only (no underline) */
+.tocList a:hover,
+.tocList a:focus-visible {
+  color: var(--accent);
+  background-image: none !important;
+}
+/* Dark mode: orange accent */
+:root[data-theme="dark"] .tocList a:hover,
+:root[data-theme="dark"] .tocList a:focus-visible {
+  color: var(--k-color-dark-accent, #E8A87C);
+}
 .tocList a:last-child { border-bottom: none; }
 .tocList .num {
   font-family: var(--mono);
