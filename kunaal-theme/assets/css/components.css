@@ -324,6 +324,7 @@ body .card h3 {
 .ledger {
   /* Date column width - adjustable via CSS custom property */
   --dateCol: 130px;
+  --row-height: 90px; /* Fixed row height for consistency */
   
   /* Container styling - clean look, no border */
   background: var(--bg);
@@ -337,6 +338,7 @@ body .card h3 {
   list-style: none;
   margin: 0;
   padding: 0;
+  /* Each li contains exactly one jRow, which controls height */
 }
 
 /* Vertical margin line - subtle gray (not blue) */
@@ -372,7 +374,8 @@ body .card h3 {
   grid-template-columns: var(--dateCol) 1fr;
   gap: var(--space-2);
   padding: 16px var(--space-2);
-  min-height: 80px; /* Consistent minimum height for all items */
+  height: var(--row-height, 90px); /* Fixed height for all rows */
+  box-sizing: border-box;
   /* Light gray ruled lines like notebook paper */
   border-bottom: 1px solid var(--hair);
   transition: opacity 400ms ease, transform 400ms ease;
@@ -382,6 +385,7 @@ body .card h3 {
   color: var(--ink);
   /* Disable underline animation */
   background-image: none !important;
+  overflow: hidden; /* Clip overflow content */
 }
 .jContent {
   min-width: 0; /* Prevent text overflow in grid child */
@@ -482,13 +486,17 @@ body .card h3 {
   transition: color 200ms ease;
 }
 
-/* Jottings hover - only heading turns blue */
-.jRow:hover .jTitle { 
-  color: var(--blue); 
+/* Jottings hover - only heading turns blue
+   Using !important to override WordPress theme.json h3 color */
+.jRow:hover .jTitle,
+.jRow:hover h3.jTitle,
+a.jRow:hover .jTitle,
+a.jRow:hover h3.jTitle { 
+  color: var(--blue) !important; 
 }
 
 @media (max-width: 640px) {
-  .ledger { --dateCol: 70px; }
+  .ledger { --dateCol: 70px; --row-height: 80px; }
   .jRow { padding: 10px 12px; }
   .ledger::before { left: calc(var(--dateCol) + 12px); }
 }

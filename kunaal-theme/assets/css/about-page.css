@@ -895,13 +895,16 @@ a:focus-visible, button:focus-visible {
   margin-top: var(--space-3); /* Space between header and grid */
 }
 
-/* Media items - consistent sizing */
+/* Media items - MUST have identical dimensions for alignment */
 .media-item--book,
 .media-item--digital {
   display: flex;
   flex-direction: column;
-  align-self: stretch; /* Fill row height for alignment */
-  min-height: 0; /* Allow flex shrinking */
+  align-self: stretch;
+  /* Fixed height ensures perfect alignment across columns */
+  height: 220px; /* Fixed height for all media items */
+  width: 100%;
+  max-width: 140px; /* Consistent width */
 }
 
 /* Responsive: stack columns on smaller screens */
@@ -1082,11 +1085,11 @@ a:focus-visible, button:focus-visible {
 }
 .media-item:hover .media-cover::after { transform: scaleY(1); }
 
-/* Book and album covers - same width, different aspect ratios */
+/* Book and album covers - same width (inherited from parent) */
 .media-cover.book,
 .media-cover.album {
   width: 100%;
-  max-width: 140px; /* Consistent max-width for both */
+  /* Width controlled by parent .media-item container */
 }
 .media-cover.book { 
   aspect-ratio: 2/3; 
