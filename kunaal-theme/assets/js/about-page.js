@@ -706,6 +706,22 @@
 
       const tooltip = document.getElementById('mapTooltip');
       
+      // Helper: lookup ISO code from numeric ID (handles string/number type coercion)
+      function getIsoFromId(id) {
+        // TopoJSON may store IDs as strings or numbers - try both
+        const numericId = parseInt(id, 10);
+        return idToIso[numericId] || idToIso[id] || null;
+      }
+      
+      // Helper: check if ISO code is in an array (case-insensitive)
+      function isInArray(iso, arr) {
+        if (!arr || arr.length === 0) return false;
+        const isoUpper = iso.toUpperCase();
+        return arr.some(function(item) {
+          return item && item.toUpperCase() === isoUpper;
+        });
+      }
+      
       window.d3.json('https://unpkg.com/world-atlas@2.0.2/countries-110m.json').then(function (world) {
         const countries = window.topojson.feature(world, world.objects.countries);
 
@@ -715,26 +731,25 @@
           .append('path')
           .attr('d', path)
           .attr('class', function (d) {
-            const iso = idToIso[d.id];
+            const iso = getIsoFromId(d.id);
             if (!iso) {
               return 'country';
             }
-            // Check all arrays (case-insensitive for safety)
-            const isoUpper = iso.toUpperCase();
-            if (current.length > 0 && current.some(function(c) { return c.toUpperCase() === isoUpper; })) {
+            // Check arrays in priority order: current > lived > visited
+            if (isInArray(iso, current)) {
               return 'country current';
             }
-            if (lived.length > 0 && lived.some(function(l) { return l.toUpperCase() === isoUpper; })) {
+            if (isInArray(iso, lived)) {
               return 'country lived';
             }
-            if (visited.length > 0 && visited.some(function(v) { return v.toUpperCase() === isoUpper; })) {
+            if (isInArray(iso, visited)) {
               return 'country visited';
             }
             return 'country';
           })
           .on('mouseenter', function (event, d) {
             if (!tooltip) return;
-            const iso = idToIso[d.id];
+            const iso = getIsoFromId(d.id);
             if (iso && countryNames[iso]) {
               tooltip.textContent = countryNames[iso];
               tooltip.classList.add('visible');
@@ -784,7 +799,7 @@
           // Find the feature for current ISO
           let currentFeature = null;
           for (let i = 0; i < countries.features.length; i++) {
-            const iso = idToIso[countries.features[i].id];
+            const iso = getIsoFromId(countries.features[i].id);
             if (iso && iso.toUpperCase() === currentIso) {
               currentFeature = countries.features[i];
               break;
