@@ -464,7 +464,7 @@
         });
       } catch (e) {
         // Fail silently - pinning is progressive enhancement
-      }
+        }
     });
   }
 
@@ -476,27 +476,27 @@
     
     const words = document.querySelectorAll('[data-marquee]');
     words.forEach(function(el) {
-      const dir = (el.getAttribute('data-dir') || 'left').toLowerCase();
-      const dist = (dir === 'right') ? 120 : -120;
-      const container = el.parentElement || el;
+        const dir = (el.getAttribute('data-dir') || 'left').toLowerCase();
+        const dist = (dir === 'right') ? 120 : -120;
+        const container = el.parentElement || el;
       
-      try {
-        window.gsap.fromTo(el,
-          { x: -dist },
-          {
-            x: dist,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: container,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true
+        try {
+          window.gsap.fromTo(el,
+            { x: -dist },
+            {
+              x: dist,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: container,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+              }
             }
-          }
-        );
-      } catch (e) {
+          );
+        } catch (e) {
         // Fail silently - marquee is progressive enhancement
-      }
+          }
     });
   }
 
@@ -705,7 +705,7 @@
       const path = window.d3.geoPath().projection(projection);
 
       const tooltip = document.getElementById('mapTooltip');
-      
+
       // Helper: lookup ISO code from numeric ID (handles string/number type coercion)
       function getIsoFromId(id) {
         // TopoJSON may store IDs as strings or numbers - try both
@@ -750,8 +750,11 @@
           .on('mouseenter', function (event, d) {
             if (!tooltip) return;
             const iso = getIsoFromId(d.id);
-            if (iso && countryNames[iso]) {
-              tooltip.textContent = countryNames[iso];
+            // Only show tooltip for countries in current, lived, or visited arrays
+            if (iso && (isInArray(iso, current) || isInArray(iso, lived) || isInArray(iso, visited))) {
+              // Use country name from mapping, or fall back to ISO code
+              const displayName = countryNames[iso] || iso;
+              tooltip.textContent = displayName;
               tooltip.classList.add('visible');
               tooltip.setAttribute('aria-hidden', 'false');
             }
