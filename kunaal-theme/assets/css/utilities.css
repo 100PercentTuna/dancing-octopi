@@ -245,6 +245,11 @@
     to { transform: scaleX(1); }
   }
 
+  /* Dark mode: section underline changes from blue to warm/orange */
+  :root[data-theme="dark"] .u-section-underline::after {
+    background: var(--warm, #C9B8A8);
+  }
+
   /* ========================================
      DEPRECATED: .uBlue - Remove after 2025-03-01
      Use .u-underline-double or add element to :where() selector above

@@ -31,6 +31,61 @@
   --warmBorder: rgba(201,184,168,0.12);
 }
 
+/* =============================================
+   DARK MODE - About Page Specific Overrides
+============================================= */
+
+/* Section underline: blue → orange in dark mode */
+:root[data-theme="dark"] .kunaal-about-page .u-section-underline::after {
+  background: var(--warm, #C9B8A8); /* Orange/warm color in dark mode */
+}
+
+/* Media column title: white text, orange underline in dark mode */
+:root[data-theme="dark"] .kunaal-about-page .media-col-title {
+  color: #fff;
+}
+:root[data-theme="dark"] .kunaal-about-page .media-col-title.u-section-underline::after {
+  background: var(--warm, #C9B8A8); /* Orange underline */
+}
+
+/* Say Hello section dark mode */
+:root[data-theme="dark"] .kunaal-about-page .say-hello {
+  border-top-color: rgba(201, 184, 168, 0.2);
+}
+:root[data-theme="dark"] .kunaal-about-page .say-hello-label {
+  color: var(--warmLight, #C9B8A8);
+}
+:root[data-theme="dark"] .kunaal-about-page .say-hello .section-title {
+  color: #fff;
+}
+:root[data-theme="dark"] .kunaal-about-page .say-hello-text a {
+  color: var(--warmLight, rgba(201, 184, 168, 0.9));
+}
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link {
+  border-color: rgba(201, 184, 168, 0.3);
+  color: var(--warmLight, rgba(201, 184, 168, 0.9));
+}
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link:hover {
+  border-color: var(--warm);
+  background: rgba(201, 184, 168, 0.1);
+}
+:root[data-theme="dark"] .kunaal-about-page .say-hello-link svg {
+  fill: var(--warmLight, rgba(201, 184, 168, 0.9));
+}
+
+/* Section title dark mode */
+:root[data-theme="dark"] .kunaal-about-page .section-title {
+  color: #fff;
+}
+
+/* Media title/subtitle dark mode */
+:root[data-theme="dark"] .kunaal-about-page .media-title {
+  color: #fff;
+}
+:root[data-theme="dark"] .kunaal-about-page .media-subtitle {
+  color: var(--muted2, rgba(201, 184, 168, 0.7));
+}
+
 /* Base styles are in style.css - only About-specific overrides here */
 
 /* Ensure all text elements use CSS variables for dark mode compatibility */
@@ -864,25 +919,30 @@ a:focus-visible, button:focus-visible {
    MEDIA SECTION - Two-column layout with aligned rows
 ============================================= */
 .media-section {
-  padding: 3.5rem 2rem;
+  padding: 3.5rem 0; /* Remove horizontal padding - full width */
   padding-top: 2.4rem;
   background: var(--bg);
 }
 .media-section .section-inner {
-  max-width: 1000px;
+  max-width: none; /* Full width */
+  padding: 0;
 }
 
-/* Two-column layout container */
+/* Two-column layout container - equal spacing from edges */
 .media-row-layout {
   display: flex;
-  gap: 160px; /* Wide gap between columns */
+  justify-content: center; /* Center the columns */
   align-items: flex-start;
+  /* Equal spacing: edge | books | gap | digital | edge */
+  padding: 0 var(--media-edge-spacing, 10vw);
+  gap: var(--media-col-gap, 12vw); /* Gap between columns = edge spacing */
 }
 
 /* Each column takes equal width */
 .media-column {
-  flex: 1;
+  flex: 0 1 auto; /* Don't grow, shrink if needed, natural width */
   min-width: 0;
+  max-width: 380px; /* Limit column width */
 }
 
 /* 3-column grid for items within each column */
@@ -913,6 +973,10 @@ a:focus-visible, button:focus-visible {
   .media-row-layout {
     flex-direction: column;
     gap: 2.5rem;
+    padding: 0 var(--space-3); /* Standard padding on mobile */
+  }
+  .media-column {
+    max-width: none; /* Full width on mobile */
   }
   .media-column--digital {
     margin-top: 0;
