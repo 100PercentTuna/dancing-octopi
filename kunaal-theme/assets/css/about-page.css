@@ -875,7 +875,7 @@ a:focus-visible, button:focus-visible {
 /* Two-column layout container */
 .media-row-layout {
   display: flex;
-  gap: 60px;
+  gap: 80px; /* Increased gap between columns */
   align-items: flex-start;
 }
 
@@ -895,16 +895,18 @@ a:focus-visible, button:focus-visible {
   margin-top: var(--space-3); /* Space between header and grid */
 }
 
-/* Media items - MUST have identical dimensions for alignment */
+/* Media items - MUST have identical dimensions for alignment
+   Height based on book (the taller variant due to 2:3 cover aspect ratio) */
 .media-item--book,
 .media-item--digital {
   display: flex;
   flex-direction: column;
-  align-self: stretch;
-  /* Fixed height ensures perfect alignment across columns */
-  height: 220px; /* Fixed height for all media items */
+  align-self: start; /* Align content to top */
+  /* FIXED height matching book item height (393.55px rounded) */
+  height: 395px;
   width: 100%;
   max-width: 140px; /* Consistent width */
+  box-sizing: border-box;
 }
 
 /* Responsive: stack columns on smaller screens */
