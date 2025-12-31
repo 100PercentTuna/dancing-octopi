@@ -98,7 +98,7 @@
 
 /* Hero photo accent - bright orange in dark mode */
 :root[data-theme="dark"] .kunaal-about-page .hero-photo.has-accent::before {
-  border-color: var(--k-color-dark-accent, #E8A87C) transparent transparent transparent;
+  background: var(--k-color-dark-accent, #E8A87C) !important;
 }
 
 /* Base styles are in style.css - only About-specific overrides here */
@@ -191,6 +191,10 @@ body.js:not(.gsap-ready) [data-reveal] {
   user-select:none;
   white-space: nowrap;
   z-index: 0;
+}
+/* Dark mode: section background word needs to be visible on dark bg */
+:root[data-theme="dark"] .section-bgword {
+  color: rgba(240,240,240,0.08); /* Light text at low opacity for subtle effect */
 }
 .section-inner > * { position: relative; z-index: 1; }
 
@@ -448,28 +452,28 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero-photo.has-accent {
   overflow: visible !important; /* REQUIRED: dog-ear extends outside tile bounds */
   z-index: 2; /* Above other tiles in the grid */
-  position: relative;
+  position: relative !important;
   isolation: isolate; /* Create stacking context for the pseudo-element */
 }
 
 .kunaal-about-page .hero-photo.has-accent::before {
-  content: "";
-  position: absolute;
-  top: 0; 
-  left: 0;
-  /* Fixed size for reliability across all screen sizes */
-  width: 0;
-  height: 0;
-  /* CSS triangle using borders - more reliable than clip-path */
-  border-style: solid;
-  border-width: 32px 32px 0 0;
-  border-color: var(--blue) transparent transparent transparent;
-  z-index: 9999; /* Very high z-index to ensure visibility */
-  pointer-events: none;
-  /* Ensure visibility */
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important; 
+  left: 0 !important;
+  /* Fixed size - using solid dimensions for reliability */
+  width: 40px !important;
+  height: 40px !important;
+  /* CSS triangle using clip-path (more explicit than border trick) */
+  background: var(--blue) !important;
+  clip-path: polygon(0 0, 100% 0, 0 100%) !important;
+  z-index: 9999 !important; /* Very high z-index to ensure visibility */
+  pointer-events: none !important;
+  /* Force visibility */
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
+  transform: none !important;
 }
 
 /* Hero text spans rows, in column 5 */
@@ -712,9 +716,10 @@ a:focus-visible, button:focus-visible {
     transform: translateY(0);
   }
   
-  /* Mobile: Smaller dog-ear accent - maintain border triangle approach */
+  /* Mobile: Smaller dog-ear accent */
   .kunaal-about-page .hero-photo.has-accent::before {
-    border-width: 20px 20px 0 0; /* Smaller on mobile */
+    width: 28px !important;
+    height: 28px !important;
   }
 }
 

@@ -398,12 +398,25 @@
 :root[data-theme="dark"] .contact-social-link {
     border-color: var(--hair);
     background: var(--bg);
-    color: var(--muted);
+    color: #f0f0f0 !important; /* Light text in dark mode */
 }
 
 :root[data-theme="dark"] .contact-social-link:hover {
     border-color: var(--blue);
     background: var(--blueTint);
+    color: var(--blue) !important;
+}
+
+/* Dark mode: contact title text should be light */
+:root[data-theme="dark"] .contact-title,
+:root[data-theme="dark"] h1.contact-title,
+:root[data-theme="dark"] .contact-title-is-visible,
+:root[data-theme="dark"] h1.contact-title-is-visible {
+    color: #f0f0f0 !important;
+}
+
+:root[data-theme="dark"] .contact-intro {
+    color: rgba(240, 240, 240, 0.75);
 }
 
 /* Scroll reveal animations */

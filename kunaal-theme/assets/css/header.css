@@ -44,12 +44,17 @@
 
 :root[data-theme="dark"] .mast .nav a:hover,
 :root[data-theme="dark"] .mast .nav a:focus-visible,
-:root[data-theme="dark"] .mast .nav a.current,
 :root[data-theme="dark"] .nav a:hover,
-:root[data-theme="dark"] .nav a:focus-visible,
-:root[data-theme="dark"] .nav a.current {
+:root[data-theme="dark"] .nav a:focus-visible {
   color: #f0f0f0 !important; /* Light text stays */
   background-color: rgba(232, 168, 124, 0.1) !important; /* Subtle warm hover, not blue */
+}
+
+/* Current nav item - no background, just underline stays visible */
+:root[data-theme="dark"] .mast .nav a.current,
+:root[data-theme="dark"] .nav a.current {
+  color: #f0f0f0 !important;
+  background-color: transparent !important; /* NO background for current item */
 }
 
 :root[data-theme="dark"] .mast .navToggle,
