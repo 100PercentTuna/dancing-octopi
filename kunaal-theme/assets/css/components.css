@@ -372,6 +372,7 @@ body .card h3 {
   grid-template-columns: var(--dateCol) 1fr;
   gap: var(--space-2);
   padding: 16px var(--space-2);
+  min-height: 80px; /* Consistent minimum height for all items */
   /* Light gray ruled lines like notebook paper */
   border-bottom: 1px solid var(--hair);
   transition: opacity 400ms ease, transform 400ms ease;
@@ -481,11 +482,8 @@ body .card h3 {
   transition: color 200ms ease;
 }
 
-/* Jottings hover - text turns blue, no underline */
-.jRow:hover .jTitle,
-.jRow:hover .jText,
-.jRow:hover .jTags,
-.jRow:hover .jDate { 
+/* Jottings hover - only heading turns blue */
+.jRow:hover .jTitle { 
   color: var(--blue); 
 }
 
