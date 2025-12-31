@@ -39,19 +39,31 @@ Typical edits include:
 
 Shared hosting often fails to deliver mail reliably via default `wp_mail()`.
 
-This theme supports SMTP configuration via:
+This theme supports SMTP configuration via a combination of:
+1. **Secrets** in `wp-config.php` (credentials - never stored in database)
+2. **Settings** in Customizer (toggle + display names)
+
+**Step 1: Add credentials to wp-config.php**
+
+```php
+// SMTP Credentials (add before "That's all, stop editing!")
+define('KUNAAL_SMTP_HOST', 'smtp.example.com');
+define('KUNAAL_SMTP_PORT', 587);
+define('KUNAAL_SMTP_USER', 'your-username');
+define('KUNAAL_SMTP_PASS', 'your-password');
+define('KUNAAL_SMTP_SECURE', 'tls'); // 'tls', 'ssl', or ''
+```
+
+**Step 2: Enable in Customizer**
 
 - Appearance → Customize → **Email Delivery (SMTP)**
+- Enable SMTP toggle
+- Set From Email / From Name (optional display settings)
 
 Recommended free SMTP provider:
 - **Brevo** (free tier typically covers personal-site volumes)
 
-Configuration steps:
-- Enable SMTP
-- Set Host / Port / Encryption / Username / Password (provider credentials)
-- Set From Email / From Name
-
-Once SMTP is configured, the Contact page form will deliver reliably without additional plugins.
+Once configured, the Contact page form will deliver reliably without additional plugins.
 
 ### Subscribe button / subscription flow
 

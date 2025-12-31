@@ -3,6 +3,9 @@
  * Prevents duplicate loading of external libraries (D3, Leaflet)
  * Handles CSS loading for libraries that require it (Leaflet)
  * 
+ * Uses memoized Promises - concurrent callers share the same Promise.
+ * No polling loops; libraries load exactly once.
+ * 
  * Configuration: Set window.kunaalLibConfig before this script loads to override URLs:
  * {
  *   d3Src: '/path/to/d3.v7.min.js',
@@ -19,14 +22,37 @@
   const LEAFLET_JS = config.leafletJs || 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
   const LEAFLET_CSS = config.leafletCss || 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
 
-  let leafletLoaded = false;
-  let leafletLoading = false;
-  let leafletCssLoaded = false;
-  let d3Loaded = false;
-  let d3Loading = false;
+  // Memoized promises - concurrent callers share the same promise
+  let d3Promise = null;
+  let leafletPromise = null;
+  let leafletCssPromise = null;
+
+  /**
+   * Load a script and return a Promise
+   * @param {string} src - Script URL
+   * @param {string} globalName - Expected global variable name
+   * @returns {Promise} Resolves with the global object
+   */
+  function loadScript(src, globalName) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => {
+        if (window[globalName]) {
+          resolve(window[globalName]);
+        } else {
+          reject(new Error(globalName + ' loaded but window.' + globalName + ' is not available'));
+        }
+      };
+      script.onerror = () => reject(new Error('Failed to load script: ' + src));
+      document.head.appendChild(script);
+    });
+  }
 
   /**
    * Check if a stylesheet link already exists
+   * @param {string} href - Stylesheet URL (or partial match)
+   * @returns {boolean}
    */
   function stylesheetExists(href) {
     const links = document.querySelectorAll('link[rel="stylesheet"]');
@@ -39,7 +65,9 @@
   }
 
   /**
-   * Load a CSS file
+   * Load a CSS file and return a Promise
+   * @param {string} href - Stylesheet URL
+   * @returns {Promise}
    */
   function loadCSS(href) {
     if (stylesheetExists(href)) {
@@ -59,120 +87,49 @@
   window.kunaalLibLoader = {
     /**
      * Load D3.js library
-     * @returns {Promise} Promise that resolves when D3 is loaded
+     * @returns {Promise<object>} Promise that resolves with window.d3
      */
     loadD3: function() {
-      // If D3 already exists globally, resolve immediately and mark as loaded
+      // If D3 already exists globally, return resolved promise
       if (window.d3) {
-        d3Loaded = true;
         return Promise.resolve(window.d3);
       }
       
-      // If already marked as loaded, resolve with existing instance
-      if (d3Loaded) {
-        return Promise.resolve(window.d3);
+      // Return memoized promise - concurrent callers share the same one
+      if (!d3Promise) {
+        d3Promise = loadScript(D3_SRC, 'd3');
       }
       
-      // Wait if currently loading (shared Promise per library)
-      if (d3Loading) {
-        return new Promise(resolve => {
-          const checkInterval = setInterval(() => {
-            if (d3Loaded && window.d3) {
-              clearInterval(checkInterval);
-              resolve(window.d3);
-            }
-          }, 100);
-        });
-      }
-
-      d3Loading = true;
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = D3_SRC;
-        script.onload = () => {
-          d3Loaded = true;
-          d3Loading = false;
-          if (window.d3) {
-            resolve(window.d3);
-          } else {
-            reject(new Error('D3.js loaded but window.d3 is not available'));
-          }
-        };
-        script.onerror = () => {
-          d3Loading = false;
-          reject(new Error('Failed to load D3.js from ' + D3_SRC));
-        };
-        document.head.appendChild(script);
-      });
+      return d3Promise;
     },
 
     /**
      * Load Leaflet.js library and CSS
-     * @returns {Promise} Promise that resolves when Leaflet is loaded
+     * @returns {Promise<object>} Promise that resolves with window.L
      */
     loadLeaflet: function() {
-      // If Leaflet already exists globally, resolve immediately and mark as loaded
+      // If Leaflet already exists globally, ensure CSS is loaded
       if (window.L) {
-        leafletLoaded = true;
-        // Ensure CSS is loaded if library exists but CSS wasn't tracked
-        if (!leafletCssLoaded) {
-          return loadCSS(LEAFLET_CSS)
-            .then(() => {
-              leafletCssLoaded = true;
-              return Promise.resolve(window.L);
-            })
-            .catch(() => Promise.resolve(window.L)); // Resolve even if CSS fails
-        }
-        return Promise.resolve(window.L);
-      }
-      
-      // If already marked as loaded, resolve with existing instance
-      if (leafletLoaded) {
-        return Promise.resolve(window.L);
-      }
-      
-      // Wait if currently loading (shared Promise per library)
-      if (leafletLoading) {
-        return new Promise(resolve => {
-          const checkInterval = setInterval(() => {
-            if (leafletLoaded && window.L) {
-              clearInterval(checkInterval);
-              resolve(window.L);
-            }
-          }, 100);
-        });
-      }
-
-      leafletLoading = true;
-      
-      // Load CSS first, then JS (ensure CSS loads exactly once)
-      return loadCSS(LEAFLET_CSS)
-        .then(() => {
-          leafletCssLoaded = true;
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = LEAFLET_JS;
-            script.onload = () => {
-              leafletLoaded = true;
-              leafletLoading = false;
-              if (window.L) {
-                resolve(window.L);
-              } else {
-                reject(new Error('Leaflet.js loaded but window.L is not available'));
-              }
-            };
-            script.onerror = () => {
-              leafletLoading = false;
-              reject(new Error('Failed to load Leaflet.js from ' + LEAFLET_JS));
-            };
-            document.head.appendChild(script);
+        if (!leafletCssPromise) {
+          leafletCssPromise = loadCSS(LEAFLET_CSS).catch(() => {
+            // Resolve even if CSS fails - library is still usable
           });
-        })
-        .catch((error) => {
-          leafletLoading = false;
-          throw error;
-        });
+        }
+        return leafletCssPromise.then(() => window.L);
+      }
+      
+      // Return memoized promise - concurrent callers share the same one
+      if (!leafletPromise) {
+        // Load CSS first, then JS
+        leafletCssPromise = loadCSS(LEAFLET_CSS);
+        leafletPromise = leafletCssPromise
+          .catch(() => {
+            // Continue even if CSS fails
+          })
+          .then(() => loadScript(LEAFLET_JS, 'L'));
+      }
+      
+      return leafletPromise;
     }
   };
 })();
-

@@ -18,6 +18,9 @@ if (!defined('ABSPATH')) {
  * Theme Setup
  */
 function kunaal_theme_setup() {
+    // Load text domain for translations
+    load_theme_textdomain('kunaal-theme', get_template_directory() . '/languages');
+    
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
     add_theme_support('html5', array('search-form', 'gallery', 'caption', 'style', 'script'));

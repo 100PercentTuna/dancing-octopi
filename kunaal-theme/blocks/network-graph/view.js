@@ -224,9 +224,11 @@
     });
 
     function positionTooltip(tooltip, event) {
+      // Use clientX/clientY with getBoundingClientRect for consistent viewport-relative positioning
+      // This ensures tooltip tracks cursor correctly even when the page is scrolled
       const rect = block.getBoundingClientRect();
-      tooltip.style.left = (event.pageX - rect.left + 10) + 'px';
-      tooltip.style.top = (event.pageY - rect.top + 10) + 'px';
+      tooltip.style.left = (event.clientX - rect.left + 10) + 'px';
+      tooltip.style.top = (event.clientY - rect.top + 10) + 'px';
     }
 
     // Zoom controls - use DOM element, not D3 selection

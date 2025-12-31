@@ -273,6 +273,8 @@ function kunaal_home_recent_ids(string $post_type, int $limit = 6): array {
 /**
  * Get essay card data
  * 
+ * Returns raw (unescaped) data. Escaping is handled by the template component.
+ * 
  * @param int $post_id Post ID
  * @return array|false Card data array or false if invalid
  */
@@ -294,89 +296,39 @@ function kunaal_get_essay_card_data(int $post_id): array|false {
         }
     }
     
+    // Return raw data - escaping handled by template-parts/components/card.php
     return array(
+        'post_id' => $post_id,
         'title' => get_the_title($post_id),
         'permalink' => get_permalink($post_id),
         'date' => get_the_date('Y-m-d', $post_id),
         'date_display' => get_the_date('j F Y', $post_id),
-        'title_attr' => esc_attr(get_the_title($post_id)),
-        'subtitle' => $subtitle,
-        'read_time' => $read_time,
-        'topics' => $topics,
+        'subtitle' => $subtitle ?: '',
+        'read_time' => $read_time ?: '',
+        'topics' => $topics ?: array(),
         'card_image' => $card_image,
         'topic_slugs' => $topic_slugs,
-        'post_id' => $post_id,
     );
 }
 
+/**
+ * Render essay card using canonical component
+ * 
+ * Single source of truth: template-parts/components/card.php
+ * 
+ * @param int|WP_Post $post Post ID or post object
+ * @return void Outputs HTML
+ */
 function kunaal_render_essay_card(int|WP_Post $post): void {
-        $post_id = is_object($post) ? $post->ID : (int) $post;
-        $data = kunaal_get_essay_card_data($post_id);
-        
-        if (!$data) {
-            return;
-        }
-        
-        // Explicit variable assignment instead of extract()
-        $title = $data['title'] ?? '';
-        $permalink = $data['permalink'] ?? '';
-        $date = $data['date'] ?? '';
-        $date_display = $data['date_display'] ?? '';
-        $subtitle = $data['subtitle'] ?? '';
-        $topics = $data['topics'] ?? [];
-        $topic_slugs = $data['topic_slugs'] ?? [];
-        $card_image = $data['card_image'] ?? '';
-        $title_attr = $data['title_attr'] ?? '';
-        $read_time = $data['read_time'] ?? '';
-        ?>
-        <li>
-        <a href="<?php echo esc_url($permalink); ?>" class="card"
-           data-title="<?php echo esc_attr($title); ?>"
-           data-dek="<?php echo esc_attr($subtitle); ?>"
-           data-date="<?php echo esc_attr($date); ?>"
-           data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
-          <div class="media" data-parallax="true">
-            <?php if ($card_image) : ?>
-              <img src="<?php echo esc_url($card_image); ?>" alt="<?php echo esc_attr($title_attr); ?>" loading="lazy" />
-            <?php else : ?>
-              <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect width="400" height="500" fill="url(#grad<?php echo (int) $post_id; ?>)"/>
-                <defs>
-                  <linearGradient id="grad<?php echo (int) $post_id; ?>" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:rgba(30,90,255,0.08)"/>
-                    <stop offset="100%" style="stop-color:rgba(11,18,32,0.02)"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            <?php endif; ?>
-            <div class="scrim"></div>
-          </div>
-          <div class="overlay">
-            <h3 class="tTitle"><?php echo esc_html($title); ?></h3>
-            <div class="details">
-              <p class="meta">
-                <span><?php echo esc_html($date_display); ?></span>
-                <?php if ($read_time) : ?>
-                  <span class="dot"></span>
-                  <span><?php echo esc_html($read_time); ?> min</span>
-                <?php endif; ?>
-              </p>
-              <?php if ($topics && !is_wp_error($topics)) : ?>
-              <p class="metaTags">
-                <?php foreach (array_slice($topics, 0, 2) as $index => $topic) : ?>
-                  <?php if ($index > 0) : ?><span class="dot"></span><?php endif; ?>
-                  <span class="tag">#<?php echo esc_html($topic->name); ?></span>
-                <?php endforeach; ?>
-              </p>
-              <?php endif; ?>
-              <?php if ($subtitle) : ?>
-                <p class="dek"><?php echo esc_html($subtitle); ?></p>
-              <?php endif; ?>
-            </div>
-          </div>
-        </a>
-        </li>
-        <?php
+    $post_id = is_object($post) ? $post->ID : (int) $post;
+    $data = kunaal_get_essay_card_data($post_id);
+    
+    if (!$data) {
+        return;
+    }
+    
+    // Use canonical card component - it handles all escaping
+    get_template_part('template-parts/components/card', null, $data);
 }
 
 /**

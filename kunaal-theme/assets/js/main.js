@@ -74,9 +74,9 @@
   let ticking = false;
   let cachedDocH = 1;
   let selectedTopics = new Set();
-  let currentPage = 1;
-  let isLoading = false;
-  let hasMore = true;
+  let currentPage = { essay: 1, jotting: 1 };
+  let isLoading = { essay: false, jotting: false };
+  let hasMore = { essay: true, jotting: true };
   let ajaxDisabled = false;
 
   // ========================================
@@ -448,8 +448,11 @@
   }
 
   function triggerFilter() {
-    currentPage = 1;
-    hasMore = true;
+    // Reset pagination for both post types
+    currentPage.essay = 1;
+    currentPage.jotting = 1;
+    hasMore.essay = true;
+    hasMore.jotting = true;
     
     // Determine post type from page
     let postType = 'essay';
@@ -559,8 +562,8 @@
   }
 
   function filterContent(postType, replace = false) {
-    if (isLoading) return;
-    isLoading = true;
+    if (isLoading[postType]) return;
+    isLoading[postType] = true;
     
     if (infiniteLoader) infiniteLoader.classList.remove('hidden');
 
@@ -580,7 +583,7 @@
     topicsArray.forEach(topic => formData.append('topics[]', topic));
     formData.append('sort', sortSelect?.value || 'new');
     formData.append('search', searchInput?.value || '');
-    formData.append('page', currentPage);
+    formData.append('page', currentPage[postType]);
     formData.append('per_page', 12);
 
     fetch(window.kunaalTheme?.ajaxUrl || '/wp-admin/admin-ajax.php', {
@@ -599,8 +602,8 @@
     .then(data => {
       if (data.success) {
         renderPosts(data.data.posts, postType, replace);
-        hasMore = currentPage < data.data.pages;
-        currentPage++;
+        hasMore[postType] = currentPage[postType] < data.data.pages;
+        currentPage[postType]++;
         
         // Update counts on homepage
         if (postType === 'essay') {
@@ -636,11 +639,11 @@
       if (announcer) announcer.textContent = 'Filtering failed. Please refresh the page.';
     })
     .finally(() => {
-      isLoading = false;
-    if (infiniteLoader) {
-      // If AJAX is disabled (fallback mode), we don't support infinite scroll.
-      infiniteLoader.classList.add('hidden');
-    }
+      isLoading[postType] = false;
+      if (infiniteLoader) {
+        // If AJAX is disabled (fallback mode), we don't support infinite scroll.
+        infiniteLoader.classList.add('hidden');
+      }
     });
   }
 
@@ -757,8 +760,8 @@
     if (!infiniteLoader) return;
     
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore && !isLoading) {
-        const postType = essayGrid?.dataset.postType || jotList?.dataset.postType || 'essay';
+      const postType = essayGrid?.dataset.postType || jotList?.dataset.postType || 'essay';
+      if (entries[0].isIntersecting && hasMore[postType] && !isLoading[postType]) {
         filterContent(postType, false);
       }
     }, { rootMargin: '200px' });

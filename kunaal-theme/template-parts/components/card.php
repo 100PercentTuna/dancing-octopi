@@ -41,8 +41,6 @@ $read_time    = $args['read_time'] ?? '';
 if (empty($post_id) || empty($title) || empty($permalink)) {
     return;
 }
-
-$title_attr = esc_attr($title);
 ?>
 <li>
 <a href="<?php echo esc_url($permalink); ?>" class="card"
@@ -52,7 +50,7 @@ $title_attr = esc_attr($title);
    data-tags="<?php echo esc_attr(implode(',', $topic_slugs)); ?>">
   <div class="media" data-parallax="true">
     <?php if ($card_image) : ?>
-      <img src="<?php echo esc_url($card_image); ?>" alt="<?php echo $title_attr; ?>" loading="lazy" />
+      <img src="<?php echo esc_url($card_image); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" />
     <?php else : ?>
       <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="400" height="500" fill="url(#grad<?php echo (int) $post_id; ?>)"/>
