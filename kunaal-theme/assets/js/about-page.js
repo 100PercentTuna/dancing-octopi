@@ -151,14 +151,24 @@
       // #endregion
       
       const tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
+      
+      // CRITICAL: Immediately set .hero-photo.has-accent to opacity:1
+      // This prevents the dog-ear (::before) from being invisible
+      // CSS opacity inheritance means ::before can't override parent opacity
+      const accentPhoto = document.querySelector('.hero-photo.has-accent');
+      if (accentPhoto) {
+        accentPhoto.style.opacity = '1';
+        window.gsap.set(accentPhoto, { opacity: 1 });
+      }
+      
+      // Animate all hero photos EXCEPT .has-accent (which must stay visible for dog-ear)
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
-        .from('.hero-photo', { 
+        .from('.hero-photo:not(.has-accent)', { 
           opacity: 0, 
           duration: 0.6, 
           stagger: 0.06,
           onComplete: function() {
             // Ensure all hero photos are fully visible after animation
-            // This fixes the dog-ear (::before) visibility issue
             document.querySelectorAll('.hero-photo').forEach(function(photo) {
               photo.style.opacity = '1';
               window.gsap.set(photo, { opacity: 1, clearProps: 'opacity' });

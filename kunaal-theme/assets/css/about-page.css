@@ -996,9 +996,11 @@ a:focus-visible, button:focus-visible {
 .media-items-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 1fr; /* Equal height rows */
+  /* Don't use 1fr rows - JS handles height sync, grid rows should be auto */
+  grid-auto-rows: auto;
   gap: 1.25rem 1rem;
-  align-items: stretch; /* Items stretch to fill row height */
+  /* Align items to TOP of each row - prevents items from being pushed down */
+  align-items: start;
   margin-top: var(--space-3); /* Space between header and grid */
 }
 
@@ -1017,11 +1019,15 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* CRITICAL: Align content to TOP, not center/stretch */
+  align-items: stretch; /* Children take full width */
   align-self: start; /* Align item to top of grid cell */
   /* Height set dynamically by JS syncMediaItemHeights() */
   width: 100%;
   max-width: 140px; /* Consistent width */
   box-sizing: border-box;
+  /* Explicitly remove any transforms that might affect position */
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* Digital items: min-height prevents layout shift before JS syncs heights
