@@ -8,7 +8,7 @@
 get_header();
 ?>
 
-<main class="article container">
+<main id="main" class="article container">
   <?php while (have_posts()) : the_post(); ?>
     <article>
       <header class="articleHeader reveal">

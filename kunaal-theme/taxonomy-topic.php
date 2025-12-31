@@ -9,7 +9,7 @@ get_header();
 $term = get_queried_object();
 ?>
 
-<div class="container">
+<main id="main" class="container">
   <header class="archiveHeader">
     <h1 class="archiveTitle">#<?php echo esc_html($term->name); ?></h1>
     <?php if ($term->description) : ?>
@@ -30,6 +30,6 @@ $term = get_queried_object();
   <?php else : ?>
     <p class="no-posts">No posts found.</p>
   <?php endif; ?>
-</div>
+</main>
 
 <?php get_footer(); ?>

@@ -104,7 +104,7 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
 ?>
 
 
-<main class="article container">
+<main id="main" class="article container">
   <?php while (have_posts()) : the_post(); ?>
     <?php
     $subtitle = get_post_meta(get_the_ID(), 'kunaal_subtitle', true);

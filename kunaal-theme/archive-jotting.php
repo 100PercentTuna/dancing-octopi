@@ -12,7 +12,7 @@ $total_jottings = wp_count_posts('jotting')->publish;
 $all_topics = kunaal_get_all_topics();
 ?>
 
-<main class="container" id="top">
+<main id="main" class="container">
   
   <!-- Toolbar: Filter controls ABOVE section header -->
   <?php
