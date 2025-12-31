@@ -634,20 +634,74 @@
       
       try {
 
-      // Country name mapping (expandable)
+      // Country name mapping - comprehensive list matching idToIso entries
       const countryNames = {
-        'USA': 'United States', 'IND': 'India', 'SGP': 'Singapore', 'PHL': 'Philippines',
-        'THA': 'Thailand', 'ZAF': 'South Africa', 'GBR': 'United Kingdom', 'CHE': 'Switzerland',
-        'CAN': 'Canada', 'MYS': 'Malaysia', 'MDV': 'Maldives', 'BRA': 'Brazil', 'MEX': 'Mexico',
-        'CHN': 'China', 'JPN': 'Japan', 'KOR': 'South Korea', 'AUS': 'Australia', 'NZL': 'New Zealand',
-        'FRA': 'France', 'DEU': 'Germany', 'ITA': 'Italy', 'ESP': 'Spain', 'NLD': 'Netherlands',
-        'BEL': 'Belgium', 'AUT': 'Austria', 'SWE': 'Sweden', 'NOR': 'Norway', 'DNK': 'Denmark',
-        'FIN': 'Finland', 'POL': 'Poland', 'CZE': 'Czech Republic', 'HUN': 'Hungary', 'GRC': 'Greece',
-        'TUR': 'Turkey', 'RUS': 'Russia', 'ISR': 'Israel', 'ARE': 'United Arab Emirates', 'SAU': 'Saudi Arabia',
-        'EGY': 'Egypt', 'KEN': 'Kenya', 'TZA': 'Tanzania', 'ZWE': 'Zimbabwe', 'BWA': 'Botswana',
-        'ARG': 'Argentina', 'CHL': 'Chile', 'PER': 'Peru', 'COL': 'Colombia', 'VEN': 'Venezuela',
-        'ECU': 'Ecuador', 'URY': 'Uruguay', 'PRY': 'Paraguay', 'BOL': 'Bolivia', 'CRI': 'Costa Rica',
-        'PAN': 'Panama', 'GTM': 'Guatemala', 'HND': 'Honduras', 'NIC': 'Nicaragua', 'SLV': 'El Salvador'
+        // North America
+        'USA': 'United States', 'CAN': 'Canada', 'MEX': 'Mexico',
+        // Central America & Caribbean
+        'GTM': 'Guatemala', 'BLZ': 'Belize', 'HND': 'Honduras', 'SLV': 'El Salvador',
+        'NIC': 'Nicaragua', 'CRI': 'Costa Rica', 'PAN': 'Panama', 'CUB': 'Cuba',
+        'JAM': 'Jamaica', 'HTI': 'Haiti', 'DOM': 'Dominican Republic', 'PRI': 'Puerto Rico',
+        'BHS': 'Bahamas', 'BRB': 'Barbados', 'TTO': 'Trinidad and Tobago', 'ATG': 'Antigua and Barbuda',
+        'GRD': 'Grenada', 'LCA': 'Saint Lucia', 'VCT': 'Saint Vincent', 'KNA': 'Saint Kitts and Nevis',
+        'DMA': 'Dominica',
+        // South America
+        'BRA': 'Brazil', 'ARG': 'Argentina', 'CHL': 'Chile', 'PER': 'Peru', 'COL': 'Colombia',
+        'VEN': 'Venezuela', 'ECU': 'Ecuador', 'BOL': 'Bolivia', 'PRY': 'Paraguay', 'URY': 'Uruguay',
+        'GUY': 'Guyana', 'SUR': 'Suriname', 'GUF': 'French Guiana',
+        // Western Europe
+        'GBR': 'United Kingdom', 'FRA': 'France', 'DEU': 'Germany', 'ITA': 'Italy', 'ESP': 'Spain',
+        'PRT': 'Portugal', 'NLD': 'Netherlands', 'BEL': 'Belgium', 'CHE': 'Switzerland', 'AUT': 'Austria',
+        'IRL': 'Ireland', 'LUX': 'Luxembourg', 'MCO': 'Monaco', 'AND': 'Andorra', 'LIE': 'Liechtenstein',
+        'SMR': 'San Marino', 'VAT': 'Vatican City', 'MLT': 'Malta',
+        // Northern Europe
+        'SWE': 'Sweden', 'NOR': 'Norway', 'DNK': 'Denmark', 'FIN': 'Finland', 'ISL': 'Iceland',
+        'EST': 'Estonia', 'LVA': 'Latvia', 'LTU': 'Lithuania',
+        // Eastern Europe
+        'POL': 'Poland', 'CZE': 'Czech Republic', 'SVK': 'Slovakia', 'HUN': 'Hungary', 'ROU': 'Romania',
+        'BGR': 'Bulgaria', 'UKR': 'Ukraine', 'BLR': 'Belarus', 'MDA': 'Moldova', 'RUS': 'Russia',
+        // Balkans
+        'GRC': 'Greece', 'HRV': 'Croatia', 'SVN': 'Slovenia', 'BIH': 'Bosnia and Herzegovina',
+        'SRB': 'Serbia', 'MNE': 'Montenegro', 'MKD': 'North Macedonia', 'ALB': 'Albania', 'XKX': 'Kosovo',
+        // Middle East
+        'TUR': 'Turkey', 'ISR': 'Israel', 'PSE': 'Palestine', 'LBN': 'Lebanon', 'SYR': 'Syria',
+        'JOR': 'Jordan', 'IRQ': 'Iraq', 'IRN': 'Iran', 'SAU': 'Saudi Arabia', 'ARE': 'United Arab Emirates',
+        'QAT': 'Qatar', 'KWT': 'Kuwait', 'BHR': 'Bahrain', 'OMN': 'Oman', 'YEM': 'Yemen', 'CYP': 'Cyprus',
+        // Central Asia
+        'KAZ': 'Kazakhstan', 'UZB': 'Uzbekistan', 'TKM': 'Turkmenistan', 'TJK': 'Tajikistan', 'KGZ': 'Kyrgyzstan',
+        'AFG': 'Afghanistan', 'PAK': 'Pakistan',
+        // South Asia
+        'IND': 'India', 'BGD': 'Bangladesh', 'LKA': 'Sri Lanka', 'NPL': 'Nepal', 'BTN': 'Bhutan', 'MDV': 'Maldives',
+        // Southeast Asia
+        'SGP': 'Singapore', 'MYS': 'Malaysia', 'IDN': 'Indonesia', 'PHL': 'Philippines', 'THA': 'Thailand',
+        'VNM': 'Vietnam', 'MMR': 'Myanmar', 'KHM': 'Cambodia', 'LAO': 'Laos', 'BRN': 'Brunei', 'TLS': 'Timor-Leste',
+        // East Asia
+        'CHN': 'China', 'JPN': 'Japan', 'KOR': 'South Korea', 'PRK': 'North Korea', 'MNG': 'Mongolia',
+        'TWN': 'Taiwan', 'HKG': 'Hong Kong', 'MAC': 'Macau',
+        // Oceania
+        'AUS': 'Australia', 'NZL': 'New Zealand', 'PNG': 'Papua New Guinea', 'FJI': 'Fiji',
+        'SLB': 'Solomon Islands', 'VUT': 'Vanuatu', 'NCL': 'New Caledonia', 'WSM': 'Samoa',
+        'TON': 'Tonga', 'KIR': 'Kiribati', 'FSM': 'Micronesia', 'MHL': 'Marshall Islands', 'PLW': 'Palau',
+        // North Africa
+        'EGY': 'Egypt', 'LBY': 'Libya', 'TUN': 'Tunisia', 'DZA': 'Algeria', 'MAR': 'Morocco', 'ESH': 'Western Sahara',
+        'SDN': 'Sudan', 'SSD': 'South Sudan',
+        // West Africa
+        'NGA': 'Nigeria', 'GHA': 'Ghana', 'CIV': "Côte d'Ivoire", 'SEN': 'Senegal', 'MLI': 'Mali',
+        'BFA': 'Burkina Faso', 'NER': 'Niger', 'GIN': 'Guinea', 'BEN': 'Benin', 'TGO': 'Togo',
+        'SLE': 'Sierra Leone', 'LBR': 'Liberia', 'MRT': 'Mauritania', 'GMB': 'Gambia', 'GNB': 'Guinea-Bissau',
+        'CPV': 'Cape Verde',
+        // Central Africa
+        'CMR': 'Cameroon', 'CAF': 'Central African Republic', 'TCD': 'Chad', 'COG': 'Republic of the Congo',
+        'COD': 'DR Congo', 'GAB': 'Gabon', 'GNQ': 'Equatorial Guinea', 'STP': 'São Tomé and Príncipe',
+        // East Africa
+        'KEN': 'Kenya', 'TZA': 'Tanzania', 'UGA': 'Uganda', 'RWA': 'Rwanda', 'BDI': 'Burundi',
+        'ETH': 'Ethiopia', 'ERI': 'Eritrea', 'DJI': 'Djibouti', 'SOM': 'Somalia', 'MDG': 'Madagascar',
+        'MUS': 'Mauritius', 'SYC': 'Seychelles', 'COM': 'Comoros', 'MYT': 'Mayotte', 'REU': 'Réunion',
+        // Southern Africa
+        'ZAF': 'South Africa', 'NAM': 'Namibia', 'BWA': 'Botswana', 'ZWE': 'Zimbabwe', 'ZMB': 'Zambia',
+        'MWI': 'Malawi', 'MOZ': 'Mozambique', 'AGO': 'Angola', 'SWZ': 'Eswatini', 'LSO': 'Lesotho',
+        // Caucasus
+        'GEO': 'Georgia', 'ARM': 'Armenia', 'AZE': 'Azerbaijan'
       };
 
       // ISO numeric (ISO 3166-1 numeric) -> ISO3 mapping

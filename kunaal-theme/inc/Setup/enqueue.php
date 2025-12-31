@@ -82,7 +82,7 @@ function kunaal_enqueue_core_css(): void {
  * Enqueue component CSS modules
  */
 function kunaal_enqueue_component_css(): void {
-    // 6. Components (cards, buttons, panels, footer)
+    // 7. Components (cards, buttons, panels, footer)
     wp_enqueue_style(
         'kunaal-theme-components',
         KUNAAL_THEME_URI . '/assets/css/components.css',
@@ -90,7 +90,7 @@ function kunaal_enqueue_component_css(): void {
         kunaal_asset_version('assets/css/components.css')
     );
 
-    // 7. Utilities (progress bar, lazy loading, animations)
+    // 8. Utilities (progress bar, lazy loading, animations)
     wp_enqueue_style(
         'kunaal-theme-utilities',
         KUNAAL_THEME_URI . '/assets/css/utilities.css',
@@ -98,7 +98,7 @@ function kunaal_enqueue_component_css(): void {
         kunaal_asset_version('assets/css/utilities.css')
     );
 
-    // 8. Filters/Toolbar
+    // 9. Filters/Toolbar
     wp_enqueue_style(
         'kunaal-theme-filters',
         KUNAAL_THEME_URI . '/assets/css/filters.css',
@@ -106,7 +106,7 @@ function kunaal_enqueue_component_css(): void {
         kunaal_asset_version('assets/css/filters.css')
     );
 
-    // 9. Sections & Grid
+    // 10. Sections & Grid
     wp_enqueue_style(
         'kunaal-theme-sections',
         KUNAAL_THEME_URI . '/assets/css/sections.css',
@@ -119,7 +119,7 @@ function kunaal_enqueue_component_css(): void {
  * Enqueue page-specific CSS modules
  */
 function kunaal_enqueue_page_css(): void {
-    // 10. Pages (archive, article, prose, page utilities)
+    // 11. Pages (archive, article, prose, page utilities)
     wp_enqueue_style(
         'kunaal-theme-pages',
         KUNAAL_THEME_URI . '/assets/css/pages.css',
@@ -127,7 +127,7 @@ function kunaal_enqueue_page_css(): void {
         kunaal_asset_version('assets/css/pages.css')
     );
 
-    // 11. Custom Blocks
+    // 12. Custom Blocks
     wp_enqueue_style(
         'kunaal-theme-blocks',
         KUNAAL_THEME_URI . '/assets/css/blocks.css',
@@ -135,7 +135,7 @@ function kunaal_enqueue_page_css(): void {
         kunaal_asset_version('assets/css/blocks.css')
     );
 
-    // 12. WordPress Core Block Overrides
+    // 13. WordPress Core Block Overrides
     wp_enqueue_style(
         'kunaal-theme-wordpress-blocks',
         KUNAAL_THEME_URI . '/assets/css/wordpress-blocks.css',
@@ -143,7 +143,7 @@ function kunaal_enqueue_page_css(): void {
         kunaal_asset_version('assets/css/wordpress-blocks.css')
     );
 
-    // 13. Motion Primitives
+    // 14. Motion Primitives
     wp_enqueue_style(
         'kunaal-theme-motion',
         KUNAAL_THEME_URI . '/assets/css/motion.css',
@@ -151,7 +151,7 @@ function kunaal_enqueue_page_css(): void {
         kunaal_asset_version('assets/css/motion.css')
     );
 
-    // 14. Compatibility (print, reduced motion, cross-browser)
+    // 15. Compatibility (print, reduced motion, cross-browser)
     wp_enqueue_style(
         'kunaal-theme-compatibility',
         KUNAAL_THEME_URI . '/assets/css/compatibility.css',
@@ -166,7 +166,7 @@ function kunaal_enqueue_page_css(): void {
  * Enqueue main stylesheet and print styles
  */
 function kunaal_enqueue_main_styles(): void {
-    // 16. Main stylesheet (now minimal - only contains theme header and any remaining styles)
+    // 16. Main stylesheet (loads after all modules - only contains theme header)
     wp_enqueue_style(
         'kunaal-theme-style',
         get_stylesheet_uri(),
@@ -254,36 +254,37 @@ function kunaal_enqueue_page_specific_assets(): void {
         }
         
         // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
+        // Bundled locally per architecture standards (assets/vendor/)
         wp_enqueue_script(
             'gsap-core',
-            'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
+            KUNAAL_THEME_URI . '/assets/vendor/gsap.min.js',
             array(),
             '3.12.5',
             true // Load in footer to avoid blocking render
         );
         
-        // GSAP ScrollTrigger Plugin
+        // GSAP ScrollTrigger Plugin - Bundled locally
         wp_enqueue_script(
             'gsap-scrolltrigger',
-            'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js',
+            KUNAAL_THEME_URI . '/assets/vendor/ScrollTrigger.min.js',
             array('gsap-core'),
             '3.12.5',
             true // Load in footer
         );
         
-        // D3.js for world map
+        // D3.js for world map - Bundled locally
         wp_enqueue_script(
             'd3-js',
-            'https://d3js.org/d3.v7.min.js',
+            KUNAAL_THEME_URI . '/assets/vendor/d3.v7.min.js',
             array(),
             '7.0.0',
             true
         );
         
-        // TopoJSON for world map
+        // TopoJSON for world map - Bundled locally
         wp_enqueue_script(
             'topojson-js',
-            'https://unpkg.com/topojson-client@3',
+            KUNAAL_THEME_URI . '/assets/vendor/topojson-client.min.js',
             array('d3-js'),
             '3.0.0',
             true
