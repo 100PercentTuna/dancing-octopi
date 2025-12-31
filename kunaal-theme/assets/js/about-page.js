@@ -686,17 +686,17 @@
         'EGY': 'Egypt', 'LBY': 'Libya', 'TUN': 'Tunisia', 'DZA': 'Algeria', 'MAR': 'Morocco', 'ESH': 'Western Sahara',
         'SDN': 'Sudan', 'SSD': 'South Sudan',
         // West Africa
-        'NGA': 'Nigeria', 'GHA': 'Ghana', 'CIV': "Côte d'Ivoire", 'SEN': 'Senegal', 'MLI': 'Mali',
+        'NGA': 'Nigeria', 'GHA': 'Ghana', 'CIV': 'Ivory Coast', 'SEN': 'Senegal', 'MLI': 'Mali',
         'BFA': 'Burkina Faso', 'NER': 'Niger', 'GIN': 'Guinea', 'BEN': 'Benin', 'TGO': 'Togo',
         'SLE': 'Sierra Leone', 'LBR': 'Liberia', 'MRT': 'Mauritania', 'GMB': 'Gambia', 'GNB': 'Guinea-Bissau',
         'CPV': 'Cape Verde',
         // Central Africa
         'CMR': 'Cameroon', 'CAF': 'Central African Republic', 'TCD': 'Chad', 'COG': 'Republic of the Congo',
-        'COD': 'DR Congo', 'GAB': 'Gabon', 'GNQ': 'Equatorial Guinea', 'STP': 'São Tomé and Príncipe',
+        'COD': 'DR Congo', 'GAB': 'Gabon', 'GNQ': 'Equatorial Guinea', 'STP': 'Sao Tome and Principe',
         // East Africa
         'KEN': 'Kenya', 'TZA': 'Tanzania', 'UGA': 'Uganda', 'RWA': 'Rwanda', 'BDI': 'Burundi',
         'ETH': 'Ethiopia', 'ERI': 'Eritrea', 'DJI': 'Djibouti', 'SOM': 'Somalia', 'MDG': 'Madagascar',
-        'MUS': 'Mauritius', 'SYC': 'Seychelles', 'COM': 'Comoros', 'MYT': 'Mayotte', 'REU': 'Réunion',
+        'MUS': 'Mauritius', 'SYC': 'Seychelles', 'COM': 'Comoros', 'MYT': 'Mayotte', 'REU': 'Reunion',
         // Southern Africa
         'ZAF': 'South Africa', 'NAM': 'Namibia', 'BWA': 'Botswana', 'ZWE': 'Zimbabwe', 'ZMB': 'Zambia',
         'MWI': 'Malawi', 'MOZ': 'Mozambique', 'AGO': 'Angola', 'SWZ': 'Eswatini', 'LSO': 'Lesotho',

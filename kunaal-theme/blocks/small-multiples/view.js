@@ -21,8 +21,11 @@
     const chartWidth = width - (padding * 2);
     const chartHeight = height - (padding * 2);
 
-    ctx.strokeStyle = '#7D6B5D';
-    ctx.fillStyle = '#7D6B5D';
+    // Read chart color from CSS token with fallback
+    const computedStyle = getComputedStyle(document.documentElement);
+    const chartColor = computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D';
+    ctx.strokeStyle = chartColor;
+    ctx.fillStyle = chartColor;
     ctx.lineWidth = 2;
 
     if (type === 'line' || type === 'sparkline') {

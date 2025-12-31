@@ -1022,23 +1022,37 @@ a:focus-visible, button:focus-visible {
   padding: 0;
 }
 
-/* Two-column flexbox layout */
+/* =============================================
+   UNIFIED GRID LAYOUT
+   Uses CSS Grid with display:contents to achieve
+   cross-column row alignment between books and digital items.
+   
+   Grid structure: 7 columns
+   - Columns 1-3: Books (3 items per row)
+   - Column 4: Gap
+   - Columns 5-7: Digital (3 items per row)
+   
+   Row alignment is automatic because both sections
+   share the same grid rows.
+   ============================================= */
+
 .media-row-layout {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(80px, 110px)) minmax(2rem, 8vw) repeat(3, minmax(80px, 110px));
+  grid-auto-rows: auto;
+  align-items: start; /* Top alignment for all items */
   justify-content: center;
-  align-items: flex-start; /* Top alignment for columns */
-  padding: 0 max(2rem, 8vw); /* Responsive edge spacing */
-  gap: max(2rem, 8vw); /* Gap matches edge spacing */
+  padding: 0 max(2rem, 8vw);
+  gap: 1.25rem 0.75rem;
+  row-gap: 1.25rem;
 }
 
-/* Each column */
+/* Columns use display:contents to flatten into parent grid */
 .media-column {
-  flex: 0 0 auto; /* Don't grow or shrink */
-  width: min(380px, 42vw); /* Responsive max width */
-  min-width: 0;
+  display: contents;
 }
 
-/* Column header */
+/* Column headers span their respective 3 columns */
 .media-col-header {
   display: flex;
   align-items: flex-end;
@@ -1047,6 +1061,18 @@ a:focus-visible, button:focus-visible {
   border-bottom: 1px solid rgba(125, 107, 93, 0.35);
   padding-bottom: var(--space-1, 8px);
   margin-bottom: 0;
+}
+
+/* Books header: columns 1-3, row 1 */
+.media-column--books .media-col-header {
+  grid-column: 1 / 4;
+  grid-row: 1;
+}
+
+/* Digital header: columns 5-7, row 1 */
+.media-column--digital .media-col-header {
+  grid-column: 5 / 8;
+  grid-row: 1;
 }
 
 .media-col-title {
@@ -1067,14 +1093,9 @@ a:focus-visible, button:focus-visible {
   transform: translateY(-2px);
 }
 
-/* 3-column grid within each column */
+/* Items grid also uses display:contents */
 .media-items-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: auto;
-  gap: 1.25rem 0.75rem;
-  align-items: start; /* Items align to top of their row */
-  margin-top: var(--space-3, 16px);
+  display: contents;
 }
 
 /* Base media item styling */
@@ -1088,77 +1109,66 @@ a:focus-visible, button:focus-visible {
   justify-content: flex-start;
   width: 100%;
   min-width: 0;
-  align-self: start;
+  align-self: start; /* CRITICAL: Top alignment within grid cell */
 }
 
-/* Book and digital item specific styling
-   Use same width constraint for visual consistency */
-.media-item--book,
+/* Book items: placed in columns 1-3, starting from row 2 */
+.media-item--book {
+  /* Grid column is set by natural flow within display:contents */
+}
+
+/* Digital items: placed in columns 5-7, starting from row 2 */
 .media-item--digital {
-  max-width: 110px; /* Narrower for tighter grid */
+  /* Grid column is set by natural flow within display:contents */
 }
 
-/* Responsive: stack columns on tablet/mobile */
+/* Responsive: Stack columns on tablet/mobile */
 @media (max-width: 900px) {
   .media-row-layout {
+    /* Single column layout - books above digital */
+    display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.5rem;
     padding: 0 var(--space-3, 16px);
+    gap: 2.5rem;
+    max-width: 400px;
+    margin: 0 auto;
   }
   
+  /* Columns become block elements again */
   .media-column {
+    display: block;
     width: 100%;
-    max-width: 400px;
+  }
+  
+  /* Headers reset to block */
+  .media-col-header {
+    margin-bottom: 0;
+  }
+  
+  /* Items grid becomes a regular 3-column grid */
+  .media-items-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem 1rem;
+    margin-top: var(--space-3, 16px);
+  }
+  
+  /* Reset inline grid placement on items */
+  .media-item--book,
+  .media-item--digital {
+    grid-column: auto !important;
+    grid-row: auto !important;
   }
 }
 
 /* Narrower mobile: 2-column grid */
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .media-items-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem 1rem;
   }
-  
-  .media-item--book,
-  .media-item--digital {
-    max-width: 140px;
-  }
 }
-
-.media-col-header{
-  display:flex;
-  align-items:flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  /* CANONICAL: Gray line for section underline (matches sections.css pattern) */
-  border-bottom: 1px solid rgba(125, 107, 93, 0.35);
-  padding-bottom: var(--space-1);
-  margin-bottom: 0;
-}
-.media-col-title{
-  position: relative;
-  font-family: var(--serif);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  margin: 0;
-  font-size: 1.1rem;
-  /* Use canonical u-section-underline - padding-bottom is set in utilities.css */
-  /* Custom ::after removed - uses canonical .u-section-underline::after from utilities.css */
-  /* Canonical positioning (bottom: -1px) works correctly with media-col-header padding */
-}
-.media-col-count{
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.10em;
-  color: var(--muted2);
-  transform: translateY(-2px);
-}
-
-/* Note: Previous "unified grid" approach (.media-grid-combined) was removed.
-   The current two-column layout uses separate grids per column, which is simpler
-   and more maintainable. Row alignment is achieved through consistent item sizing. */
 /* Media cover container */
 .media-cover {
   position: relative;

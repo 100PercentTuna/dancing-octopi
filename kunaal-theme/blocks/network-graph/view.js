@@ -67,7 +67,19 @@
 
     svg.attr('viewBox', `0 0 ${width} ${height}`).selectAll('*').remove();
 
-    const themeColors = ['#7D6B5D', '#B8A99A', '#C9553D', '#8B7355', '#D4C4B5', '#6B5B4F', '#A08B7A'];
+    // Read colors from CSS tokens with fallbacks
+    const computedStyle = getComputedStyle(document.documentElement);
+    const themeColors = [
+      computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D',
+      computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A',
+      computedStyle.getPropertyValue('--chart-accent').trim() || '#C9553D',
+      '#8B7355', // Additional warm shade
+      computedStyle.getPropertyValue('--chart-warm-muted').trim() || '#D4C4B5',
+      '#6B5B4F', // Additional warm shade
+      '#A08B7A'  // Additional warm shade
+    ];
+    const linkColor = computedStyle.getPropertyValue('--chart-gray').trim() || '#999';
+    const nodeStrokeColor = computedStyle.getPropertyValue('--k-color-ink').trim() || '#1A1A1A';
     const sizeMap = { small: 8, medium: 12, large: 16 };
 
     // Color nodes
@@ -99,7 +111,7 @@
       .enter()
       .append('line')
       .attr('class', 'network-edge')
-      .attr('stroke', '#999')
+      .attr('stroke', linkColor)
       .attr('stroke-width', d => Math.sqrt(d.weight || 1) * 2)
       .attr('stroke-opacity', 0.6);
 
@@ -112,7 +124,7 @@
       .attr('class', 'network-node')
       .attr('r', d => sizeMap[d.size] || 12)
       .attr('fill', d => d.color)
-      .attr('stroke', '#1A1A1A')
+      .attr('stroke', nodeStrokeColor)
       .attr('stroke-width', 2)
       .attr('data-id', d => d.id)
       .call(enableDrag ? d3.drag()

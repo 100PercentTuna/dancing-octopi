@@ -60,6 +60,10 @@
     const height = 500;
     const nodeWidth = parseInt(block.dataset.nodeWidth) || 20;
     const nodePadding = parseInt(block.dataset.nodePadding) || 8;
+    
+    // Read colors from CSS tokens with fallbacks
+    const computedStyle = getComputedStyle(document.documentElement);
+    const nodeStrokeColor = computedStyle.getPropertyValue('--k-color-ink').trim() || '#1A1A1A';
 
     // Simple layout for Sankey
     if (type === 'sankey') {
@@ -91,8 +95,15 @@
 
       // Draw links
       const linkColorMode = block.dataset.linkColorMode || 'source';
-      const singleLinkColor = block.dataset.singleLinkColor || '#B8A99A';
-      const themeColors = ['#7D6B5D', '#B8A99A', '#C9553D', '#8B7355', '#D4C4B5'];
+      const defaultLinkColor = computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A';
+      const singleLinkColor = block.dataset.singleLinkColor || defaultLinkColor;
+      const themeColors = [
+        computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D',
+        computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A',
+        computedStyle.getPropertyValue('--chart-accent').trim() || '#C9553D',
+        '#8B7355', // Additional warm shade
+        computedStyle.getPropertyValue('--chart-warm-muted').trim() || '#D4C4B5'
+      ];
 
       links.forEach(link => {
         const source = nodePositions[link.source];
@@ -143,7 +154,7 @@
           .attr('width', pos.width)
           .attr('height', pos.height)
           .attr('fill', nodeColor)
-          .attr('stroke', '#1A1A1A')
+          .attr('stroke', nodeStrokeColor)
           .attr('stroke-width', 1)
           .attr('rx', 3)
           .attr('class', 'flow-node')

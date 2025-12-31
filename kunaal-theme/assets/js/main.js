@@ -5,6 +5,15 @@
 (function() {
   'use strict';
 
+  // ========================================
+  // CONFIGURATION CONSTANTS
+  // ========================================
+  const HEADER_COMPACT_SCROLL_DISTANCE = 120; // Pixels to scroll before header fully compacts
+  const PARALLAX_OFFSET = 20; // Max px offset for parallax effect (-20 to +20)
+  const REVEAL_FAILSAFE_DELAY = 400; // ms before showing content if observers fail
+  const SEARCH_DEBOUNCE_DELAY = 300; // ms delay for search input debounce
+  const RESIZE_DEBOUNCE_DELAY = 150; // ms delay for resize event debounce
+
   // Only enable "hide until revealed" animations once this script is actually running.
   // If this JS fails to load/parse on a client, we want server-rendered content visible.
   document.documentElement.classList.add('js-ready');
@@ -151,8 +160,8 @@
   }
 
   function updateScrollEffects(y) {
-    // Header compaction (0 to 1 over 120px scroll)
-    const p = Math.min(y / 120, 1);
+    // Header compaction (0 to 1 over scroll distance)
+    const p = Math.min(y / HEADER_COMPACT_SCROLL_DISTANCE, 1);
     if (document.body) {
       document.body.style.setProperty('--p', p.toFixed(4));
     }
@@ -214,8 +223,8 @@
       const mid = (r.top + r.bottom) / 2;
       // Normalized position from -1 (top of screen) to 1 (bottom of screen)
       const t = (mid / vh) * 2 - 1;
-      // Full bidirectional parallax: -20px to +20px
-      const y = t * -20;
+      // Full bidirectional parallax: uses PARALLAX_OFFSET constant
+      const y = t * -PARALLAX_OFFSET;
       img.style.setProperty('--py', y + 'px');
     }
   }
@@ -266,7 +275,7 @@
       document.querySelectorAll('.card, .jRow, .reveal, .reveal-left, .reveal-right, .sectionHead').forEach(el => {
         el.classList.add('revealed');
       });
-    }, 400);
+    }, REVEAL_FAILSAFE_DELAY);
   }
 
   // ========================================
@@ -404,7 +413,7 @@
       let searchTimeout;
       searchInput.addEventListener('input', () => {
         clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(triggerFilter, 300);
+        searchTimeout = setTimeout(triggerFilter, SEARCH_DEBOUNCE_DELAY);
       });
     }
 

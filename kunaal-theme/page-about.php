@@ -263,10 +263,19 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
 ?>
 
 <?php if (($books_show && !empty($books)) || ($digital_show && !empty($digital))) : ?>
-<!-- READING + LISTENING - Two-column layout with aligned rows -->
+<!-- READING + LISTENING - Unified grid with cross-column row alignment -->
 <section class="media-section section">
     <div class="section-inner">
         <div class="media-row-layout">
+            <?php
+            // Calculate grid placement
+            // Books: columns 1-3, Digital: columns 5-7
+            // Both share rows starting from row 2 (row 1 = headers)
+            $books_count = count($books);
+            $digital_count = count($digital);
+            $max_rows = max(ceil($books_count / 3), ceil($digital_count / 3));
+            ?>
+            
             <!-- Books Column -->
             <?php if ($books_show && !empty($books)) : ?>
             <div class="media-column media-column--books">
@@ -274,11 +283,16 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                     <h3 class="media-col-title u-section-underline">On the nightstand</h3>
                 </div>
                 <div class="media-items-grid">
-                    <?php foreach ($books as $book) : ?>
-                    <div class="media-item media-item--book" data-reveal="up">
+                    <?php 
+                    foreach ($books as $index => $book) : 
+                        // Calculate grid position: columns 1-3, rows start at 2
+                        $col = ($index % 3) + 1; // 1, 2, or 3
+                        $row = floor($index / 3) + 2; // Starting from row 2
+                    ?>
+                    <div class="media-item media-item--book" data-reveal="up" style="grid-column: <?php echo esc_attr($col); ?>; grid-row: <?php echo esc_attr($row); ?>;">
                         <div class="media-cover book">
                             <?php if (!empty($book['cover'])) : ?>
-                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
+                            <img alt="<?php echo esc_attr($book['title']); ?> cover" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
                             <?php endif; ?>
                         </div>
                         <div class="media-title"><?php echo esc_html($book['title']); ?></div>
@@ -296,18 +310,22 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                     <h3 class="media-col-title u-section-underline">On repeat</h3>
                 </div>
                 <div class="media-items-grid">
-                    <?php foreach ($digital as $item) :
+                    <?php 
+                    foreach ($digital as $index => $item) :
                         $link_type_label = ucfirst($item['link_type']);
                         if ($item['link_type'] === 'apple') {
                             $link_type_label = 'Apple Podcasts';
                         }
                         $has_link = !empty($item['url']);
                         $tag = $has_link ? 'a' : 'div';
+                        // Calculate grid position: columns 5-7, rows start at 2
+                        $col = ($index % 3) + 5; // 5, 6, or 7
+                        $row = floor($index / 3) + 2; // Starting from row 2
                     ?>
-                    <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up">
+                    <<?php echo $tag; ?> class="media-item media-item--digital" <?php echo $has_link ? 'href="' . esc_url($item['url']) . '" target="_blank" rel="noopener"' : ''; ?> data-reveal="up" style="grid-column: <?php echo esc_attr($col); ?>; grid-row: <?php echo esc_attr($row); ?>;">
                         <div class="media-cover album">
                             <?php if (!empty($item['cover'])) : ?>
-                            <img alt="" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
+                            <img alt="<?php echo esc_attr($item['title']); ?> cover" decoding="async" loading="lazy" src="<?php echo esc_url($item['cover']); ?>"/>
                             <?php endif; ?>
                             <?php if ($has_link) : ?>
                             <span class="play-icon">▶</span>
