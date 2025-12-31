@@ -875,7 +875,7 @@ a:focus-visible, button:focus-visible {
 /* Two-column layout container */
 .media-row-layout {
   display: flex;
-  gap: 80px; /* Increased gap between columns */
+  gap: 160px; /* Wide gap between columns */
   align-items: flex-start;
 }
 
@@ -1163,7 +1163,7 @@ a:focus-visible, button:focus-visible {
   font-size: 8px; /* Matches reference design */
   color: var(--blue);
   display: block;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem; /* Increased spacing from subtitle */
   text-transform: capitalize;
   letter-spacing: 0.02em;
 }

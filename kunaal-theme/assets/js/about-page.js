@@ -1155,28 +1155,57 @@
     if (!bookItems.length || !digitalItems.length) return;
     
     // Reset heights first to get natural height
-    bookItems.forEach(function(item) { item.style.height = ''; });
-    digitalItems.forEach(function(item) { item.style.height = ''; });
+    bookItems.forEach(function(item) { item.style.height = 'auto'; });
+    digitalItems.forEach(function(item) { item.style.height = 'auto'; });
+    
+    // Force reflow to get accurate measurements
+    void document.body.offsetHeight;
     
     // Find the tallest book item (they should all be similar, but get max)
     var maxBookHeight = 0;
     bookItems.forEach(function(item) {
-      var height = item.offsetHeight;
+      var height = item.getBoundingClientRect().height;
       if (height > maxBookHeight) maxBookHeight = height;
     });
     
     // Apply the book height to all items (both book and digital)
     if (maxBookHeight > 0) {
-      var heightPx = maxBookHeight + 'px';
+      var heightPx = Math.ceil(maxBookHeight) + 'px';
       bookItems.forEach(function(item) { item.style.height = heightPx; });
       digitalItems.forEach(function(item) { item.style.height = heightPx; });
     }
   }
 
-  // Run on load and resize
+  // Run on load, after images, and resize
   ready(function() {
     init();
-    syncMediaItemHeights();
+    
+    // Run sync after a short delay to ensure CSS is applied
+    setTimeout(syncMediaItemHeights, 100);
+    
+    // Also run after all images in media section are loaded
+    var mediaImages = document.querySelectorAll('.media-section img');
+    var loadedCount = 0;
+    var totalImages = mediaImages.length;
+    
+    if (totalImages > 0) {
+      mediaImages.forEach(function(img) {
+        if (img.complete) {
+          loadedCount++;
+          if (loadedCount === totalImages) syncMediaItemHeights();
+        } else {
+          img.addEventListener('load', function() {
+            loadedCount++;
+            if (loadedCount === totalImages) syncMediaItemHeights();
+          });
+        }
+      });
+    }
+    
+    // Final sync after window fully loads (fonts, images, etc.)
+    window.addEventListener('load', function() {
+      setTimeout(syncMediaItemHeights, 50);
+    });
     
     // Re-sync on window resize (debounced)
     var resizeTimer;
