@@ -254,10 +254,10 @@ function kunaal_enqueue_page_specific_assets(): void {
         }
         
         // GSAP Core (required for ScrollTrigger) - Load in footer to avoid blocking render
-        // Bundled locally per architecture standards (assets/vendor/)
+        // Bundled locally per architecture standards (assets/libs/)
         wp_enqueue_script(
             'gsap-core',
-            KUNAAL_THEME_URI . '/assets/vendor/gsap.min.js',
+            KUNAAL_THEME_URI . '/assets/libs/gsap.min.js',
             array(),
             '3.12.5',
             true // Load in footer to avoid blocking render
@@ -266,7 +266,7 @@ function kunaal_enqueue_page_specific_assets(): void {
         // GSAP ScrollTrigger Plugin - Bundled locally
         wp_enqueue_script(
             'gsap-scrolltrigger',
-            KUNAAL_THEME_URI . '/assets/vendor/ScrollTrigger.min.js',
+            KUNAAL_THEME_URI . '/assets/libs/ScrollTrigger.min.js',
             array('gsap-core'),
             '3.12.5',
             true // Load in footer
@@ -275,7 +275,7 @@ function kunaal_enqueue_page_specific_assets(): void {
         // D3.js for world map - Bundled locally
         wp_enqueue_script(
             'd3-js',
-            KUNAAL_THEME_URI . '/assets/vendor/d3.v7.min.js',
+            KUNAAL_THEME_URI . '/assets/libs/d3.v7.min.js',
             array(),
             '7.0.0',
             true
@@ -284,7 +284,7 @@ function kunaal_enqueue_page_specific_assets(): void {
         // TopoJSON for world map - Bundled locally
         wp_enqueue_script(
             'topojson-js',
-            KUNAAL_THEME_URI . '/assets/vendor/topojson-client.min.js',
+            KUNAAL_THEME_URI . '/assets/libs/topojson-client.min.js',
             array('d3-js'),
             '3.0.0',
             true
