@@ -1143,6 +1143,47 @@
     }
   }
 
-  ready(init);
+  /**
+   * Sync media item heights - digital items match book items (the taller variant)
+   * Books have 2:3 aspect ratio covers, digital has 1:1, so books are always taller.
+   * This ensures rows align across the two columns.
+   */
+  function syncMediaItemHeights() {
+    var bookItems = document.querySelectorAll('.media-item--book');
+    var digitalItems = document.querySelectorAll('.media-item--digital');
+    
+    if (!bookItems.length || !digitalItems.length) return;
+    
+    // Reset heights first to get natural height
+    bookItems.forEach(function(item) { item.style.height = ''; });
+    digitalItems.forEach(function(item) { item.style.height = ''; });
+    
+    // Find the tallest book item (they should all be similar, but get max)
+    var maxBookHeight = 0;
+    bookItems.forEach(function(item) {
+      var height = item.offsetHeight;
+      if (height > maxBookHeight) maxBookHeight = height;
+    });
+    
+    // Apply the book height to all items (both book and digital)
+    if (maxBookHeight > 0) {
+      var heightPx = maxBookHeight + 'px';
+      bookItems.forEach(function(item) { item.style.height = heightPx; });
+      digitalItems.forEach(function(item) { item.style.height = heightPx; });
+    }
+  }
+
+  // Run on load and resize
+  ready(function() {
+    init();
+    syncMediaItemHeights();
+    
+    // Re-sync on window resize (debounced)
+    var resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(syncMediaItemHeights, 150);
+    });
+  });
 })();
 
