@@ -171,6 +171,24 @@ body.js:not(.gsap-ready) [data-reveal] {
   transform: none;
 }
 
+/* After animation completes, force visibility regardless of GSAP state
+   This uses animation-delay to override stuck states */
+@keyframes forceVisible {
+  to {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* CRITICAL: Hero title must NEVER be invisible/partially visible
+   This overrides any stuck GSAP animation state after 1.5s */
+.hero-title {
+  animation: forceVisible 0.01s 1.5s forwards;
+}
+
+/* Allow GSAP to animate initially by not forcing opacity/transform */
+/* After 1.5s, the forceVisible animation kicks in as a failsafe */
+
 /* Big, faint "gallery label" words drifting behind sections */
 .section-inner {
   position: relative;
@@ -454,6 +472,8 @@ a:focus-visible, button:focus-visible {
   z-index: 2; /* Above other tiles in the grid */
   position: relative !important;
   isolation: isolate; /* Create stacking context for the pseudo-element */
+  /* Force visibility after 1s - prevents GSAP from making dog-ear invisible via parent opacity */
+  animation: forceVisible 0.01s 1s forwards;
 }
 
 .kunaal-about-page .hero-photo.has-accent::before {
@@ -469,11 +489,13 @@ a:focus-visible, button:focus-visible {
   clip-path: polygon(0 0, 100% 0, 0 100%) !important;
   z-index: 9999 !important; /* Very high z-index to ensure visibility */
   pointer-events: none !important;
-  /* Force visibility */
+  /* Force visibility - MUST override any GSAP opacity inheritance from parent */
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
+  /* Force the dog-ear to render independently of parent opacity */
+  animation: forceVisible 0.01s 1s forwards !important;
 }
 
 /* Hero text spans rows, in column 5 */
@@ -994,7 +1016,8 @@ a:focus-visible, button:focus-visible {
 .media-item--digital {
   display: flex;
   flex-direction: column;
-  align-self: start; /* Align content to top */
+  justify-content: flex-start; /* CRITICAL: Align content to TOP, not center/stretch */
+  align-self: start; /* Align item to top of grid cell */
   /* Height set dynamically by JS syncMediaItemHeights() */
   width: 100%;
   max-width: 140px; /* Consistent width */
@@ -1155,6 +1178,7 @@ a:focus-visible, button:focus-visible {
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start; /* Align content to TOP of flex container */
   width: 100%;
   min-width: 0; /* Prevent overflow */
   max-width: 100%;

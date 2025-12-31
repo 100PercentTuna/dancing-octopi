@@ -152,8 +152,34 @@
       
       const tl = window.gsap.timeline({ defaults: { ease: 'power2.out' } });
       tl.from('.nav', { y: -10, opacity: 0, duration: 0.55 })
-        .from('.hero-photo', { opacity: 0, duration: 0.6, stagger: 0.06 }, '<0.05')
-        .from('.hero-text [data-reveal]', { y: 16, opacity: 0, duration: 0.55, stagger: 0.08 }, '<0.15')
+        .from('.hero-photo', { 
+          opacity: 0, 
+          duration: 0.6, 
+          stagger: 0.06,
+          onComplete: function() {
+            // Ensure all hero photos are fully visible after animation
+            // This fixes the dog-ear (::before) visibility issue
+            document.querySelectorAll('.hero-photo').forEach(function(photo) {
+              photo.style.opacity = '1';
+              window.gsap.set(photo, { opacity: 1, clearProps: 'opacity' });
+            });
+          }
+        }, '<0.05')
+        .from('.hero-text [data-reveal]', { 
+          y: 16, 
+          opacity: 0, 
+          duration: 0.55, 
+          stagger: 0.08,
+          onComplete: function() {
+            // Ensure all hero text elements are fully visible after animation
+            // This fixes the "Hi, I'm Kunaal" getting stuck at partial opacity
+            document.querySelectorAll('.hero-text [data-reveal]').forEach(function(el) {
+              el.style.opacity = '1';
+              el.style.transform = 'none';
+              window.gsap.set(el, { opacity: 1, y: 0, clearProps: 'all' });
+            });
+          }
+        }, '<0.15')
         .from('#scrollIndicator', { 
           opacity: 0,
           y: 8,
@@ -253,6 +279,11 @@
         const startPos = 'top 86%';
         const immediateRender = true;
         
+        // Hero text elements should NEVER reverse - once visible, stay visible
+        // This prevents the "stuck at partial opacity" bug
+        const shouldReverse = !isHeroText;
+        const actions = shouldReverse ? 'play none none reverse' : 'play none none none';
+        
         try {
           // Set initial state for animation
           window.gsap.set(el, { opacity: 0, x: x, y: y });
@@ -267,7 +298,7 @@
             scrollTrigger: {
               trigger: el,
               start: startPos,
-              toggleActions: 'play none none reverse',
+              toggleActions: actions,
               refreshPriority: 1,
               invalidateOnRefresh: true, // Recalculate on resize
               onEnter: function() {
@@ -801,7 +832,7 @@
           
           // Fallback coordinates for small countries not in 110m TopoJSON
           // [longitude, latitude] format for D3 geo projection
-          var smallCountryCoords = {
+          const smallCountryCoords = {
             'SGP': [103.8198, 1.3521],   // Singapore
             'MDV': [73.2207, 3.2028],    // Maldives
             'BHR': [50.5577, 26.0667],   // Bahrain
@@ -826,7 +857,7 @@
           
           // Find the feature for current ISO
           let currentFeature = null;
-          for (var i = 0; i < countries.features.length; i++) {
+          for (let i = 0; i < countries.features.length; i++) {
             const iso = idToIso[countries.features[i].id];
             if (iso && iso.toUpperCase() === currentIso) {
               currentFeature = countries.features[i];
@@ -835,7 +866,7 @@
           }
           
           // Calculate position - use feature centroid or fallback coordinates
-          var px, py;
+          let px, py;
           if (currentFeature) {
             // Use TopoJSON feature centroid
             const centroid = path.centroid(currentFeature);
@@ -1152,12 +1183,12 @@
    * Measures book natural height without disturbing existing layout.
    */
   function syncMediaItemHeights(forceReset) {
-    var bookItems = document.querySelectorAll('.media-item--book');
-    var digitalItems = document.querySelectorAll('.media-item--digital');
+    const bookItems = document.querySelectorAll('.media-item--book');
+    const digitalItems = document.querySelectorAll('.media-item--digital');
     
     if (!bookItems.length || !digitalItems.length) return;
     
-    var maxBookHeight = 0;
+    let maxBookHeight = 0;
     
     if (forceReset) {
       // On resize: reset all heights and remeasure
@@ -1173,20 +1204,20 @@
       
       // Measure natural book heights
       bookItems.forEach(function(item) {
-        var height = item.getBoundingClientRect().height;
+        const height = item.getBoundingClientRect().height;
         if (height > maxBookHeight) maxBookHeight = height;
       });
     } else {
       // Initial load: measure without disturbing layout
       // Use a hidden clone to measure natural height
-      var firstBook = bookItems[0];
+      const firstBook = bookItems[0];
       if (!firstBook) return;
       
       // Check if heights are already set (from previous run or inline styles)
-      var existingHeight = firstBook.style.height;
+      const existingHeight = firstBook.style.height;
       if (existingHeight && existingHeight !== 'auto' && existingHeight !== '') {
         // Heights already set, just verify digital items have same height
-        var parsedHeight = parseFloat(existingHeight);
+        const parsedHeight = parseFloat(existingHeight);
         if (parsedHeight > 0) {
           digitalItems.forEach(function(item) {
             if (item.style.height !== existingHeight) {
@@ -1199,14 +1230,14 @@
       
       // Measure natural book heights (no inline heights set yet)
       bookItems.forEach(function(item) {
-        var height = item.getBoundingClientRect().height;
+        const height = item.getBoundingClientRect().height;
         if (height > maxBookHeight) maxBookHeight = height;
       });
     }
     
     // Apply the book height to all items immediately
     if (maxBookHeight > 0) {
-      var heightPx = Math.ceil(maxBookHeight) + 'px';
+      const heightPx = Math.ceil(maxBookHeight) + 'px';
       bookItems.forEach(function(item) { 
         item.style.setProperty('height', heightPx, 'important');
       });
@@ -1224,9 +1255,9 @@
     syncMediaItemHeights(false);
     
     // Also run after all images in media section are loaded
-    var mediaImages = document.querySelectorAll('.media-section img');
-    var loadedCount = 0;
-    var totalImages = mediaImages.length;
+    const mediaImages = document.querySelectorAll('.media-section img');
+    let loadedCount = 0;
+    const totalImages = mediaImages.length;
     
     if (totalImages > 0) {
       mediaImages.forEach(function(img) {
@@ -1248,7 +1279,7 @@
     });
     
     // Re-sync on window resize (debounced) - force reset on resize
-    var resizeTimer;
+    let resizeTimer;
     window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function() {
