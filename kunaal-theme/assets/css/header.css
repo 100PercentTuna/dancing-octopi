@@ -21,29 +21,44 @@
   box-sizing: border-box;
 }
 
-/* Dark mode: ensure nav is visible with adequate contrast */
+/* ========================================
+   DARK MODE - Navigation
+   Comprehensive dark mode overrides
+   ======================================== */
 :root[data-theme="dark"] .mast {
   background: rgba(11, 18, 32, 0.95);
-  border-bottom-color: rgba(125, 107, 93, 0.3);
+  border-bottom-color: rgba(201, 184, 168, 0.15);
 }
 
+/* Nav links in dark mode - light text, NO blue background */
 :root[data-theme="dark"] .nav a {
-  color: var(--warmLight, rgba(201, 184, 168, 0.9));
+  color: var(--ink); /* Uses dark mode ink (light text) */
+  background-image: linear-gradient(
+    var(--k-underline-blue-color),
+    var(--k-underline-blue-color)
+  ); /* Orange underline in dark mode */
+  background-color: transparent !important; /* No blue background */
 }
 
 :root[data-theme="dark"] .nav a:hover,
 :root[data-theme="dark"] .nav a:focus-visible,
 :root[data-theme="dark"] .nav a.current {
-  color: var(--warmLight, rgba(201, 184, 168, 1));
+  color: var(--ink);
+  background-color: transparent !important;
 }
 
 :root[data-theme="dark"] .navToggle {
-  color: var(--warmLight, rgba(201, 184, 168, 0.9));
+  color: var(--ink);
 }
 
+/* Mobile nav dropdown in dark mode */
 :root[data-theme="dark"] .nav {
-  background: rgba(11, 18, 32, 0.98);
-  border-color: rgba(125, 107, 93, 0.4);
+  background: var(--bg);
+  border-color: rgba(201, 184, 168, 0.2);
+}
+
+:root[data-theme="dark"] .nav a:hover {
+  background-color: rgba(232, 168, 124, 0.1) !important; /* Subtle warm hover */
 }
 
 /* Ensure header stays fixed on all screen sizes */

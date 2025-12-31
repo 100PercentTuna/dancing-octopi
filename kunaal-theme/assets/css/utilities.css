@@ -245,9 +245,9 @@
     to { transform: scaleX(1); }
   }
 
-  /* Dark mode: section underline changes from blue to warm/orange */
+  /* Dark mode: section underline uses bright orange accent */
   :root[data-theme="dark"] .u-section-underline::after {
-    background: var(--warm, #C9B8A8);
+    background: var(--k-color-dark-accent, #E8A87C);
   }
 
   /* ========================================

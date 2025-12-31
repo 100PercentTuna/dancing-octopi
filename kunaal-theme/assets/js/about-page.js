@@ -1155,25 +1155,38 @@
     if (!bookItems.length || !digitalItems.length) return;
     
     // Reset heights first to get natural height
-    bookItems.forEach(function(item) { item.style.height = 'auto'; });
-    digitalItems.forEach(function(item) { item.style.height = 'auto'; });
+    bookItems.forEach(function(item) { 
+      item.style.cssText = item.style.cssText.replace(/height:[^;]+;?/g, '');
+      item.style.height = 'auto'; 
+    });
+    digitalItems.forEach(function(item) { 
+      item.style.cssText = item.style.cssText.replace(/height:[^;]+;?/g, '');
+      item.style.height = 'auto'; 
+    });
     
     // Force reflow to get accurate measurements
     void document.body.offsetHeight;
     
-    // Find the tallest book item (they should all be similar, but get max)
-    var maxBookHeight = 0;
-    bookItems.forEach(function(item) {
-      var height = item.getBoundingClientRect().height;
-      if (height > maxBookHeight) maxBookHeight = height;
+    // Wait a frame for styles to apply
+    requestAnimationFrame(function() {
+      // Find the tallest book item (they should all be similar, but get max)
+      var maxBookHeight = 0;
+      bookItems.forEach(function(item) {
+        var height = item.getBoundingClientRect().height;
+        if (height > maxBookHeight) maxBookHeight = height;
+      });
+      
+      // Apply the book height to all items (both book and digital)
+      if (maxBookHeight > 0) {
+        var heightPx = Math.ceil(maxBookHeight) + 'px';
+        bookItems.forEach(function(item) { 
+          item.style.setProperty('height', heightPx, 'important');
+        });
+        digitalItems.forEach(function(item) { 
+          item.style.setProperty('height', heightPx, 'important');
+        });
+      }
     });
-    
-    // Apply the book height to all items (both book and digital)
-    if (maxBookHeight > 0) {
-      var heightPx = Math.ceil(maxBookHeight) + 'px';
-      bookItems.forEach(function(item) { item.style.height = heightPx; });
-      digitalItems.forEach(function(item) { item.style.height = heightPx; });
-    }
   }
 
   // Run on load, after images, and resize

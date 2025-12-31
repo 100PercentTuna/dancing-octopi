@@ -25,6 +25,9 @@
     --k-color-warm: #7D6B5D;
     --k-color-warm-light: #B8A99A;
     --k-color-warm-tint: rgba(125,107,93,0.08);
+    
+    /* Dark mode accent - bright orange (replaces blue) */
+    --k-color-dark-accent: #E8A87C;
 
     /* Blue system - single flair color */
     --k-color-accent: #1E5AFF;
@@ -120,6 +123,43 @@
     --prose: var(--k-layout-prose);
     --wide: var(--k-layout-wide);
     --mastH: var(--k-layout-mast-height);
+  }
+  
+  /* ========================================
+     DARK MODE TOKENS
+     Comprehensive dark mode color overrides
+     ======================================== */
+  :root[data-theme="dark"] {
+    /* Background colors */
+    --k-color-bg: #0b1220;
+    --k-color-bg-alt: #111827;
+    --k-color-bg-warm: #0f1729;
+    --k-color-bg-alt-2: #1a2332;
+    
+    /* Text colors */
+    --k-color-ink: #f0f0f0;
+    --k-color-muted: rgba(240, 240, 240, 0.75);
+    --k-color-muted-2: rgba(240, 240, 240, 0.55);
+    
+    /* Lines/borders */
+    --k-color-hair: rgba(201, 184, 168, 0.2);
+    --k-color-hair-2: rgba(201, 184, 168, 0.12);
+    
+    /* Warm colors - brighter in dark mode */
+    --k-color-warm: #E8A87C; /* Bright orange - the "bold" dark mode accent */
+    --k-color-warm-light: #C9B8A8;
+    --k-color-warm-tint: rgba(232, 168, 124, 0.12);
+    
+    /* Blue system - kept but muted for dark mode, warm orange is primary accent */
+    --k-color-accent: #E8A87C; /* Use warm orange as accent in dark mode */
+    --k-color-accent-tint: rgba(232, 168, 124, 0.08);
+    --k-color-accent-stroke: rgba(232, 168, 124, 0.35);
+    --k-color-accent-hover: rgba(232, 168, 124, 0.18);
+    --k-color-accent-ring: rgba(232, 168, 124, 0.25);
+    
+    /* Underline colors for dark mode */
+    --k-underline-blue-color: #E8A87C; /* Bright orange underline */
+    --k-underline-gray-color: rgba(201, 184, 168, 0.25);
   }
 }
 
