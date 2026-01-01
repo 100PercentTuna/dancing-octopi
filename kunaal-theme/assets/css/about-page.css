@@ -329,37 +329,35 @@ a:focus-visible, button:focus-visible {
 /* Wrapper controls height + clipping */
 .kunaal-about-page .hero {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  /* Fit exactly within viewport below mast - no overflow, no gap */
+  display: block;
+  /* Exact viewport height minus mast - hero fills one screen exactly */
   height: calc(100svh - var(--mastH, 100px));
-  max-height: calc(100svh - var(--mastH, 100px));
-  overflow: hidden; /* Clip any overflow - hero should fill exactly one viewport */
+  overflow: hidden;
   background: var(--bg);
 }
 
 /* Grid controls bleed + column ratios */
 .kunaal-about-page .hero-grid {
   display: grid;
-  flex: 1;
-  min-height: 0;
+  /* Grid fills the hero container exactly */
+  height: 100%;
   /* Bleed: wider than viewport, centered, clipped by wrapper */
-  width: min(1800px, 110vw);
+  width: min(1600px, 105vw);
   position: relative;
   left: 50%;
   transform: translateX(-50%);
   gap: 2px;
-  /* Fill the hero container completely - no gaps */
+  /* Two equal rows filling available height */
   grid-template-rows: 1fr 1fr;
 
-  /* Non-equal widths: images smaller to give more room for text */
+  /* Smaller image columns, wider text column */
   grid-template-columns:
-    minmax(0, 0.5fr)  /* slot 1 / slot 6 (outer left) */
-    minmax(0, 0.7fr)   /* slot 2 / slot 7 */
-    minmax(0, 0.7fr)   /* slot 3 / slot 8 */
-    minmax(0, 0.7fr)   /* slot 4 / slot 9 */
-    minmax(340px, 450px) /* hero text - wider to fit content */
-    minmax(0, 0.5fr); /* slot 5 / slot 10 (outer right strip) */
+    minmax(0, 0.4fr)  /* slot 1 / slot 6 (outer left) */
+    minmax(0, 0.6fr)   /* slot 2 / slot 7 */
+    minmax(0, 0.6fr)   /* slot 3 / slot 8 */
+    minmax(0, 0.6fr)   /* slot 4 / slot 9 */
+    minmax(360px, 480px) /* hero text - wide enough for content */
+    minmax(0, 0.4fr); /* slot 5 / slot 10 (outer right strip) */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -539,11 +537,11 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 2.5vw, 2rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
-  min-width: 0; /* Prevent flex/grid overflow */
-  overflow-y: auto; /* Allow scrolling within hero-text if content is too tall */
+  min-width: 0;
+  min-height: 0; /* Allow shrinking */
 }
 
 .hero-label {
@@ -552,10 +550,11 @@ a:focus-visible, button:focus-visible {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--warm);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 .hero-label::after {
   content: '';
@@ -565,18 +564,20 @@ a:focus-visible, button:focus-visible {
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 400;
-  line-height: 1.2;
-  margin-bottom: 1rem;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   font-family: var(--serif);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  line-height: 1.65;
+  line-height: 1.55;
   white-space: pre-line; /* Preserve newlines from admin input */
+  flex-shrink: 1; /* Can shrink if needed */
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
@@ -585,27 +586,28 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--warmBorder);
+  flex-shrink: 0;
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.35rem 0;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 7px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted2);
-  width: 65px;
+  width: 55px;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 12px;
   color: var(--ink);
 }
 
@@ -614,10 +616,11 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  margin-top: 1.5rem;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
   color: var(--warm);
   pointer-events: none;
+  flex-shrink: 0;
 }
 
 .kunaal-about-page .hero-scroll__label {
@@ -633,7 +636,7 @@ a:focus-visible, button:focus-visible {
 /* Scroll indicator line - animation with subtle bounce */
 .kunaal-about-page .hero-scroll__line {
   width: 1px;
-  height: 32px;
+  height: 20px;
   background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
   position: relative;
   opacity: 0.6;
@@ -683,12 +686,13 @@ a:focus-visible, button:focus-visible {
 @media (min-width: 901px) and (max-width: 1100px) {
   /* Hide right strip column (slots 5/10) and use 4 photos + text */
   .kunaal-about-page .hero-grid {
+    width: min(1400px, 100vw);
     grid-template-columns:
-      minmax(0, 0.55fr)  /* slot 1 / slot 6 */
-      minmax(0, 1.0fr)   /* slot 2 / slot 7 */
-      minmax(0, 1.0fr)   /* slot 3 / slot 8 */
-      minmax(0, 1.0fr)   /* slot 4 / slot 9 */
-      minmax(280px, 360px); /* hero text - reduced min width */
+      minmax(0, 0.4fr)  /* slot 1 / slot 6 */
+      minmax(0, 0.6fr)   /* slot 2 / slot 7 */
+      minmax(0, 0.6fr)   /* slot 3 / slot 8 */
+      minmax(0, 0.6fr)   /* slot 4 / slot 9 */
+      minmax(300px, 380px); /* hero text */
   }
   
   /* Hide right strip slots */
@@ -698,7 +702,7 @@ a:focus-visible, button:focus-visible {
   }
   
   .kunaal-about-page .hero-text {
-    padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.75rem);
+    padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1rem, 2vw, 1.5rem);
   }
 }
 
@@ -706,9 +710,11 @@ a:focus-visible, button:focus-visible {
 @media (max-width: 900px) {
   /* Mobile hero - auto height, no forced viewport height */
   .kunaal-about-page .hero {
+    height: auto;
     min-height: 0;
-    margin-top: 0; /* No negative margin on mobile */
-    overflow-x: hidden;
+    max-height: none;
+    margin-top: 0;
+    overflow: visible;
   }
   
   /* Make hero-grid normal width */
