@@ -330,9 +330,9 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero {
   position: relative;
   display: block;
-  /* Exact viewport height minus mast - hero fills one screen exactly */
-  height: calc(100svh - var(--mastH, 100px));
-  overflow: hidden;
+  /* Hero fills viewport below mast, with buffer to hide panorama */
+  height: calc(100svh - var(--mastH, 100px) - 30px);
+  overflow: visible; /* Allow dog-ear to be visible */
   background: var(--bg);
 }
 
@@ -349,6 +349,8 @@ a:focus-visible, button:focus-visible {
   gap: 2px;
   /* Two equal rows filling available height */
   grid-template-rows: 1fr 1fr;
+  /* Allow dog-ear overflow to be visible */
+  overflow: visible;
 
   /* Smaller image columns, wider text column */
   grid-template-columns:
@@ -496,17 +498,13 @@ a:focus-visible, button:focus-visible {
    - Z-index follows UI_CONTRACTS.md scale (10 = local stacking)
    ============================================= */
 .kunaal-about-page .hero-photo.has-accent {
-  /* CRITICAL: Must be visible for dog-ear to extend outside bounds */
+  /* CRITICAL: Must be visible for dog-ear to show */
   overflow: visible !important;
-  /* Local stacking: above sibling tiles (z-index: 1 is base) */
-  z-index: 2;
+  /* Elevated z-index to ensure dog-ear renders above grid */
+  z-index: 5;
   position: relative;
-  /* Create stacking context for predictable pseudo-element layering */
-  isolation: isolate;
-  /* CRITICAL: Parent opacity must be 1 for ::before to be visible
-     CSS inheritance means child opacity is multiplied by parent opacity
-     JS is responsible for never animating this element's opacity */
-  opacity: 1;
+  /* CRITICAL: Parent opacity must be 1 for ::before to be visible */
+  opacity: 1 !important;
 }
 
 .kunaal-about-page .hero-photo.has-accent::before {
@@ -514,18 +512,18 @@ a:focus-visible, button:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  /* Size token from root (default 28px on mobile, larger on desktop) */
+  /* Size token from root (default 40px desktop, 28px mobile) */
   width: var(--k-dogear-size, 40px);
   height: var(--k-dogear-size, 40px);
-  /* Triangle via clip-path - most reliable cross-browser */
-  background: var(--blue);
+  /* Triangle via clip-path */
+  background: var(--blue, #3B82F6);
   clip-path: polygon(0 0, 100% 0, 0 100%);
-  /* Local stacking: above image (z-index: 1), within isolated context */
-  z-index: 10;
+  /* High z-index to appear above everything in the photo */
+  z-index: 100;
   pointer-events: none;
-  /* Ensure visibility regardless of any animation state */
-  opacity: 1;
-  visibility: visible;
+  /* Force visibility */
+  opacity: 1 !important;
+  visibility: visible !important;
   transform: none;
 }
 
@@ -536,8 +534,9 @@ a:focus-visible, button:focus-visible {
   background: var(--bg);
   display: flex;
   flex-direction: column;
+  /* Push content toward center-bottom instead of exact center */
   justify-content: center;
-  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 2.5vw, 2rem);
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
   min-width: 0;
