@@ -91,7 +91,7 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
 <div class="subscribePanel" id="subscribePanel" data-ui="subscribe-panel">
   <div class="subscribePanelContent">
     <h4><?php echo esc_html(kunaal_mod('kunaal_subscribe_heading', 'Stay updated')); ?></h4>
-    <p><?php echo esc_html(kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays are published.')); ?></p>
+    <p><?php echo nl2br(esc_html(kunaal_mod('kunaal_subscribe_description', 'Get notified when new essays are published.'))); ?></p>
     <form class="subscribe-form-dock" data-subscribe-form="dock" data-subscribe-mode="<?php echo esc_attr($sub_mode); ?>" action="<?php echo $sub_mode === 'external' ? esc_url(kunaal_mod('kunaal_subscribe_form_action', '')) : ''; ?>" method="post" novalidate>
       <input type="email" name="email" placeholder="<?php esc_attr_e('Your email', 'kunaal-theme'); ?>" required />
       <button type="submit"><?php esc_html_e('Subscribe', 'kunaal-theme'); ?></button>

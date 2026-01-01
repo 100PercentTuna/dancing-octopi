@@ -354,9 +354,9 @@ a:focus-visible, button:focus-visible {
   /* Non-equal widths: outer narrow, inner wider, text fixed-ish, right strip narrow */
   grid-template-columns:
     minmax(0, 0.55fr)  /* slot 1 / slot 6 (outer left) */
-    minmax(0, 1.0fr)   /* slot 2 / slot 7 */
-    minmax(0, 1.0fr)   /* slot 3 / slot 8 */
-    minmax(0, 1.0fr)   /* slot 4 / slot 9 */
+    minmax(0, 0.85fr)   /* slot 2 / slot 7 - reduced to give more space to hero-text */
+    minmax(0, 0.85fr)   /* slot 3 / slot 8 - reduced to give more space to hero-text */
+    minmax(0, 0.85fr)   /* slot 4 / slot 9 - reduced to give more space to hero-text */
     minmax(320px, 420px) /* hero text */
     minmax(0, 0.55fr); /* slot 5 / slot 10 (outer right strip) */
 }
@@ -574,6 +574,7 @@ a:focus-visible, button:focus-visible {
   font-size: 1.05rem;
   color: var(--muted);
   line-height: 1.75;
+  white-space: pre-line; /* Preserve newlines from admin input */
 }
 .hero-intro .hand-note {
   font-family: var(--hand);

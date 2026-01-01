@@ -65,7 +65,7 @@ $initials = kunaal_get_initials();
           <span><?php echo esc_html($first_name); ?></span>
           <span class="surname"><?php echo esc_html($last_name); ?></span>
         </p>
-        <p class="subtitle"><?php echo esc_html($tagline); ?></p>
+        <p class="subtitle"><?php echo nl2br(esc_html($tagline)); ?></p>
       </div>
     </a>
 

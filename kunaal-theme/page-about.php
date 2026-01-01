@@ -107,7 +107,7 @@ for ($slot = 1; $slot <= 4; $slot++) :
     <div class="hero-label" data-reveal="up">About</div>
     <h1 class="hero-title" data-reveal="up">Hi, I'm <span class="name"><?php echo esc_html($first_name); ?></span></h1>
     <p class="hero-intro" data-reveal="up">
-        <?php echo esc_html($hero_intro); ?> <span class="hand-note"><?php echo esc_html($hero_hand_note); ?></span>
+        <?php echo nl2br(esc_html($hero_intro)); ?> <span class="hand-note"><?php echo esc_html($hero_hand_note); ?></span>
     </p>
     <div class="hero-meta" data-reveal="up">
         <div class="hero-meta-row">

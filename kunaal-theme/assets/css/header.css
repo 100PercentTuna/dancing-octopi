@@ -281,6 +281,7 @@
   max-width: 78ch;
   font-size: calc(12px - (2px * var(--p)));
   opacity: calc(1 - (0.5 * var(--p)));
+  white-space: pre-line; /* Preserve newlines from admin input */
   /* Disable underline animation on hover */
   background-image: none;
   padding-bottom: 0;
