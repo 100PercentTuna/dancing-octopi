@@ -12,6 +12,9 @@
 
 /* About-page-specific color variables (not in global design system) */
 .kunaal-about-page {
+  /* Prevent horizontal scroll - all content must fit viewport width */
+  overflow-x: hidden;
+  
   --warmDark: #5C4D42;
   --warmBorder: rgba(125,107,93,0.12);
   --transition: 0.25s ease;
@@ -327,44 +330,38 @@ a:focus-visible, button:focus-visible {
    Scoped to about page to avoid conflicts
    
    ARCHITECTURE:
-   - .hero wrapper controls height + clips the bleed effect
-   - .hero-grid is wider than viewport (105vw), centered
-   - Parent's overflow:hidden clips excess, creating edge-to-edge images
-   - Height fills exactly the viewport below the mast
+   - .hero wrapper: fixed viewport height, clips all overflow
+   - .hero-grid: 100vw width (no bleed complexity), fills container
+   - All content MUST fit within viewport height minus mast
+   - No inner scrolling - content adapts to available space
 ============================================= */
-/* Wrapper controls height + clipping */
+/* Wrapper: fixed height, clips everything */
 .kunaal-about-page .hero {
   position: relative;
   display: block;
-  /* Hero fills exactly the viewport height below the mast */
+  /* Fill exactly viewport below mast */
   height: calc(100svh - var(--mastH, 100px));
-  /* CRITICAL: overflow:hidden clips the bleed effect - creates edge-to-edge images */
+  /* Clip ALL overflow - no horizontal or vertical scroll */
   overflow: hidden;
   background: var(--bg);
 }
 
-/* Grid controls bleed + column ratios */
+/* Grid: fills container, no bleed (simpler, more robust) */
 .kunaal-about-page .hero-grid {
   display: grid;
-  /* Grid fills the hero container exactly */
   height: 100%;
-  /* Bleed: grid is wider than viewport, centered, clipped by wrapper's overflow:hidden */
-  width: min(1600px, 105vw);
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
   gap: 2px;
-  /* Two equal rows filling available height */
+  /* Two equal rows */
   grid-template-rows: 1fr 1fr;
-
-  /* Column ratios: smaller images, wider text column */
+  /* 6 columns: 4 photo columns + text + right strip */
   grid-template-columns:
-    minmax(0, 0.5fr)   /* slot 1 / slot 6 (outer left strip) */
-    minmax(0, 0.7fr)   /* slot 2 / slot 7 */
-    minmax(0, 0.7fr)   /* slot 3 / slot 8 */
-    minmax(0, 0.7fr)   /* slot 4 / slot 9 */
-    minmax(340px, 440px) /* hero text column */
-    minmax(0, 0.5fr);  /* slot 5 / slot 10 (outer right strip) */
+    1fr          /* col 1: left photo */
+    1fr          /* col 2: photo */
+    1fr          /* col 3: photo */
+    1fr          /* col 4: photo + portrait */
+    minmax(300px, 380px) /* col 5: hero text */
+    0.6fr;       /* col 6: right strip */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -528,124 +525,113 @@ a:focus-visible, button:focus-visible {
   pointer-events: none;
 }
 
-/* Hero text spans rows, in column 5 */
+/* Hero text: spans both rows, simple flex column layout */
 .kunaal-about-page .hero-text {
   grid-column: 5;
   grid-row: 1 / 3;
   background: var(--bg);
+  /* Simple flex column - content stacks top to bottom */
   display: flex;
   flex-direction: column;
-  /* Content flows from top; scroll indicator pushed to bottom via margin-top: auto */
-  justify-content: flex-start;
-  /* Compact padding to maximize content space */
-  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1.25rem, 2.5vw, 2rem);
+  justify-content: center; /* Center content vertically */
+  /* Compact padding */
+  padding: clamp(1rem, 2vw, 1.5rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
-  position: relative;
+  /* Prevent overflow - content must fit */
+  overflow: hidden;
   min-width: 0;
-  min-height: 0;
-  /* Safety: allow scroll if content somehow exceeds container */
-  overflow-y: auto;
 }
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   color: var(--warm);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
+  gap: 0.4rem;
 }
 .hero-label::after {
   content: '';
-  width: 24px;
+  width: 20px;
   height: 1px;
   background: var(--warm);
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 400;
-  line-height: 1.15;
-  margin-bottom: 0.75rem;
-  flex-shrink: 0;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   font-family: var(--serif);
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 1.2vw, 0.9rem);
   color: var(--muted);
-  line-height: 1.55;
+  line-height: 1.5;
   white-space: pre-line; /* Preserve newlines from admin input */
-  flex-shrink: 1;
-  /* Allow text to shrink if needed */
-  min-height: 0;
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
   font-style: italic;
-  font-size: 1.1em;
+  font-size: 1.05em;
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
   border-top: 1px solid var(--warmBorder);
-  flex-shrink: 0;
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.2rem 0;
+  gap: 0.4rem;
+  padding: 0.15rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 7px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--muted2);
-  width: 55px;
+  width: 50px;
+  flex-shrink: 0;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--ink);
 }
 
-/* Scroll indicator - pushed to bottom via margin-top: auto */
+/* Scroll indicator - simple in-flow element */
 .kunaal-about-page .hero-scroll {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  margin-top: auto; /* Push to bottom of flex container */
-  padding-top: 0.75rem;
+  gap: 0.2rem;
+  margin-top: 0.6rem;
   color: var(--warm);
   pointer-events: none;
-  flex-shrink: 0;
 }
 
 .kunaal-about-page .hero-scroll__label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   color: var(--warm);
-  opacity: 0.65;
-  font-weight: 400;
+  opacity: 0.6;
 }
 
-/* Scroll indicator line - animation with subtle bounce */
+/* Scroll indicator line */
 .kunaal-about-page .hero-scroll__line {
   width: 1px;
-  height: 24px;
-  background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
-  position: relative;
-  opacity: 0.6;
+  height: 18px;
+  background: linear-gradient(to bottom, var(--warm) 0%, transparent 100%);
+  opacity: 0.5;
   animation: scrollLineBounce 2s ease-in-out infinite;
 }
 
@@ -688,17 +674,13 @@ a:focus-visible, button:focus-visible {
   }
 }
 
-/* Mid breakpoint: 901px-1100px - avoid "everything gets too narrow" */
+/* Mid breakpoint: 901px-1100px */
 @media (min-width: 901px) and (max-width: 1100px) {
-  /* Hide right strip column (slots 5/10) and use 4 photos + text */
   .kunaal-about-page .hero-grid {
-    width: min(1400px, 100vw);
     grid-template-columns:
-      minmax(0, 0.4fr)  /* slot 1 / slot 6 */
-      minmax(0, 0.6fr)   /* slot 2 / slot 7 */
-      minmax(0, 0.6fr)   /* slot 3 / slot 8 */
-      minmax(0, 0.6fr)   /* slot 4 / slot 9 */
-      minmax(300px, 380px); /* hero text */
+      1fr 1fr 1fr 1fr  /* 4 photo columns */
+      minmax(280px, 340px); /* hero text - slightly narrower */
+    /* Hide 6th column (right strip) */
   }
   
   /* Hide right strip slots */
@@ -708,7 +690,8 @@ a:focus-visible, button:focus-visible {
   }
   
   .kunaal-about-page .hero-text {
-    padding: clamp(1rem, 2.5vw, 1.5rem) clamp(1rem, 2vw, 1.5rem);
+    grid-column: 5; /* Now in column 5 (no 6th column) */
+    padding: clamp(0.8rem, 2vw, 1.25rem);
   }
 }
 
