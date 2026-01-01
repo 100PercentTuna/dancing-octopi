@@ -339,8 +339,9 @@ a:focus-visible, button:focus-visible {
    ARCHITECTURE:
    - .hero wrapper: fills EXACTLY viewport below mast
    - .hero-grid: fills container 100%
-   - Photos are SHORT (40% each row) to leave room for text
-   - Text column spans full height with comfortable padding
+   - Photos are MINIMAL visual accents (25% each row = 50% total)
+   - Text column gets remaining 50% of vertical space
+   - Text starts at top with proper spacing
    - overflow:hidden prevents any spillover
 ============================================= */
 /* Wrapper: EXACT viewport height below mast */
@@ -367,16 +368,16 @@ a:focus-visible, button:focus-visible {
   gap: 2px;
   margin: 0;
   padding: 0;
-  /* SHORT photo rows - 0.4fr each leaves more vertical space */
-  grid-template-rows: 0.4fr 0.4fr;
+  /* MINIMAL photo rows - 0.25fr each = 50% total, leaving 50% for text */
+  grid-template-rows: 0.25fr 0.25fr;
   /* 6 columns: 4 photo + wider text + right strip */
   grid-template-columns:
     1fr          /* col 1 */
     1fr          /* col 2 */
     1fr          /* col 3 */
     1fr          /* col 4 */
-    minmax(340px, 480px) /* col 5: hero text - wider for comfortable reading */
-    0.4fr;       /* col 6: right strip (narrower) */
+    minmax(340px, 480px) /* col 5: hero text */
+    0.4fr;       /* col 6: right strip */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -444,8 +445,6 @@ a:focus-visible, button:focus-visible {
   position: relative;
   overflow: hidden;
   min-height: 0;
-  /* Constrain photo height to leave room for text */
-  max-height: calc((100svh - var(--mastH, 100px)) * 0.38);
   background: var(--bgAlt);
 }
 
@@ -542,17 +541,17 @@ a:focus-visible, button:focus-visible {
   pointer-events: none;
 }
 
-/* Hero text: spans both rows, flex column with centered content */
+/* Hero text: spans both rows, flex column starting at top */
 .kunaal-about-page .hero-text {
   grid-column: 5;
   grid-row: 1 / 3;
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  /* Center content vertically for balanced appearance */
-  justify-content: center;
-  /* Generous padding for breathing room */
-  padding: 2rem 2rem;
+  /* Content starts at top - ensures label is visible */
+  justify-content: flex-start;
+  /* Top padding accounts for mast, side padding for breathing room */
+  padding: 1.5rem 2rem;
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   overflow: hidden;
   min-width: 0;
@@ -560,24 +559,24 @@ a:focus-visible, button:focus-visible {
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--warm);
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 .hero-label::after {
   content: '';
-  width: 24px;
+  width: 20px;
   height: 1px;
   background: var(--warm);
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 400;
   line-height: 1.2;
   margin-bottom: 1rem;
@@ -586,10 +585,11 @@ a:focus-visible, button:focus-visible {
 .hero-intro {
   /* SANS-SERIF as requested */
   font-family: var(--sans);
-  font-size: clamp(0.875rem, 1.2vw, 1rem);
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
   color: var(--muted);
-  line-height: 1.7; /* Comfortable line-height for readability */
+  line-height: 1.65; /* Comfortable line-height for readability */
   white-space: pre-line; /* Preserve newlines from admin input */
+  margin-bottom: 0; /* Let meta handle spacing */
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
@@ -598,28 +598,28 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--warmBorder);
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.35rem 0;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 7px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--muted2);
-  width: 60px;
+  width: 55px;
   flex-shrink: 0;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--ink);
 }
 
@@ -628,17 +628,17 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  margin-top: 1.25rem;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
   color: var(--warm);
   pointer-events: none;
 }
 
 .kunaal-about-page .hero-scroll__label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--warm);
   opacity: 0.6;
 }
@@ -646,7 +646,7 @@ a:focus-visible, button:focus-visible {
 /* Scroll indicator line */
 .kunaal-about-page .hero-scroll__line {
   width: 1px;
-  height: 28px;
+  height: 24px;
   background: linear-gradient(to bottom, var(--warm) 0%, transparent 100%);
   opacity: 0.5;
   animation: scrollLineBounce 2s ease-in-out infinite;
@@ -694,7 +694,7 @@ a:focus-visible, button:focus-visible {
 /* Mid breakpoint: 901px-1100px */
 @media (min-width: 901px) and (max-width: 1100px) {
   .kunaal-about-page .hero-grid {
-    grid-template-rows: 0.4fr 0.4fr;
+    grid-template-rows: 0.25fr 0.25fr;
     grid-template-columns:
       1fr 1fr 1fr 1fr  /* 4 photo columns */
       minmax(300px, 380px); /* hero text */
@@ -708,19 +708,19 @@ a:focus-visible, button:focus-visible {
   
   .kunaal-about-page .hero-text {
     grid-column: 5;
-    padding: 1.5rem 1.5rem;
+    padding: 1.25rem 1.5rem;
   }
   
   /* Slightly smaller typography at this breakpoint */
   .hero-title {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   }
   .hero-intro {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     line-height: 1.6;
   }
   .hero-meta-row .value {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
