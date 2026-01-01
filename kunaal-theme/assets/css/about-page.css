@@ -98,7 +98,7 @@
 
 /* Hero photo accent - bright orange in dark mode */
 :root[data-theme="dark"] .kunaal-about-page .hero-photo.has-accent::before {
-  border-color: var(--k-color-dark-accent, #E8A87C) transparent transparent transparent;
+  background-color: var(--k-color-dark-accent, #E8A87C);
 }
 
 /* Base styles are in style.css - only About-specific overrides here */
@@ -325,14 +325,21 @@ a:focus-visible, button:focus-visible {
 /* =============================================
    HERO - Bleed collage layout
    Scoped to about page to avoid conflicts
+   
+   ARCHITECTURE:
+   - .hero wrapper controls height + clips the bleed effect
+   - .hero-grid is wider than viewport (105vw), centered
+   - Parent's overflow:hidden clips excess, creating edge-to-edge images
+   - Height fills exactly the viewport below the mast
 ============================================= */
 /* Wrapper controls height + clipping */
 .kunaal-about-page .hero {
   position: relative;
   display: block;
-  /* Hero fills viewport below mast, PLUS extra height to push panorama below fold */
-  height: calc(100svh - var(--mastH, 100px) + 40px);
-  overflow: visible; /* Allow dog-ear to be visible */
+  /* Hero fills exactly the viewport height below the mast */
+  height: calc(100svh - var(--mastH, 100px));
+  /* CRITICAL: overflow:hidden clips the bleed effect - creates edge-to-edge images */
+  overflow: hidden;
   background: var(--bg);
 }
 
@@ -341,7 +348,7 @@ a:focus-visible, button:focus-visible {
   display: grid;
   /* Grid fills the hero container exactly */
   height: 100%;
-  /* Bleed: wider than viewport, centered, clipped by wrapper */
+  /* Bleed: grid is wider than viewport, centered, clipped by wrapper's overflow:hidden */
   width: min(1600px, 105vw);
   position: relative;
   left: 50%;
@@ -349,17 +356,15 @@ a:focus-visible, button:focus-visible {
   gap: 2px;
   /* Two equal rows filling available height */
   grid-template-rows: 1fr 1fr;
-  /* Allow dog-ear overflow to be visible */
-  overflow: visible;
 
-  /* Smaller image columns, wider text column */
+  /* Column ratios: smaller images, wider text column */
   grid-template-columns:
-    minmax(0, 0.4fr)  /* slot 1 / slot 6 (outer left) */
-    minmax(0, 0.6fr)   /* slot 2 / slot 7 */
-    minmax(0, 0.6fr)   /* slot 3 / slot 8 */
-    minmax(0, 0.6fr)   /* slot 4 / slot 9 */
-    minmax(360px, 480px) /* hero text - wide enough for content */
-    minmax(0, 0.4fr); /* slot 5 / slot 10 (outer right strip) */
+    minmax(0, 0.5fr)   /* slot 1 / slot 6 (outer left strip) */
+    minmax(0, 0.7fr)   /* slot 2 / slot 7 */
+    minmax(0, 0.7fr)   /* slot 3 / slot 8 */
+    minmax(0, 0.7fr)   /* slot 4 / slot 9 */
+    minmax(340px, 440px) /* hero text column */
+    minmax(0, 0.5fr);  /* slot 5 / slot 10 (outer right strip) */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -492,18 +497,18 @@ a:focus-visible, button:focus-visible {
    Canonical owner: about-page.css (see UI_CONTRACTS.md)
    
    ARCHITECTURE:
-   - Parent (.has-accent) has overflow:visible to allow dog-ear to extend outside
-   - Parent opacity MUST be 1 - JS ensures this by never animating accent photo
-   - ::before creates the triangle via BORDER technique (more reliable than clip-path)
-   - Z-index follows UI_CONTRACTS.md scale (10 = local stacking)
+   - Dog-ear is a ::before pseudo-element INSIDE the photo bounds
+   - Uses clip-path for the triangle shape (well-supported in modern browsers)
+   - Parent needs overflow:visible to show dog-ear above clipped image
+   - High z-index ensures visibility above the image
    ============================================= */
 .kunaal-about-page .hero-photo.has-accent {
-  /* CRITICAL: Must be visible for dog-ear to show */
-  overflow: visible !important;
-  /* Elevated z-index to ensure dog-ear renders above grid */
-  z-index: 5;
+  /* Allow dog-ear pseudo-element to render above overflow:hidden areas */
+  overflow: visible;
+  /* Create stacking context */
   position: relative;
-  /* CRITICAL: Parent opacity must be 1 for ::before to be visible */
+  z-index: 2;
+  /* Ensure opacity is 1 for ::before to be visible (GSAP may animate siblings) */
   opacity: 1 !important;
 }
 
@@ -512,19 +517,15 @@ a:focus-visible, button:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  /* Border-based triangle - more reliable than clip-path */
-  width: 0;
-  height: 0;
-  border-style: solid;
-  /* Size: 40px triangle (top-left corner) */
-  border-width: 40px 40px 0 0;
-  border-color: #1E5AFF transparent transparent transparent;
-  /* High z-index to appear above everything in the photo */
-  z-index: 100;
+  /* Triangle size */
+  width: 40px;
+  height: 40px;
+  /* Blue background with clip-path triangle */
+  background-color: var(--blue, #1E5AFF);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  /* Above the image (z-index: 1) and hover bar (z-index: 2) */
+  z-index: 10;
   pointer-events: none;
-  /* Force visibility */
-  opacity: 1 !important;
-  visibility: visible !important;
 }
 
 /* Hero text spans rows, in column 5 */
@@ -534,22 +535,23 @@ a:focus-visible, button:focus-visible {
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  /* Push content toward center-bottom instead of exact center */
+  /* Center content vertically */
   justify-content: center;
-  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2rem);
+  /* Balanced padding - slightly more top to account for visual weight */
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
   min-width: 0;
-  min-height: 0; /* Allow shrinking */
+  min-height: 0;
 }
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--warm);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -563,20 +565,20 @@ a:focus-visible, button:focus-visible {
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 400;
   line-height: 1.15;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
   flex-shrink: 0;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   font-family: var(--serif);
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--muted);
-  line-height: 1.55;
+  line-height: 1.65;
   white-space: pre-line; /* Preserve newlines from admin input */
-  flex-shrink: 1; /* Can shrink if needed */
+  flex-shrink: 1;
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
@@ -585,28 +587,28 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--warmBorder);
   flex-shrink: 0;
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.2rem 0;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted2);
-  width: 55px;
+  width: 60px;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink);
 }
 
@@ -616,7 +618,7 @@ a:focus-visible, button:focus-visible {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  margin-top: 0.75rem;
+  margin-top: 1.25rem;
   color: var(--warm);
   pointer-events: none;
   flex-shrink: 0;
@@ -635,7 +637,7 @@ a:focus-visible, button:focus-visible {
 /* Scroll indicator line - animation with subtle bounce */
 .kunaal-about-page .hero-scroll__line {
   width: 1px;
-  height: 20px;
+  height: 28px;
   background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
   position: relative;
   opacity: 0.6;
@@ -780,7 +782,8 @@ a:focus-visible, button:focus-visible {
   
   /* Mobile: Smaller dog-ear accent */
   .kunaal-about-page .hero-photo.has-accent::before {
-    border-width: 28px 28px 0 0;
+    width: 28px;
+    height: 28px;
   }
 }
 
