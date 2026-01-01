@@ -331,11 +331,10 @@ a:focus-visible, button:focus-visible {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* Fit within viewport - images should not extend beyond one frame */
+  /* Fit exactly within viewport below mast - no overflow, no gap */
   height: calc(100svh - var(--mastH, 100px));
   max-height: calc(100svh - var(--mastH, 100px));
-  overflow-x: clip; /* fallback to hidden if needed */
-  overflow-y: visible;
+  overflow: hidden; /* Clip any overflow - hero should fill exactly one viewport */
   background: var(--bg);
 }
 
@@ -350,18 +349,17 @@ a:focus-visible, button:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   gap: 2px;
-  /* Reduced row heights to make images smaller - proportional to width reduction */
-  grid-template-rows: 0.75fr 0.75fr;
+  /* Fill the hero container completely - no gaps */
+  grid-template-rows: 1fr 1fr;
 
-  /* Non-equal widths: outer narrow, inner wider, text fixed-ish, right strip narrow */
-  /* Reduced image column widths proportionally to match height reduction */
+  /* Non-equal widths: images smaller to give more room for text */
   grid-template-columns:
-    minmax(0, 0.5fr)  /* slot 1 / slot 6 (outer left) - slightly reduced */
-    minmax(0, 0.75fr)   /* slot 2 / slot 7 - reduced from 0.85fr to match height */
-    minmax(0, 0.75fr)   /* slot 3 / slot 8 - reduced from 0.85fr to match height */
-    minmax(0, 0.75fr)   /* slot 4 / slot 9 - reduced from 0.85fr to match height */
-    minmax(320px, 420px) /* hero text */
-    minmax(0, 0.5fr); /* slot 5 / slot 10 (outer right strip) - slightly reduced */
+    minmax(0, 0.5fr)  /* slot 1 / slot 6 (outer left) */
+    minmax(0, 0.7fr)   /* slot 2 / slot 7 */
+    minmax(0, 0.7fr)   /* slot 3 / slot 8 */
+    minmax(0, 0.7fr)   /* slot 4 / slot 9 */
+    minmax(340px, 450px) /* hero text - wider to fit content */
+    minmax(0, 0.5fr); /* slot 5 / slot 10 (outer right strip) */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -541,19 +539,20 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2.5rem);
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 2.5vw, 2rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
   min-width: 0; /* Prevent flex/grid overflow */
+  overflow-y: auto; /* Allow scrolling within hero-text if content is too tall */
 }
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 11px; /* Increased from 10px - mono font too small */
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--warm);
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -566,17 +565,17 @@ a:focus-visible, button:focus-visible {
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
   font-weight: 400;
   line-height: 1.2;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   font-family: var(--serif);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--muted);
-  line-height: 1.75;
+  line-height: 1.65;
   white-space: pre-line; /* Preserve newlines from admin input */
 }
 .hero-intro .hand-note {
@@ -586,8 +585,8 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--warmBorder);
 }
 .hero-meta-row {
