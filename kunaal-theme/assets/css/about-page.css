@@ -98,7 +98,7 @@
 
 /* Hero photo accent - bright orange in dark mode */
 :root[data-theme="dark"] .kunaal-about-page .hero-photo.has-accent::before {
-  background: var(--k-color-dark-accent, #E8A87C);
+  border-color: var(--k-color-dark-accent, #E8A87C) transparent transparent transparent;
 }
 
 /* Base styles are in style.css - only About-specific overrides here */
@@ -330,8 +330,8 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero {
   position: relative;
   display: block;
-  /* Hero fills viewport below mast, with buffer to hide panorama */
-  height: calc(100svh - var(--mastH, 100px) - 30px);
+  /* Hero fills viewport below mast, PLUS extra height to push panorama below fold */
+  height: calc(100svh - var(--mastH, 100px) + 40px);
   overflow: visible; /* Allow dog-ear to be visible */
   background: var(--bg);
 }
@@ -494,7 +494,7 @@ a:focus-visible, button:focus-visible {
    ARCHITECTURE:
    - Parent (.has-accent) has overflow:visible to allow dog-ear to extend outside
    - Parent opacity MUST be 1 - JS ensures this by never animating accent photo
-   - ::before creates the triangle via clip-path
+   - ::before creates the triangle via BORDER technique (more reliable than clip-path)
    - Z-index follows UI_CONTRACTS.md scale (10 = local stacking)
    ============================================= */
 .kunaal-about-page .hero-photo.has-accent {
@@ -512,19 +512,19 @@ a:focus-visible, button:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  /* Size token from root (default 40px desktop, 28px mobile) */
-  width: var(--k-dogear-size, 40px);
-  height: var(--k-dogear-size, 40px);
-  /* Triangle via clip-path */
-  background: var(--blue, #3B82F6);
-  clip-path: polygon(0 0, 100% 0, 0 100%);
+  /* Border-based triangle - more reliable than clip-path */
+  width: 0;
+  height: 0;
+  border-style: solid;
+  /* Size: 40px triangle (top-left corner) */
+  border-width: 40px 40px 0 0;
+  border-color: #1E5AFF transparent transparent transparent;
   /* High z-index to appear above everything in the photo */
   z-index: 100;
   pointer-events: none;
   /* Force visibility */
   opacity: 1 !important;
   visibility: visible !important;
-  transform: none;
 }
 
 /* Hero text spans rows, in column 5 */
@@ -780,8 +780,7 @@ a:focus-visible, button:focus-visible {
   
   /* Mobile: Smaller dog-ear accent */
   .kunaal-about-page .hero-photo.has-accent::before {
-    width: 28px;
-    height: 28px;
+    border-width: 28px 28px 0 0;
   }
 }
 
