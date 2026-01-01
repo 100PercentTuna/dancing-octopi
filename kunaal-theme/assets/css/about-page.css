@@ -535,23 +535,25 @@ a:focus-visible, button:focus-visible {
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  /* Center content vertically */
-  justify-content: center;
-  /* Balanced padding - slightly more top to account for visual weight */
-  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+  /* Content flows from top; scroll indicator pushed to bottom via margin-top: auto */
+  justify-content: flex-start;
+  /* Compact padding to maximize content space */
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1.25rem, 2.5vw, 2rem);
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   position: relative;
   min-width: 0;
   min-height: 0;
+  /* Safety: allow scroll if content somehow exceeds container */
+  overflow-y: auto;
 }
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: var(--warm);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -559,44 +561,46 @@ a:focus-visible, button:focus-visible {
 }
 .hero-label::after {
   content: '';
-  width: 28px;
+  width: 24px;
   height: 1px;
   background: var(--warm);
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 400;
   line-height: 1.15;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   flex-shrink: 0;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  line-height: 1.65;
+  line-height: 1.55;
   white-space: pre-line; /* Preserve newlines from admin input */
   flex-shrink: 1;
+  /* Allow text to shrink if needed */
+  min-height: 0;
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
   font-style: italic;
-  font-size: 1.15em;
+  font-size: 1.1em;
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--warmBorder);
   flex-shrink: 0;
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.3rem 0;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
@@ -604,21 +608,22 @@ a:focus-visible, button:focus-visible {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted2);
-  width: 60px;
+  width: 55px;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--ink);
 }
 
-/* Scroll indicator is now IN FLOW (not fixed) - sits under Reading meta */
+/* Scroll indicator - pushed to bottom via margin-top: auto */
 .kunaal-about-page .hero-scroll {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  margin-top: 1.25rem;
+  margin-top: auto; /* Push to bottom of flex container */
+  padding-top: 0.75rem;
   color: var(--warm);
   pointer-events: none;
   flex-shrink: 0;
@@ -637,7 +642,7 @@ a:focus-visible, button:focus-visible {
 /* Scroll indicator line - animation with subtle bounce */
 .kunaal-about-page .hero-scroll__line {
   width: 1px;
-  height: 28px;
+  height: 24px;
   background: linear-gradient(to bottom, var(--warm) 0%, rgba(125,107,93,0.4) 50%, rgba(125,107,93,0.1) 100%);
   position: relative;
   opacity: 0.6;
