@@ -331,8 +331,9 @@ a:focus-visible, button:focus-visible {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* Fill viewport BELOW fixed header - no white gap */
-  min-height: calc(100svh - var(--mastH, 100px));
+  /* Fit within viewport - images should not extend beyond one frame */
+  height: calc(100svh - var(--mastH, 100px));
+  max-height: calc(100svh - var(--mastH, 100px));
   overflow-x: clip; /* fallback to hidden if needed */
   overflow-y: visible;
   background: var(--bg);
@@ -349,16 +350,18 @@ a:focus-visible, button:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   gap: 2px;
-  grid-template-rows: 1fr 1fr;
+  /* Reduced row heights to make images smaller - proportional to width reduction */
+  grid-template-rows: 0.75fr 0.75fr;
 
   /* Non-equal widths: outer narrow, inner wider, text fixed-ish, right strip narrow */
+  /* Reduced image column widths proportionally to match height reduction */
   grid-template-columns:
-    minmax(0, 0.55fr)  /* slot 1 / slot 6 (outer left) */
-    minmax(0, 0.85fr)   /* slot 2 / slot 7 - reduced to give more space to hero-text */
-    minmax(0, 0.85fr)   /* slot 3 / slot 8 - reduced to give more space to hero-text */
-    minmax(0, 0.85fr)   /* slot 4 / slot 9 - reduced to give more space to hero-text */
+    minmax(0, 0.5fr)  /* slot 1 / slot 6 (outer left) - slightly reduced */
+    minmax(0, 0.75fr)   /* slot 2 / slot 7 - reduced from 0.85fr to match height */
+    minmax(0, 0.75fr)   /* slot 3 / slot 8 - reduced from 0.85fr to match height */
+    minmax(0, 0.75fr)   /* slot 4 / slot 9 - reduced from 0.85fr to match height */
     minmax(320px, 420px) /* hero text */
-    minmax(0, 0.55fr); /* slot 5 / slot 10 (outer right strip) */
+    minmax(0, 0.5fr); /* slot 5 / slot 10 (outer right strip) - slightly reduced */
 }
 
 /* Explicit placement: slots map to columns/rows */
