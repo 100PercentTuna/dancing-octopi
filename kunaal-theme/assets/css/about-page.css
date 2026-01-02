@@ -356,8 +356,11 @@ a:focus-visible, button:focus-visible {
   margin: 0 !important;
   padding: 0 !important;
   /* Clip all overflow - ensures panorama is hidden */
-  overflow: hidden;
+  overflow: hidden !important;
   background: var(--bg);
+  /* Ensure it fills exactly one viewport */
+  min-height: calc(100svh - var(--mastH, 100px));
+  max-height: calc(100svh - var(--mastH, 100px));
 }
 
 /* Grid: 100% of container */
@@ -370,14 +373,14 @@ a:focus-visible, button:focus-visible {
   padding: 0;
   /* TALL photo rows - 0.5fr each, photos get full height */
   grid-template-rows: 0.5fr 0.5fr;
-  /* 6 columns: MUCH BIGGER photos + narrower text + right strip */
+  /* 6 columns: MAXIMUM SIZE photos + narrow text + right strip */
   grid-template-columns:
-    1.4fr        /* col 1 - much bigger */
-    1.4fr        /* col 2 - much bigger */
-    1.4fr        /* col 3 - much bigger */
-    1.4fr        /* col 4 - much bigger */
-    minmax(280px, 400px) /* col 5: hero text - narrower to make room */
-    0.3fr;       /* col 6: right strip - smaller */
+    1.6fr        /* col 1 - maximum size */
+    1.6fr        /* col 2 - maximum size */
+    1.6fr        /* col 3 - maximum size */
+    1.6fr        /* col 4 - maximum size */
+    minmax(260px, 360px) /* col 5: hero text - very narrow */
+    0.2fr;       /* col 6: right strip - minimal */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -472,7 +475,7 @@ a:focus-visible, button:focus-visible {
 
 /* First photo: crop heavily on the left - OK to crop heavily */
 .kunaal-about-page .hero-photo--1 img {
-  object-position: 30% center; /* Crop heavily from left - show right portion */
+  object-position: 35% center; /* Crop heavily from left - show right portion */
 }
 
 .kunaal-about-page .hero-photo.color-active img { 
@@ -529,12 +532,12 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero-photo.has-accent::before {
   content: "";
   position: absolute;
-  /* Position at top-left corner of FRAME edge - ensure it's visible */
-  top: 0;
-  left: 0;
+  /* Position at top-left corner of FRAME edge - outside photo bounds */
+  top: -2px;
+  left: -2px;
   /* Triangle size */
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   /* Blue background with clip-path triangle */
   background-color: var(--blue, #1E5AFF) !important;
   clip-path: polygon(0 0, 100% 0, 0 100%);
@@ -544,9 +547,11 @@ a:focus-visible, button:focus-visible {
   /* Ensure visibility */
   opacity: 1 !important;
   visibility: visible !important;
+  /* Ensure it's not clipped by parent */
+  transform: translateZ(0);
 }
 
-/* Hero text: spans both rows, flex column starting at top */
+/* Hero text: spans both rows, flex column starting lower */
 .kunaal-about-page .hero-text {
   grid-column: 5;
   grid-row: 1 / 3;
@@ -555,8 +560,8 @@ a:focus-visible, button:focus-visible {
   flex-direction: column;
   /* Content starts lower - "Hi, I'm Kunaal" positioned lower */
   justify-content: flex-start;
-  /* More top padding to push content lower, side padding for breathing room */
-  padding: 3rem 2.25rem 2rem;
+  /* Reduced padding to fit all content - top padding pushes title lower */
+  padding: 2.5rem 1.75rem 1.5rem;
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   overflow: hidden;
   min-width: 0;
@@ -564,35 +569,35 @@ a:focus-visible, button:focus-visible {
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 8px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--warm);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.6rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 .hero-label::after {
   content: '';
-  width: 20px;
+  width: 18px;
   height: 1px;
   background: var(--warm);
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: 400;
-  line-height: 1.2;
-  margin-bottom: 1rem;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   /* SANS-SERIF as requested */
   font-family: var(--sans);
-  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  font-size: clamp(0.75rem, 1vw, 0.85rem);
   color: var(--muted);
-  line-height: 1.65; /* Comfortable line-height */
+  line-height: 1.55; /* Tighter line-height to fit more */
   white-space: pre-line; /* Preserve newlines from admin input */
   margin-bottom: 0; /* Let meta handle spacing */
 }
@@ -603,28 +608,28 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
   border-top: 1px solid var(--warmBorder);
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.25rem 0;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--muted2);
-  width: 55px;
+  width: 50px;
   flex-shrink: 0;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 13px;
+  font-size: 11px;
   color: var(--ink);
 }
 
@@ -633,17 +638,17 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.75rem;
+  gap: 0.2rem;
+  margin-top: 0.5rem;
   color: var(--warm);
   pointer-events: none;
 }
 
 .kunaal-about-page .hero-scroll__label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: var(--warm);
   opacity: 0.6;
 }
@@ -651,7 +656,7 @@ a:focus-visible, button:focus-visible {
 /* Scroll indicator line */
 .kunaal-about-page .hero-scroll__line {
   width: 1px;
-  height: 28px;
+  height: 20px;
   background: linear-gradient(to bottom, var(--warm) 0%, transparent 100%);
   opacity: 0.5;
   animation: scrollLineBounce 2s ease-in-out infinite;
