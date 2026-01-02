@@ -370,13 +370,13 @@ a:focus-visible, button:focus-visible {
   padding: 0;
   /* TALL photo rows - 0.5fr each, photos get full height */
   grid-template-rows: 0.5fr 0.5fr;
-  /* 6 columns: 4 photo + wider text + right strip */
+  /* 6 columns: BIGGER photos + narrower text + right strip */
   grid-template-columns:
-    1fr          /* col 1 */
-    1fr          /* col 2 */
-    1fr          /* col 3 */
-    1fr          /* col 4 */
-    minmax(360px, 500px) /* col 5: hero text */
+    1.2fr        /* col 1 - bigger */
+    1.2fr        /* col 2 - bigger */
+    1.2fr        /* col 3 - bigger */
+    1.2fr        /* col 4 - bigger */
+    minmax(300px, 420px) /* col 5: hero text - narrower to make room for bigger photos */
     0.4fr;       /* col 6: right strip */
 }
 
@@ -470,9 +470,9 @@ a:focus-visible, button:focus-visible {
   z-index: 1; /* Below dog-ear pseudo-element (z-index: 10) */
 }
 
-/* First photo: crop more - show less of the image */
+/* First photo: crop more on the left - OK to crop heavily */
 .kunaal-about-page .hero-photo--1 img {
-  object-position: left 60%; /* Crop more - show less of the top */
+  object-position: 20% center; /* Crop heavily from left - show right portion */
 }
 
 .kunaal-about-page .hero-photo.color-active img { 
@@ -505,18 +505,19 @@ a:focus-visible, button:focus-visible {
 }
 
 /* =============================================
-   DOG-EAR ACCENT - Blue triangle on hero photo
+   DOG-EAR ACCENT - Blue triangle on frame edge
    =============================================
    Canonical owner: about-page.css (see UI_CONTRACTS.md)
    
    ARCHITECTURE:
-   - Dog-ear is a ::before pseudo-element INSIDE the photo bounds
+   - Dog-ear is a ::before pseudo-element on the FRAME (not inside photo)
+   - Positioned at top-left corner of the frame edge
    - Uses clip-path for the triangle shape (well-supported in modern browsers)
-   - Parent needs overflow:visible to show dog-ear above clipped image
+   - Frame allows overflow to show dog-ear above everything
    - High z-index ensures visibility above the image
    ============================================= */
 .kunaal-about-page .hero-photo.has-accent {
-  /* Allow dog-ear pseudo-element to render above overflow:hidden areas */
+  /* Allow dog-ear to extend beyond frame bounds */
   overflow: visible;
   /* Create stacking context */
   position: relative;
@@ -528,16 +529,17 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero-photo.has-accent::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
+  /* Position at top-left corner of FRAME edge */
+  top: -1px; /* Slightly above frame to ensure visibility */
+  left: -1px; /* Slightly left of frame to ensure visibility */
   /* Triangle size */
   width: 40px;
   height: 40px;
   /* Blue background with clip-path triangle */
   background-color: var(--blue, #1E5AFF);
   clip-path: polygon(0 0, 100% 0, 0 100%);
-  /* Above the image (z-index: 1) and hover bar (z-index: 2) */
-  z-index: 10;
+  /* Above everything - highest z-index */
+  z-index: 100;
   pointer-events: none;
 }
 
@@ -559,35 +561,35 @@ a:focus-visible, button:focus-visible {
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: var(--warm);
-  margin-bottom: 0.875rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 .hero-label::after {
   content: '';
-  width: 24px;
+  width: 20px;
   height: 1px;
   background: var(--warm);
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 400;
-  line-height: 1.25;
-  margin-bottom: 1.125rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
 }
 .hero-title .name { color: var(--blue); }
 .hero-intro {
   /* SANS-SERIF as requested */
   font-family: var(--sans);
-  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
   color: var(--muted);
-  line-height: 1.75; /* Generous line-height for readability */
+  line-height: 1.65; /* Comfortable line-height */
   white-space: pre-line; /* Preserve newlines from admin input */
   margin-bottom: 0; /* Let meta handle spacing */
 }
@@ -598,28 +600,28 @@ a:focus-visible, button:focus-visible {
   color: var(--warm);
 }
 .hero-meta {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--warmBorder);
 }
 .hero-meta-row {
   display: flex;
   align-items: baseline;
-  gap: 0.75rem;
-  padding: 0.35rem 0;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 7px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--muted2);
-  width: 60px;
+  width: 55px;
   flex-shrink: 0;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--ink);
 }
 
@@ -628,8 +630,8 @@ a:focus-visible, button:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  margin-top: 1rem;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
   color: var(--warm);
   pointer-events: none;
 }
@@ -696,8 +698,8 @@ a:focus-visible, button:focus-visible {
   .kunaal-about-page .hero-grid {
     grid-template-rows: 0.5fr 0.5fr;
     grid-template-columns:
-      1fr 1fr 1fr 1fr  /* 4 photo columns */
-      minmax(320px, 420px); /* hero text */
+      1.2fr 1.2fr 1.2fr 1.2fr  /* 4 photo columns - bigger */
+      minmax(280px, 380px); /* hero text - narrower */
   }
   
   /* Hide right strip slots */
@@ -708,19 +710,19 @@ a:focus-visible, button:focus-visible {
   
   .kunaal-about-page .hero-text {
     grid-column: 5;
-    padding: 2.5rem 2rem 1.75rem;
+    padding: 2.5rem 1.75rem 1.5rem;
   }
   
   /* Slightly smaller typography at this breakpoint */
   .hero-title {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   }
   .hero-intro {
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font-size: 0.8rem;
+    line-height: 1.6;
   }
   .hero-meta-row .value {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
