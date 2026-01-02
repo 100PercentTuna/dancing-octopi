@@ -8,7 +8,7 @@
  *
  * @package Kunaal_Theme
  * @since 4.21.0
- * @last-deployed 2026-01-02T19:30:00Z (v4.63.0)
+ * @last-deployed 2026-01-02T20:00:00Z (v4.63.1)
  */
 
 /* About-page-specific color variables (not in global design system) */
@@ -349,14 +349,14 @@ a:focus-visible, button:focus-visible {
   position: relative;
   display: block;
   box-sizing: border-box;
-  /* Pull UP into body padding-top area (body has padding-top: var(--mastH))
-     This positions hero at Y=0, behind the fixed mast */
-  margin-top: calc(-1 * var(--mastH, 80px));
+  /* Pull UP into body padding-top area (body has padding-top: var(--mastH, 100px))
+     CRITICAL: Fallback MUST match base.css (100px) to avoid gaps */
+  margin-top: calc(-1 * var(--mastH, 100px));
   /* Full viewport height - ensures hero extends to bottom */
   height: 100vh;
   height: 100svh;
-  /* Push grid content below the fixed mast */
-  padding-top: var(--mastH, 80px);
+  /* Push grid content below the fixed mast - MUST match base.css fallback */
+  padding-top: var(--mastH, 100px);
   /* Clip all overflow - ensures panorama is hidden */
   overflow: hidden;
   background: var(--bg);
