@@ -339,9 +339,9 @@ a:focus-visible, button:focus-visible {
    ARCHITECTURE:
    - .hero wrapper: fills EXACTLY viewport below mast
    - .hero-grid: fills container 100%
-   - Photos are MINIMAL visual accents (20% each row = 40% total)
-   - Text column spans both rows and gets 60% of vertical space
-   - Text has generous padding and readable typography
+   - Photos are TALL (0.5fr each row = full height for photos)
+   - Text column spans both rows and gets full height
+   - Text starts lower with more top padding
    - overflow:hidden prevents any spillover
 ============================================= */
 /* Wrapper: EXACT viewport height below mast */
@@ -368,15 +368,15 @@ a:focus-visible, button:focus-visible {
   gap: 2px;
   margin: 0;
   padding: 0;
-  /* MINIMAL photo rows - 0.2fr each = 40% total, text gets remaining 60% */
-  grid-template-rows: 0.2fr 0.2fr;
+  /* TALL photo rows - 0.5fr each, photos get full height */
+  grid-template-rows: 0.5fr 0.5fr;
   /* 6 columns: 4 photo + wider text + right strip */
   grid-template-columns:
     1fr          /* col 1 */
     1fr          /* col 2 */
     1fr          /* col 3 */
     1fr          /* col 4 */
-    minmax(360px, 500px) /* col 5: hero text - wider for readability */
+    minmax(360px, 500px) /* col 5: hero text */
     0.4fr;       /* col 6: right strip */
 }
 
@@ -470,9 +470,9 @@ a:focus-visible, button:focus-visible {
   z-index: 1; /* Below dog-ear pseudo-element (z-index: 10) */
 }
 
-/* First photo: reveal more from left as screen widens */
+/* First photo: crop more - show less of the image */
 .kunaal-about-page .hero-photo--1 img {
-  object-position: left center;
+  object-position: left 60%; /* Crop more - show less of the top */
 }
 
 .kunaal-about-page .hero-photo.color-active img { 
@@ -548,10 +548,10 @@ a:focus-visible, button:focus-visible {
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  /* Content starts at top - ensures label is visible */
+  /* Content starts lower - "Hi, I'm Kunaal" positioned lower */
   justify-content: flex-start;
-  /* Generous padding: top padding ensures label isn't clipped, side padding for breathing room */
-  padding: 2rem 2.25rem;
+  /* More top padding to push content lower, side padding for breathing room */
+  padding: 3rem 2.25rem 2rem;
   box-shadow: -12px 0 40px rgba(0,0,0,0.03);
   overflow: hidden;
   min-width: 0;
@@ -694,7 +694,7 @@ a:focus-visible, button:focus-visible {
 /* Mid breakpoint: 901px-1100px */
 @media (min-width: 901px) and (max-width: 1100px) {
   .kunaal-about-page .hero-grid {
-    grid-template-rows: 0.2fr 0.2fr;
+    grid-template-rows: 0.5fr 0.5fr;
     grid-template-columns:
       1fr 1fr 1fr 1fr  /* 4 photo columns */
       minmax(320px, 420px); /* hero text */
@@ -708,7 +708,7 @@ a:focus-visible, button:focus-visible {
   
   .kunaal-about-page .hero-text {
     grid-column: 5;
-    padding: 1.75rem 2rem;
+    padding: 2.5rem 2rem 1.75rem;
   }
   
   /* Slightly smaller typography at this breakpoint */
