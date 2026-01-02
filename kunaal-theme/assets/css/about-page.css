@@ -8,8 +8,17 @@
  *
  * @package Kunaal_Theme
  * @since 4.21.0
- * @last-deployed 2026-01-02T20:00:00Z (v4.63.1)
+ * @last-deployed 2026-01-02T20:00:00Z (v4.66.0)
  */
+
+/* =============================================
+   BODY PADDING OVERRIDE
+   Remove body padding for about page - hero handles its own positioning
+   This eliminates complex interactions between body padding, hero margin, and hero padding
+============================================= */
+body.kunaal-about-page {
+  padding-top: 0;
+}
 
 /* About-page-specific color variables (not in global design system) */
 .kunaal-about-page {
@@ -337,25 +346,25 @@ a:focus-visible, button:focus-visible {
    HERO - Full viewport collage layout
    Scoped to about page to avoid conflicts
    
-   ARCHITECTURE (v4.65.0 - SELF-CONTAINED):
-   - Uses same proven pattern as contact-page.css
-   - Negative margin pulls hero to viewport top (Y=0)
-   - Padding-top pushes content below the mast
-   - Full 100svh height ensures hero fills viewport
-   - Does NOT rely on body padding - completely self-contained
+   ARCHITECTURE (v4.66.0 - CLEAN POSITIONING):
+   - Body padding is DISABLED for about page (see top of file)
+   - Hero uses simple margin-top to start after mast
+   - Hero height fills exactly to viewport bottom
+   - NO negative margins, NO padding tricks
+   - Single source of truth: --mastH used in margin-top and height calc
 ============================================= */
-/* Wrapper: Self-contained full viewport hero */
+/* Wrapper: Simple positioning - start after mast, fill to bottom */
 .kunaal-about-page .hero {
   position: relative;
   display: block;
   box-sizing: border-box;
-  /* Pull UP into body padding space - hero starts at Y=0 */
-  margin-top: calc(-1 * var(--mastH, 100px));
-  /* Full viewport height - hero fills from Y=0 to Y=100svh */
-  height: 100vh;
-  height: 100svh;
-  /* Push content DOWN - grid starts at Y=mastH (right below mast) */
-  padding-top: var(--mastH, 100px);
+  /* Simple: start AFTER the mast (body has no padding for about page) */
+  margin-top: var(--mastH, 100px);
+  /* No padding needed - grid fills entire hero */
+  padding: 0;
+  /* Fill exactly the visible area below mast */
+  height: calc(100vh - var(--mastH, 100px));
+  height: calc(100svh - var(--mastH, 100px));
   /* Clip overflow - ensures panorama is hidden */
   overflow: hidden;
   background: var(--bg);
@@ -363,7 +372,7 @@ a:focus-visible, button:focus-visible {
 
 /* Grid: 6-column layout with edge strips
    ARCHITECTURE:
-   - Grid fills hero CONTENT area (hero has padding-top for mast)
+   - Grid fills ENTIRE hero (hero has NO padding)
    - Left strip: narrow column showing edge of photos 1/6
    - Main photos: 3 equal columns for photos 2-4/7-9
    - Text: WIDER column for readability (380-480px)
@@ -372,7 +381,7 @@ a:focus-visible, button:focus-visible {
 */
 .kunaal-about-page .hero-grid {
   display: grid;
-  /* Height = 100% of hero content area (after padding-top) */
+  /* Height = 100% of hero (hero has no padding) */
   height: 100%;
   width: 100%;
   gap: 2px;
@@ -777,8 +786,8 @@ a:focus-visible, button:focus-visible {
     height: auto;
     min-height: 0;
     max-height: none;
-    margin-top: 0;   /* Reset negative margin */
-    padding-top: 0;  /* Reset padding (body padding handles mast offset on mobile) */
+    margin-top: 0;   /* Reset margin - let natural flow handle positioning */
+    padding-top: 0;  /* No padding needed */
     overflow: visible;
   }
   
