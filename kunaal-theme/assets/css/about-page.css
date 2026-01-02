@@ -359,12 +359,13 @@ a:focus-visible, button:focus-visible {
   display: block;
   box-sizing: border-box;
   /* Simple: start AFTER the mast (body has no padding for about page) */
-  margin-top: var(--mastH, 100px);
+  /* Fallback 75px matches actual mast height (~73px) to minimize gap before JS runs */
+  margin-top: var(--mastH, 75px);
   /* No padding needed - grid fills entire hero */
   padding: 0;
   /* Fill exactly the visible area below mast */
-  height: calc(100vh - var(--mastH, 100px));
-  height: calc(100svh - var(--mastH, 100px));
+  height: calc(100vh - var(--mastH, 75px));
+  height: calc(100svh - var(--mastH, 75px));
   /* Clip overflow - ensures panorama is hidden */
   overflow: hidden;
   background: var(--bg);
