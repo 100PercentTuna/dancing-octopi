@@ -8,7 +8,7 @@
  *
  * @package Kunaal_Theme
  * @since 4.21.0
- * @last-deployed 2026-01-02T17:00:00Z (v4.60.0)
+ * @last-deployed 2026-01-02T18:30:00Z (v4.61.0)
  */
 
 /* About-page-specific color variables (not in global design system) */
@@ -337,13 +337,15 @@ a:focus-visible, button:focus-visible {
    HERO - Full viewport collage layout
    Scoped to about page to avoid conflicts
    
-   ARCHITECTURE:
+   ARCHITECTURE (v4.61.0):
    - .hero wrapper: fills EXACTLY viewport below mast
-   - .hero-grid: fills container 100%
-   - Photos are TALL (0.5fr each row = full height for photos)
-   - Text column spans both rows and gets full height
-   - Text starts lower with more top padding
-   - overflow:hidden prevents any spillover
+   - .hero-grid: 6-column layout with edge strips
+   - Column 1: Left strip (narrow, shows edge of photos 1/6)
+   - Columns 2-4: Main photos (1fr each)
+   - Column 5: Text column (flexible min/max)
+   - Column 6: Right strip (wider, shows photos 5/10)
+   - Photos in strips are clipped by narrow column width
+   - overflow:hidden on .hero prevents panorama showing
 ============================================= */
 /* Wrapper: EXACT viewport height below mast */
 .kunaal-about-page .hero {
@@ -355,7 +357,7 @@ a:focus-visible, button:focus-visible {
      JS will update --mastH to actual value on load */
   height: calc(100vh - var(--mastH, 80px));
   height: calc(100svh - var(--mastH, 80px));
-  /* No margin or padding - .kunaal-about-page scope provides sufficient specificity */
+  /* No margin or padding */
   margin: 0;
   padding: 0;
   /* Clip all overflow - ensures panorama is hidden */
@@ -366,11 +368,12 @@ a:focus-visible, button:focus-visible {
   max-height: calc(100svh - var(--mastH, 80px));
 }
 
-/* Grid: 100% of container 
-   ARCHITECTURE: 5-column grid (right strip removed for more space)
-   - Photos fill viewport height via 0.5fr rows
-   - 4 equal photo columns + 1 wider text column
-   - At 1440px with ~410px text: each photo ≈ 257px wide (22% larger)
+/* Grid: 6-column layout with edge strips
+   ARCHITECTURE:
+   - Left strip: narrow column showing edge of photos 1/6
+   - Main photos: 3 equal columns for photos 2-4/7-9
+   - Text: flexible width for readability
+   - Right strip: wider column showing photos 5/10
 */
 .kunaal-about-page .hero-grid {
   display: grid;
@@ -379,26 +382,35 @@ a:focus-visible, button:focus-visible {
   gap: 2px;
   margin: 0;
   padding: 0;
-  /* TALL photo rows - 0.5fr each = full height for photos */
+  /* Full height rows */
   grid-template-rows: 0.5fr 0.5fr;
-  /* 5 columns: 4 equal photo columns + wider text column */
+  /* 6 columns: left-strip + 3 photos + text + right-strip */
   grid-template-columns:
-    1fr          /* col 1 - equal photos */
-    1fr          /* col 2 */
-    1fr          /* col 3 */
-    1fr          /* col 4 */
-    minmax(380px, 440px); /* col 5: hero text - wider for readability */
+    minmax(30px, 50px)     /* col 1: left strip (photos 1/6) */
+    1fr                    /* col 2: main photo */
+    1fr                    /* col 3: main photo */
+    1fr                    /* col 4: main photo */
+    minmax(360px, 440px)   /* col 5: hero text */
+    minmax(60px, 100px);   /* col 6: right strip (photos 5/10) */
 }
 
-/* Explicit placement: 4 photo columns per row + text column */
-/* Row 1: photos 1-4 in columns 1-4, text spans both rows in column 5 */
-/* Row 2: photos 6-9 in columns 1-4 */
-/* Photos 5 and 10 (right strip) are hidden - space redistributed */
+/* Explicit placement: 6-column grid
+   Row 1: photo 1 (left strip), photos 2-4 (main), text (spans rows), photo 5 (right strip)
+   Row 2: photo 6 (left strip), photos 7-9 (main), text (spans rows), photo 10 (right strip)
+*/
+
+/* LEFT STRIP - Column 1 */
 .kunaal-about-page .hero-photo--1 {
   grid-column: 1;
   grid-row: 1;
 }
 
+.kunaal-about-page .hero-photo--6 {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+/* MAIN PHOTOS - Columns 2-4 */
 .kunaal-about-page .hero-photo--2 {
   grid-column: 2;
   grid-row: 1;
@@ -409,25 +421,9 @@ a:focus-visible, button:focus-visible {
   grid-row: 1;
 }
 
-/* Tile 3: adjust object-position for better cropping/focal point */
-.kunaal-about-page .hero-photo--3 img {
-  object-position: center 40%; /* Adjust focal point to show subject better */
-}
-
 .kunaal-about-page .hero-photo--4 {
   grid-column: 4;
   grid-row: 1;
-}
-
-/* Hide right strip photos - space redistributed to main grid */
-.kunaal-about-page .hero-photo--5,
-.kunaal-about-page .hero-photo--10 {
-  display: none;
-}
-
-.kunaal-about-page .hero-photo--6 {
-  grid-column: 1;
-  grid-row: 2;
 }
 
 .kunaal-about-page .hero-photo--7 {
@@ -442,6 +438,17 @@ a:focus-visible, button:focus-visible {
 
 .kunaal-about-page .hero-photo--9 {
   grid-column: 4;
+  grid-row: 2;
+}
+
+/* RIGHT STRIP - Column 6 (photos 5 and 10 are VISIBLE) */
+.kunaal-about-page .hero-photo--5 {
+  grid-column: 6;
+  grid-row: 1;
+}
+
+.kunaal-about-page .hero-photo--10 {
+  grid-column: 6;
   grid-row: 2;
 }
 
@@ -475,14 +482,30 @@ a:focus-visible, button:focus-visible {
   z-index: 1; /* Below dog-ear pseudo-element (z-index: 10) */
 }
 
-/* Photo 1: heavy crop from left - show right side like photo 5 */
-.kunaal-about-page .hero-photo--1 img {
-  object-position: 80% center; /* Heavy left crop - matches right strip style */
+/* LEFT STRIP photos: show RIGHT edge (strip column clips the rest) */
+.kunaal-about-page .hero-photo--1 img,
+.kunaal-about-page .hero-photo--6 img {
+  object-position: right center;
 }
 
-/* Photo 6: heavy crop from left to match photo 1 */
-.kunaal-about-page .hero-photo--6 img {
-  object-position: 75% center; /* Heavy left crop */
+/* RIGHT STRIP photos: show LEFT edge (strip column clips the rest) */
+.kunaal-about-page .hero-photo--5 img,
+.kunaal-about-page .hero-photo--10 img {
+  object-position: left center;
+}
+
+/* MAIN PHOTOS: centered (no artificial cropping) */
+.kunaal-about-page .hero-photo--2 img,
+.kunaal-about-page .hero-photo--4 img,
+.kunaal-about-page .hero-photo--7 img,
+.kunaal-about-page .hero-photo--8 img,
+.kunaal-about-page .hero-photo--9 img {
+  object-position: center center;
+}
+
+/* Photo 3 (with accent): slight vertical adjustment for focal point */
+.kunaal-about-page .hero-photo--3 img {
+  object-position: center 40%;
 }
 
 .kunaal-about-page .hero-photo.color-active img { 
@@ -520,15 +543,16 @@ a:focus-visible, button:focus-visible {
    Canonical owner: about-page.css (see UI_CONTRACTS.md)
    
    ARCHITECTURE:
-   - Dog-ear is a ::before pseudo-element on the FRAME (not inside photo)
-   - Positioned at top-left corner of the frame edge
-   - Uses clip-path for the triangle shape (well-supported in modern browsers)
-   - Frame allows overflow to show dog-ear above everything
+   - Dog-ear is a ::before pseudo-element on the photo frame
+   - Positioned at top-left corner
+   - Uses clip-path for triangle shape
+   - overflow:visible ensures dog-ear is not clipped
    - High z-index ensures visibility above the image
    ============================================= */
 .kunaal-about-page .hero-photo.has-accent {
-  /* Dog-ear is now inside frame bounds, no need for overflow:visible */
   position: relative;
+  /* CRITICAL: Allow dog-ear to be visible (per UI_CONTRACTS.md) */
+  overflow: visible;
 }
 
 .kunaal-about-page .hero-photo.has-accent::before {
@@ -700,23 +724,24 @@ a:focus-visible, button:focus-visible {
   }
 }
 
-/* Mid breakpoint: 901px-1100px */
+/* Mid breakpoint: 901px-1100px - narrower strips, smaller text */
 @media (min-width: 901px) and (max-width: 1100px) {
   .kunaal-about-page .hero-grid {
     grid-template-rows: 0.5fr 0.5fr;
+    /* Narrower strips at mid-width */
     grid-template-columns:
-      1fr 1fr 1fr 1fr           /* 4 equal photo columns */
-      minmax(340px, 400px);     /* wider text column */
+      minmax(20px, 35px)     /* left strip - narrower */
+      1fr 1fr 1fr            /* 3 main photos */
+      minmax(300px, 360px)   /* text column - narrower */
+      minmax(40px, 70px);    /* right strip - narrower */
   }
-  
-  /* Photos 5 and 10 already hidden at desktop - rule inherited */
   
   .kunaal-about-page .hero-text {
     grid-column: 5;
     padding: 1.25rem;
   }
   
-  /* Slightly smaller typography at this breakpoint */
+  /* Smaller typography to fit all content */
   .hero-title {
     font-size: clamp(1.2rem, 1.9vw, 1.5rem);
   }
