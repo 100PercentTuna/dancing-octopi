@@ -8,7 +8,7 @@
  *
  * @package Kunaal_Theme
  * @since 4.21.0
- * @last-deployed 2026-01-02T19:00:00Z (v4.62.0)
+ * @last-deployed 2026-01-02T19:30:00Z (v4.63.0)
  */
 
 /* About-page-specific color variables (not in global design system) */
@@ -337,39 +337,34 @@ a:focus-visible, button:focus-visible {
    HERO - Full viewport collage layout
    Scoped to about page to avoid conflicts
    
-   ARCHITECTURE (v4.61.0):
-   - .hero wrapper: fills EXACTLY viewport below mast
+   ARCHITECTURE (v4.63.0):
+   - .hero wrapper: pulls UP into body padding, uses full 100svh height
+   - padding-top pushes grid content below the mast
    - .hero-grid: 6-column layout with edge strips
-   - Column 1: Left strip (narrow, shows edge of photos 1/6)
-   - Columns 2-4: Main photos (1fr each)
-   - Column 5: Text column (flexible min/max)
-   - Column 6: Right strip (wider, shows photos 5/10)
-   - Photos in strips are clipped by narrow column width
+   - This pattern matches contact-page.css for consistency
    - overflow:hidden on .hero prevents panorama showing
 ============================================= */
-/* Wrapper: EXACT viewport height below mast */
+/* Wrapper: Fill FULL viewport, pull up into body padding */
 .kunaal-about-page .hero {
   position: relative;
   display: block;
   box-sizing: border-box;
-  /* Height = viewport - mast (use vh with svh fallback)
-     Default 80px is conservative - actual mast is typically 70-90px
-     JS will update --mastH to actual value on load */
-  height: calc(100vh - var(--mastH, 80px));
-  height: calc(100svh - var(--mastH, 80px));
-  /* No margin or padding */
-  margin: 0;
-  padding: 0;
+  /* Pull UP into body padding-top area (body has padding-top: var(--mastH))
+     This positions hero at Y=0, behind the fixed mast */
+  margin-top: calc(-1 * var(--mastH, 80px));
+  /* Full viewport height - ensures hero extends to bottom */
+  height: 100vh;
+  height: 100svh;
+  /* Push grid content below the fixed mast */
+  padding-top: var(--mastH, 80px);
   /* Clip all overflow - ensures panorama is hidden */
   overflow: hidden;
   background: var(--bg);
-  /* Ensure it fills exactly one viewport */
-  min-height: calc(100svh - var(--mastH, 80px));
-  max-height: calc(100svh - var(--mastH, 80px));
 }
 
 /* Grid: 6-column layout with edge strips
    ARCHITECTURE:
+   - Grid fills the hero CONTENT area (after padding-top)
    - Left strip: narrow column showing edge of photos 1/6
    - Main photos: 3 equal columns for photos 2-4/7-9
    - Text: flexible width for readability
@@ -378,6 +373,7 @@ a:focus-visible, button:focus-visible {
 */
 .kunaal-about-page .hero-grid {
   display: grid;
+  /* Height = 100% of hero content area (hero has padding-top for mast) */
   height: 100%;
   width: 100%;
   gap: 2px;
@@ -391,7 +387,7 @@ a:focus-visible, button:focus-visible {
     1fr                    /* col 2: main photo */
     1fr                    /* col 3: main photo */
     1fr                    /* col 4: main photo */
-    minmax(340px, 420px)   /* col 5: hero text - slightly narrower for more photo space */
+    minmax(340px, 420px)   /* col 5: hero text */
     minmax(60px, 100px);   /* col 6: right strip (photos 5/10) */
 }
 
@@ -767,12 +763,13 @@ a:focus-visible, button:focus-visible {
 
 /* Mobile breakpoint */
 @media (max-width: 900px) {
-  /* Mobile hero - auto height, no forced viewport height */
+  /* Mobile hero - auto height, no forced viewport height, reset positioning */
   .kunaal-about-page .hero {
     height: auto;
     min-height: 0;
     max-height: none;
-    margin-top: 0;
+    margin-top: 0;   /* Reset negative margin */
+    padding-top: 0;  /* Reset padding (body padding handles mast offset on mobile) */
     overflow: visible;
   }
   
