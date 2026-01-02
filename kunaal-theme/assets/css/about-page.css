@@ -337,24 +337,25 @@ a:focus-visible, button:focus-visible {
    HERO - Full viewport collage layout
    Scoped to about page to avoid conflicts
    
-   ARCHITECTURE (v4.64.0 - SIMPLIFIED):
-   - Body padding-top pushes hero below the fixed mast naturally
-   - Hero height = exactly the visible viewport area below mast
-   - NO negative margin, NO padding - just simple math
-   - Grid fills hero completely, photos start right below mast
+   ARCHITECTURE (v4.65.0 - SELF-CONTAINED):
+   - Uses same proven pattern as contact-page.css
+   - Negative margin pulls hero to viewport top (Y=0)
+   - Padding-top pushes content below the mast
+   - Full 100svh height ensures hero fills viewport
+   - Does NOT rely on body padding - completely self-contained
 ============================================= */
-/* Wrapper: Fill exactly the visible area below mast */
+/* Wrapper: Self-contained full viewport hero */
 .kunaal-about-page .hero {
   position: relative;
   display: block;
   box-sizing: border-box;
-  /* NO negative margin - body padding pushes us down naturally */
-  margin: 0;
-  /* NO padding - grid fills the entire hero */
-  padding: 0;
-  /* Height = visible viewport below mast (body padding handles offset) */
-  height: calc(100vh - var(--mastH, 100px));
-  height: calc(100svh - var(--mastH, 100px));
+  /* Pull UP into body padding space - hero starts at Y=0 */
+  margin-top: calc(-1 * var(--mastH, 100px));
+  /* Full viewport height - hero fills from Y=0 to Y=100svh */
+  height: 100vh;
+  height: 100svh;
+  /* Push content DOWN - grid starts at Y=mastH (right below mast) */
+  padding-top: var(--mastH, 100px);
   /* Clip overflow - ensures panorama is hidden */
   overflow: hidden;
   background: var(--bg);
@@ -362,7 +363,7 @@ a:focus-visible, button:focus-visible {
 
 /* Grid: 6-column layout with edge strips
    ARCHITECTURE:
-   - Grid fills entire hero (no padding on hero)
+   - Grid fills hero CONTENT area (hero has padding-top for mast)
    - Left strip: narrow column showing edge of photos 1/6
    - Main photos: 3 equal columns for photos 2-4/7-9
    - Text: WIDER column for readability (380-480px)
@@ -371,7 +372,7 @@ a:focus-visible, button:focus-visible {
 */
 .kunaal-about-page .hero-grid {
   display: grid;
-  /* Height = 100% of hero (hero has no padding now) */
+  /* Height = 100% of hero content area (after padding-top) */
   height: 100%;
   width: 100%;
   gap: 2px;
