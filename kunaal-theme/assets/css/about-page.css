@@ -370,14 +370,14 @@ a:focus-visible, button:focus-visible {
   padding: 0;
   /* TALL photo rows - 0.5fr each, photos get full height */
   grid-template-rows: 0.5fr 0.5fr;
-  /* 6 columns: BIGGER photos + narrower text + right strip */
+  /* 6 columns: MUCH BIGGER photos + narrower text + right strip */
   grid-template-columns:
-    1.2fr        /* col 1 - bigger */
-    1.2fr        /* col 2 - bigger */
-    1.2fr        /* col 3 - bigger */
-    1.2fr        /* col 4 - bigger */
-    minmax(300px, 420px) /* col 5: hero text - narrower to make room for bigger photos */
-    0.4fr;       /* col 6: right strip */
+    1.4fr        /* col 1 - much bigger */
+    1.4fr        /* col 2 - much bigger */
+    1.4fr        /* col 3 - much bigger */
+    1.4fr        /* col 4 - much bigger */
+    minmax(280px, 400px) /* col 5: hero text - narrower to make room */
+    0.3fr;       /* col 6: right strip - smaller */
 }
 
 /* Explicit placement: slots map to columns/rows */
@@ -470,9 +470,9 @@ a:focus-visible, button:focus-visible {
   z-index: 1; /* Below dog-ear pseudo-element (z-index: 10) */
 }
 
-/* First photo: crop more on the left - OK to crop heavily */
+/* First photo: crop heavily on the left - OK to crop heavily */
 .kunaal-about-page .hero-photo--1 img {
-  object-position: 20% center; /* Crop heavily from left - show right portion */
+  object-position: 30% center; /* Crop heavily from left - show right portion */
 }
 
 .kunaal-about-page .hero-photo.color-active img { 
@@ -529,18 +529,21 @@ a:focus-visible, button:focus-visible {
 .kunaal-about-page .hero-photo.has-accent::before {
   content: "";
   position: absolute;
-  /* Position at top-left corner of FRAME edge */
-  top: -1px; /* Slightly above frame to ensure visibility */
-  left: -1px; /* Slightly left of frame to ensure visibility */
+  /* Position at top-left corner of FRAME edge - ensure it's visible */
+  top: 0;
+  left: 0;
   /* Triangle size */
   width: 40px;
   height: 40px;
   /* Blue background with clip-path triangle */
-  background-color: var(--blue, #1E5AFF);
+  background-color: var(--blue, #1E5AFF) !important;
   clip-path: polygon(0 0, 100% 0, 0 100%);
   /* Above everything - highest z-index */
-  z-index: 100;
+  z-index: 1000 !important;
   pointer-events: none;
+  /* Ensure visibility */
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Hero text: spans both rows, flex column starting at top */
