@@ -8,7 +8,7 @@
  *
  * @package Kunaal_Theme
  * @since 4.21.0
- * @last-deployed 2026-01-02T16:00:00Z (v4.59.0)
+ * @last-deployed 2026-01-02T17:00:00Z (v4.60.0)
  */
 
 /* About-page-specific color variables (not in global design system) */
@@ -350,9 +350,11 @@ a:focus-visible, button:focus-visible {
   position: relative;
   display: block;
   box-sizing: border-box;
-  /* Height = viewport - mast (use vh with svh fallback) */
-  height: calc(100vh - var(--mastH, 100px));
-  height: calc(100svh - var(--mastH, 100px));
+  /* Height = viewport - mast (use vh with svh fallback)
+     Default 80px is conservative - actual mast is typically 70-90px
+     JS will update --mastH to actual value on load */
+  height: calc(100vh - var(--mastH, 80px));
+  height: calc(100svh - var(--mastH, 80px));
   /* No margin or padding - .kunaal-about-page scope provides sufficient specificity */
   margin: 0;
   padding: 0;
@@ -360,16 +362,15 @@ a:focus-visible, button:focus-visible {
   overflow: hidden;
   background: var(--bg);
   /* Ensure it fills exactly one viewport */
-  min-height: calc(100svh - var(--mastH, 100px));
-  max-height: calc(100svh - var(--mastH, 100px));
+  min-height: calc(100svh - var(--mastH, 80px));
+  max-height: calc(100svh - var(--mastH, 80px));
 }
 
 /* Grid: 100% of container 
-   ARCHITECTURE: Maximize photo size while fitting all text content
+   ARCHITECTURE: 5-column grid (right strip removed for more space)
    - Photos fill viewport height via 0.5fr rows
-   - Text column narrower but typography is compact to fit
-   - Total fr for photos: 1.3 × 4 = 5.2fr (larger than before)
-   - At 1440px with ~330px text: each photo ≈ 215px wide
+   - 4 equal photo columns + 1 wider text column
+   - At 1440px with ~410px text: each photo ≈ 257px wide (22% larger)
 */
 .kunaal-about-page .hero-grid {
   display: grid;
@@ -380,21 +381,19 @@ a:focus-visible, button:focus-visible {
   padding: 0;
   /* TALL photo rows - 0.5fr each = full height for photos */
   grid-template-rows: 0.5fr 0.5fr;
-  /* 6 columns: larger photos + narrower text + right strip */
+  /* 5 columns: 4 equal photo columns + wider text column */
   grid-template-columns:
-    1.3fr        /* col 1 - larger photos */
-    1.3fr        /* col 2 */
-    1.3fr        /* col 3 */
-    1.3fr        /* col 4 */
-    minmax(300px, 360px) /* col 5: hero text - narrower, compact typography */
-    0.2fr;       /* col 6: right strip */
+    1fr          /* col 1 - equal photos */
+    1fr          /* col 2 */
+    1fr          /* col 3 */
+    1fr          /* col 4 */
+    minmax(380px, 440px); /* col 5: hero text - wider for readability */
 }
 
-/* Explicit placement: slots map to columns/rows */
-/* slot1 col1 row1, slot2 col2 row1, slot3 col3 row1, slot4 col4 row1 */
-/* slot5 col6 row1 (right strip top) */
-/* slot6 col1 row2, slot7 col2 row2, slot8 col3 row2, slot9 col4 row2 */
-/* slot10 col6 row2 (right strip bottom) */
+/* Explicit placement: 4 photo columns per row + text column */
+/* Row 1: photos 1-4 in columns 1-4, text spans both rows in column 5 */
+/* Row 2: photos 6-9 in columns 1-4 */
+/* Photos 5 and 10 (right strip) are hidden - space redistributed */
 .kunaal-about-page .hero-photo--1 {
   grid-column: 1;
   grid-row: 1;
@@ -420,9 +419,10 @@ a:focus-visible, button:focus-visible {
   grid-row: 1;
 }
 
-.kunaal-about-page .hero-photo--5 {
-  grid-column: 6;
-  grid-row: 1;
+/* Hide right strip photos - space redistributed to main grid */
+.kunaal-about-page .hero-photo--5,
+.kunaal-about-page .hero-photo--10 {
+  display: none;
 }
 
 .kunaal-about-page .hero-photo--6 {
@@ -442,11 +442,6 @@ a:focus-visible, button:focus-visible {
 
 .kunaal-about-page .hero-photo--9 {
   grid-column: 4;
-  grid-row: 2;
-}
-
-.kunaal-about-page .hero-photo--10 {
-  grid-column: 6;
   grid-row: 2;
 }
 
@@ -480,14 +475,14 @@ a:focus-visible, button:focus-visible {
   z-index: 1; /* Below dog-ear pseudo-element (z-index: 10) */
 }
 
-/* First photo: crop more from left - show more of the right portion */
+/* Photo 1: heavy crop from left - show right side like photo 5 */
 .kunaal-about-page .hero-photo--1 img {
-  object-position: 65% center; /* Higher % = shows more RIGHT side, crops more LEFT */
+  object-position: 80% center; /* Heavy left crop - matches right strip style */
 }
 
-/* Photo 6: crop from left to match photo 1 balance */
+/* Photo 6: heavy crop from left to match photo 1 */
 .kunaal-about-page .hero-photo--6 img {
-  object-position: 60% center; /* Crop from left side */
+  object-position: 75% center; /* Heavy left crop */
 }
 
 .kunaal-about-page .hero-photo.color-active img { 
@@ -572,24 +567,24 @@ a:focus-visible, button:focus-visible {
 
 .hero-label {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--warm);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 .hero-label::after {
   content: '';
-  width: 20px;
+  width: 22px;
   height: 1px;
   background: var(--warm);
 }
 .hero-title {
   font-family: var(--serif);
-  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
   font-weight: 400;
   line-height: 1.2;
   margin-bottom: 0.75rem;
@@ -598,9 +593,9 @@ a:focus-visible, button:focus-visible {
 .hero-intro {
   /* SANS-SERIF as requested */
   font-family: var(--sans);
-  font-size: clamp(0.8rem, 1vw, 0.875rem);
+  font-size: clamp(0.85rem, 1.05vw, 0.925rem);
   color: var(--muted);
-  line-height: 1.55;
+  line-height: 1.6;
   white-space: pre-line; /* Preserve newlines from admin input */
   margin-bottom: 0; /* Let meta handle spacing */
 }
@@ -623,16 +618,16 @@ a:focus-visible, button:focus-visible {
 }
 .hero-meta-row .label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted2);
-  width: 55px;
+  width: 58px;
   flex-shrink: 0;
 }
 .hero-meta-row .value {
   font-family: var(--serif);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--ink);
 }
 
@@ -650,7 +645,7 @@ a:focus-visible, button:focus-visible {
 
 .kunaal-about-page .hero-scroll__label {
   font-family: var(--mono);
-  font-size: 7px;
+  font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--warm);
@@ -710,31 +705,27 @@ a:focus-visible, button:focus-visible {
   .kunaal-about-page .hero-grid {
     grid-template-rows: 0.5fr 0.5fr;
     grid-template-columns:
-      1.1fr 1.1fr 1.1fr 1.1fr  /* 4 photo columns - slightly larger */
-      minmax(280px, 340px); /* hero text - narrower */
+      1fr 1fr 1fr 1fr           /* 4 equal photo columns */
+      minmax(340px, 400px);     /* wider text column */
   }
   
-  /* Hide right strip slots */
-  .kunaal-about-page .hero-photo--5,
-  .kunaal-about-page .hero-photo--10 {
-    display: none;
-  }
+  /* Photos 5 and 10 already hidden at desktop - rule inherited */
   
   .kunaal-about-page .hero-text {
     grid-column: 5;
     padding: 1.25rem;
   }
   
-  /* Compact typography at this breakpoint */
+  /* Slightly smaller typography at this breakpoint */
   .hero-title {
-    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+    font-size: clamp(1.2rem, 1.9vw, 1.5rem);
   }
   .hero-intro {
-    font-size: 0.8rem;
-    line-height: 1.5;
+    font-size: 0.85rem;
+    line-height: 1.55;
   }
   .hero-meta-row .value {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
