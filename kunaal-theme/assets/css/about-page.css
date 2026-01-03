@@ -970,6 +970,7 @@ a:focus-visible, button:focus-visible {
 .rabbit-holes {
   padding: 3.5rem 2rem;
   background: var(--bgWarm);
+  overflow-x: hidden; /* Prevent bgword from overflowing when animated */
 }
 .rabbit-holes.section{ padding-bottom: 2.2rem; }
 .rabbit-holes .section-inner {
