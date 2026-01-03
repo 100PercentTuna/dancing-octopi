@@ -121,3 +121,16 @@ $initials = kunaal_get_initials();
     </div>
   </div>
 </header>
+<?php
+// Early --mastH calculation: Runs synchronously before hero renders to eliminate gap
+// This prevents the timing race where CSS fallback is used before main.js sets --mastH
+?>
+<script>
+(function() {
+  var mast = document.querySelector('.mast');
+  if (mast) {
+    var rect = mast.getBoundingClientRect();
+    document.documentElement.style.setProperty('--mastH', (rect.top + rect.height) + 'px');
+  }
+})();
+</script>

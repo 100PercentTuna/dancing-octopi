@@ -359,16 +359,34 @@ a:focus-visible, button:focus-visible {
   display: block;
   box-sizing: border-box;
   /* Simple: start AFTER the mast (body has no padding for about page) */
-  /* Fallback 75px matches actual mast height (~73px) to minimize gap before JS runs */
-  margin-top: var(--mastH, 75px);
+  /* Fallback 77px = actual mast height (16px padding + 44px avatar + 16px padding + 1px border) */
+  margin-top: var(--mastH, 77px);
   /* No padding needed - grid fills entire hero */
   padding: 0;
   /* Fill exactly the visible area below mast */
-  height: calc(100vh - var(--mastH, 75px));
-  height: calc(100svh - var(--mastH, 75px));
+  height: calc(100vh - var(--mastH, 77px));
+  height: calc(100svh - var(--mastH, 77px));
   /* Clip overflow - ensures panorama is hidden */
   overflow: hidden;
   background: var(--bg);
+}
+
+/* Admin bar fallback - when logged in, mast is pushed down by admin bar height */
+.admin-bar.kunaal-about-page .hero {
+  /* 32px admin bar + 77px mast = 109px */
+  margin-top: var(--mastH, 109px);
+  height: calc(100vh - var(--mastH, 109px));
+  height: calc(100svh - var(--mastH, 109px));
+}
+
+/* Mobile admin bar is 46px (WordPress uses smaller bar on mobile) */
+@media screen and (max-width: 782px) {
+  .admin-bar.kunaal-about-page .hero {
+    /* 46px admin bar + 77px mast = 123px */
+    margin-top: var(--mastH, 123px);
+    height: calc(100vh - var(--mastH, 123px));
+    height: calc(100svh - var(--mastH, 123px));
+  }
 }
 
 /* Grid: 6-column layout with edge strips

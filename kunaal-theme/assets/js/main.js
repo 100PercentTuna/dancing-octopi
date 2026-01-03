@@ -21,11 +21,17 @@
   // ========================================
   // DYNAMIC HEADER HEIGHT (--mastH)
   // ========================================
+  // --mastH represents the distance from viewport top to the bottom of the mast.
+  // This accounts for:
+  // - Admin bar offset (rect.top is 32px when admin bar is present, 0 otherwise)
+  // - Mast height (rect.height is ~77px: 16px padding + 44px avatar + 16px padding + 1px border)
   function updateMastHeight() {
     const mast = document.querySelector('.mast');
     if (mast) {
       const rect = mast.getBoundingClientRect();
-      const height = rect.bottom;
+      // Use rect.top + rect.height for explicit clarity (equivalent to rect.bottom)
+      // This calculates: admin bar offset (if any) + mast height
+      const height = rect.top + rect.height;
       document.documentElement.style.setProperty('--mastH', height + 'px');
     }
   }
