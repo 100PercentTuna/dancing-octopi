@@ -173,9 +173,15 @@
     }
 
     // Progress bar
+    // Force 0% when at/near top (<5px) to avoid artifacts from
+    // early document height calculations before images load
     if (progressFill) {
-      const targetFrac = Math.min(y / cachedDocH, 1);
-      progressFill.style.width = (targetFrac * 100) + '%';
+      if (y < 5) {
+        progressFill.style.width = '0%';
+      } else {
+        const targetFrac = Math.min(y / cachedDocH, 1);
+        progressFill.style.width = (targetFrac * 100) + '%';
+      }
     }
   }
 
@@ -1164,6 +1170,13 @@
 
       window.addEventListener('resize', () => {
         cacheViewport();
+      });
+
+      // Recalculate document height after all resources (images) load
+      // This fixes progress bar showing wrong values on initial load
+      window.addEventListener('load', () => {
+        cacheViewport();
+        requestTick(); // Update progress bar with correct values
       });
 
       initNav();

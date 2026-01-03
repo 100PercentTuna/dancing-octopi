@@ -998,13 +998,25 @@
     const fill = document.getElementById('progressFill');
     if(!fill) return;
     let ticking = false;
+    let cachedScrollHeight = 1;
+    
+    function cacheHeight() {
+      const doc = document.documentElement;
+      cachedScrollHeight = (doc.scrollHeight - doc.clientHeight) || 1;
+    }
+    
     function update(){
       ticking = false;
-      const doc = document.documentElement;
-      const scrollTop = window.pageYOffset || doc.scrollTop || 0;
-      const scrollHeight = (doc.scrollHeight || 0) - (doc.clientHeight || window.innerHeight || 1);
-      const p = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
-      fill.style.width = (p * 100).toFixed(2) + '%';
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+      
+      // Force 0% when at/near top (<5px) to avoid artifacts from
+      // early document height calculations before images load
+      if (scrollTop < 5) {
+        fill.style.width = '0%';
+      } else {
+        const p = cachedScrollHeight > 0 ? (scrollTop / cachedScrollHeight) : 0;
+        fill.style.width = (p * 100).toFixed(2) + '%';
+      }
 
       // Header compaction (drives CSS var(--p))
       const hp = Math.min(scrollTop / 120, 1);
@@ -1015,8 +1027,22 @@
       ticking = true;
       requestAnimationFrame(update);
     }
+    
+    // Initial calculation
+    cacheHeight();
+    
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', function() {
+      cacheHeight();
+      onScroll();
+    });
+    
+    // Recalculate after all resources load (images affect document height)
+    window.addEventListener('load', function() {
+      cacheHeight();
+      update();
+    });
+    
     update();
   }
 
