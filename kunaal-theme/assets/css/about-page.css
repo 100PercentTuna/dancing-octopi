@@ -296,7 +296,7 @@ body.js:not(.gsap-ready) [data-reveal] {
   /* Center the visible portion - neutral starting point */
   object-position: center center;
   filter: grayscale(100%);
-  transition: filter 0.4s ease;
+  transition: filter 5s ease;
   position: absolute;
   /* Starting position: center the 280% image in the 100% container
      -(280% - 100%) / 2 = -90% */
