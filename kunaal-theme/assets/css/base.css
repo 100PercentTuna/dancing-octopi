@@ -6,8 +6,11 @@
 /* Box sizing reset */
 *, *::before, *::after { box-sizing: border-box; }
 
-/* Smooth scrolling */
-html { scroll-behavior: smooth; }
+/* Smooth scrolling + prevent horizontal scroll on all pages */
+html { 
+  scroll-behavior: smooth;
+  overflow-x: hidden; /* Prevent horizontal scroll - critical for mobile */
+}
 html, body { height: 100%; }
 
 /* Subtle background gradient for all pages */
@@ -27,6 +30,7 @@ body {
   font-optical-sizing: auto;
   line-height: 1.6;
   padding-top: var(--mastH, 100px); /* Fallback 100px accommodates tagline wrap; JS sets actual value */
+  overflow-x: hidden; /* Prevent horizontal scroll - critical for mobile */
 }
 
 /* Admin bar offset - JS will measure actual height, these are fallbacks */

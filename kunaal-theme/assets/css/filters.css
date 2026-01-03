@@ -277,23 +277,129 @@
   box-shadow: 0 0 0 3px var(--blueRing);
 }
 
-/* Mobile filter adjustments */
+/* ========================================
+   MOBILE FILTER - Complete Overhaul
+   - 44px touch targets (Apple HIG, WCAG 2.1)
+   - 16px font size (prevents iOS zoom on focus)
+   - Stacked vertical layout
+   - Unified dropdown styling
+   ======================================== */
 @media (max-width: 640px) {
-  .toolbar { flex-wrap: wrap; justify-content: flex-end; }
-  .filterControls { width: 100%; justify-content: flex-end; }
+  .toolbar { 
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+  
+  .filterControls { 
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
   .filterPanel.open { 
-    width: 100%; 
-    flex-wrap: wrap;
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-2);
   }
-  .modernSelect { flex: 1; min-width: 0; padding-right: 28px; }
-  .searchWrap { flex: 1; min-width: 0; }
-  .searchInput { width: 100%; }
-  .searchInput:focus { width: 100%; outline: none; }
+  
+  /* All filter controls - consistent height and styling */
+  .filterToggle,
+  .topicDropdownBtn,
+  .modernSelect,
+  .searchWrap,
+  .resetBtn {
+    width: 100%;
+    height: 44px; /* Touch target - Apple HIG, WCAG 2.1 */
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  /* Filter toggle - full width with label visible */
   .filterToggle { 
-    padding: 0 10px; /* Use height for vertical sizing */
+    justify-content: center;
+    padding: 0 16px;
   }
-  .filterToggle span { display: none; }
+  .filterToggle span { 
+    display: inline; /* Show label on mobile */
+  }
+  
+  /* Topics dropdown - unified styling */
+  .topicSelect {
+    width: 100%;
+  }
+  .topicDropdownBtn {
+    min-width: 100%;
+    padding: 0 40px 0 16px;
+    font-size: 16px; /* Prevents iOS zoom */
+    justify-content: flex-start;
+  }
+  .topicDropdownBtn .caret {
+    right: 14px;
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Topic dropdown panel */
+  .topicDropdown {
+    left: 0;
+    right: 0;
+    min-width: 100%;
+    max-width: 100%;
+    max-height: 50vh; /* Don't take too much screen */
+  }
+  
+  /* Topic options - proper touch targets */
+  .topicOpt {
+    min-height: 44px; /* Touch target */
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .topicOpt input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+  .topicOpt .tName {
+    font-size: 14px;
+  }
+  
+  /* Sort select - unified with topics dropdown */
+  .modernSelect { 
+    min-width: 100%;
+    padding: 0 40px 0 16px;
+    font-size: 16px; /* Prevents iOS zoom */
+    background-position: right 14px center;
+    background-size: 12px 12px;
+  }
+  .modernSelect option {
+    font-size: 16px;
+    padding: 12px;
+  }
+  
+  /* Search - full width, usable size */
+  .searchWrap { 
+    width: 100%;
+    padding: 0 16px;
+  }
+  .searchWrap svg {
+    width: 18px;
+    height: 18px;
+  }
+  .searchInput { 
+    width: 100%;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+  .searchInput:focus { 
+    width: 100%; 
+    outline: none; 
+  }
+  
+  /* Reset button - full width */
+  .resetBtn {
+    justify-content: center;
+    padding: 0 16px;
+    font-size: 16px;
+  }
 }
 
 } /* End @layer components */

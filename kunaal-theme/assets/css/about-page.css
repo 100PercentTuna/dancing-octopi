@@ -868,10 +868,27 @@ a:focus-visible, button:focus-visible {
   .kunaal-about-page .hero-text {
     grid-column: 1 / -1;
     grid-row: 3;
-    padding: 1.6rem 1.2rem;
+    /* Fix text clipping - proper padding for mobile */
+    padding: 1.5rem 1rem;
     box-shadow: none;
     border: 1px solid var(--hair2);
     border-radius: 8px;
+    /* CRITICAL: Reset height constraints for mobile */
+    height: auto;
+    min-height: auto;
+    /* CRITICAL: Allow content to overflow if needed */
+    overflow: visible;
+  }
+  
+  /* CRITICAL FIX: Hero intro visibility on mobile */
+  .kunaal-about-page .hero-intro {
+    /* Override flex shrinking that hides content */
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+    /* Adjust typography for mobile readability */
+    font-size: 0.85rem;
+    line-height: 1.55;
   }
   
   /* Mobile: Ensure hero text is visible even if GSAP doesn't load */
@@ -977,7 +994,6 @@ a:focus-visible, button:focus-visible {
   max-width: 1200px; /* Wider to let capsules spread across more of the page */
 }
 /* Scoped to About page for higher specificity */
-.kunaal-about-page .capsules-cloud,
 .kunaal-about-page .capsules-cloud {
   position: relative;
   padding: 1rem 0;
@@ -1223,15 +1239,9 @@ a:focus-visible, button:focus-visible {
   align-self: start; /* CRITICAL: Top alignment within grid cell */
 }
 
-/* Book items: placed in columns 1-3, starting from row 2 */
-.media-item--book {
-  /* Grid column is set by natural flow within display:contents */
-}
-
-/* Digital items: placed in columns 5-7, starting from row 2 */
-.media-item--digital {
-  /* Grid column is set by natural flow within display:contents */
-}
+/* Book items: placed in columns 1-3, starting from row 2
+   Digital items: placed in columns 5-7, starting from row 2
+   Grid columns are set by natural flow within display:contents */
 
 /* Responsive: Stack columns on tablet/mobile */
 @media (max-width: 900px) {
@@ -1769,4 +1779,129 @@ a:focus-visible, button:focus-visible {
 /* Reduce "dead air" between Rabbit Holes and Media */
 .panorama.squeeze-after-rabbit{ height: 120px; }
 .panorama.squeeze-after-rabbit .panorama-inner{ height: 160%; }
+
+/* =============================================
+   MOBILE BREAKPOINT - About Page Sections
+   Phone screens (max-width: 600px)
+   - 44px touch targets (Apple HIG, WCAG 2.1)
+   - Reduced padding for more content space
+   - Optimized layouts for small screens
+============================================= */
+@media (max-width: 600px) {
+  /* Reduced section padding - more content visible */
+  .kunaal-about-page .section,
+  .kunaal-about-page .numbers,
+  .kunaal-about-page .rabbit-holes,
+  .kunaal-about-page .media-section,
+  .kunaal-about-page .map-section,
+  .kunaal-about-page .inspirations,
+  .kunaal-about-page .say-hello {
+    padding: 2rem 1rem;
+  }
+  
+  /* Numbers: 2x2 grid on mobile */
+  .kunaal-about-page .numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 1rem;
+    justify-items: center;
+  }
+  
+  .kunaal-about-page .number-item {
+    min-width: 0;
+    width: 100%;
+  }
+  
+  .kunaal-about-page .number-value,
+  .kunaal-about-page .infinity-value {
+    font-size: 1.75rem;
+  }
+  
+  .kunaal-about-page .number-label {
+    font-size: 9px;
+  }
+  
+  /* Capsules: Compact for mobile */
+  .kunaal-about-page .capsules-cloud {
+    gap: 0.35rem;
+    padding: 0.5rem 0;
+  }
+  
+  .kunaal-about-page .capsule-inner {
+    height: 26px;
+    font-size: 9px;
+    padding: 0 0.5rem 0 0.25rem;
+  }
+  
+  .kunaal-about-page .capsule-img {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .kunaal-about-page .capsule-count {
+    width: 13px;
+    height: 13px;
+    font-size: 7px;
+  }
+  
+  /* Panoramas: Smaller on mobile */
+  .kunaal-about-page .panorama {
+    height: 60px;
+  }
+  
+  .kunaal-about-page .panorama.squeeze-after-rabbit {
+    height: 60px;
+  }
+  
+  /* Map: Reduce height and top space */
+  .kunaal-about-page .map-container {
+    height: 220px;
+    margin-top: 0.25rem;
+  }
+  
+  .kunaal-about-page .map-section {
+    padding-top: 1.5rem;
+  }
+  
+  /* Media section: Stack items */
+  .kunaal-about-page .media-items {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  /* Inspirations: 2 columns */
+  .kunaal-about-page .inspirations-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .kunaal-about-page .inspiration-item {
+    padding: 0.65rem;
+  }
+  
+  /* Social links: Touch targets */
+  .kunaal-about-page .say-hello-link,
+  .kunaal-about-page .say-hello-social-link {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Section titles: Smaller on mobile */
+  .kunaal-about-page .section-title {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+  }
+  
+  .kunaal-about-page .section-label {
+    font-size: 10px;
+    margin-bottom: 0.3rem;
+  }
+  
+  /* Background word: Smaller */
+  .kunaal-about-page .section-bgword {
+    font-size: 2rem;
+  }
+}
 

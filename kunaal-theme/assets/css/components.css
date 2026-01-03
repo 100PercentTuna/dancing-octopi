@@ -501,9 +501,21 @@ a.jRow:hover h3.jTitle {
 }
 
 @media (max-width: 640px) {
-  .ledger { --dateCol: 70px; --row-height: 80px; }
-  .jRow { padding: 10px 12px; }
-  .ledger::before { left: calc(var(--dateCol) + 12px); }
+  /* Jottings ledger - more breathing room on mobile */
+  .ledger { 
+    --dateCol: 60px; 
+    --row-height: 85px; 
+  }
+  .jRow { 
+    padding: 12px;
+    min-height: 44px; /* Touch target - Apple HIG, WCAG 2.1 */
+  }
+  .ledger::before { 
+    left: calc(var(--dateCol) + 12px); 
+  }
+  .jTitle {
+    font-size: 14px; /* Slightly larger for readability */
+  }
 }
 
 /* ========================================
@@ -525,12 +537,15 @@ a.jRow:hover h3.jTitle {
     bottom: var(--space-3);
   }
   .dockButton {
-    width: 28px;
-    height: 28px;
+    /* Touch target - 44px minimum (Apple HIG, WCAG 2.1) */
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
   .dockButton svg {
-    width: 12px;
-    height: 12px;
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -720,7 +735,40 @@ a.jRow:hover h3.jTitle {
 @media (max-width: 1200px) {
   .subscribePanel { 
     top: auto; 
-    bottom: calc(var(--space-3) + 104px);
+    bottom: calc(var(--space-3) + 56px); /* Adjust for larger dock button */
+  }
+}
+
+/* Mobile subscribe panel - fit within viewport */
+@media (max-width: 640px) {
+  .subscribePanel {
+    min-width: auto;
+    width: calc(100% - 32px);
+    max-width: 300px;
+    right: 16px;
+    left: auto;
+  }
+  
+  .subscribePanelContent {
+    padding: var(--space-3);
+  }
+  
+  .subscribePanelContent h4 {
+    font-size: 16px;
+  }
+  
+  .subscribePanelContent p {
+    font-size: 12px;
+  }
+  
+  .subscribe-form-dock input[type="email"] {
+    font-size: 16px; /* Prevent iOS zoom on focus */
+    height: 44px; /* Touch target */
+  }
+  
+  .subscribe-form-dock button {
+    height: 44px; /* Touch target */
+    font-size: 16px;
   }
 }
 
