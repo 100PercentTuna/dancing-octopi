@@ -35,10 +35,6 @@ if (function_exists('wp_body_open')) {
 }
 ?>
 
-<!-- Skip Links for Accessibility -->
-<a href="#main" class="skip-link"><?php esc_html_e('Skip to main content', 'kunaal-theme'); ?></a>
-<a href="#nav" class="skip-link"><?php esc_html_e('Skip to navigation', 'kunaal-theme'); ?></a>
-
 <!-- Progress bar -->
 <div class="progress" aria-hidden="true">
   <div class="progressFill no-transition" id="progressFill" style="opacity:0;width:0%"></div>
