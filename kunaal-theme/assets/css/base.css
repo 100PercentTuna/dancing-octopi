@@ -26,7 +26,7 @@ body {
   font-feature-settings: 'ss01' 1, 'cv02' 1, 'cv05' 1;
   font-optical-sizing: auto;
   line-height: 1.6;
-  padding-top: var(--mastH, 77px); /* Fallback 77px = 16px padding + 44px avatar + 16px padding + 1px border */
+  padding-top: var(--mastH, 100px); /* Fallback 100px accommodates tagline wrap; JS sets actual value */
 }
 
 /* Admin bar offset - JS will measure actual height, these are fallbacks */

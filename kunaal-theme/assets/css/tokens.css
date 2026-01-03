@@ -116,8 +116,11 @@
     --k-layout-max: 1140px;
     --k-layout-prose: 620px;
     --k-layout-wide: 880px;
-    /* Mast height: 16px padding + 44px avatar + 16px padding + 1px border = 77px */
-    --k-layout-mast-height: 77px;
+    /* Mast height fallback: Use 100px to accommodate tagline wrapping on mid-width viewports.
+       Actual value calculated by JS (header.php inline script + main.js).
+       Base case ~77px (16px padding + 44px avatar + 16px padding + 1px border),
+       but can be taller when tagline wraps. */
+    --k-layout-mast-height: 100px;
 
     /* Legacy layout mappings */
     --max: var(--k-layout-max);

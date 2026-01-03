@@ -32,7 +32,7 @@
 /* Sticky panel */
 .scrolly-sticky {
     position: sticky;
-    top: calc(var(--mastH, 77px) + var(--space-4, 32px));
+    top: calc(var(--mastH, 100px) + var(--space-4, 32px));
     align-self: start;
     padding-right: var(--space-4, 32px);
     border-right: 2px solid var(--hair2, rgba(11,18,32,0.07));
