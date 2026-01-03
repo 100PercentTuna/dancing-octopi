@@ -816,6 +816,15 @@ a:focus-visible, button:focus-visible {
     margin-top: 0;   /* Reset margin - let natural flow handle positioning */
     padding-top: 0;  /* No padding needed */
     overflow: visible;
+    /* CRITICAL: Let clicks pass through to header behind */
+    pointer-events: none;
+  }
+  
+  /* Re-enable pointer events for interactive elements within hero 
+     Note: hero-text pointer-events is set in its own block below */
+  .kunaal-about-page .hero-text a,
+  .kunaal-about-page .hero-photo {
+    pointer-events: auto;
   }
   
   /* Make hero-grid normal width */
@@ -873,28 +882,32 @@ a:focus-visible, button:focus-visible {
     box-shadow: none;
     border: 1px solid var(--hair2);
     border-radius: 8px;
-    /* CRITICAL: Reset height constraints for mobile */
-    height: auto;
+    /* CRITICAL: Reset height constraints for mobile - use !important to override GSAP */
+    height: auto !important;
     min-height: auto;
-    /* CRITICAL: Allow content to overflow if needed */
-    overflow: visible;
+    /* CRITICAL: Allow content to overflow - use !important to override any inline styles */
+    overflow: visible !important;
+    /* Re-enable pointer events for text area */
+    pointer-events: auto;
   }
   
-  /* CRITICAL FIX: Hero intro visibility on mobile */
+  /* CRITICAL FIX: Hero intro visibility on mobile
+     Using !important to override GSAP inline styles which have higher specificity */
   .kunaal-about-page .hero-intro {
-    /* Override flex shrinking that hides content */
-    flex: 0 0 auto;
-    min-height: auto;
-    overflow: visible;
+    flex: 0 0 auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
     /* Adjust typography for mobile readability */
     font-size: 0.85rem;
     line-height: 1.55;
   }
   
-  /* Mobile: Ensure hero text is visible even if GSAP doesn't load */
+  /* Mobile: Ensure ALL reveal elements are visible - override GSAP inline styles */
   .kunaal-about-page .hero-text [data-reveal] {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1 !important;
+    transform: none !important;
   }
   
   /* Mobile: Smaller dog-ear accent */
@@ -1799,17 +1812,21 @@ a:focus-visible, button:focus-visible {
     padding: 2rem 1rem;
   }
   
-  /* Numbers: 2x2 grid on mobile */
-  .kunaal-about-page .numbers-grid {
-    display: grid;
+  /* Numbers: Proper 2x2 grid - high specificity to override flex */
+  .kunaal-about-page .numbers .numbers-grid {
+    display: grid !important;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem 1rem;
+    gap: 1rem;
     justify-items: center;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
   }
   
-  .kunaal-about-page .number-item {
-    min-width: 0;
+  .kunaal-about-page .numbers .number-item {
+    min-width: 0;  /* Remove min-width constraint */
     width: 100%;
+    text-align: center;
   }
   
   .kunaal-about-page .number-value,
@@ -1853,14 +1870,18 @@ a:focus-visible, button:focus-visible {
     height: 60px;
   }
   
-  /* Map: Reduce height and top space */
-  .kunaal-about-page .map-container {
-    height: 220px;
-    margin-top: 0.25rem;
+  /* Map section - consolidated compact spacing */
+  .kunaal-about-page .map-section {
+    padding: 1rem 1rem 2rem 1rem;  /* Minimal top, normal bottom */
   }
   
-  .kunaal-about-page .map-section {
-    padding-top: 1.5rem;
+  .kunaal-about-page .map-section .section-title {
+    margin-bottom: 0.5rem;
+  }
+  
+  .kunaal-about-page .map-container {
+    height: 200px;
+    margin-top: 0;  /* Remove extra margin */
   }
   
   /* Media section: Stack items */
