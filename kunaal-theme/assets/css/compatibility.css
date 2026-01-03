@@ -148,16 +148,32 @@ button, .filterToggle, .topicDropdownBtn {
 }
 
 /* ========================================
-   NAV LINKS - Dark mode text color only
+   NAV LINKS - Dark mode styles
+   
+   CRITICAL: Must ensure background-color is transparent!
+   The underline animation uses background-image (gradient) with
+   background-size: 100% 2px - this should show a 2px underline,
+   NOT a full background fill.
    
    Underline animation is handled by header.css using tokens:
    - var(--k-underline-blue-color) = orange in dark mode, blue in light
    ======================================== */
 
-/* Dark mode nav link text color */
+/* Dark mode nav link - text color + TRANSPARENT background */
 [data-theme="dark"] .mast .nav a,
 [data-theme="dark"] .nav a {
   color: var(--k-color-ink);
+  background-color: transparent !important; /* MUST be transparent - underline is background-image */
+}
+
+/* Dark mode nav link hover/focus/current - keep transparent */
+[data-theme="dark"] .mast .nav a:hover,
+[data-theme="dark"] .mast .nav a:focus-visible,
+[data-theme="dark"] .mast .nav a.current,
+[data-theme="dark"] .nav a:hover,
+[data-theme="dark"] .nav a:focus-visible,
+[data-theme="dark"] .nav a.current {
+  background-color: transparent !important; /* NO fill background - only 2px underline */
 }
 
 /* Dark mode nav toggle color */
