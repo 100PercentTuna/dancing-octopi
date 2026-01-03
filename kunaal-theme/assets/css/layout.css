@@ -18,7 +18,7 @@ main.container,
   padding-left: calc(var(--space-4) + 4px);
   padding-right: calc(var(--space-4) + 4px);
   /* Ensure content starts with visible gap below fixed header */
-  padding-top: var(--space-4);
+  padding-top: var(--space-6);
 }
 @media (max-width: 960px) { 
   main.container,
