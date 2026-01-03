@@ -173,14 +173,17 @@
     }
 
     // Progress bar
-    // Force 0% when at/near top (<5px) to avoid artifacts from
-    // early document height calculations before images load
+    // Force 0% and hidden when at/near top (<5px) to avoid artifacts from
+    // early document height calculations before images load.
+    // Opacity controls visibility to hide box-shadow at 0% width.
     if (progressFill) {
       if (y < 5) {
         progressFill.style.width = '0%';
+        progressFill.style.opacity = '0';
       } else {
         const targetFrac = Math.min(y / cachedDocH, 1);
         progressFill.style.width = (targetFrac * 100) + '%';
+        progressFill.style.opacity = '1';
       }
     }
   }
