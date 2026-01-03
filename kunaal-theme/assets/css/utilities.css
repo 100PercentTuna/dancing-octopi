@@ -182,11 +182,16 @@
     padding-bottom: 0 !important;
   }
 
-  /* Nav-specific enhancements - letter spacing on hover for visual polish */
+  /* Nav-specific enhancements */
   .nav a:hover,
   .nav a:focus-visible,
   .nav a.current {
     letter-spacing: .01em;
+  }
+  
+  /* Nav current state - show underline (same as hover) */
+  .nav a.current {
+    background-size: 100% var(--k-underline-blue-thickness, 2px);
   }
 
   /* Block style class mapping (for Gutenberg block styles) */

@@ -148,100 +148,26 @@ button, .filterToggle, .topicDropdownBtn {
 }
 
 /* ========================================
-   NAV LINKS - EDGE/IE COMPATIBILITY FIX
+   NAV LINKS - COLOR OVERRIDES ONLY
    
-   PROBLEM: Edge renders background-image gradient as FULL FILL instead
-   of respecting background-size: 100% 2px (which should be a 2px underline).
+   IMPORTANT: Underline animation is handled by utilities.css :where() selector.
+   This file ONLY handles:
+   - Dark mode text color
+   - Edge forced-color-adjust
    
-   ROOT CAUSE: display: inline on links causes background-size percentage
-   calculations to behave differently across browsers.
-   
-   SOLUTION:
-   1. Force display: inline-block for predictable sizing
-   2. Explicitly set ALL background properties
-   3. Use !important to override any conflicting rules
+   DO NOT ADD background-* properties here.
    ======================================== */
 
-/* Base nav link fix - force inline-block for Edge compatibility */
-.nav a {
-  display: inline-block !important; /* EDGE FIX: inline-block has predictable background sizing */
-  forced-color-adjust: none !important;
-  -ms-high-contrast-adjust: none !important;
-}
-
-/* Dark mode nav link - COMPLETE BACKGROUND OVERRIDE */
+/* Dark mode nav text color */
 [data-theme="dark"] .mast .nav a,
 [data-theme="dark"] .nav a {
-  color: var(--k-color-ink, #f0f0f0) !important;
-  display: inline-block !important;
-  /* FULL background reset - prevents any fill */
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: linear-gradient(#E8A87C, #E8A87C) !important; /* Hardcoded orange for Edge */
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-  background-size: 0% 2px !important; /* Hidden by default */
-}
-
-/* Dark mode hover/focus - show 2px underline */
-[data-theme="dark"] .mast .nav a:hover,
-[data-theme="dark"] .mast .nav a:focus-visible,
-[data-theme="dark"] .nav a:hover,
-[data-theme="dark"] .nav a:focus-visible {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: linear-gradient(#E8A87C, #E8A87C) !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-  background-size: 100% 2px !important; /* 2px underline at bottom */
-}
-
-/* Dark mode current - show 2px underline */
-[data-theme="dark"] .mast .nav a.current,
-[data-theme="dark"] .nav a.current {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: linear-gradient(#E8A87C, #E8A87C) !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-  background-size: 100% 2px !important; /* 2px underline at bottom */
+  color: var(--k-color-ink, #f0f0f0);
 }
 
 /* Dark mode nav toggle color */
 [data-theme="dark"] .mast .navToggle,
 [data-theme="dark"] .navToggle {
-  color: var(--k-color-ink, #f0f0f0) !important;
-}
-
-/* ========================================
-   LIGHT MODE NAV - Same fix for consistency
-   ======================================== */
-.mast .nav a,
-.nav a {
-  display: inline-block !important;
-}
-
-/* Light mode hover/focus/current - blue underline */
-html:not([data-theme="dark"]) .mast .nav a:hover,
-html:not([data-theme="dark"]) .mast .nav a:focus-visible,
-html:not([data-theme="dark"]) .nav a:hover,
-html:not([data-theme="dark"]) .nav a:focus-visible {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: linear-gradient(#1E5AFF, #1E5AFF) !important; /* Blue in light mode */
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-  background-size: 100% 2px !important;
-}
-
-html:not([data-theme="dark"]) .mast .nav a.current,
-html:not([data-theme="dark"]) .nav a.current {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: linear-gradient(#1E5AFF, #1E5AFF) !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 100% !important;
-  background-size: 100% 2px !important;
+  color: var(--k-color-ink, #f0f0f0);
 }
 
 /* ========================================
@@ -251,7 +177,7 @@ html:not([data-theme="dark"]) .nav a.current {
 header.mast,
 .mast .nav,
 .nav a {
-  forced-color-adjust: none !important;
-  -ms-high-contrast-adjust: none !important;
+  forced-color-adjust: none;
+  -ms-high-contrast-adjust: none;
 }
 
