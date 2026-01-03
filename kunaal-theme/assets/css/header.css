@@ -398,7 +398,8 @@
     border-radius: 6px;
     width: 100%;
   }
-  .nav a:hover { background-color: var(--blueTint); }
+  /* Light mode only - hover background */
+  :root:not([data-theme="dark"]) .nav a:hover { background-color: var(--blueTint); }
   .navToggle { display: block; }
   .mastInner { position: relative; }
   .subtitle { display: none; }

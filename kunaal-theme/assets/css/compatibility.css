@@ -131,21 +131,67 @@ button, .filterToggle, .topicDropdownBtn {
 /* ========================================
    DARK MODE MASTHEAD - GLOBAL OVERRIDE
    This is the canonical dark mode masthead styling.
-   It's outside @layer to ensure it wins over layered styles.
+   It's OUTSIDE @layer to ensure it wins over layered styles in header.css.
    Must use neutral gray (#1A1A1A), NOT blue (#0b1220).
    ======================================== */
+
+/* Masthead background - neutral gray, NOT blue */
 :root[data-theme="dark"] .mast,
 :root[data-theme="dark"] header.mast,
-body[data-theme="dark"] .mast {
-  background: rgba(26, 26, 26, 0.95);
-  border-bottom-color: rgba(201, 184, 168, 0.2);
+html[data-theme="dark"] .mast,
+body.dark-mode .mast {
+  background: rgba(26, 26, 26, 0.95) !important;
+  border-bottom-color: rgba(201, 184, 168, 0.2) !important;
 }
 
-/* Mobile nav in dark mode - match mast */
+/* Mobile nav dropdown - match mast background exactly */
 :root[data-theme="dark"] .mast .nav,
-:root[data-theme="dark"] header.mast .nav {
-  background: rgba(26, 26, 26, 0.95);
-  border-color: rgba(201, 184, 168, 0.2);
+:root[data-theme="dark"] .nav,
+html[data-theme="dark"] .mast .nav,
+html[data-theme="dark"] .nav {
+  background: rgba(26, 26, 26, 0.98) !important;
+  border-color: rgba(201, 184, 168, 0.2) !important;
+}
+
+/* Nav links in dark mode - consistent styling across ALL pages */
+:root[data-theme="dark"] .mast .nav a,
+:root[data-theme="dark"] .nav a,
+html[data-theme="dark"] .mast .nav a,
+html[data-theme="dark"] .nav a {
+  color: #f0f0f0 !important;
+  /* Orange underline - consistent across all pages */
+  background-image: linear-gradient(#E8A87C, #E8A87C) !important;
+  background-color: transparent !important;
+}
+
+/* Nav link hover - NO background color, just underline animation */
+:root[data-theme="dark"] .mast .nav a:hover,
+:root[data-theme="dark"] .mast .nav a:focus-visible,
+:root[data-theme="dark"] .nav a:hover,
+:root[data-theme="dark"] .nav a:focus-visible,
+html[data-theme="dark"] .mast .nav a:hover,
+html[data-theme="dark"] .mast .nav a:focus-visible,
+html[data-theme="dark"] .nav a:hover,
+html[data-theme="dark"] .nav a:focus-visible {
+  color: #f0f0f0 !important;
+  background-color: transparent !important; /* NO hover background - fix the gray flash */
+}
+
+/* Current nav item - no background */
+:root[data-theme="dark"] .mast .nav a.current,
+:root[data-theme="dark"] .nav a.current,
+html[data-theme="dark"] .mast .nav a.current,
+html[data-theme="dark"] .nav a.current {
+  color: #f0f0f0 !important;
+  background-color: transparent !important;
+}
+
+/* Nav toggle and theme toggle - light color */
+:root[data-theme="dark"] .mast .navToggle,
+:root[data-theme="dark"] .navToggle,
+html[data-theme="dark"] .mast .navToggle,
+html[data-theme="dark"] .navToggle {
+  color: #f0f0f0 !important;
 }
 
 /* ========================================
@@ -156,7 +202,8 @@ body[data-theme="dark"] .mast {
    ======================================== */
 .mast,
 header.mast,
-.mast .nav {
+.mast .nav,
+.nav a {
   forced-color-adjust: none;
   -ms-high-contrast-adjust: none; /* Legacy Edge support */
 }
