@@ -197,7 +197,7 @@ kunaal_render_panoramas($panoramas['after_hero'] ?? array());
                 <?php if ($number['value'] === 'infinity') : ?>
                     <div class="number-item" data-reveal="up">
                         <div class="number-value infinity-value" style="opacity:0;transform:scale(0.5)">∞</div>
-                        <!-- Label removed for infinity - symbol is self-explanatory -->
+                        <div class="number-label"><?php echo esc_html($number['label']); ?></div>
                     </div>
                 <?php else : ?>
                     <div class="number-item" data-reveal="up">
