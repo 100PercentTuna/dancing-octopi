@@ -1197,9 +1197,16 @@
       initSubscribeForms(); // Initialize built-in subscribe flow if subscribe forms are present
       // About page functionality is handled by about-page.js
 
-      // Initial scroll effect
+      // Initial scroll effect - IMMEDIATE synchronous update to prevent flash
+      // The no-transition class on progressFill prevents any animation on first paint
       lastY = window.scrollY || 0;
-      requestTick();
+      cacheViewport(); // Ensure document height is calculated first
+      updateScrollEffects(lastY); // Immediate, synchronous (not via requestAnimationFrame)
+      
+      // Remove no-transition class to enable smooth animations for future updates
+      if (progressFill) {
+        progressFill.classList.remove('no-transition');
+      }
     } catch (e) {
       if (window.kunaalTheme?.debug) {
         console.error('Theme init failed; disabling js-only reveals', e);

@@ -41,7 +41,7 @@ if (function_exists('wp_body_open')) {
 
 <!-- Progress bar -->
 <div class="progress" aria-hidden="true">
-  <div class="progressFill" id="progressFill"></div>
+  <div class="progressFill no-transition" id="progressFill" style="opacity:0;width:0%"></div>
 </div>
 
 <?php

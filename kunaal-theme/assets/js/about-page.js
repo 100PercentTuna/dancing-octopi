@@ -52,7 +52,7 @@
     initMarqueeWords(gsapOk);
     initNumbers(gsapOk);
     initWorldMap();
-    initProgressBar();
+    // Progress bar is handled by main.js (single owner - see architecture.mdc)
     initHeaderNav();
     initHeroMosaicCycle();
     initCapsuleLife();
@@ -992,62 +992,9 @@
   }
 
   // =============================================
-  // Progress bar (top) and scroll indicator hide
+  // Progress bar - REMOVED (single owner: main.js)
+  // See architecture.mdc for UI contract ownership
   // =============================================
-  function initProgressBar(){
-    const fill = document.getElementById('progressFill');
-    if(!fill) return;
-    let ticking = false;
-    let cachedScrollHeight = 1;
-    
-    function cacheHeight() {
-      const doc = document.documentElement;
-      cachedScrollHeight = (doc.scrollHeight - doc.clientHeight) || 1;
-    }
-    
-    function update(){
-      ticking = false;
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
-      
-      // Force 0% and hidden when at/near top (<5px) to avoid artifacts from
-      // early document height calculations before images load.
-      // Opacity controls visibility to hide box-shadow at 0% width.
-      if (scrollTop < 5) {
-        fill.style.width = '0%';
-        fill.style.opacity = '0';
-      } else {
-        const p = cachedScrollHeight > 0 ? (scrollTop / cachedScrollHeight) : 0;
-        fill.style.width = (p * 100).toFixed(2) + '%';
-        fill.style.opacity = '1';
-      }
-
-      // Header compaction (drives CSS var(--p))
-      const hp = Math.min(scrollTop / 120, 1);
-      document.body.style.setProperty('--p', hp.toFixed(4));
-    }
-    function onScroll(){
-      if(ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-    
-    // Initial calculation
-    cacheHeight();
-    
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', function() {
-      cacheHeight();
-      onScroll();
-    });
-    
-    // Recalculate after all resources load (images affect document height)
-    window.addEventListener('load', function() {
-      cacheHeight();
-      update();
-    });
-    
-    update();
-  }
 
   // =============================================
   // Header nav (mobile toggle)
