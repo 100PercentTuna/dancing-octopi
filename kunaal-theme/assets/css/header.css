@@ -398,8 +398,11 @@
     border-radius: 6px;
     width: 100%;
   }
-  /* Light mode only - hover background */
-  :root:not([data-theme="dark"]) .nav a:hover { background-color: var(--blueTint); }
+  /* NO background color change on hover - only underline animates */
+  .nav a:hover,
+  .nav a:focus-visible {
+    background-color: transparent;
+  }
   .navToggle { display: block; }
   .mastInner { position: relative; }
   .subtitle { display: none; }
