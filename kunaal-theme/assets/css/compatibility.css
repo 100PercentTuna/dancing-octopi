@@ -64,6 +64,8 @@
 @supports not (backdrop-filter: blur(10px)) {
   .overlay { background: color-mix(in srgb, var(--ink) 25%, transparent); }
   .mast { background: var(--bg); }
+  /* Dark mode fallback - use same gray as header.css */
+  :root[data-theme="dark"] .mast { background: rgba(26, 26, 26, 0.95); }
 }
 
 /* Edge smooth scroll fix */
