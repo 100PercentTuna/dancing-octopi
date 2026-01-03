@@ -128,3 +128,23 @@ button, .filterToggle, .topicDropdownBtn {
   padding: var(--space-6);
 }
 
+/* ========================================
+   DARK MODE MASTHEAD - GLOBAL OVERRIDE
+   This is the canonical dark mode masthead styling.
+   It's outside @layer to ensure it wins over layered styles.
+   Must use neutral gray (#1A1A1A), NOT blue (#0b1220).
+   ======================================== */
+:root[data-theme="dark"] .mast,
+:root[data-theme="dark"] header.mast,
+body[data-theme="dark"] .mast {
+  background: rgba(26, 26, 26, 0.95);
+  border-bottom-color: rgba(201, 184, 168, 0.2);
+}
+
+/* Mobile nav in dark mode - match mast */
+:root[data-theme="dark"] .mast .nav,
+:root[data-theme="dark"] header.mast .nav {
+  background: rgba(26, 26, 26, 0.95);
+  border-color: rgba(201, 184, 168, 0.2);
+}
+
