@@ -42,13 +42,18 @@ if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
 
 /**
  * Asset version helper (cache-bust on managed hosts/CDNs).
+ * 
+ * Cache-bust suffix: Increment this when CSS changes need to bypass stale page caches.
+ * The filemtime alone isn't enough when WordPress page cache stores old timestamps.
  */
+define('KUNAAL_ASSET_CACHE_BUST', '2');
+
 function kunaal_asset_version(string $relative_path): string {
     $relative_path = ltrim((string) $relative_path, '/');
     $full = trailingslashit(KUNAAL_THEME_DIR) . $relative_path;
     if ($relative_path && file_exists($full)) {
-        return (string) filemtime($full);
+        return filemtime($full) . '.' . KUNAAL_ASSET_CACHE_BUST;
     }
-    return KUNAAL_THEME_VERSION;
+    return KUNAAL_THEME_VERSION . '.' . KUNAAL_ASSET_CACHE_BUST;
 }
 
