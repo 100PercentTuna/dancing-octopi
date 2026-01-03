@@ -1009,13 +1009,16 @@
       ticking = false;
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
       
-      // Force 0% when at/near top (<5px) to avoid artifacts from
-      // early document height calculations before images load
+      // Force 0% and hidden when at/near top (<5px) to avoid artifacts from
+      // early document height calculations before images load.
+      // Opacity controls visibility to hide box-shadow at 0% width.
       if (scrollTop < 5) {
         fill.style.width = '0%';
+        fill.style.opacity = '0';
       } else {
         const p = cachedScrollHeight > 0 ? (scrollTop / cachedScrollHeight) : 0;
         fill.style.width = (p * 100).toFixed(2) + '%';
+        fill.style.opacity = '1';
       }
 
       // Header compaction (drives CSS var(--p))
