@@ -148,45 +148,22 @@ button, .filterToggle, .topicDropdownBtn {
 }
 
 /* ========================================
-   NAV LINKS - Token-based styling
+   NAV LINKS - Dark mode text color only
    
-   Let utilities.css handle underline animation via tokens:
-   - Light mode: var(--k-underline-blue-color) falls back to var(--blue)
-   - Dark mode: var(--k-underline-blue-color) = #E8A87C (orange)
-   
-   We only set colors and ensure NO background-color on any state.
+   Underline animation is handled by header.css using tokens:
+   - var(--k-underline-blue-color) = orange in dark mode, blue in light
    ======================================== */
 
-/* Dark mode nav link colors */
+/* Dark mode nav link text color */
 [data-theme="dark"] .mast .nav a,
 [data-theme="dark"] .nav a {
-  color: var(--k-color-ink) !important;
-}
-
-/* ALL nav links: ensure no background-color (let underline work) */
-.mast .nav a,
-.nav a {
-  background-color: transparent !important;
-}
-
-/* Hover/focus: no background-color, underline animates via utilities.css */
-.mast .nav a:hover,
-.mast .nav a:focus-visible,
-.nav a:hover,
-.nav a:focus-visible {
-  background-color: transparent !important;
-}
-
-/* Current item: no background-color, underline visible via utilities.css */
-.mast .nav a.current,
-.nav a.current {
-  background-color: transparent !important;
+  color: var(--k-color-ink);
 }
 
 /* Dark mode nav toggle color */
 [data-theme="dark"] .mast .navToggle,
 [data-theme="dark"] .navToggle {
-  color: var(--k-color-ink) !important;
+  color: var(--k-color-ink);
 }
 
 /* ========================================
