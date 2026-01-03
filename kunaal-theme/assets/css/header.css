@@ -26,7 +26,7 @@
    Uses token-based colors from tokens.css
    ======================================== */
 :root[data-theme="dark"] .mast {
-  background: rgba(26, 26, 26, 0.95); /* Neutral gray matching --k-color-bg: #1A1A1A */
+  background: #1A1A1A; /* 100% opaque to block blue body gradient bleeding through */
   border-bottom-color: var(--k-color-hair);
 }
 
@@ -61,10 +61,10 @@
   color: #f0f0f0 !important;
 }
 
-/* Mobile nav dropdown in dark mode - match mast background */
+/* Mobile nav dropdown in dark mode - match mast background (100% opaque) */
 :root[data-theme="dark"] .mast .nav,
 :root[data-theme="dark"] .nav {
-  background: rgba(26, 26, 26, 0.95); /* Neutral gray matching mast */
+  background: #1A1A1A; /* 100% opaque to match mast */
   border-color: var(--k-color-hair);
 }
 

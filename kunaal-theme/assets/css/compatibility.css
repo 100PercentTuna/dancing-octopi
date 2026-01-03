@@ -140,7 +140,9 @@ button, .filterToggle, .topicDropdownBtn {
    Nav hover background: NONE (transparent)
    ======================================== */
 
-/* Masthead background - MAXIMUM SPECIFICITY */
+/* Masthead background - MAXIMUM SPECIFICITY
+   MUST be 100% opaque to block the blue body gradient from showing through
+   (base.css has rgba(30,90,255,0.04) gradient that backdrop-filter blurs) */
 html:root[data-theme="dark"] .mast,
 html:root[data-theme="dark"] header.mast,
 html[data-theme="dark"] .mast,
@@ -150,12 +152,12 @@ html[data-theme="dark"] header.mast,
 body[data-theme="dark"] .mast,
 body.dark-mode .mast,
 [data-theme="dark"] .mast {
-  background: rgba(26, 26, 26, 0.95) !important;
-  background-color: rgba(26, 26, 26, 0.95) !important;
+  background: #1A1A1A !important;
+  background-color: #1A1A1A !important;
   border-bottom-color: rgba(201, 184, 168, 0.2) !important;
 }
 
-/* Mobile nav dropdown - match mast exactly */
+/* Mobile nav dropdown - match mast exactly (100% opaque) */
 html:root[data-theme="dark"] .mast .nav,
 html:root[data-theme="dark"] .nav,
 html[data-theme="dark"] .mast .nav,
@@ -164,8 +166,8 @@ html[data-theme="dark"] .nav,
 :root[data-theme="dark"] .nav,
 [data-theme="dark"] .mast .nav,
 [data-theme="dark"] .nav {
-  background: rgba(26, 26, 26, 0.98) !important;
-  background-color: rgba(26, 26, 26, 0.98) !important;
+  background: #1A1A1A !important;
+  background-color: #1A1A1A !important;
   border-color: rgba(201, 184, 168, 0.2) !important;
 }
 
