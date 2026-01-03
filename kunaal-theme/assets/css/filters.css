@@ -7,14 +7,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: var(--space-2) 0;
-  margin-top: 0; /* No additional margin - body padding provides clearance from mast */
-  margin-bottom: var(--space-2);
+  padding: var(--space-1) 0;
+  margin-top: var(--space-5); /* Buffer from body padding to ensure visibility below mast */
+  margin-bottom: var(--space-1);
   gap: var(--space-2);
   position: relative;
   z-index: 100; /* Ensure toolbar is above other content but below header */
-  /* Ensure minimum height so toolbar is always visible */
-  min-height: 40px;
 }
 
 /* Filter controls container */
