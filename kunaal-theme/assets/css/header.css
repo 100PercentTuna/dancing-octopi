@@ -46,7 +46,7 @@
 :root[data-theme="dark"] .nav a:hover,
 :root[data-theme="dark"] .nav a:focus-visible {
   color: #f0f0f0 !important; /* Light text stays */
-  background-color: rgba(232, 168, 124, 0.1) !important; /* Subtle warm hover, not blue */
+  background-color: transparent !important; /* NO hover background - underline only */
 }
 
 /* Current nav item - no background, just underline stays visible */
