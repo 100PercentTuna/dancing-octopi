@@ -116,7 +116,8 @@
     --k-layout-max: 1140px;
     --k-layout-prose: 620px;
     --k-layout-wide: 880px;
-    --k-layout-mast-height: 100px;
+    /* Mast height: 16px padding + 44px avatar + 16px padding + 1px border = 77px */
+    --k-layout-mast-height: 77px;
 
     /* Legacy layout mappings */
     --max: var(--k-layout-max);
