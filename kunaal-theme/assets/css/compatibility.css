@@ -129,147 +129,64 @@ button, .filterToggle, .topicDropdownBtn {
 }
 
 /* ========================================
-   DARK MODE MASTHEAD - NUCLEAR OVERRIDE
+   DARK MODE MASTHEAD BACKGROUND
    
-   This MUST win over everything. Uses maximum specificity.
-   
-   PROBLEM: header.css has warm hover background with !important
-   SOLUTION: Use even higher specificity selectors here
-   
-   Masthead background: neutral gray rgba(26, 26, 26, 0.95)
-   Nav hover background: NONE (transparent)
+   100% opaque to block the blue body gradient from bleeding through.
+   Uses token-based colors via CSS variables.
    ======================================== */
-
-/* Masthead background - MAXIMUM SPECIFICITY
-   MUST be 100% opaque to block the blue body gradient from showing through
-   (base.css has rgba(30,90,255,0.04) gradient that backdrop-filter blurs) */
-html:root[data-theme="dark"] .mast,
-html:root[data-theme="dark"] header.mast,
-html[data-theme="dark"] .mast,
-html[data-theme="dark"] header.mast,
-:root[data-theme="dark"] .mast,
-:root[data-theme="dark"] header.mast,
-body[data-theme="dark"] .mast,
-body.dark-mode .mast,
-[data-theme="dark"] .mast {
-  background: #1A1A1A !important;
-  background-color: #1A1A1A !important;
-  border-bottom-color: rgba(201, 184, 168, 0.2) !important;
+[data-theme="dark"] .mast,
+[data-theme="dark"] header.mast {
+  background: var(--k-color-bg) !important;
+  border-bottom-color: var(--k-color-hair) !important;
 }
 
-/* Mobile nav dropdown - match mast exactly (100% opaque) */
-html:root[data-theme="dark"] .mast .nav,
-html:root[data-theme="dark"] .nav,
-html[data-theme="dark"] .mast .nav,
-html[data-theme="dark"] .nav,
-:root[data-theme="dark"] .mast .nav,
-:root[data-theme="dark"] .nav,
+/* Mobile nav dropdown - match mast background */
 [data-theme="dark"] .mast .nav,
 [data-theme="dark"] .nav {
-  background: #1A1A1A !important;
-  background-color: #1A1A1A !important;
-  border-color: rgba(201, 184, 168, 0.2) !important;
+  background: var(--k-color-bg) !important;
+  border-color: var(--k-color-hair) !important;
 }
 
-/* Nav links in dark mode - full underline animation setup */
-html:root[data-theme="dark"] .mast .nav a,
-html:root[data-theme="dark"] .nav a,
-html[data-theme="dark"] .mast .nav a,
-html[data-theme="dark"] .nav a,
-:root[data-theme="dark"] .mast .nav a,
-:root[data-theme="dark"] .nav a,
+/* ========================================
+   NAV LINKS - Token-based styling
+   
+   Let utilities.css handle underline animation via tokens:
+   - Light mode: var(--k-underline-blue-color) falls back to var(--blue)
+   - Dark mode: var(--k-underline-blue-color) = #E8A87C (orange)
+   
+   We only set colors and ensure NO background-color on any state.
+   ======================================== */
+
+/* Dark mode nav link colors */
 [data-theme="dark"] .mast .nav a,
 [data-theme="dark"] .nav a {
-  color: #f0f0f0 !important;
-  /* Underline animation: orange line at bottom, starts hidden (0% width) */
-  background-image: linear-gradient(#E8A87C, #E8A87C) !important;
-  background-repeat: no-repeat !important;
-  background-position: 0 calc(100% - 1px) !important;
-  background-size: 0% 2px !important;
-  background-color: transparent !important;
-  transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms !important;
+  color: var(--k-color-ink) !important;
 }
 
-/* ========================================
-   NAV HOVER - NUCLEAR NO-BACKGROUND OVERRIDE
-   
-   MUST beat header.css rgba(232, 168, 124, 0.1) !important
-   Using even higher specificity selectors.
-   ======================================== */
-
-/* Dark mode hover - animate underline to 100% width (L-to-R) */
-html:root[data-theme="dark"] .mast .nav a:hover,
-html:root[data-theme="dark"] .mast .nav a:focus-visible,
-html:root[data-theme="dark"] .nav a:hover,
-html:root[data-theme="dark"] .nav a:focus-visible,
-html[data-theme="dark"] .mast .nav a:hover,
-html[data-theme="dark"] .mast .nav a:focus-visible,
-html[data-theme="dark"] .nav a:hover,
-html[data-theme="dark"] .nav a:focus-visible,
-:root[data-theme="dark"] .mast .nav a:hover,
-:root[data-theme="dark"] .mast .nav a:focus-visible,
-:root[data-theme="dark"] .nav a:hover,
-:root[data-theme="dark"] .nav a:focus-visible,
-[data-theme="dark"] .mast .nav a:hover,
-[data-theme="dark"] .mast .nav a:focus-visible,
-[data-theme="dark"] .nav a:hover,
-[data-theme="dark"] .nav a:focus-visible {
-  color: #f0f0f0 !important;
+/* ALL nav links: ensure no background-color (let underline work) */
+.mast .nav a,
+.nav a {
   background-color: transparent !important;
-  /* Underline animates to full width on hover */
-  background-size: 100% 2px !important;
 }
 
-/* Dark mode current item - show underline at full width */
-html:root[data-theme="dark"] .mast .nav a.current,
-html:root[data-theme="dark"] .nav a.current,
-html[data-theme="dark"] .mast .nav a.current,
-html[data-theme="dark"] .nav a.current,
-:root[data-theme="dark"] .mast .nav a.current,
-:root[data-theme="dark"] .nav a.current,
-[data-theme="dark"] .mast .nav a.current,
-[data-theme="dark"] .nav a.current {
-  color: #f0f0f0 !important;
+/* Hover/focus: no background-color, underline animates via utilities.css */
+.mast .nav a:hover,
+.mast .nav a:focus-visible,
+.nav a:hover,
+.nav a:focus-visible {
   background-color: transparent !important;
-  /* Current item shows underline at full width */
-  background-size: 100% 2px !important;
 }
 
-/* Nav toggle */
-html:root[data-theme="dark"] .mast .navToggle,
-html:root[data-theme="dark"] .navToggle,
-html[data-theme="dark"] .mast .navToggle,
-html[data-theme="dark"] .navToggle,
-:root[data-theme="dark"] .mast .navToggle,
-:root[data-theme="dark"] .navToggle {
-  color: #f0f0f0 !important;
+/* Current item: no background-color, underline visible via utilities.css */
+.mast .nav a.current,
+.nav a.current {
+  background-color: transparent !important;
 }
 
-/* ========================================
-   LIGHT MODE NAV - underline animation (blue)
-   Uses utilities.css blue underline, just ensures no bg color.
-   ======================================== */
-
-/* Light mode hover - blue underline animates L-to-R */
-html:not([data-theme="dark"]) .mast .nav a:hover,
-html:not([data-theme="dark"]) .mast .nav a:focus-visible,
-html:not([data-theme="dark"]) .nav a:hover,
-html:not([data-theme="dark"]) .nav a:focus-visible,
-:root:not([data-theme="dark"]) .mast .nav a:hover,
-:root:not([data-theme="dark"]) .mast .nav a:focus-visible,
-:root:not([data-theme="dark"]) .nav a:hover,
-:root:not([data-theme="dark"]) .nav a:focus-visible {
-  background-color: transparent !important;
-  background-size: 100% 2px !important;
-}
-
-/* Light mode current - blue underline visible */
-html:not([data-theme="dark"]) .mast .nav a.current,
-html:not([data-theme="dark"]) .nav a.current,
-:root:not([data-theme="dark"]) .mast .nav a.current,
-:root:not([data-theme="dark"]) .nav a.current {
-  background-color: transparent !important;
-  background-size: 100% 2px !important;
+/* Dark mode nav toggle color */
+[data-theme="dark"] .mast .navToggle,
+[data-theme="dark"] .navToggle {
+  color: var(--k-color-ink) !important;
 }
 
 /* ========================================
