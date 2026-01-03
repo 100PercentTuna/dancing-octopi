@@ -129,81 +129,127 @@ button, .filterToggle, .topicDropdownBtn {
 }
 
 /* ========================================
-   DARK MODE MASTHEAD - GLOBAL OVERRIDE
-   This is the canonical dark mode masthead styling.
-   It's OUTSIDE @layer to ensure it wins over layered styles in header.css.
-   Must use neutral gray (#1A1A1A), NOT blue (#0b1220).
+   DARK MODE MASTHEAD - NUCLEAR OVERRIDE
+   
+   This MUST win over everything. Uses maximum specificity.
+   
+   PROBLEM: header.css has warm hover background with !important
+   SOLUTION: Use even higher specificity selectors here
+   
+   Masthead background: neutral gray rgba(26, 26, 26, 0.95)
+   Nav hover background: NONE (transparent)
    ======================================== */
 
-/* Masthead background - neutral gray, NOT blue */
+/* Masthead background - MAXIMUM SPECIFICITY */
+html:root[data-theme="dark"] .mast,
+html:root[data-theme="dark"] header.mast,
+html[data-theme="dark"] .mast,
+html[data-theme="dark"] header.mast,
 :root[data-theme="dark"] .mast,
 :root[data-theme="dark"] header.mast,
-html[data-theme="dark"] .mast,
-body.dark-mode .mast {
+body[data-theme="dark"] .mast,
+body.dark-mode .mast,
+[data-theme="dark"] .mast {
   background: rgba(26, 26, 26, 0.95) !important;
+  background-color: rgba(26, 26, 26, 0.95) !important;
   border-bottom-color: rgba(201, 184, 168, 0.2) !important;
 }
 
-/* Mobile nav dropdown - match mast background exactly */
+/* Mobile nav dropdown - match mast exactly */
+html:root[data-theme="dark"] .mast .nav,
+html:root[data-theme="dark"] .nav,
+html[data-theme="dark"] .mast .nav,
+html[data-theme="dark"] .nav,
 :root[data-theme="dark"] .mast .nav,
 :root[data-theme="dark"] .nav,
-html[data-theme="dark"] .mast .nav,
-html[data-theme="dark"] .nav {
+[data-theme="dark"] .mast .nav,
+[data-theme="dark"] .nav {
   background: rgba(26, 26, 26, 0.98) !important;
+  background-color: rgba(26, 26, 26, 0.98) !important;
   border-color: rgba(201, 184, 168, 0.2) !important;
 }
 
-/* Nav links in dark mode - consistent styling across ALL pages */
+/* Nav links in dark mode */
+html:root[data-theme="dark"] .mast .nav a,
+html:root[data-theme="dark"] .nav a,
+html[data-theme="dark"] .mast .nav a,
+html[data-theme="dark"] .nav a,
 :root[data-theme="dark"] .mast .nav a,
 :root[data-theme="dark"] .nav a,
-html[data-theme="dark"] .mast .nav a,
-html[data-theme="dark"] .nav a {
+[data-theme="dark"] .mast .nav a,
+[data-theme="dark"] .nav a {
   color: #f0f0f0 !important;
-  /* Orange underline - consistent across all pages */
   background-image: linear-gradient(#E8A87C, #E8A87C) !important;
   background-color: transparent !important;
 }
 
-/* Nav link hover - NO background color, just underline animation */
+/* ========================================
+   NAV HOVER - NUCLEAR NO-BACKGROUND OVERRIDE
+   
+   MUST beat header.css rgba(232, 168, 124, 0.1) !important
+   Using even higher specificity selectors.
+   ======================================== */
+
+/* Dark mode hover - NO BACKGROUND */
+html:root[data-theme="dark"] .mast .nav a:hover,
+html:root[data-theme="dark"] .mast .nav a:focus-visible,
+html:root[data-theme="dark"] .nav a:hover,
+html:root[data-theme="dark"] .nav a:focus-visible,
+html[data-theme="dark"] .mast .nav a:hover,
+html[data-theme="dark"] .mast .nav a:focus-visible,
+html[data-theme="dark"] .nav a:hover,
+html[data-theme="dark"] .nav a:focus-visible,
 :root[data-theme="dark"] .mast .nav a:hover,
 :root[data-theme="dark"] .mast .nav a:focus-visible,
 :root[data-theme="dark"] .nav a:hover,
 :root[data-theme="dark"] .nav a:focus-visible,
-html[data-theme="dark"] .mast .nav a:hover,
-html[data-theme="dark"] .mast .nav a:focus-visible,
-html[data-theme="dark"] .nav a:hover,
-html[data-theme="dark"] .nav a:focus-visible {
-  color: #f0f0f0 !important;
-  background-color: transparent !important; /* NO hover background - fix the gray flash */
-}
-
-/* Current nav item - no background */
-:root[data-theme="dark"] .mast .nav a.current,
-:root[data-theme="dark"] .nav a.current,
-html[data-theme="dark"] .mast .nav a.current,
-html[data-theme="dark"] .nav a.current {
+[data-theme="dark"] .mast .nav a:hover,
+[data-theme="dark"] .mast .nav a:focus-visible,
+[data-theme="dark"] .nav a:hover,
+[data-theme="dark"] .nav a:focus-visible {
   color: #f0f0f0 !important;
   background-color: transparent !important;
+  background: transparent !important;
 }
 
-/* Nav toggle and theme toggle - light color */
-:root[data-theme="dark"] .mast .navToggle,
-:root[data-theme="dark"] .navToggle,
+/* Dark mode current item - NO BACKGROUND */
+html:root[data-theme="dark"] .mast .nav a.current,
+html:root[data-theme="dark"] .nav a.current,
+html[data-theme="dark"] .mast .nav a.current,
+html[data-theme="dark"] .nav a.current,
+:root[data-theme="dark"] .mast .nav a.current,
+:root[data-theme="dark"] .nav a.current,
+[data-theme="dark"] .mast .nav a.current,
+[data-theme="dark"] .nav a.current {
+  color: #f0f0f0 !important;
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Nav toggle */
+html:root[data-theme="dark"] .mast .navToggle,
+html:root[data-theme="dark"] .navToggle,
 html[data-theme="dark"] .mast .navToggle,
-html[data-theme="dark"] .navToggle {
+html[data-theme="dark"] .navToggle,
+:root[data-theme="dark"] .mast .navToggle,
+:root[data-theme="dark"] .navToggle {
   color: #f0f0f0 !important;
 }
 
 /* ========================================
-   NAV HOVER - NO BACKGROUND (Both Light and Dark Mode)
-   Navigation links should only show underline animation on hover,
-   never a background color change.
+   LIGHT MODE NAV HOVER - ALSO NO BACKGROUND
+   Ensures underline-only interaction in light mode too.
    ======================================== */
-.nav a:hover,
-.nav a:focus-visible,
+html .mast .nav a:hover,
+html .mast .nav a:focus-visible,
+html .nav a:hover,
+html .nav a:focus-visible,
 .mast .nav a:hover,
-.mast .nav a:focus-visible {
+.mast .nav a:focus-visible,
+.nav a:hover,
+.nav a:focus-visible {
   background-color: transparent !important;
+  background: none !important;
 }
 
 /* ========================================
