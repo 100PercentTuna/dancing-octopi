@@ -1,38 +1,40 @@
 /* ========================================
    DARK MODE VARIABLES & OVERRIDES
+   
+   NOTE: Core tokens are defined in tokens.css (single source of truth).
+   This file provides:
+   - Legacy variable mappings for backward compatibility
+   - Chart colors and other extended palette items
    ======================================== */
 
 :root[data-theme="dark"] {
-  /* Core colors - dark palette */
-  --bg: #1A1A1A;
-  --bg-alt: #252525;
-  --bgWarm: #2A2A2A;
-  --bgAlt: #2F2F2F;
-  --ink: #F5F0EB;
-  --muted: rgba(245,240,235,.66);
-  --muted2: rgba(245,240,235,.46);
-  --hair: rgba(245,240,235,.14);
-  --hair2: rgba(245,240,235,.07);
+  /* Legacy variable mappings - reference tokens.css values
+     These ensure older code using legacy vars still works */
+  --bg: var(--k-color-bg);
+  --bg-alt: var(--k-color-bg-alt);
+  --bgWarm: var(--k-color-bg-warm);
+  --bgAlt: var(--k-color-bg-alt-2);
+  --ink: var(--k-color-ink);
+  --muted: var(--k-color-muted);
+  --muted2: var(--k-color-muted-2);
+  --hair: var(--k-color-hair);
+  --hair2: var(--k-color-hair-2);
 
-  /* Warm accent - lighter for dark bg */
-  --warm: #C9B8A8;
-  --warmLight: #8B7D6F;
-  --warmTint: rgba(201,184,168,0.12);
+  /* Warm accent - reference tokens */
+  --warm: var(--k-color-warm);
+  --warmLight: var(--k-color-warm-light);
+  --warmTint: var(--k-color-warm-tint);
 
-  /*
-    Accent in dark mode:
-    Users often expect the "blue" accent to warm-shift at night for comfort/contrast.
-    We use a warm amber/coral that still feels like a single brand accent.
-  */
-  --blue: #E07A62;
-  --blueTint: rgba(224,122,98,0.18);
-  --blueStroke: rgba(224,122,98,0.40);
-  --blueHover: rgba(224,122,98,0.26);
-  --blueRing: rgba(224,122,98,0.30);
-  --blueShadow: rgba(224,122,98,0.16);
+  /* Accent colors - reference tokens */
+  --blue: var(--k-color-accent);
+  --blueTint: var(--k-color-accent-tint);
+  --blueStroke: var(--k-color-accent-stroke);
+  --blueHover: var(--k-color-accent-hover);
+  --blueRing: var(--k-color-accent-ring);
+  --blueShadow: rgba(232, 168, 124, 0.16);
   --blueMuted: #E8956E;
   
-  /* Chart colors - adjusted for dark mode */
+  /* Chart colors - extended palette for data visualization */
   --chart-blue: #6BB3C9;
   --chart-blue-light: #8BC9DB;
   --chart-blue-muted: #A5D4E5;
@@ -53,16 +55,16 @@
 /* Subtle background gradient for all pages (dark mode) */
 :root[data-theme="dark"] body {
   background: 
-    radial-gradient(2000px 1500px at 20% 10%, rgba(224,122,98,0.06), transparent 70%),
-    radial-gradient(1800px 1400px at 80% 90%, rgba(201,184,168,0.06), transparent 70%),
-    var(--bg);
+    radial-gradient(2000px 1500px at 20% 10%, rgba(232, 168, 124, 0.04), transparent 70%),
+    radial-gradient(1800px 1400px at 80% 90%, rgba(201, 184, 168, 0.04), transparent 70%),
+    var(--k-color-bg);
   background-attachment: fixed;
 }
 
-/* Dark mode header override */
-:root[data-theme="dark"] .mast {
-  background: rgba(26,26,26,.95);
-}
+/* 
+   NOTE: Dark mode .mast styling is defined in header.css
+   This is kept for specificity fallback only - do not duplicate styles here
+*/
 
 
 

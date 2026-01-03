@@ -134,11 +134,11 @@
      Comprehensive dark mode color overrides
      ======================================== */
   :root[data-theme="dark"] {
-    /* Background colors */
-    --k-color-bg: #0b1220;
-    --k-color-bg-alt: #111827;
-    --k-color-bg-warm: #0f1729;
-    --k-color-bg-alt-2: #1a2332;
+    /* Background colors - neutral gray palette (not blue-tinted) */
+    --k-color-bg: #1A1A1A;
+    --k-color-bg-alt: #252525;
+    --k-color-bg-warm: #2A2A2A;
+    --k-color-bg-alt-2: #2F2F2F;
     
     /* Text colors */
     --k-color-ink: #f0f0f0;

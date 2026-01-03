@@ -23,12 +23,11 @@
 
 /* ========================================
    DARK MODE - Navigation
-   Comprehensive dark mode overrides
-   Higher specificity to override all other rules
+   Uses token-based colors from tokens.css
    ======================================== */
 :root[data-theme="dark"] .mast {
-  background: rgba(11, 18, 32, 0.95) !important;
-  border-bottom-color: rgba(201, 184, 168, 0.15) !important;
+  background: rgba(26, 26, 26, 0.95); /* Neutral gray matching --k-color-bg: #1A1A1A */
+  border-bottom-color: var(--k-color-hair);
 }
 
 /* Nav links in dark mode - light text, warm underline, NO blue anywhere */
@@ -65,8 +64,8 @@
 /* Mobile nav dropdown in dark mode - match mast background */
 :root[data-theme="dark"] .mast .nav,
 :root[data-theme="dark"] .nav {
-  background: rgba(11, 18, 32, 0.95) !important; /* Match mast background exactly */
-  border-color: rgba(201, 184, 168, 0.2) !important;
+  background: rgba(26, 26, 26, 0.95); /* Neutral gray matching mast */
+  border-color: var(--k-color-hair);
 }
 
 /* Ensure header stays fixed on all screen sizes */
