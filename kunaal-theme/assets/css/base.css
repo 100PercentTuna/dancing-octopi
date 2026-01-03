@@ -51,41 +51,20 @@ h2, .articleTitle { font-family: var(--sans); font-weight: 600; letter-spacing: 
 .count, .submeta, .meta, .jDate, .jTags, .topCounts, .articleMeta, .sectionNum, .chartCaption, .chartNote { font-family: var(--mono); }
 
 /* ========================================
-   SKIP LINKS (Accessibility)
-   Visually hidden until focused (keyboard users)
+   SKIP LINKS - COMPLETELY HIDDEN
+   Removed from HTML, but hide any that might be added by plugins/core
    ======================================== */
 .skip-link {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-  /* Visible state styles (applied on focus) */
-  background: var(--blue);
-  color: var(--bg);
-  text-decoration: none;
-  z-index: 10000;
-}
-
-.skip-link:focus {
-  /* Reveal on focus */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: auto;
-  height: auto;
-  padding: 8px 16px;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-  border-radius: 0 0 4px 0;
-  outline: 2px solid var(--blue);
-  outline-offset: 2px;
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  opacity: 0 !important;
 }
 
 /* Smooth theme transitions */
