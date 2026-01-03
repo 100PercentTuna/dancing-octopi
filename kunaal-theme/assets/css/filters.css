@@ -8,15 +8,11 @@
   align-items: center;
   justify-content: flex-end;
   padding: var(--space-1) 0;
-  margin-top: var(--space-5); /* Buffer from body padding to ensure visibility below mast */
+  margin-top: var(--space-3); /* Spacing within content area */
   margin-bottom: var(--space-1);
   gap: var(--space-2);
   position: relative;
   z-index: 100; /* Ensure toolbar is above other content but below header */
-  /* TEMPORARY DEBUG - REMOVE AFTER TESTING */
-  background: red !important;
-  border: 3px solid yellow !important;
-  min-height: 50px !important;
 }
 
 /* Filter controls container */
@@ -52,10 +48,6 @@
   transition: all 200ms ease;
   position: relative;
   z-index: 100; /* Ensure visibility above other elements */
-  /* TEMPORARY DEBUG - REMOVE AFTER TESTING */
-  background: lime !important;
-  color: black !important;
-  border: 2px solid blue !important;
 }
 .filterToggle:hover, .filterToggle:focus-visible {
   border-color: var(--blueStroke);
