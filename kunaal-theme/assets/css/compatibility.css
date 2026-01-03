@@ -171,7 +171,7 @@ html[data-theme="dark"] .nav,
   border-color: rgba(201, 184, 168, 0.2) !important;
 }
 
-/* Nav links in dark mode */
+/* Nav links in dark mode - full underline animation setup */
 html:root[data-theme="dark"] .mast .nav a,
 html:root[data-theme="dark"] .nav a,
 html[data-theme="dark"] .mast .nav a,
@@ -181,8 +181,13 @@ html[data-theme="dark"] .nav a,
 [data-theme="dark"] .mast .nav a,
 [data-theme="dark"] .nav a {
   color: #f0f0f0 !important;
+  /* Underline animation: orange line at bottom, starts hidden (0% width) */
   background-image: linear-gradient(#E8A87C, #E8A87C) !important;
+  background-repeat: no-repeat !important;
+  background-position: 0 calc(100% - 1px) !important;
+  background-size: 0% 2px !important;
   background-color: transparent !important;
+  transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms !important;
 }
 
 /* ========================================
@@ -241,19 +246,29 @@ html[data-theme="dark"] .navToggle,
 }
 
 /* ========================================
-   LIGHT MODE NAV HOVER - underline animation
-   Ensures underline animates L-to-R, no background color.
+   LIGHT MODE NAV - underline animation (blue)
+   Uses utilities.css blue underline, just ensures no bg color.
    ======================================== */
-html .mast .nav a:hover,
-html .mast .nav a:focus-visible,
-html .nav a:hover,
-html .nav a:focus-visible,
-.mast .nav a:hover,
-.mast .nav a:focus-visible,
-.nav a:hover,
-.nav a:focus-visible {
+
+/* Light mode hover - blue underline animates L-to-R */
+html:not([data-theme="dark"]) .mast .nav a:hover,
+html:not([data-theme="dark"]) .mast .nav a:focus-visible,
+html:not([data-theme="dark"]) .nav a:hover,
+html:not([data-theme="dark"]) .nav a:focus-visible,
+:root:not([data-theme="dark"]) .mast .nav a:hover,
+:root:not([data-theme="dark"]) .mast .nav a:focus-visible,
+:root:not([data-theme="dark"]) .nav a:hover,
+:root:not([data-theme="dark"]) .nav a:focus-visible {
   background-color: transparent !important;
-  /* Underline animates to full width on hover */
+  background-size: 100% 2px !important;
+}
+
+/* Light mode current - blue underline visible */
+html:not([data-theme="dark"]) .mast .nav a.current,
+html:not([data-theme="dark"]) .nav a.current,
+:root:not([data-theme="dark"]) .mast .nav a.current,
+:root:not([data-theme="dark"]) .nav a.current {
+  background-color: transparent !important;
   background-size: 100% 2px !important;
 }
 
