@@ -310,9 +310,11 @@ body.js:not(.gsap-ready) [data-reveal] {
 }
 
 /* Panorama shows color on hover */
+.kunaal-about-page .panorama:hover .panorama-img,
 .panorama:hover .panorama-img {
-  filter: grayscale(0%);
+  filter: grayscale(0%) !important;
 }
+
 /* Dynamic panorama heights (20px to 200px) */
 .panorama.h-20 { height: 20px; }
 .panorama.h-30 { height: 30px; }
