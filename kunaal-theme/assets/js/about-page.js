@@ -417,6 +417,7 @@
         const amp = 30 * Math.min(speed, 1.5); // Cap speed to prevent edge exposure
         
         try {
+          // Parallax movement
           window.gsap.fromTo(img,
             { yPercent: -amp },
             {
@@ -431,6 +432,27 @@
               }
             }
           );
+          
+          // Grayscale-to-color effect: full color when centered, grayscale when far
+          // Uses a timeline that goes grayscale -> color -> grayscale as you scroll through
+          var colorTl = window.gsap.timeline({
+            scrollTrigger: {
+              trigger: band,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          });
+          
+          // First half: grayscale(100%) -> grayscale(0%) as panorama enters viewport
+          // Second half: grayscale(0%) -> grayscale(100%) as panorama exits viewport
+          colorTl.fromTo(img,
+            { filter: 'grayscale(100%)' },
+            { filter: 'grayscale(0%)', duration: 0.5, ease: 'power2.out' }
+          ).to(img,
+            { filter: 'grayscale(100%)', duration: 0.5, ease: 'power2.in' }
+          );
+          
         } catch (e) {
           // Fail silently - parallax is progressive enhancement
         }
