@@ -192,7 +192,7 @@ html[data-theme="dark"] .nav a,
    Using even higher specificity selectors.
    ======================================== */
 
-/* Dark mode hover - NO BACKGROUND */
+/* Dark mode hover - animate underline to 100% width (L-to-R) */
 html:root[data-theme="dark"] .mast .nav a:hover,
 html:root[data-theme="dark"] .mast .nav a:focus-visible,
 html:root[data-theme="dark"] .nav a:hover,
@@ -211,10 +211,11 @@ html[data-theme="dark"] .nav a:focus-visible,
 [data-theme="dark"] .nav a:focus-visible {
   color: #f0f0f0 !important;
   background-color: transparent !important;
-  background: transparent !important;
+  /* Underline animates to full width on hover */
+  background-size: 100% 2px !important;
 }
 
-/* Dark mode current item - NO BACKGROUND */
+/* Dark mode current item - show underline at full width */
 html:root[data-theme="dark"] .mast .nav a.current,
 html:root[data-theme="dark"] .nav a.current,
 html[data-theme="dark"] .mast .nav a.current,
@@ -225,7 +226,8 @@ html[data-theme="dark"] .nav a.current,
 [data-theme="dark"] .nav a.current {
   color: #f0f0f0 !important;
   background-color: transparent !important;
-  background: transparent !important;
+  /* Current item shows underline at full width */
+  background-size: 100% 2px !important;
 }
 
 /* Nav toggle */
@@ -239,8 +241,8 @@ html[data-theme="dark"] .navToggle,
 }
 
 /* ========================================
-   LIGHT MODE NAV HOVER - ALSO NO BACKGROUND
-   Ensures underline-only interaction in light mode too.
+   LIGHT MODE NAV HOVER - underline animation
+   Ensures underline animates L-to-R, no background color.
    ======================================== */
 html .mast .nav a:hover,
 html .mast .nav a:focus-visible,
@@ -251,7 +253,8 @@ html .nav a:focus-visible,
 .nav a:hover,
 .nav a:focus-visible {
   background-color: transparent !important;
-  background: none !important;
+  /* Underline animates to full width on hover */
+  background-size: 100% 2px !important;
 }
 
 /* ========================================

@@ -30,30 +30,35 @@
   border-bottom-color: var(--k-color-hair);
 }
 
-/* Nav links in dark mode - light text, warm underline, NO blue anywhere */
+/* Nav links in dark mode - light text, warm/orange underline animation */
 :root[data-theme="dark"] .mast .nav a,
 :root[data-theme="dark"] .nav a {
-  color: #f0f0f0 !important; /* Light text - explicit value for reliability */
-  background-image: linear-gradient(
-    #E8A87C,
-    #E8A87C
-  ) !important; /* Orange underline - explicit value */
-  background-color: transparent !important; /* No blue background */
+  color: #f0f0f0 !important;
+  /* Underline setup - orange color, starts at 0% width */
+  background-image: linear-gradient(#E8A87C, #E8A87C) !important;
+  background-repeat: no-repeat !important;
+  background-position: 0 calc(100% - 1px) !important;
+  background-size: 0% 2px !important; /* Start hidden */
+  background-color: transparent !important;
+  transition: background-size 280ms cubic-bezier(0.4, 0, 0.2, 1) 40ms !important;
 }
 
+/* Hover/focus: underline animates L-to-R */
 :root[data-theme="dark"] .mast .nav a:hover,
 :root[data-theme="dark"] .mast .nav a:focus-visible,
 :root[data-theme="dark"] .nav a:hover,
 :root[data-theme="dark"] .nav a:focus-visible {
-  color: #f0f0f0 !important; /* Light text stays */
-  background-color: transparent !important; /* NO hover background - underline only */
+  color: #f0f0f0 !important;
+  background-color: transparent !important;
+  background-size: 100% 2px !important; /* Full width underline */
 }
 
-/* Current nav item - no background, just underline stays visible */
+/* Current nav item - underline visible at full width */
 :root[data-theme="dark"] .mast .nav a.current,
 :root[data-theme="dark"] .nav a.current {
   color: #f0f0f0 !important;
-  background-color: transparent !important; /* NO background for current item */
+  background-color: transparent !important;
+  background-size: 100% 2px !important; /* Underline visible */
 }
 
 :root[data-theme="dark"] .mast .navToggle,
