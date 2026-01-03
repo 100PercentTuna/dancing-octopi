@@ -973,7 +973,7 @@ a:focus-visible, button:focus-visible {
 }
 .rabbit-holes.section{ padding-bottom: 2.2rem; }
 .rabbit-holes .section-inner {
-  max-width: 850px;
+  max-width: 1200px; /* Wider to let capsules spread across more of the page */
 }
 /* Scoped to About page for higher specificity */
 .kunaal-about-page .capsules-cloud,
