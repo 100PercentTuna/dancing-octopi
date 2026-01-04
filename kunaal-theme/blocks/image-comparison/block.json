@@ -1,0 +1,73 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/image-comparison",
+    "version": "1.0.0",
+    "title": "Image Comparison",
+    "category": "kunaal-editorial",
+    "icon": "image-flip-horizontal",
+    "description": "Before/after slider to compare two images side by side.",
+    "keywords": ["image", "comparison", "before", "after", "slider", "compare"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "beforeUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "beforeId": {
+            "type": "number",
+            "default": 0
+        },
+        "beforeAlt": {
+            "type": "string",
+            "default": ""
+        },
+        "beforeLabel": {
+            "type": "string",
+            "default": "Before"
+        },
+        "afterUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "afterId": {
+            "type": "number",
+            "default": 0
+        },
+        "afterAlt": {
+            "type": "string",
+            "default": ""
+        },
+        "afterLabel": {
+            "type": "string",
+            "default": "After"
+        },
+        "caption": {
+            "type": "string",
+            "default": ""
+        },
+        "initialPosition": {
+            "type": "number",
+            "default": 50
+        },
+        "orientation": {
+            "type": "string",
+            "default": "horizontal",
+            "enum": ["horizontal", "vertical"]
+        },
+        "showLabels": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-image-comparison-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css",
+    "viewScript": "file:./view.js"
+}
+

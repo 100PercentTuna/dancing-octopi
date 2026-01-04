@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/author-bio",
+    "version": "1.0.0",
+    "title": "Author Bio",
+    "category": "kunaal-editorial",
+    "icon": "admin-users",
+    "description": "Display author information with avatar, bio, and social links.",
+    "keywords": ["author", "bio", "profile", "about", "writer"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "name": {
+            "type": "string",
+            "default": ""
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "bio": {
+            "type": "string",
+            "default": ""
+        },
+        "avatarUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "avatarId": {
+            "type": "number",
+            "default": 0
+        },
+        "email": {
+            "type": "string",
+            "default": ""
+        },
+        "website": {
+            "type": "string",
+            "default": ""
+        },
+        "twitter": {
+            "type": "string",
+            "default": ""
+        },
+        "linkedin": {
+            "type": "string",
+            "default": ""
+        },
+        "layout": {
+            "type": "string",
+            "default": "horizontal",
+            "enum": ["horizontal", "vertical", "compact"]
+        },
+        "showMoreLink": {
+            "type": "boolean",
+            "default": false
+        },
+        "moreUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "useThemeSettings": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-author-bio-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

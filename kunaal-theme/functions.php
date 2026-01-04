@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.93.0');
+define('KUNAAL_THEME_VERSION', '4.94.0');
 
 // ============================================================================
 // SETUP (Platform)
@@ -62,6 +62,7 @@ require_once KUNAAL_THEME_DIR . '/inc/Support/validation.php';
 // AJAX handlers
 require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/filter-content.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/debug-log.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/embed-card.php';
 
 // Email handlers (contact form, subscribe, SMTP)
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/email-handlers.php';

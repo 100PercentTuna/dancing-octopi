@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/callout",
+    "version": "1.0.0",
+    "title": "Callout",
+    "category": "kunaal-editorial",
+    "icon": "megaphone",
+    "description": "Highlighted box for important information, warnings, tips, or notes.",
+    "keywords": ["callout", "alert", "warning", "info", "tip", "note", "box", "notice"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "type": {
+            "type": "string",
+            "default": "info",
+            "enum": ["info", "warning", "success", "danger", "note", "tip"]
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "content": {
+            "type": "string",
+            "default": ""
+        },
+        "showIcon": {
+            "type": "boolean",
+            "default": true
+        },
+        "collapsible": {
+            "type": "boolean",
+            "default": false
+        },
+        "defaultOpen": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-callout-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

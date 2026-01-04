@@ -1,0 +1,235 @@
+/**
+ * Author Bio Block Styles
+ */
+
+.wp-block-kunaal-author-bio {
+    margin: var(--space-6, 1.5rem) 0;
+    padding: var(--space-5, 1.25rem);
+    background: var(--bgAlt, #f8f9fa);
+    border-radius: 8px;
+}
+
+/* Horizontal layout (default) */
+.author-bio--horizontal {
+    display: flex;
+    gap: var(--space-4, 1rem);
+    align-items: flex-start;
+}
+
+/* Vertical layout */
+.author-bio--vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.author-bio--vertical .author-bio__avatar {
+    margin-bottom: var(--space-3, 0.75rem);
+}
+
+.author-bio--vertical .author-bio__social {
+    justify-content: center;
+}
+
+/* Compact layout */
+.author-bio--compact {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    padding: var(--space-3, 0.75rem);
+}
+
+.author-bio--compact .author-bio__avatar {
+    width: 48px;
+    height: 48px;
+}
+
+.author-bio--compact .author-bio__bio {
+    display: none;
+}
+
+.author-bio--compact .author-bio__name {
+    font-size: 0.9375rem;
+    margin-bottom: 0;
+}
+
+.author-bio--compact .author-bio__title {
+    font-size: 0.75rem;
+}
+
+/* Avatar */
+.author-bio__avatar {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+}
+
+.author-bio__avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Content */
+.author-bio__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.author-bio__name {
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--ink, #1a1a1a);
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+}
+
+.author-bio__title {
+    font-family: var(--mono, monospace);
+    font-size: 0.75rem;
+    color: var(--warm, #7D6B5D);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.75rem;
+}
+
+.author-bio__bio {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--muted, #4a4a4a);
+    margin: 0 0 0.75rem;
+}
+
+.author-bio__bio p {
+    margin: 0;
+}
+
+/* Social links */
+.author-bio__social {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.author-bio__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg, #fff);
+    color: var(--muted, #6b7280);
+    transition: all 0.2s ease;
+}
+
+.author-bio__social-link:hover,
+.author-bio__social-link:focus-visible {
+    background: var(--blue, #1E5AFF);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.author-bio__social-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* More link */
+.author-bio__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--sans, system-ui, sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--blue, #1E5AFF);
+    text-decoration: none;
+    transition: gap 0.2s ease;
+}
+
+.author-bio__more:hover,
+.author-bio__more:focus-visible {
+    gap: 0.5rem;
+}
+
+.author-bio__more svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Dark mode */
+:root[data-theme="dark"] .wp-block-kunaal-author-bio {
+    background: var(--k-color-dark-surface, #1e1e1e);
+}
+
+:root[data-theme="dark"] .author-bio__name {
+    color: var(--k-color-dark-text, #e8e8e8);
+}
+
+:root[data-theme="dark"] .author-bio__title {
+    color: var(--k-color-dark-accent, #E8A87C);
+}
+
+:root[data-theme="dark"] .author-bio__bio {
+    color: var(--k-color-dark-muted, #a0a0a0);
+}
+
+:root[data-theme="dark"] .author-bio__social-link {
+    background: var(--k-color-dark-bg, #121212);
+    color: var(--k-color-dark-muted, #a0a0a0);
+}
+
+:root[data-theme="dark"] .author-bio__social-link:hover,
+:root[data-theme="dark"] .author-bio__social-link:focus-visible {
+    background: var(--k-color-dark-accent, #E8A87C);
+    color: #1a1a1a;
+}
+
+:root[data-theme="dark"] .author-bio__more {
+    color: var(--k-color-dark-accent, #E8A87C);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .author-bio--horizontal {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .author-bio--horizontal .author-bio__social {
+        justify-content: center;
+    }
+    
+    .author-bio__avatar {
+        width: 72px;
+        height: 72px;
+    }
+    
+    .author-bio__name {
+        font-size: 1rem;
+    }
+    
+    .author-bio__bio {
+        font-size: 0.875rem;
+    }
+}
+
+/* Print */
+@media print {
+    .wp-block-kunaal-author-bio {
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+    
+    .author-bio__social-link {
+        border: 1px solid #ddd;
+    }
+}
+

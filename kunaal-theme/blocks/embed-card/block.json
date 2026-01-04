@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/embed-card",
+    "version": "1.0.0",
+    "title": "Embed Card",
+    "category": "kunaal-editorial",
+    "icon": "admin-links",
+    "description": "Rich link preview card with Open Graph data.",
+    "keywords": ["embed", "card", "link", "preview", "og", "bookmark"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "url": {
+            "type": "string",
+            "default": ""
+        },
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "description": {
+            "type": "string",
+            "default": ""
+        },
+        "imageUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "siteName": {
+            "type": "string",
+            "default": ""
+        },
+        "favicon": {
+            "type": "string",
+            "default": ""
+        },
+        "layout": {
+            "type": "string",
+            "default": "horizontal",
+            "enum": ["horizontal", "vertical", "compact"]
+        },
+        "openInNewTab": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-embed-card-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

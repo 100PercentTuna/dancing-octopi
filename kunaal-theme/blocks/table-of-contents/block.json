@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/table-of-contents",
+    "version": "1.0.0",
+    "title": "Table of Contents",
+    "category": "kunaal-editorial",
+    "icon": "list-view",
+    "description": "Auto-generated table of contents from headings in the content.",
+    "keywords": ["toc", "table of contents", "navigation", "headings", "outline"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "On this page"
+        },
+        "headingLevels": {
+            "type": "array",
+            "default": ["h2", "h3"]
+        },
+        "style": {
+            "type": "string",
+            "default": "numbered",
+            "enum": ["numbered", "bulleted", "plain"]
+        },
+        "collapsible": {
+            "type": "boolean",
+            "default": true
+        },
+        "defaultOpen": {
+            "type": "boolean",
+            "default": true
+        },
+        "highlightActive": {
+            "type": "boolean",
+            "default": true
+        },
+        "smoothScroll": {
+            "type": "boolean",
+            "default": true
+        },
+        "sticky": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-table-of-contents-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css",
+    "viewScript": "file:./view.js"
+}
+
