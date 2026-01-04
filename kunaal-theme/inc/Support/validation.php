@@ -17,13 +17,13 @@ if (!defined('ABSPATH')) {
 /**
  * Get meta value from request or post meta
  * 
- * @param array $meta Request meta array
+ * @param array|null $meta Request meta array (nullable for REST API compatibility)
  * @param string $key Meta key
  * @param int $post_id Post ID
  * @return mixed Meta value or null
  */
-function kunaal_get_meta_value(array $meta, string $key, int $post_id = 0): mixed {
-    if (isset($meta[$key]) && !empty($meta[$key])) {
+function kunaal_get_meta_value(?array $meta, string $key, int $post_id = 0): mixed {
+    if ($meta !== null && isset($meta[$key]) && !empty($meta[$key])) {
         return $meta[$key];
     }
     if ($post_id) {
@@ -55,11 +55,11 @@ function kunaal_essay_has_topics(WP_REST_Request $request, int $post_id = 0): bo
  * Check if essay has image
  * 
  * @param WP_REST_Request $request Request object
- * @param array $meta Request meta array
+ * @param array|null $meta Request meta array (nullable for REST API compatibility)
  * @param int $post_id Post ID
  * @return bool True if has image
  */
-function kunaal_essay_has_image(WP_REST_Request $request, array $meta, int $post_id = 0): bool {
+function kunaal_essay_has_image(WP_REST_Request $request, ?array $meta, int $post_id = 0): bool {
     $featured_media = $request->get_param('featured_media');
     $card_image = kunaal_get_meta_value($meta, 'kunaal_card_image', $post_id);
     return !empty($card_image) || !empty($featured_media) || ($post_id && has_post_thumbnail($post_id));
@@ -76,7 +76,7 @@ function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $req
     
     $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
     $errors = array();
-    $meta = $request->get_param('meta');
+    $meta = $request->get_param('meta') ?? array();
     
     // Check for subtitle (now required)
     $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
@@ -123,7 +123,7 @@ function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $r
     
     $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
     $errors = array();
-    $meta = $request->get_param('meta');
+    $meta = $request->get_param('meta') ?? array();
     
     // Check for subtitle (required for jottings)
     $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
