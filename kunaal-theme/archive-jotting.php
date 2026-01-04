@@ -26,10 +26,15 @@ $all_topics = kunaal_get_all_topics();
   <!-- Section header - EXACTLY like home page with blue underline and count -->
   <section class="section" id="jottings" aria-label="Jottings">
     <?php
+    // Get label from Customizer (with fallback)
+    $jotting_label = $total_jottings == 1
+      ? kunaal_mod('kunaal_jotting_label_singular', 'short one')
+      : kunaal_mod('kunaal_jotting_label_plural', 'short ones');
+    
     get_template_part('template-parts/components/section-head', null, array(
       'title' => 'Jottings',
       'count' => $total_jottings,
-      'count_label' => $total_jottings == 1 ? 'quick jotted-down rough idea' : 'quick jotted-down rough ideas',
+      'count_label' => $jotting_label,
       'count_id' => 'jotCountShown',
       'label_id' => 'jotLabel',
     ));

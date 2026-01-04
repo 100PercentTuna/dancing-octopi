@@ -593,18 +593,26 @@
       container.appendChild(frag);
     }
 
-    // Update counts on homepage
+    // Update counts on homepage using localized labels from Customizer
     if (postType === 'essay') {
       const countEl = document.getElementById('essayCountShown');
       const labelEl = document.getElementById('essayLabel');
       if (countEl) countEl.textContent = String(filtered.length);
-      if (labelEl) labelEl.textContent = filtered.length === 1 ? 'essay' : 'essays';
+      if (labelEl && window.kunaalTheme) {
+        labelEl.textContent = filtered.length === 1
+          ? (window.kunaalTheme.essayLabelSingular || 'long one')
+          : (window.kunaalTheme.essayLabelPlural || 'long ones');
+      }
     }
     if (postType === 'jotting') {
       const countEl = document.getElementById('jotCountShown');
       const labelEl = document.getElementById('jotLabel');
       if (countEl) countEl.textContent = String(filtered.length);
-      if (labelEl) labelEl.textContent = filtered.length === 1 ? 'jotting' : 'jottings';
+      if (labelEl && window.kunaalTheme) {
+        labelEl.textContent = filtered.length === 1
+          ? (window.kunaalTheme.jottingLabelSingular || 'short one')
+          : (window.kunaalTheme.jottingLabelPlural || 'short ones');
+      }
     }
 
     // Ensure visibility
@@ -656,18 +664,26 @@
         hasMore[postType] = currentPage[postType] < data.data.pages;
         currentPage[postType]++;
         
-        // Update counts on homepage
+        // Update counts on homepage using localized labels from Customizer
         if (postType === 'essay') {
           const countEl = document.getElementById('essayCountShown');
           const labelEl = document.getElementById('essayLabel');
           if (countEl) countEl.textContent = data.data.total;
-          if (labelEl) labelEl.textContent = data.data.total === 1 ? 'essay' : 'essays';
+          if (labelEl && window.kunaalTheme) {
+            labelEl.textContent = data.data.total === 1
+              ? (window.kunaalTheme.essayLabelSingular || 'long one')
+              : (window.kunaalTheme.essayLabelPlural || 'long ones');
+          }
         }
         if (postType === 'jotting') {
           const countEl = document.getElementById('jotCountShown');
           const labelEl = document.getElementById('jotLabel');
           if (countEl) countEl.textContent = data.data.total;
-          if (labelEl) labelEl.textContent = data.data.total === 1 ? 'jotting' : 'jottings';
+          if (labelEl && window.kunaalTheme) {
+            labelEl.textContent = data.data.total === 1
+              ? (window.kunaalTheme.jottingLabelSingular || 'short one')
+              : (window.kunaalTheme.jottingLabelPlural || 'short ones');
+          }
         }
       }
       // If request fails, keep existing content and surface a useful error.

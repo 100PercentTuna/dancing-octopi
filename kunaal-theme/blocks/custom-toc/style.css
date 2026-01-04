@@ -2,8 +2,8 @@
  * Custom TOC Block Styles
  * A clean, editorial-quality table of contents
  * 
- * Desktop (>960px): Sticky sidebar with vertical list
- * Tablet/Mobile (<=960px): Horizontal pill layout inline with content
+ * Desktop (>1000px): Sticky sidebar with vertical list
+ * Tablet/Mobile (<=1000px): Horizontal pill layout inline with content
  */
 
 /* =========================================
@@ -13,14 +13,15 @@
     background: linear-gradient(135deg, var(--bgWarm, #FAF8F5) 0%, #F5F0EA 100%);
     border: 1px solid var(--hair2, rgba(125,107,93,0.15));
     border-radius: 6px;
-    padding: var(--space-4, 32px);
+    /* Asymmetric padding: less on left to reduce wasted space */
+    padding: 24px 24px 24px 16px;
     margin: var(--space-5, 40px) 0;
-    max-width: 320px;
+    max-width: 280px;
     box-shadow: 
         0 2px 8px rgba(125,107,93,0.06),
         0 1px 2px rgba(125,107,93,0.04);
     position: relative;
-    overflow: hidden;
+    overflow: visible; /* Allow indicator to be visible */
 }
 
 /* Decorative accent line at top */
@@ -34,11 +35,6 @@
     background: linear-gradient(90deg, var(--warm, #7D6B5D), var(--warmLight, #B5A99A));
 }
 
-/* Hide on mobile option - controlled by data attribute */
-.customToc[data-hide-mobile="true"] {
-    /* Will be hidden via media query below */
-}
-
 /* =========================================
    STICKY POSITIONING (Desktop only)
    ========================================= */
@@ -46,8 +42,8 @@
     position: sticky;
     top: calc(var(--mastH, 77px) + var(--space-4, 32px));
     float: right;
-    margin-left: var(--space-5, 40px);
-    margin-right: calc(-1 * (var(--space-5, 40px) + 320px));
+    margin-left: var(--space-4, 32px);
+    margin-right: calc(-1 * (var(--space-4, 32px) + 280px));
     z-index: 10;
 }
 
@@ -60,8 +56,8 @@
     font-weight: 600;
     letter-spacing: 0.01em;
     color: var(--ink, #1a1a1a);
-    margin: 0 0 var(--space-3, 24px);
-    padding-bottom: var(--space-2, 16px);
+    margin: 0 0 16px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--hair2, rgba(125,107,93,0.15));
     position: relative;
 }
@@ -87,7 +83,6 @@
     margin: 0;
     padding: 0;
     counter-reset: toc-counter;
-    /* Position relative for the right-edge active indicator */
     position: relative;
 }
 
@@ -115,8 +110,8 @@
     background-size: 0 !important;
     display: flex;
     align-items: baseline;
-    gap: 12px; /* More gap between number and text */
-    padding: 8px 16px 8px 0; /* No left padding - numbers start at edge */
+    gap: 10px; /* Gap between number and text */
+    padding: 7px 20px 7px 0; /* Right padding for indicator space */
     border-radius: 0;
     transition: 
         color 150ms ease,
@@ -125,23 +120,23 @@
     border: none !important;
 }
 
-/* Counter number - flush left */
+/* Counter number */
 .customToc__link::before {
     content: counter(toc-counter);
     font-family: var(--mono, 'SF Mono', monospace);
     font-size: 10px;
     font-weight: 500;
     color: rgba(125,107,93,0.4);
-    min-width: 16px;
+    min-width: 14px;
     flex-shrink: 0;
     transition: color 150ms ease;
 }
 
-/* Right-side active indicator - positioned at RIGHT EDGE of the TOC box */
+/* Right-side active indicator - FIXED 8px from right edge of TOC container */
 .customToc__link::after {
     content: '';
     position: absolute;
-    right: calc(-1 * var(--space-4, 32px) + 4px); /* Position at right edge of container */
+    right: -16px; /* Fixed position: 24px right padding - 8px from edge = -16px */
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
@@ -151,7 +146,7 @@
     transition: height 200ms ease;
 }
 
-/* Hover state - subtle color change only, no ugly backgrounds */
+/* Hover state - subtle color change only */
 .customToc__link:hover {
     color: var(--muted, #666);
     text-decoration: none !important;
@@ -162,7 +157,7 @@
     color: var(--warm, #7D6B5D);
 }
 
-/* Focus state - clean outline only, no ugly box shadow */
+/* Focus state - clean outline only */
 .customToc__link:focus {
     outline: 2px solid var(--warm, #7D6B5D);
     outline-offset: 2px;
@@ -207,7 +202,7 @@
     font-size: 10px;
     font-weight: 500;
     color: rgba(125,107,93,0.4);
-    min-width: 20px;
+    min-width: 18px;
     flex-shrink: 0;
 }
 
@@ -246,10 +241,10 @@
 }
 
 /* =========================================
-   RESPONSIVE: Tablet/Mobile (<= 960px)
-   Transitions to horizontal pill layout
+   RESPONSIVE: Tablet/Mobile (<= 1000px)
+   Transitions to horizontal pill layout earlier
    ========================================= */
-@media (max-width: 960px) {
+@media (max-width: 1000px) {
     .customToc--sticky {
         position: static;
         float: none;
@@ -261,7 +256,7 @@
     
     .customToc {
         max-width: 100%;
-        padding: var(--space-4, 32px);
+        padding: 24px;
     }
     
     /* Horizontal pill layout */
@@ -317,14 +312,14 @@
    ========================================= */
 @media (max-width: 640px) {
     .customToc {
-        padding: var(--space-3, 24px);
+        padding: 20px 16px;
         margin: var(--space-4, 32px) 0;
     }
     
     .customToc__title {
         font-size: 12px;
-        margin-bottom: var(--space-2, 16px);
-        padding-bottom: var(--space-2, 16px);
+        margin-bottom: 12px;
+        padding-bottom: 10px;
     }
     
     .customToc__title::before {
@@ -344,25 +339,6 @@
     /* Hide TOC on mobile if option enabled */
     .customToc[data-hide-mobile="true"] {
         display: none;
-    }
-}
-
-/* =========================================
-   NARROW DESKTOP (prevent overlap issues)
-   ========================================= */
-@media (min-width: 961px) and (max-width: 1100px) {
-    /* At narrow desktop widths, reduce TOC width to prevent overlap */
-    .customToc {
-        max-width: 260px;
-    }
-    
-    .customToc--sticky {
-        margin-right: calc(-1 * (var(--space-4, 32px) + 260px));
-        margin-left: var(--space-4, 32px);
-    }
-    
-    .customToc__link::after {
-        right: calc(-1 * var(--space-4, 32px) + 4px);
     }
 }
 
@@ -419,7 +395,7 @@
 }
 
 /* Dark mode tablet/mobile pills */
-@media (max-width: 960px) {
+@media (max-width: 1000px) {
     :root[data-theme="dark"] .customToc__link {
         background: var(--bgAlt, #1f1f1f);
         border-color: var(--hair, rgba(255,255,255,0.1));

@@ -26,10 +26,15 @@ $all_topics = kunaal_get_all_topics();
   <!-- Section header - EXACTLY like home page with blue underline and count -->
   <section class="section" id="essays" aria-label="Essays">
     <?php
+    // Get label from Customizer (with fallback)
+    $essay_label = $total_essays == 1
+      ? kunaal_mod('kunaal_essay_label_singular', 'long one')
+      : kunaal_mod('kunaal_essay_label_plural', 'long ones');
+    
     get_template_part('template-parts/components/section-head', null, array(
       'title' => 'Essays',
       'count' => $total_essays,
-      'count_label' => $total_essays == 1 ? 'essay' : 'essays',
+      'count_label' => $essay_label,
       'count_id' => 'essayCountShown',
       'label_id' => 'essayLabel',
     ));

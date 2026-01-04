@@ -211,6 +211,66 @@ function kunaal_customize_register_essay_layout_section(WP_Customize_Manager $wp
 }
 
 /**
+ * Register Content Labels section and controls
+ * Controls singular/plural labels for essays and jottings on homepage and archives
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance
+ */
+function kunaal_customize_register_labels_section(WP_Customize_Manager $wp_customize): void {
+    $wp_customize->add_section('kunaal_labels', array(
+        'title' => 'Content Labels',
+        'priority' => 43,
+        'description' => 'Customize the labels shown for essays and jottings on the homepage and archive pages.',
+    ));
+
+    // Essay Labels
+    $wp_customize->add_setting('kunaal_essay_label_singular', array(
+        'default' => 'long one',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_essay_label_singular', array(
+        'label' => 'Essay Label (Singular)',
+        'description' => 'Label when there is exactly 1 essay (e.g., "long one")',
+        'section' => 'kunaal_labels',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_essay_label_plural', array(
+        'default' => 'long ones',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_essay_label_plural', array(
+        'label' => 'Essay Label (Plural)',
+        'description' => 'Label when there are 0 or 2+ essays (e.g., "long ones")',
+        'section' => 'kunaal_labels',
+        'type' => 'text',
+    ));
+
+    // Jotting Labels
+    $wp_customize->add_setting('kunaal_jotting_label_singular', array(
+        'default' => 'short one',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_jotting_label_singular', array(
+        'label' => 'Jotting Label (Singular)',
+        'description' => 'Label when there is exactly 1 jotting (e.g., "short one")',
+        'section' => 'kunaal_labels',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_jotting_label_plural', array(
+        'default' => 'short ones',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_jotting_label_plural', array(
+        'label' => 'Jotting Label (Plural)',
+        'description' => 'Label when there are 0 or 2+ jottings (e.g., "short ones")',
+        'section' => 'kunaal_labels',
+        'type' => 'text',
+    ));
+}
+
+/**
  * Register Subscribe section and controls
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance

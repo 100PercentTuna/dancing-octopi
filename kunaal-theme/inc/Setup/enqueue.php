@@ -376,11 +376,16 @@ function kunaal_enqueue_assets(): void {
         'nonce' => wp_create_nonce('kunaal_theme_nonce'),
         'pdfNonce' => wp_create_nonce('kunaal_pdf_nonce'),
         'homeUrl' => home_url('/'),
-            'shareText' => kunaal_mod('kunaal_share_text', ''),
-            'twitterHandle' => kunaal_mod('kunaal_twitter_handle', ''),
-            'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
-            'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
-        'debug' => defined('WP_DEBUG') && WP_DEBUG, // Add debug flag for console statement guards
+        'shareText' => kunaal_mod('kunaal_share_text', ''),
+        'twitterHandle' => kunaal_mod('kunaal_twitter_handle', ''),
+        'linkedinUrl' => kunaal_mod('kunaal_linkedin_handle', ''),
+        'authorName' => kunaal_mod('kunaal_author_first_name', 'Kunaal') . ' ' . kunaal_mod('kunaal_author_last_name', 'Wadhwa'),
+        'debug' => defined('WP_DEBUG') && WP_DEBUG,
+        // Content labels for filtering (singular/plural from Customizer)
+        'essayLabelSingular' => kunaal_mod('kunaal_essay_label_singular', 'long one'),
+        'essayLabelPlural' => kunaal_mod('kunaal_essay_label_plural', 'long ones'),
+        'jottingLabelSingular' => kunaal_mod('kunaal_jotting_label_singular', 'short one'),
+        'jottingLabelPlural' => kunaal_mod('kunaal_jotting_label_plural', 'short ones'),
     ));
     
     // For contact page, also add inline script to ensure kunaalTheme is available

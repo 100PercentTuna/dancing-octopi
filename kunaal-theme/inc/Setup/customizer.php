@@ -23,6 +23,7 @@ function kunaal_customize_register(WP_Customize_Manager $wp_customize): void {
     kunaal_customize_register_sharing_section($wp_customize);
     kunaal_customize_register_site_identity($wp_customize);
     kunaal_customize_register_essay_layout_section($wp_customize);
+    kunaal_customize_register_labels_section($wp_customize);
     kunaal_customize_register_subscribe_section($wp_customize);
     kunaal_customize_register_contact_page_section($wp_customize);
     kunaal_customize_register_email_delivery_section($wp_customize);

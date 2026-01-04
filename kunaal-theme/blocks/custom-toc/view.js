@@ -1,6 +1,7 @@
 /**
  * Custom TOC Block - Frontend Script
  * Handles smooth scrolling and active section highlighting
+ * Uses IntersectionObserver for reliable scroll detection
  */
 (function() {
     'use strict';
@@ -35,64 +36,157 @@
                 }
             });
 
-            // Scroll-based active highlighting - must update live as user scrolls
+            // Scroll-based active highlighting using IntersectionObserver
             if (shouldHighlight && anchors.length > 0) {
-                var lastActiveIndex = -1;
+                // Track which sections are currently visible
+                var visibleSections = new Set();
                 
-                function updateActiveLink() {
-                    // Get masthead height for offset
+                // Get masthead height for offset
+                function getMastHeight() {
                     var mastHeight = 77;
                     var mastHValue = getComputedStyle(document.documentElement).getPropertyValue('--mastH');
                     if (mastHValue) {
                         mastHeight = parseInt(mastHValue) || 77;
                     }
-                    
-                    var offset = mastHeight + 100; // Trigger point below header
-                    var activeIndex = 0;
-
-                    // Find current section based on scroll position
-                    for (var i = 0; i < anchors.length; i++) {
-                        var rect = anchors[i].target.getBoundingClientRect();
-                        if (rect.top <= offset) {
-                            activeIndex = i;
+                    return mastHeight;
+                }
+                
+                // Update active link based on visible sections
+                function updateActiveFromVisible() {
+                    if (visibleSections.size === 0) {
+                        // No sections visible - find the closest one above viewport
+                        var closestAbove = -1;
+                        var closestDistance = Infinity;
+                        
+                        for (var i = 0; i < anchors.length; i++) {
+                            var rect = anchors[i].target.getBoundingClientRect();
+                            if (rect.bottom < 0) {
+                                // Section is above viewport
+                                var dist = Math.abs(rect.bottom);
+                                if (dist < closestDistance) {
+                                    closestDistance = dist;
+                                    closestAbove = i;
+                                }
+                            }
                         }
+                        
+                        if (closestAbove >= 0) {
+                            setActiveIndex(closestAbove);
+                        }
+                        return;
                     }
-
-                    // Only update DOM if active index changed
-                    if (activeIndex !== lastActiveIndex) {
-                        lastActiveIndex = activeIndex;
-                        
-                        // Update active states
-                        links.forEach(function(link) {
-                            link.classList.remove('is-active');
-                        });
-                        
-                        if (anchors[activeIndex]) {
-                            anchors[activeIndex].link.classList.add('is-active');
+                    
+                    // Find the topmost visible section
+                    var topmostIndex = -1;
+                    var topmostTop = Infinity;
+                    
+                    visibleSections.forEach(function(anchorId) {
+                        for (var i = 0; i < anchors.length; i++) {
+                            if (anchors[i].id === anchorId) {
+                                var rect = anchors[i].target.getBoundingClientRect();
+                                if (rect.top < topmostTop) {
+                                    topmostTop = rect.top;
+                                    topmostIndex = i;
+                                }
+                                break;
+                            }
                         }
+                    });
+                    
+                    if (topmostIndex >= 0) {
+                        setActiveIndex(topmostIndex);
                     }
                 }
-
-                // Use scroll event directly (no throttling for smooth updates)
+                
+                var currentActiveIndex = -1;
+                
+                function setActiveIndex(index) {
+                    if (index === currentActiveIndex) return;
+                    currentActiveIndex = index;
+                    
+                    links.forEach(function(link) {
+                        link.classList.remove('is-active');
+                    });
+                    
+                    if (anchors[index]) {
+                        anchors[index].link.classList.add('is-active');
+                    }
+                }
+                
+                // Create IntersectionObserver
+                var observerOptions = {
+                    root: null,
+                    rootMargin: '-' + getMastHeight() + 'px 0px -40% 0px',
+                    threshold: [0, 0.1, 0.5, 1]
+                };
+                
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        var anchorId = entry.target.id;
+                        
+                        if (entry.isIntersecting) {
+                            visibleSections.add(anchorId);
+                        } else {
+                            visibleSections.delete(anchorId);
+                        }
+                    });
+                    
+                    updateActiveFromVisible();
+                }, observerOptions);
+                
+                // Observe all anchor targets
+                anchors.forEach(function(anchor) {
+                    observer.observe(anchor.target);
+                });
+                
+                // Fallback scroll-based detection for edge cases
                 var scrollTimeout;
                 function onScroll() {
-                    // Clear any pending timeout
                     if (scrollTimeout) {
                         cancelAnimationFrame(scrollTimeout);
                     }
-                    // Schedule update
-                    scrollTimeout = requestAnimationFrame(updateActiveLink);
+                    scrollTimeout = requestAnimationFrame(function() {
+                        // Simple scroll position based detection as fallback
+                        var mastHeight = getMastHeight();
+                        var offset = mastHeight + 80;
+                        var activeIndex = 0;
+
+                        for (var i = 0; i < anchors.length; i++) {
+                            var rect = anchors[i].target.getBoundingClientRect();
+                            if (rect.top <= offset) {
+                                activeIndex = i;
+                            }
+                        }
+
+                        setActiveIndex(activeIndex);
+                    });
                 }
 
                 window.addEventListener('scroll', onScroll, { passive: true });
+                window.addEventListener('resize', function() {
+                    // Recreate observer with new rootMargin on resize
+                    observer.disconnect();
+                    observerOptions.rootMargin = '-' + getMastHeight() + 'px 0px -40% 0px';
+                    observer = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            var anchorId = entry.target.id;
+                            if (entry.isIntersecting) {
+                                visibleSections.add(anchorId);
+                            } else {
+                                visibleSections.delete(anchorId);
+                            }
+                        });
+                        updateActiveFromVisible();
+                    }, observerOptions);
+                    anchors.forEach(function(anchor) {
+                        observer.observe(anchor.target);
+                    });
+                }, { passive: true });
                 
-                // Also listen to resize (content might shift)
-                window.addEventListener('resize', updateActiveLink, { passive: true });
-                
-                // Initial state - run immediately and after a short delay (for lazy content)
-                updateActiveLink();
-                setTimeout(updateActiveLink, 500);
-                setTimeout(updateActiveLink, 1500);
+                // Initial state - trigger scroll handler after delays
+                setTimeout(onScroll, 100);
+                setTimeout(onScroll, 500);
+                setTimeout(onScroll, 1500);
             }
 
             // Click handler for smooth scroll
@@ -117,7 +211,7 @@
                     // Calculate exact scroll position
                     var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                     var targetRect = target.getBoundingClientRect();
-                    var targetPosition = scrollTop + targetRect.top - mastHeight - 32;
+                    var targetPosition = scrollTop + targetRect.top - mastHeight - 24;
                     
                     // Smooth scroll to target
                     window.scrollTo({

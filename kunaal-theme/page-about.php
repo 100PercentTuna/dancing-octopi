@@ -332,7 +332,12 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                         $col = ($index % 3) + 1; // 1, 2, or 3
                         $row = floor($index / 3) + 2; // Starting from row 2
                     ?>
-                    <div class="media-item media-item--book" data-reveal="up" style="grid-column: <?php echo esc_attr($col); ?>; grid-row: <?php echo esc_attr($row); ?>;">
+                    <?php
+                    $has_book_link = !empty($book['url']);
+                    $book_tag = $has_book_link ? 'a' : 'div';
+                    $book_link_attrs = $has_book_link ? ' href="' . esc_url($book['url']) . '" target="_blank" rel="noopener"' : '';
+                    ?>
+                    <<?php echo $book_tag; ?> class="media-item media-item--book" data-reveal="up" style="grid-column: <?php echo esc_attr($col); ?>; grid-row: <?php echo esc_attr($row); ?>;"<?php echo $book_link_attrs; ?>>
                         <div class="media-cover book">
                             <?php if (!empty($book['cover'])) : ?>
                             <img alt="<?php echo esc_attr($book['title']); ?> cover" decoding="async" loading="lazy" src="<?php echo esc_url($book['cover']); ?>"/>
@@ -340,7 +345,7 @@ kunaal_render_panoramas($panoramas['after_rabbit_holes'] ?? array(), 'squeeze-af
                         </div>
                         <div class="media-title"><?php echo esc_html($book['title']); ?></div>
                         <div class="media-subtitle"><?php echo esc_html($book['author']); ?></div>
-                    </div>
+                    </<?php echo $book_tag; ?>>
                     <?php endforeach; ?>
                 </div>
             </div>

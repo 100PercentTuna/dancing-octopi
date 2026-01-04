@@ -36,10 +36,15 @@ $shown_jottings = $jottings_query->post_count;
   <!-- Essays Section -->
   <section class="section" id="essays" aria-label="<?php esc_attr_e('Essays', 'kunaal-theme'); ?>">
     <?php
+    // Get label from Customizer (with fallback)
+    $essay_label = $shown_essays === 1
+      ? kunaal_mod('kunaal_essay_label_singular', 'long one')
+      : kunaal_mod('kunaal_essay_label_plural', 'long ones');
+    
     get_template_part('template-parts/components/section-head', null, array(
       'title' => __('Essays', 'kunaal-theme'),
       'count' => $shown_essays,
-      'count_label' => $shown_essays === 1 ? __('essay', 'kunaal-theme') : __('essays', 'kunaal-theme'),
+      'count_label' => $essay_label,
       'count_id' => 'essayCountShown',
       'label_id' => 'essayLabel',
       'more_link' => $total_essays > $home_posts_limit ? get_post_type_archive_link('essay') : '',
@@ -76,10 +81,15 @@ $shown_jottings = $jottings_query->post_count;
   <!-- Jottings Section -->
   <section class="section" id="jottings" aria-label="<?php esc_attr_e('Jottings', 'kunaal-theme'); ?>">
     <?php
+    // Get label from Customizer (with fallback)
+    $jotting_label = $shown_jottings === 1
+      ? kunaal_mod('kunaal_jotting_label_singular', 'short one')
+      : kunaal_mod('kunaal_jotting_label_plural', 'short ones');
+    
     get_template_part('template-parts/components/section-head', null, array(
       'title' => __('Jottings', 'kunaal-theme'),
       'count' => $shown_jottings,
-      'count_label' => $shown_jottings === 1 ? __('quick jotted-down rough idea', 'kunaal-theme') : __('quick jotted-down rough ideas', 'kunaal-theme'),
+      'count_label' => $jotting_label,
       'count_id' => 'jotCountShown',
       'label_id' => 'jotLabel',
       'more_link' => $total_jottings > $home_posts_limit ? get_post_type_archive_link('jotting') : '',
