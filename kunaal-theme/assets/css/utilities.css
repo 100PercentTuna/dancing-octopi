@@ -32,6 +32,18 @@
   transition: none;
 }
 
+/* Mobile: Ensure progress bar is visible and above all content */
+@media (max-width: 900px) {
+  .progress {
+    z-index: 10000; /* Above everything including nav dropdown */
+    height: 4px; /* Slightly thicker for mobile visibility */
+  }
+  .progressFill {
+    /* Don't hide at 0% on mobile - let it show when scrolling */
+    height: 100%;
+  }
+}
+
 /* ========================================
    LAZY LOADING - Skeleton Placeholders
    ======================================== */

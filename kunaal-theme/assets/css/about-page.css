@@ -1834,51 +1834,48 @@ a:focus-visible, button:focus-visible {
     text-align: center;
   }
   
+  /* CRITICAL: Force numbers visibility on mobile - CSS-only fallback
+     Overrides inline styles and GSAP transforms with !important */
   .kunaal-about-page .number-value,
   .kunaal-about-page .infinity-value {
     font-size: 1.75rem;
+    opacity: 1 !important;
+    transform: none !important;
   }
   
   .kunaal-about-page .number-label {
     font-size: 9px;
+    opacity: 1 !important;
   }
   
-  /* Capsules: Compact brick-wall layout for mobile */
-  /* Issue 8: Allow text wrapping for denser 2-line capsules */
+  /* Capsules: Ultra-compact for mobile - just make everything smaller */
   .kunaal-about-page .capsules-cloud {
-    gap: 0.2rem;        /* Very tight gap */
+    gap: 3px;
     padding: 0.25rem 0;
-    max-height: none;
   }
   
   .kunaal-about-page .capsule-inner {
-    height: auto;       /* Remove fixed height - allow content to size */
-    min-height: 20px;
-    font-size: 7px;     /* Smaller text */
-    padding: 3px 6px 3px 3px;
-    gap: 0.2rem;
+    height: 18px;
+    font-size: 6px;
+    padding: 2px 5px 2px 2px;
+    gap: 2px;
     animation: none;
-    border-radius: 12px; /* Less rounded for compact look */
-    max-width: 90px;    /* Force narrower capsules so text wraps */
-    text-align: left;
+    border-radius: 9px;
   }
   
-  /* Allow text wrapping in mobile capsules */
   .kunaal-about-page .capsule-text {
-    white-space: normal;  /* Allow wrapping */
-    line-height: 1.2;
-    word-break: break-word;
+    white-space: nowrap; /* Don't wrap - just smaller */
   }
   
   .kunaal-about-page .capsule-img {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     flex-shrink: 0;
   }
   
   .kunaal-about-page .capsule-count {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     font-size: 5px;
   }
   
