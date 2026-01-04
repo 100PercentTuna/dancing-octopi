@@ -45,7 +45,7 @@
    ======================================== */
 .insightBox,
 .wp-block-kunaal-insight {
-  margin: var(--space-8) 0;
+  margin: var(--space-5) 0; /* Reduced top margin */
   padding: var(--space-4);
   background: var(--bgWarm);
   border-left: 2px solid var(--warm);

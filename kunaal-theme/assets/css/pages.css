@@ -34,18 +34,18 @@
    Title → Subtitle → Author Byline → Meta (date/time + tags)
    ======================================== */
 main.article { 
-  padding: var(--space-6) 0 var(--space-12); /* Reasonable top padding */
+  padding: var(--space-8) 0 var(--space-12); /* More top padding for breathing room */
 }
 
-/* Article header - same width as prose, left-aligned */
+/* Article header - matches prose width and alignment */
 .articleHeader {
   max-width: var(--prose);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
 }
 
 /* Title - prominent, first element */
 .articleTitle {
-  margin: 0 0 var(--space-2);
+  margin: 0 0 6px; /* Tight spacing to subtitle */
   font-family: var(--serif, Georgia, serif);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -55,16 +55,16 @@ main.article {
 }
 .articleTitle::after { display: none; }
 
-/* Subtitle/Dek - simple, clean style (no italics) */
+/* Subtitle/Dek - simple, clean style */
 .articleDek,
 .articleSubtitle {
   font-family: var(--sans);
   font-size: clamp(15px, 2vw, 17px);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--muted);
   max-width: 55ch;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 8px; /* Tight spacing to byline */
 }
 
 /* Author byline - subtle, editorial style */
@@ -75,16 +75,16 @@ main.article {
   color: var(--warm);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin-bottom: var(--space-2);
+  margin-bottom: 6px; /* Tight spacing to meta */
 }
 
 /* Meta container - holds primary info and tags */
 .articleMeta {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid var(--hair2);
 }
 
@@ -195,7 +195,7 @@ main.article {
 /* Mobile article adjustments */
 @media (max-width: 640px) {
   main.article {
-    padding-top: var(--space-4); /* Compact top padding on mobile */
+    padding-top: var(--space-5); /* Breathing room on mobile */
   }
   
   .articleHeader {
@@ -204,17 +204,23 @@ main.article {
   
   .articleTitle {
     font-size: clamp(24px, 6.5vw, 30px);
-    margin-bottom: var(--space-2);
+    margin-bottom: 4px;
   }
   
   .articleDek,
   .articleSubtitle {
     font-size: 14px;
-    margin-bottom: var(--space-2);
+    margin-bottom: 6px;
   }
   
   .articleByline {
     font-size: 10px;
+    margin-bottom: 4px;
+  }
+  
+  .articleMeta {
+    margin-top: 6px;
+    padding-top: 8px;
   }
   
   .heroImage {
@@ -233,8 +239,7 @@ main.article {
 .prose {
   max-width: var(--prose);
   width: 100%;
-  margin-left: auto; 
-  margin-right: auto;
+  /* No auto margins - align with grid, not centered within grid cell */
   font-size: 16px;
   line-height: 1.8;
   color: var(--muted);
