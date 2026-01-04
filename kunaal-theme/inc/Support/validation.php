@@ -15,6 +15,43 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Debug: Log REST API authentication errors
+ * This helps diagnose where permission failures originate
+ */
+add_filter('rest_authentication_errors', function($result) {
+    if (is_wp_error($result)) {
+        error_log('[kunaal-debug] REST auth error: ' . $result->get_error_message());
+    }
+    return $result;
+}, 999);
+
+/**
+ * Debug: Log REST API permission checks for essay post type
+ */
+add_filter('rest_pre_dispatch', function($result, $server, $request) {
+    $route = $request->get_route();
+    if (strpos($route, '/wp/v2/essay') !== false) {
+        $user_id = get_current_user_id();
+        $can_edit = current_user_can('edit_posts');
+        error_log('[kunaal-debug] REST request to: ' . $route . ' | Method: ' . $request->get_method() . ' | User: ' . $user_id . ' | can_edit_posts: ' . ($can_edit ? 'yes' : 'no'));
+    }
+    return $result;
+}, 10, 3);
+
+/**
+ * Ensure REST API recognizes user capabilities for essay/jotting
+ * This filter runs early to ensure the user is properly authenticated
+ */
+add_filter('rest_pre_dispatch', function($result, $server, $request) {
+    // Force WordPress to re-check current user on REST requests
+    // This can help with cookie/nonce authentication issues
+    if (is_user_logged_in()) {
+        wp_set_current_user(get_current_user_id());
+    }
+    return $result;
+}, 1, 3);
+
+/**
  * Get meta value from request or post meta
  * 
  * @param array|null $meta Request meta array (nullable for REST API safety)
@@ -76,6 +113,16 @@ function kunaal_essay_has_image(WP_REST_Request $request, ?array $meta, int $pos
  * exceptions from causing 500 errors in the REST API.
  */
 function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
+    // DEBUG: Log that we reached validation
+    error_log('[kunaal-debug] Essay validation filter triggered for post type: ' . $prepared_post->post_type . ' status: ' . $prepared_post->post_status);
+    
+    // TEMPORARY DEBUG: Skip all validation to test if this is the issue
+    // Remove this block once debugging is complete
+    if (defined('KUNAAL_SKIP_VALIDATION') && KUNAAL_SKIP_VALIDATION) {
+        error_log('[kunaal-debug] Validation skipped due to KUNAAL_SKIP_VALIDATION');
+        return $prepared_post;
+    }
+    
     // Only validate essays being published
     if ($prepared_post->post_type !== 'essay' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
