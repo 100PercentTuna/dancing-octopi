@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/section-divider",
+    "version": "1.0.0",
+    "title": "Section Divider",
+    "category": "kunaal-editorial",
+    "icon": "minus",
+    "description": "Stylized asterisk ornaments for section breaks - single asterisk between sections, three asterisks for endings.",
+    "keywords": ["divider", "separator", "asterisk", "ornament", "break", "section", "end"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "variant": {
+            "type": "string",
+            "default": "single",
+            "enum": ["single", "triple", "fleuron"]
+        },
+        "spacing": {
+            "type": "string",
+            "default": "medium",
+            "enum": ["small", "medium", "large"]
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true,
+        "align": ["center", "wide"]
+    },
+    "editorScript": "kunaal-section-divider-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css"
+}
+

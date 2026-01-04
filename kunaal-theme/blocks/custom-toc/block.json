@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kunaal/custom-toc",
+    "version": "1.0.0",
+    "title": "Custom Table of Contents",
+    "category": "kunaal-editorial",
+    "icon": "list-view",
+    "description": "A custom table of contents with manually defined sections that link to anchor points in the text.",
+    "keywords": ["toc", "contents", "navigation", "chapters", "sections", "custom"],
+    "textdomain": "kunaal-theme",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Contents"
+        },
+        "items": {
+            "type": "array",
+            "default": []
+        },
+        "sticky": {
+            "type": "boolean",
+            "default": true
+        },
+        "highlightActive": {
+            "type": "boolean",
+            "default": true
+        },
+        "showNumbers": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true,
+        "className": true
+    },
+    "editorScript": "kunaal-custom-toc-editor",
+    "render": "file:./render.php",
+    "style": "file:./style.css",
+    "viewScript": "file:./view.js"
+}
+

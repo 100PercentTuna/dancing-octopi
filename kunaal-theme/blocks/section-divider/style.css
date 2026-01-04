@@ -1,0 +1,144 @@
+/**
+ * Section Divider Block Styles
+ * Stylized asterisk ornaments using theme warm/brown tones
+ */
+
+.sectionDivider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+/* Ornament styling */
+.sectionDivider__ornament {
+    font-family: var(--serif, Georgia, serif);
+    color: var(--warmLight, #B5A99A);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75em;
+    transition: color 300ms ease;
+}
+
+/* Single asterisk */
+.sectionDivider--single .sectionDivider__ornament {
+    font-size: 14px;
+}
+
+/* Triple asterisks */
+.sectionDivider--triple .sectionDivider__ornament {
+    font-size: 12px;
+}
+
+.sectionDivider--triple .sectionDivider__ornament span {
+    display: inline-block;
+}
+
+/* Middle asterisk slightly larger */
+.sectionDivider--triple .sectionDivider__ornament span:nth-child(2) {
+    font-size: 1.15em;
+    margin: 0 0.25em;
+}
+
+/* Fleuron (decorative leaf) */
+.sectionDivider--fleuron .sectionDivider__ornament {
+    font-size: 18px;
+    transform: rotate(0deg);
+}
+
+/* Spacing variants */
+.sectionDivider--small {
+    margin: var(--space-4, 32px) 0;
+}
+
+.sectionDivider--medium {
+    margin: var(--space-6, 48px) 0;
+}
+
+.sectionDivider--large {
+    margin: var(--space-8, 64px) 0;
+}
+
+/* Hover effect - subtle color shift */
+.sectionDivider:hover .sectionDivider__ornament {
+    color: var(--warm, #7D6B5D);
+}
+
+/* Optional: lines on either side of the ornament */
+.sectionDivider::before,
+.sectionDivider::after {
+    content: '';
+    flex: 0 0 40px;
+    height: 1px;
+    background: linear-gradient(
+        to var(--dir, right),
+        transparent,
+        var(--hair2, rgba(125,107,93,0.15))
+    );
+    opacity: 0;
+    transition: opacity 300ms ease;
+}
+
+.sectionDivider::before {
+    --dir: right;
+    margin-right: 1em;
+}
+
+.sectionDivider::after {
+    --dir: left;
+    margin-left: 1em;
+}
+
+/* Show lines on hover for triple variant (ending) */
+.sectionDivider--triple:hover::before,
+.sectionDivider--triple:hover::after {
+    opacity: 1;
+}
+
+/* Dark mode */
+:root[data-theme="dark"] .sectionDivider__ornament {
+    color: var(--warmLight, #8B7B6B);
+}
+
+:root[data-theme="dark"] .sectionDivider:hover .sectionDivider__ornament {
+    color: var(--k-color-dark-accent, #E8A87C);
+}
+
+:root[data-theme="dark"] .sectionDivider::before,
+:root[data-theme="dark"] .sectionDivider::after {
+    background: linear-gradient(
+        to var(--dir, right),
+        transparent,
+        var(--hair, rgba(255,255,255,0.1))
+    );
+}
+
+/* Mobile: slightly smaller */
+@media (max-width: 640px) {
+    .sectionDivider--single .sectionDivider__ornament {
+        font-size: 12px;
+    }
+    
+    .sectionDivider--triple .sectionDivider__ornament {
+        font-size: 10px;
+    }
+    
+    .sectionDivider--fleuron .sectionDivider__ornament {
+        font-size: 16px;
+    }
+    
+    .sectionDivider--small {
+        margin: var(--space-3, 24px) 0;
+    }
+    
+    .sectionDivider--medium {
+        margin: var(--space-4, 32px) 0;
+    }
+    
+    .sectionDivider--large {
+        margin: var(--space-6, 48px) 0;
+    }
+}
+
