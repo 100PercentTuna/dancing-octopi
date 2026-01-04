@@ -668,9 +668,10 @@ a:focus-visible, button:focus-visible {
 }
 .hero-intro .hand-note {
   font-family: var(--hand);
-  font-style: italic;
-  font-size: 1.05em;
+  font-style: normal;
+  font-size: 1.1em;
   color: var(--warm);
+  letter-spacing: 0.01em;
 }
 .hero-meta {
   margin-top: 0.4rem;
@@ -1003,7 +1004,7 @@ a:focus-visible, button:focus-visible {
   font-family: var(--serif);
   font-size: 0.45em;
   font-weight: 300;
-  font-style: italic;
+  font-style: normal;
   letter-spacing: 0.01em;
   color: var(--warm);
   opacity: 0.85;

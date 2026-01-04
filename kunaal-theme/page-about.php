@@ -50,7 +50,7 @@ $rabbit_holes_title = kunaal_mod('kunaal_about_rabbit_holes_title', "Things I ca
 $rabbit_holes_label = kunaal_mod('kunaal_about_rabbit_holes_label', 'Rabbit Holes');
 $rabbit_holes_bgword_show = kunaal_mod('kunaal_about_rabbit_holes_bgword_show', true);
 $rabbit_holes_bgword_text = kunaal_mod('kunaal_about_rabbit_holes_bgword_text', 'Rabbit Holes');
-$rabbit_holes_legend_show = kunaal_mod('kunaal_about_rabbit_holes_legend_show', true);
+$rabbit_holes_legend_show = (bool) kunaal_mod('kunaal_about_rabbit_holes_legend_show', true);
 
 $panoramas = kunaal_get_panoramas();
 
@@ -286,7 +286,7 @@ kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
             </<?php echo $tag; ?>>
             <?php endforeach; ?>
         </div>
-        <?php if ($rabbit_holes_legend_show && !empty($categories)) : ?>
+        <?php if ($rabbit_holes_legend_show === true && !empty($categories)) : ?>
         <div class="capsules-legend">
             <?php foreach ($categories as $slug => $category) : ?>
             <div class="legend-item">
