@@ -995,6 +995,18 @@ function kunaal_register_about_say_hello_section(WP_Customize_Manager $wp_custom
         ),
     ));
     
+    // Show Section Title
+    $wp_customize->add_setting('kunaal_about_say_hello_title_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_say_hello_title_show', array(
+        'label' => 'Show Section Title',
+        'description' => 'Toggle to hide the main heading',
+        'section' => 'kunaal_about_say_hello',
+        'type' => 'checkbox',
+    ));
+
     // Section Title
     $wp_customize->add_setting('kunaal_about_say_hello_title', array(
         'default' => "Let's connect",

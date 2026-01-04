@@ -21,15 +21,25 @@ foreach ($social_platforms as $platform) {
 }
 
 // Contact-specific settings
+$contact_label = kunaal_mod('kunaal_contact_label', __('Note', 'kunaal-theme'));
 $contact_headline = kunaal_mod('kunaal_contact_headline', __('Say hello', 'kunaal-theme'));
+$contact_headline_show = kunaal_mod('kunaal_contact_headline_show', true);
+$contact_headline_size = kunaal_mod('kunaal_contact_headline_size', 'large');
 $contact_placeholder = kunaal_mod('kunaal_contact_placeholder', __('Leave a note...', 'kunaal-theme'));
+
+// Map size setting to CSS class
+$headline_size_class = 'contact-title--' . $contact_headline_size;
 ?>
 <main id="main" class="contact-page">
     <div class="contact-container">
         <div class="contact-card">
             <header class="contact-header">
-                <div class="contact-label" data-reveal="up">Note</div>
-                <h1 class="contact-title" data-reveal="up"><?php echo esc_html($contact_headline); ?></h1>
+                <?php if ($contact_label) : ?>
+                <div class="contact-label" data-reveal="up"><?php echo esc_html($contact_label); ?></div>
+                <?php endif; ?>
+                <?php if ($contact_headline_show && $contact_headline) : ?>
+                <h1 class="contact-title <?php echo esc_attr($headline_size_class); ?>" data-reveal="up"><?php echo esc_html($contact_headline); ?></h1>
+                <?php endif; ?>
             </header>
             
             <form id="contact-form" class="contact-form" method="post" novalidate>

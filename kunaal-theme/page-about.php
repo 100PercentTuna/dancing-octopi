@@ -74,6 +74,7 @@ $inspirations_title = kunaal_mod('kunaal_about_inspirations_title', "People I le
 $say_hello_show = kunaal_mod('kunaal_about_say_hello_show', true);
 $say_hello_label = kunaal_mod('kunaal_about_say_hello_label', 'Say Hello');
 $say_hello_label_size = kunaal_mod('kunaal_about_say_hello_label_size', 'auto');
+$say_hello_title_show = kunaal_mod('kunaal_about_say_hello_title_show', true);
 $say_hello_title = kunaal_mod('kunaal_about_say_hello_title', "Let's connect");
 $say_hello_description = kunaal_mod('kunaal_about_say_hello_description', '');
 $contact_email = kunaal_mod('kunaal_contact_email', '');
@@ -478,8 +479,12 @@ if ($say_hello_label_size === 'auto') {
 ?>
 <section class="say-hello section">
     <div class="section-inner">
+        <?php if ($say_hello_label) : ?>
         <div class="section-label <?php echo esc_attr($label_size_class); ?>" data-reveal="up"><?php echo esc_html($say_hello_label); ?></div>
+        <?php endif; ?>
+        <?php if ($say_hello_title_show && $say_hello_title) : ?>
         <h2 class="section-title" data-reveal="up"><?php echo esc_html($say_hello_title); ?></h2>
+        <?php endif; ?>
         <?php if ($say_hello_description) : ?>
         <p class="say-hello-description" data-reveal="up"><?php echo nl2br(esc_html($say_hello_description)); ?></p>
         <?php endif; ?>

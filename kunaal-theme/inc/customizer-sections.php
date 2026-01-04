@@ -307,6 +307,31 @@ function kunaal_customize_register_contact_page_section(WP_Customize_Manager $wp
         'type' => 'email',
     ));
 
+    // Label (small text above title)
+    $wp_customize->add_setting('kunaal_contact_label', array(
+        'default' => 'Note',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_label', array(
+        'label' => 'Label (small text)',
+        'description' => 'Small uppercase text above the headline',
+        'section' => 'kunaal_contact_page',
+        'type' => 'text',
+    ));
+
+    // Show Headline toggle
+    $wp_customize->add_setting('kunaal_contact_headline_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_contact_headline_show', array(
+        'label' => 'Show Headline',
+        'description' => 'Toggle to hide the large headline text',
+        'section' => 'kunaal_contact_page',
+        'type' => 'checkbox',
+    ));
+
+    // Headline text
     $wp_customize->add_setting('kunaal_contact_headline', array(
         'default' => 'Get in Touch',
         'sanitize_callback' => 'sanitize_text_field',
@@ -315,6 +340,22 @@ function kunaal_customize_register_contact_page_section(WP_Customize_Manager $wp
         'label' => 'Headline',
         'section' => 'kunaal_contact_page',
         'type' => 'text',
+    ));
+
+    // Headline font size
+    $wp_customize->add_setting('kunaal_contact_headline_size', array(
+        'default' => 'large',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_contact_headline_size', array(
+        'label' => 'Headline Font Size',
+        'section' => 'kunaal_contact_page',
+        'type' => 'select',
+        'choices' => array(
+            'small' => 'Small (1.25rem)',
+            'medium' => 'Medium (1.5rem)',
+            'large' => 'Large (2rem) - Default',
+        ),
     ));
 
     $wp_customize->add_setting('kunaal_contact_placeholder', array(

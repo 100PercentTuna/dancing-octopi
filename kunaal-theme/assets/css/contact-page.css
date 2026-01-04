@@ -74,6 +74,17 @@
     line-height: 1.2;
 }
 
+/* Contact title size variants */
+.contact-title.contact-title--small {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+.contact-title.contact-title--medium {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+}
+.contact-title.contact-title--large {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+}
+
 .contact-intro {
     font-family: var(--serif);
     font-size: 0.95rem;
