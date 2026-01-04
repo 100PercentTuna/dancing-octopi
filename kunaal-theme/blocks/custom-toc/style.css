@@ -1,14 +1,31 @@
 /**
  * Custom TOC Block Styles
+ * A visually striking, editorial-quality table of contents
  */
 
 .customToc {
-    background: var(--bgWarm, #FAF8F5);
-    border: 1px solid var(--hair2, rgba(125,107,93,0.12));
-    border-radius: 4px;
-    padding: var(--space-4, 32px);
+    background: linear-gradient(135deg, var(--bgWarm, #FAF8F5) 0%, #F5F0EA 100%);
+    border: 1px solid var(--hair2, rgba(125,107,93,0.15));
+    border-radius: 6px;
+    padding: var(--space-5, 40px) var(--space-4, 32px);
     margin: var(--space-5, 40px) 0;
-    max-width: 280px;
+    max-width: 340px;
+    box-shadow: 
+        0 2px 8px rgba(125,107,93,0.06),
+        0 1px 2px rgba(125,107,93,0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative accent line at top */
+.customToc::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--warm, #7D6B5D), var(--warmLight, #B5A99A));
 }
 
 /* Sticky positioning */
@@ -16,22 +33,35 @@
     position: sticky;
     top: calc(var(--mastH, 77px) + var(--space-4, 32px));
     float: right;
-    margin-left: var(--space-5, 40px);
-    margin-right: calc(-1 * (var(--space-5, 40px) + 280px));
+    margin-left: var(--space-6, 48px);
+    margin-right: calc(-1 * (var(--space-6, 48px) + 340px));
     z-index: 10;
 }
 
 /* Title */
 .customToc__title {
+    font-family: var(--serif, Georgia, serif);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink, #1a1a1a);
+    margin: 0 0 var(--space-4, 32px);
+    padding-bottom: var(--space-3, 24px);
+    border-bottom: 1px solid var(--hair2, rgba(125,107,93,0.15));
+    position: relative;
+}
+
+/* Small "CONTENTS" label above title */
+.customToc__title::before {
+    content: 'IN THIS ESSAY';
+    display: block;
     font-family: var(--mono, 'SF Mono', monospace);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     color: var(--warm, #7D6B5D);
-    margin: 0 0 var(--space-3, 24px);
-    padding-bottom: var(--space-2, 16px);
-    border-bottom: 1px solid var(--hair2, rgba(125,107,93,0.12));
+    margin-bottom: 8px;
 }
 
 /* List */
@@ -39,55 +69,132 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    counter-reset: toc-counter;
 }
 
 .customToc__item {
     margin: 0;
     padding: 0;
+    counter-increment: toc-counter;
+    position: relative;
 }
 
 .customToc__item + .customToc__item {
-    margin-top: 8px;
+    margin-top: 2px;
 }
 
-/* Links */
+/* Links - NO underline, use background/bold for hover */
 .customToc__link {
     font-family: var(--sans, 'Inter', sans-serif);
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 14px;
+    line-height: 1.5;
     color: var(--muted, #666);
-    text-decoration: none;
-    display: block;
-    padding: 4px 0;
-    transition: color 200ms ease, transform 100ms ease;
-    border-left: 2px solid transparent;
-    padding-left: 12px;
-    margin-left: -12px;
+    text-decoration: none !important;
+    background-image: none !important;
+    background-size: 0 !important;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px;
+    margin: 0 -14px;
+    border-radius: 4px;
+    transition: 
+        background-color 150ms ease,
+        color 150ms ease,
+        font-weight 100ms ease;
+    position: relative;
+    border: none !important;
 }
 
-.customToc__link:hover {
-    color: var(--ink, #1a1a1a);
-}
-
-/* Active state */
-.customToc--highlight .customToc__link.is-active {
-    color: var(--warm, #7D6B5D);
-    border-left-color: var(--warm, #7D6B5D);
+/* Counter number */
+.customToc__link::before {
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: var(--mono, 'SF Mono', monospace);
+    font-size: 11px;
     font-weight: 500;
+    color: var(--warmLight, #B5A99A);
+    min-width: 22px;
+    transition: color 150ms ease;
 }
 
-/* Numbered variant */
+/* Right-side active indicator (invisible by default) */
+.customToc__link::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: var(--warm, #7D6B5D);
+    border-radius: 2px;
+    transition: height 200ms ease;
+}
+
+/* Hover state - darker background, no underline */
+.customToc__link:hover {
+    background-color: rgba(125,107,93,0.08);
+    color: var(--ink, #1a1a1a);
+    text-decoration: none !important;
+    background-image: none !important;
+}
+
+.customToc__link:hover::before {
+    color: var(--warm, #7D6B5D);
+}
+
+/* Focus state */
+.customToc__link:focus {
+    outline: none;
+    background-color: rgba(125,107,93,0.08);
+    box-shadow: 0 0 0 2px var(--warm, #7D6B5D) inset;
+    text-decoration: none !important;
+}
+
+/* Active state - right-side accent bar */
+.customToc--highlight .customToc__link.is-active {
+    color: var(--ink, #1a1a1a);
+    font-weight: 600;
+    background-color: rgba(125,107,93,0.06);
+}
+
+.customToc--highlight .customToc__link.is-active::before {
+    color: var(--warm, #7D6B5D);
+}
+
+.customToc--highlight .customToc__link.is-active::after {
+    height: 60%;
+}
+
+/* Numbered variant - show explicit numbers instead of CSS counter */
+.customToc--numbered .customToc__link::before {
+    display: none;
+}
+
 .customToc--numbered .customToc__item {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 0;
 }
 
 .customToc__number {
     font-family: var(--mono, 'SF Mono', monospace);
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--warmLight, #B5A99A);
-    min-width: 16px;
+    min-width: 22px;
+    padding-left: 14px;
+}
+
+/* Progress indicator at bottom */
+.customToc::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--space-4, 32px);
+    right: var(--space-4, 32px);
+    height: 1px;
+    background: linear-gradient(90deg, var(--hair2, rgba(125,107,93,0.15)), transparent);
 }
 
 /* Editor styles */
@@ -122,38 +229,151 @@
     margin: 0;
 }
 
-/* Mobile: TOC becomes inline, not sticky */
+/* =========================================
+   MOBILE / TABLET: Inline card layout
+   ========================================= */
 @media (max-width: 1200px) {
     .customToc--sticky {
         position: static;
         float: none;
-        margin: var(--space-5, 40px) 0;
-        margin-right: 0;
+        margin: var(--space-6, 48px) auto;
+        margin-right: auto;
         max-width: 100%;
+    }
+    
+    /* Horizontal layout on tablet */
+    .customToc__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .customToc__item {
+        flex: 0 0 auto;
+    }
+    
+    .customToc__item + .customToc__item {
+        margin-top: 0;
+    }
+    
+    .customToc__link {
+        padding: 8px 14px;
+        margin: 0;
+        font-size: 13px;
+        border: 1px solid var(--hair2, rgba(125,107,93,0.15));
+        border-radius: 20px;
+        background: #fff;
+    }
+    
+    .customToc__link::after {
+        display: none;
+    }
+    
+    .customToc--highlight .customToc__link.is-active {
+        background: var(--warm, #7D6B5D);
+        color: #fff;
+        border-color: var(--warm, #7D6B5D);
+    }
+    
+    .customToc--highlight .customToc__link.is-active::before {
+        color: rgba(255,255,255,0.7);
     }
 }
 
-/* Dark mode */
+@media (max-width: 640px) {
+    .customToc {
+        padding: var(--space-4, 32px) var(--space-3, 24px);
+    }
+    
+    .customToc__title {
+        font-size: 13px;
+        margin-bottom: var(--space-3, 24px);
+        padding-bottom: var(--space-2, 16px);
+    }
+    
+    .customToc__title::before {
+        font-size: 8px;
+    }
+    
+    .customToc__link {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .customToc__link::before {
+        font-size: 10px;
+        min-width: 18px;
+    }
+}
+
+/* =========================================
+   DARK MODE
+   ========================================= */
 :root[data-theme="dark"] .customToc {
-    background: var(--bgAlt, #1f1f1f);
+    background: linear-gradient(135deg, var(--bgAlt, #1f1f1f) 0%, #252525 100%);
     border-color: var(--hair, rgba(255,255,255,0.1));
+    box-shadow: 
+        0 2px 12px rgba(0,0,0,0.3),
+        0 1px 3px rgba(0,0,0,0.2);
+}
+
+:root[data-theme="dark"] .customToc::before {
+    background: linear-gradient(90deg, var(--k-color-dark-accent, #E8A87C), var(--warmLight, #8B7B6B));
 }
 
 :root[data-theme="dark"] .customToc__title {
-    color: var(--warm, #C9B8A8);
+    color: var(--ink, #fff);
     border-bottom-color: var(--hair, rgba(255,255,255,0.1));
+}
+
+:root[data-theme="dark"] .customToc__title::before {
+    color: var(--k-color-dark-accent, #E8A87C);
 }
 
 :root[data-theme="dark"] .customToc__link {
     color: var(--muted, #999);
 }
 
+:root[data-theme="dark"] .customToc__link::before {
+    color: var(--warmLight, #6B5B4B);
+}
+
 :root[data-theme="dark"] .customToc__link:hover {
+    background-color: rgba(255,255,255,0.05);
     color: var(--ink, #fff);
 }
 
-:root[data-theme="dark"] .customToc--highlight .customToc__link.is-active {
+:root[data-theme="dark"] .customToc__link:hover::before {
     color: var(--k-color-dark-accent, #E8A87C);
-    border-left-color: var(--k-color-dark-accent, #E8A87C);
 }
 
+:root[data-theme="dark"] .customToc__link::after {
+    background: var(--k-color-dark-accent, #E8A87C);
+}
+
+:root[data-theme="dark"] .customToc--highlight .customToc__link.is-active {
+    color: var(--ink, #fff);
+    background-color: rgba(255,255,255,0.03);
+}
+
+:root[data-theme="dark"] .customToc--highlight .customToc__link.is-active::before {
+    color: var(--k-color-dark-accent, #E8A87C);
+}
+
+/* Dark mode tablet/mobile */
+@media (max-width: 1200px) {
+    :root[data-theme="dark"] .customToc__link {
+        background: var(--bgAlt, #1f1f1f);
+        border-color: var(--hair, rgba(255,255,255,0.1));
+    }
+    
+    :root[data-theme="dark"] .customToc--highlight .customToc__link.is-active {
+        background: var(--k-color-dark-accent, #E8A87C);
+        color: #1a1a1a;
+        border-color: var(--k-color-dark-accent, #E8A87C);
+    }
+    
+    :root[data-theme="dark"] .customToc--highlight .customToc__link.is-active::before {
+        color: rgba(0,0,0,0.5);
+    }
+}
