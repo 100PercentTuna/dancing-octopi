@@ -140,12 +140,21 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
           <?php the_content(); ?>
         </div>
         
+        <?php 
+        /**
+         * Sidebar Rail with auto-generated TOC
+         * Only renders if explicitly enabled via Customizer.
+         * For custom TOC, use the Custom TOC block instead.
+         */
+        $show_sidebar_toc = kunaal_mod('kunaal_essay_sidebar_toc', false);
+        if ($show_sidebar_toc) : ?>
         <aside class="rail" id="articleRail">
           <div class="railSection">
-            <h5>On this page</h5>
+            <h5><?php echo esc_html(kunaal_mod('kunaal_essay_sidebar_toc_title', 'On this page')); ?></h5>
             <ul class="tocList" id="tocList"></ul>
           </div>
         </aside>
+        <?php endif; ?>
       </div>
     </article>
   <?php endwhile; ?>

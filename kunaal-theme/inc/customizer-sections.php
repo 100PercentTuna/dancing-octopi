@@ -164,6 +164,41 @@ function kunaal_customize_register_site_identity(WP_Customize_Manager $wp_custom
 }
 
 /**
+ * Register Essay Layout section and controls
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance
+ */
+function kunaal_customize_register_essay_layout_section(WP_Customize_Manager $wp_customize): void {
+    $wp_customize->add_section('kunaal_essay_layout', array(
+        'title' => 'Essay Layout',
+        'priority' => 42,
+    ));
+
+    // Sidebar TOC Enable
+    $wp_customize->add_setting('kunaal_essay_sidebar_toc', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_essay_sidebar_toc', array(
+        'label' => 'Show Sidebar Table of Contents',
+        'description' => 'Auto-generated TOC from headings in the sidebar. For custom TOC, use the Custom TOC block instead.',
+        'section' => 'kunaal_essay_layout',
+        'type' => 'checkbox',
+    ));
+
+    // Sidebar TOC Title
+    $wp_customize->add_setting('kunaal_essay_sidebar_toc_title', array(
+        'default' => 'On this page',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_essay_sidebar_toc_title', array(
+        'label' => 'Sidebar TOC Title',
+        'section' => 'kunaal_essay_layout',
+        'type' => 'text',
+    ));
+}
+
+/**
  * Register Subscribe section and controls
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
