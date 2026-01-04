@@ -33,51 +33,58 @@
    Professional publication layout:
    Title → Subtitle → Author Byline → Meta (date/time + tags)
    ======================================== */
-main.article { padding: var(--space-6) 0 var(--space-12); }
+main.article { 
+  padding: var(--space-10) 0 var(--space-12); /* More top padding for breathing room */
+}
 
+/* Article header - centered with proper width */
 .articleHeader {
   max-width: var(--prose);
-  margin-bottom: var(--space-6);
+  margin: 0 auto var(--space-6); /* Center horizontally */
 }
 
 /* Title - prominent, first element */
 .articleTitle {
-  margin: 0 0 var(--space-2);
+  margin: 0 0 var(--space-3);
   font-family: var(--serif, Georgia, serif);
   font-weight: 600;
-  letter-spacing: -0.01em;
-  font-size: clamp(28px, 4.5vw, 40px);
-  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-size: clamp(32px, 5vw, 44px);
+  line-height: 1.12;
   color: var(--ink);
 }
 .articleTitle::after { display: none; }
 
-/* Subtitle/Dek - below title */
+/* Subtitle/Dek - editorial style, matches theme */
 .articleDek,
 .articleSubtitle {
-  font-size: 18px;
-  line-height: 1.55;
+  font-family: var(--serif);
+  font-size: clamp(16px, 2.5vw, 19px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.5;
   color: var(--muted);
   max-width: 55ch;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
 }
 
-/* Author byline - below subtitle */
+/* Author byline - subtle, editorial style */
 .articleByline {
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--warm);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
   margin-bottom: var(--space-3);
-  letter-spacing: 0.01em;
 }
 
 /* Meta container - holds primary info and tags */
 .articleMeta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: var(--space-2);
+  gap: 8px;
+  margin-top: var(--space-3);
   padding-top: var(--space-3);
   border-top: 1px solid var(--hair2);
 }
@@ -106,7 +113,7 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
 .articleMeta__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .articleMeta__tags a {
@@ -114,6 +121,11 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   font-size: 11px;
   color: var(--warm);
   letter-spacing: .02em;
+  opacity: 0.85;
+  transition: opacity 200ms ease;
+}
+.articleMeta__tags a:hover {
+  opacity: 1;
 }
 
 /* Legacy support for old markup (direct children) */
@@ -135,11 +147,11 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
 .articleMeta a { color: var(--warm); }
 /* Hover underline handled by global :where() selector in utilities.css */
 
-/* Hero image - constrained to prose width for professional look */
+/* Hero image - constrained to prose width, centered */
 .heroImage {
   max-width: var(--prose);
   width: 100%;
-  margin: var(--space-4) 0 var(--space-6);
+  margin: var(--space-4) auto var(--space-6); /* Center horizontally */
   position: relative;
   overflow: hidden;
   border-radius: 4px;
@@ -180,6 +192,41 @@ main.article { padding: var(--space-6) 0 var(--space-12); }
   margin: 0 auto; /* Center the entire content grid */
 }
 @media (max-width: 860px) { .articleContent { grid-template-columns: 1fr; } }
+
+/* Mobile article adjustments */
+@media (max-width: 640px) {
+  main.article {
+    padding-top: var(--space-6); /* Less top padding on mobile */
+  }
+  
+  .articleHeader {
+    margin-bottom: var(--space-4);
+  }
+  
+  .articleTitle {
+    font-size: clamp(26px, 7vw, 32px);
+    margin-bottom: var(--space-2);
+  }
+  
+  .articleDek,
+  .articleSubtitle {
+    font-size: 15px;
+    margin-bottom: var(--space-3);
+  }
+  
+  .articleByline {
+    font-size: 11px;
+  }
+  
+  .heroImage {
+    margin: var(--space-3) auto var(--space-4);
+    border-radius: 2px;
+  }
+  
+  .heroImage img {
+    aspect-ratio: 2/1; /* Taller on mobile */
+  }
+}
 
 /* ========================================
    PROSE CONTENT

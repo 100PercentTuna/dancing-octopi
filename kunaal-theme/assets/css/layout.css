@@ -6,33 +6,33 @@
 /* Container */
 .container {
   margin: 0 auto;
-  padding: 0 var(--space-4); /* 32px on desktop */
+  padding: 0 var(--space-5); /* 40px on desktop */
 }
-@media (max-width: 960px) { .container { padding: 0 var(--space-3); } } /* 24px on tablet */
-@media (max-width: 640px) { .container { padding: 0 var(--space-3); } } /* 24px on mobile - professional margins */
+@media (max-width: 960px) { .container { padding: 0 var(--space-4); } } /* 32px on tablet */
+@media (max-width: 640px) { .container { padding: 0 var(--space-4); } } /* 32px on mobile - professional margins */
 
 /* Content containers get max-width constraint */
 main.container,
 .article.container {
   max-width: var(--max);
-  padding-left: calc(var(--space-4) + 4px);
-  padding-right: calc(var(--space-4) + 4px);
+  padding-left: var(--space-5);
+  padding-right: var(--space-5);
   /* Ensure content starts with visible gap below fixed header */
   padding-top: var(--space-6);
 }
 @media (max-width: 960px) { 
   main.container,
   .article.container { 
-    padding-left: calc(var(--space-3) + 4px);
-    padding-right: calc(var(--space-3) + 4px);
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
   }
 }
 @media (max-width: 640px) { 
   main.container,
   .article.container { 
-    /* 28px on mobile for professional look */
-    padding-left: calc(var(--space-3) + 4px);
-    padding-right: calc(var(--space-3) + 4px);
+    /* 32px on mobile for professional look */
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
   }
 }
 
