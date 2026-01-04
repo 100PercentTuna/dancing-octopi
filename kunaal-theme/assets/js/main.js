@@ -252,6 +252,35 @@
   }
 
   // ========================================
+  // HERO IMAGE PARALLAX - Subtle effect
+  // ========================================
+  let heroImg = null;
+  let heroParallaxBound = false;
+
+  function initHeroParallax() {
+    if (heroParallaxBound) return;
+    
+    heroImg = document.querySelector('.heroImage img');
+    if (!heroImg) return;
+    
+    // Respect reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    heroParallaxBound = true;
+    
+    function onHeroScroll() {
+      const scrollY = window.scrollY || 0;
+      // Very subtle parallax: 6% speed difference
+      const parallax = scrollY * 0.06;
+      // Apply transform with initial scale to prevent gaps
+      heroImg.style.transform = 'translateY(' + parallax + 'px) scale(1.02)';
+    }
+    
+    window.addEventListener('scroll', onHeroScroll, { passive: true });
+    onHeroScroll(); // Initial state
+  }
+
+  // ========================================
   // SCROLL REVEAL - Bidirectional
   // ========================================
   let revealObserver = null;
@@ -1295,6 +1324,7 @@
       initAvatar();
       initFilters();
       initParallax();
+      initHeroParallax(); // Subtle hero image parallax on article pages
       initScrollReveal();
       initInfiniteScroll();
       initDocks();

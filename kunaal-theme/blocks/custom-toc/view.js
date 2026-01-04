@@ -6,38 +6,30 @@
     'use strict';
 
     function initCustomToc() {
-        // Get ALL custom TOC blocks
         const tocs = document.querySelectorAll('.customToc');
         if (!tocs.length) return;
 
         tocs.forEach(function(toc) {
+            // Prevent duplicate initialization
+            if (toc.hasAttribute('data-toc-init')) return;
+            toc.setAttribute('data-toc-init', 'true');
+
             const links = toc.querySelectorAll('.customToc__link');
             if (!links.length) return;
 
             const shouldHighlight = toc.classList.contains('customToc--highlight');
 
-            // Get all anchor targets - handle various ID formats
+            // Build anchors array - find target elements by ID
             const anchors = [];
             links.forEach(function(link) {
                 let anchorId = link.getAttribute('data-anchor');
                 if (!anchorId) return;
                 
-                // Clean the anchor ID - remove # prefix if present, trim whitespace
+                // Clean the anchor ID - remove # prefix, trim whitespace
                 anchorId = anchorId.replace(/^#/, '').trim();
                 
-                // Try to find the target element
-                let target = document.getElementById(anchorId);
-                
-                // If not found, try querySelector with the ID (handles edge cases)
-                if (!target) {
-                    try {
-                        target = document.querySelector('#' + CSS.escape(anchorId));
-                    } catch (e) {
-                        // CSS.escape might not be available in all browsers
-                        target = null;
-                    }
-                }
-                
+                // Find target element
+                const target = document.getElementById(anchorId);
                 if (target) {
                     anchors.push({ link: link, target: target, id: anchorId });
                 }
@@ -49,10 +41,10 @@
                 
                 function updateActiveLink() {
                     ticking = false;
-                    const offset = 200; // Offset from top to trigger active state
+                    const offset = 200;
                     let activeIndex = 0;
 
-                    // Find the current section based on scroll position
+                    // Find current section based on scroll position
                     anchors.forEach(function(anchor, index) {
                         const rect = anchor.target.getBoundingClientRect();
                         if (rect.top <= offset) {
@@ -79,11 +71,11 @@
 
                 window.addEventListener('scroll', onScroll, { passive: true });
                 
-                // Initial state after page settles
+                // Initial state
                 setTimeout(updateActiveLink, 100);
             }
 
-            // Smooth scroll on click
+            // Click handler for smooth scroll
             links.forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -91,30 +83,23 @@
                     let anchorId = link.getAttribute('data-anchor');
                     if (!anchorId) return;
                     
-                    // Clean the anchor ID
                     anchorId = anchorId.replace(/^#/, '').trim();
-                    
-                    // Find target
-                    let target = document.getElementById(anchorId);
-                    if (!target) {
-                        try {
-                            target = document.querySelector('#' + CSS.escape(anchorId));
-                        } catch (e) {
-                            target = null;
-                        }
-                    }
-                    
+                    const target = document.getElementById(anchorId);
                     if (!target) return;
                     
-                    // Get masthead height for offset
+                    // Calculate scroll position
                     const mastHeight = parseInt(
                         getComputedStyle(document.documentElement).getPropertyValue('--mastH')
                     ) || 77;
                     
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - mastHeight - 24;
+                    // Use scrollY instead of pageYOffset (modern)
+                    const currentScroll = window.scrollY || window.pageYOffset;
+                    const targetRect = target.getBoundingClientRect();
+                    const targetPosition = currentScroll + targetRect.top - mastHeight - 24;
                     
+                    // Smooth scroll to target
                     window.scrollTo({
-                        top: targetPosition,
+                        top: Math.max(0, targetPosition),
                         behavior: 'smooth'
                     });
 
@@ -123,7 +108,7 @@
                         history.pushState(null, null, '#' + anchorId);
                     }
                     
-                    // Set active state immediately on click
+                    // Update active state immediately
                     if (toc.classList.contains('customToc--highlight')) {
                         links.forEach(function(l) { l.classList.remove('is-active'); });
                         link.classList.add('is-active');
@@ -133,15 +118,10 @@
         });
     }
 
-    // Initialize when DOM is ready
+    // Initialize once when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCustomToc);
     } else {
         initCustomToc();
     }
-    
-    // Re-init after full page load (for lazy content)
-    window.addEventListener('load', function() {
-        setTimeout(initCustomToc, 300);
-    });
 })();

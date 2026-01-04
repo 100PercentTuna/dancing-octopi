@@ -69,16 +69,15 @@ main.article {
 
 /* Author byline - editorial style, distinct from meta and subtitle */
 .articleByline {
-  font-family: var(--mono, 'SF Mono', monospace);
-  font-size: 12px;
-  font-weight: 500;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 14px;
+  font-weight: 400;
   font-style: normal;
-  color: var(--warm);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: var(--space-3, 24px);
-  padding-bottom: var(--space-2, 16px);
-  border-bottom: 1px solid var(--hair2);
+  color: var(--muted);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: var(--space-2, 16px);
+  /* NO border-bottom - articleMeta has border-top for single separator */
 }
 
 /* Meta container - holds primary info and tags */
@@ -115,7 +114,8 @@ main.article {
 .articleMeta__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  column-gap: 10px;
+  row-gap: 4px; /* Tighter between rows */
 }
 
 .articleMeta__tags a {
@@ -164,21 +164,6 @@ main.article {
   position: relative;
   overflow: hidden;
   border-radius: 3px;
-  /* Use mask to fade the image itself to transparent at bottom */
-  -webkit-mask-image: linear-gradient(to bottom, 
-    black 0%, 
-    black 65%, 
-    rgba(0,0,0,0.7) 80%,
-    rgba(0,0,0,0.3) 92%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(to bottom, 
-    black 0%, 
-    black 65%, 
-    rgba(0,0,0,0.7) 80%,
-    rgba(0,0,0,0.3) 92%,
-    transparent 100%
-  );
 }
 .heroImage img {
   width: 100%;
@@ -186,9 +171,27 @@ main.article {
   aspect-ratio: 2.5/1;
   object-fit: cover;
   filter: grayscale(1) contrast(1.02);
-  transition: filter 500ms ease;
+  transition: filter 500ms ease, transform 200ms ease;
   position: relative;
   z-index: 1;
+  /* Top-to-bottom transparency: subtle at top, completely transparent at bottom */
+  -webkit-mask-image: linear-gradient(to bottom, 
+    rgba(0,0,0,0.95) 0%,
+    rgba(0,0,0,0.85) 30%,
+    rgba(0,0,0,0.5) 70%,
+    rgba(0,0,0,0.15) 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, 
+    rgba(0,0,0,0.95) 0%,
+    rgba(0,0,0,0.85) 30%,
+    rgba(0,0,0,0.5) 70%,
+    rgba(0,0,0,0.15) 90%,
+    transparent 100%
+  );
+  /* For parallax - slight scale to prevent gaps */
+  transform: scale(1.02);
+  will-change: transform;
 }
 .heroImage:hover img { filter: grayscale(0); }
 
@@ -205,11 +208,15 @@ main.article {
 /* Mobile article adjustments */
 @media (max-width: 640px) {
   main.article {
-    padding-top: var(--space-5); /* Breathing room on mobile */
+    /* Clear fixed masthead + breathing room */
+    padding-top: calc(var(--mastH, 77px) + var(--space-4, 32px));
   }
   
   .articleHeader {
     margin-bottom: var(--space-3);
+    /* Ensure proper side margins on mobile */
+    padding-left: var(--space-3, 24px);
+    padding-right: var(--space-3, 24px);
   }
   
   .articleTitle {
@@ -224,9 +231,8 @@ main.article {
   }
   
   .articleByline {
-    font-size: 11px;
+    font-size: 13px; /* Slightly smaller on mobile */
     margin-bottom: var(--space-2, 16px);
-    padding-bottom: var(--space-1, 8px);
   }
   
   .articleMeta {
@@ -235,12 +241,18 @@ main.article {
   }
   
   .heroImage {
-    margin: var(--space-2) 0 var(--space-4);
+    margin: var(--space-2) var(--space-3) var(--space-4);
     border-radius: 2px;
   }
   
   .heroImage img {
     aspect-ratio: 2/1; /* Taller on mobile */
+  }
+  
+  /* Proper side margins for prose content on mobile */
+  .prose {
+    padding-left: var(--space-3, 24px);
+    padding-right: var(--space-3, 24px);
   }
 }
 

@@ -41,12 +41,12 @@
 /* Title */
 .customToc__title {
     font-family: var(--serif, Georgia, serif);
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.02em;
     color: var(--ink, #1a1a1a);
-    margin: 0 0 var(--space-4, 32px);
-    padding-bottom: var(--space-3, 24px);
+    margin: 0 0 var(--space-3, 24px);
+    padding-bottom: var(--space-2, 16px);
     border-bottom: 1px solid var(--hair2, rgba(125,107,93,0.15));
     position: relative;
 }
@@ -86,17 +86,17 @@
 /* Links - NO underline, use background/bold for hover */
 .customToc__link {
     font-family: var(--sans, 'Inter', sans-serif);
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.5;
-    color: var(--muted, #666);
+    color: var(--warmLight, #B5A99A); /* Grayer - less prominent than essay text */
     text-decoration: none !important;
     background-image: none !important;
     background-size: 0 !important;
     display: flex;
     align-items: baseline;
-    gap: 10px;
-    padding: 10px 14px;
-    margin: 0 -14px;
+    gap: 8px;
+    padding: 8px 12px;
+    margin: 0 -12px;
     border-radius: 4px;
     transition: 
         background-color 150ms ease,
@@ -110,10 +110,10 @@
 .customToc__link::before {
     content: counter(toc-counter, decimal-leading-zero);
     font-family: var(--mono, 'SF Mono', monospace);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    color: var(--warmLight, #B5A99A);
-    min-width: 22px;
+    color: var(--hair2, rgba(125,107,93,0.4)); /* Even more subtle */
+    min-width: 20px;
     transition: color 150ms ease;
 }
 
@@ -131,16 +131,17 @@
     transition: height 200ms ease;
 }
 
-/* Hover state - darker background, no underline */
+/* Hover state - darker background, bolder text */
 .customToc__link:hover {
-    background-color: rgba(125,107,93,0.08);
-    color: var(--ink, #1a1a1a);
+    background-color: rgba(125,107,93,0.06);
+    color: var(--muted, #666);
+    font-weight: 500;
     text-decoration: none !important;
     background-image: none !important;
 }
 
 .customToc__link:hover::before {
-    color: var(--warm, #7D6B5D);
+    color: var(--warmLight, #B5A99A);
 }
 
 /* Focus state */
@@ -151,11 +152,11 @@
     text-decoration: none !important;
 }
 
-/* Active state - right-side accent bar */
+/* Active state - bolder, darker, right-side accent bar */
 .customToc--highlight .customToc__link.is-active {
     color: var(--ink, #1a1a1a);
     font-weight: 600;
-    background-color: rgba(125,107,93,0.06);
+    background-color: rgba(125,107,93,0.08);
 }
 
 .customToc--highlight .customToc__link.is-active::before {
@@ -331,11 +332,11 @@
 }
 
 :root[data-theme="dark"] .customToc__link {
-    color: var(--muted, #999);
+    color: var(--warmLight, #8B7B6B); /* Grayer in dark mode */
 }
 
 :root[data-theme="dark"] .customToc__link::before {
-    color: var(--warmLight, #6B5B4B);
+    color: rgba(255,255,255,0.2); /* Subtle */
 }
 
 :root[data-theme="dark"] .customToc__link:hover {
