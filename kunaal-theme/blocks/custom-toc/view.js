@@ -6,7 +6,7 @@
     'use strict';
 
     function initCustomToc() {
-        // Get ALL custom TOC blocks (not just highlight ones)
+        // Get ALL custom TOC blocks
         const tocs = document.querySelectorAll('.customToc');
         if (!tocs.length) return;
 
@@ -16,15 +16,30 @@
 
             const shouldHighlight = toc.classList.contains('customToc--highlight');
 
-            // Get all anchor targets
+            // Get all anchor targets - handle various ID formats
             const anchors = [];
             links.forEach(function(link) {
-                const anchorId = link.getAttribute('data-anchor');
-                if (anchorId) {
-                    const target = document.getElementById(anchorId);
-                    if (target) {
-                        anchors.push({ link: link, target: target });
+                let anchorId = link.getAttribute('data-anchor');
+                if (!anchorId) return;
+                
+                // Clean the anchor ID - remove # prefix if present, trim whitespace
+                anchorId = anchorId.replace(/^#/, '').trim();
+                
+                // Try to find the target element
+                let target = document.getElementById(anchorId);
+                
+                // If not found, try querySelector with the ID (handles edge cases)
+                if (!target) {
+                    try {
+                        target = document.querySelector('#' + CSS.escape(anchorId));
+                    } catch (e) {
+                        // CSS.escape might not be available in all browsers
+                        target = null;
                     }
+                }
+                
+                if (target) {
+                    anchors.push({ link: link, target: target, id: anchorId });
                 }
             });
 
@@ -37,7 +52,7 @@
                     const offset = 200; // Offset from top to trigger active state
                     let activeIndex = 0;
 
-                    // Find the current section
+                    // Find the current section based on scroll position
                     anchors.forEach(function(anchor, index) {
                         const rect = anchor.target.getBoundingClientRect();
                         if (rect.top <= offset) {
@@ -64,41 +79,46 @@
 
                 window.addEventListener('scroll', onScroll, { passive: true });
                 
-                // Initial state after a small delay (let page settle)
+                // Initial state after page settles
                 setTimeout(updateActiveLink, 100);
             }
 
-            // Smooth scroll on click - works for ALL links
+            // Smooth scroll on click
             links.forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    const anchorId = link.getAttribute('data-anchor');
+                    let anchorId = link.getAttribute('data-anchor');
                     if (!anchorId) return;
                     
-                    const target = document.getElementById(anchorId);
+                    // Clean the anchor ID
+                    anchorId = anchorId.replace(/^#/, '').trim();
+                    
+                    // Find target
+                    let target = document.getElementById(anchorId);
                     if (!target) {
-                        // Try with hash prefix in case user added it
-                        const altTarget = document.getElementById(anchorId.replace(/^#/, ''));
-                        if (!altTarget) return;
+                        try {
+                            target = document.querySelector('#' + CSS.escape(anchorId));
+                        } catch (e) {
+                            target = null;
+                        }
                     }
                     
-                    const actualTarget = target || document.getElementById(anchorId.replace(/^#/, ''));
-                    if (!actualTarget) return;
+                    if (!target) return;
                     
                     // Get masthead height for offset
                     const mastHeight = parseInt(
                         getComputedStyle(document.documentElement).getPropertyValue('--mastH')
                     ) || 77;
                     
-                    const targetPosition = actualTarget.getBoundingClientRect().top + window.pageYOffset - mastHeight - 24;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - mastHeight - 24;
                     
                     window.scrollTo({
                         top: targetPosition,
                         behavior: 'smooth'
                     });
 
-                    // Update URL hash without jumping
+                    // Update URL hash
                     if (history.pushState) {
                         history.pushState(null, null, '#' + anchorId);
                     }
@@ -120,8 +140,8 @@
         initCustomToc();
     }
     
-    // Also re-init after a delay in case of lazy loading
+    // Re-init after full page load (for lazy content)
     window.addEventListener('load', function() {
-        setTimeout(initCustomToc, 500);
+        setTimeout(initCustomToc, 300);
     });
 })();

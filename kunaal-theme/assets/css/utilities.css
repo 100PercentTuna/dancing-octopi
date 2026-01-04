@@ -156,10 +156,11 @@
      - Buttons: [class*="button"], [class*="btn"]
      - Cards: .card, .capsule, .media-item, .inspiration-item
      - Special elements: .u-link-plain, .skip-link
+     - TOC links: .customToc__link, .tocList a
      - Image-related: Links containing only images
      ======================================== */
   :where(
-    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle))
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle)):not(.customToc__link):not(.tocList a)
   ) {
     display: inline;
     text-decoration: none; /* No underline at rest */
@@ -180,10 +181,10 @@
 
   /* Hover/focus: underline animates to 100% width (left-to-right reveal) */
   :where(
-    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle))
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle)):not(.customToc__link):not(.tocList a)
   ):hover,
   :where(
-    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle))
+    a:not([class*="button"]):not([class*="btn"]):not(.card):not(.capsule):not(.media-item):not(.inspiration-item):not(.u-link-plain):not(.skip-link):not(.tTitle):not(:has(> img:only-child)):not(.jRow):not(:has(.subtitle)):not(.customToc__link):not(.tocList a)
   ):focus-visible {
     background-size: 100% var(--k-underline-blue-thickness, 2px);
   }

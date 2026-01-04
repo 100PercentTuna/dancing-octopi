@@ -67,16 +67,18 @@ main.article {
   margin: 0 0 8px; /* Tight spacing to byline */
 }
 
-/* Author byline - editorial style, distinct from meta */
+/* Author byline - editorial style, distinct from meta and subtitle */
 .articleByline {
-  font-family: var(--serif, Georgia, serif);
-  font-size: 15px;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--muted);
-  letter-spacing: 0;
-  text-transform: none;
-  margin-bottom: var(--space-2, 16px);
+  font-family: var(--mono, 'SF Mono', monospace);
+  font-size: 12px;
+  font-weight: 500;
+  font-style: normal;
+  color: var(--warm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3, 24px);
+  padding-bottom: var(--space-2, 16px);
+  border-bottom: 1px solid var(--hair2);
 }
 
 /* Meta container - holds primary info and tags */
@@ -222,8 +224,9 @@ main.article {
   }
   
   .articleByline {
-    font-size: 14px;
+    font-size: 11px;
     margin-bottom: var(--space-2, 16px);
+    padding-bottom: var(--space-1, 8px);
   }
   
   .articleMeta {
