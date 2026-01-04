@@ -162,6 +162,7 @@
    in BOTH light and dark theme modes. Do not override with var(--ink) */
 .tTitle {
   margin: 0;
+  font-family: var(--serif, Georgia, serif) !important; /* Ensure serif font */
   font-weight: 650;
   letter-spacing: -.015em;
   line-height: 1.15;
@@ -455,11 +456,11 @@ body .card h3 {
 /* Jotting title */
 .jTitle {
   margin: 0;
+  font-family: var(--serif, Georgia, serif) !important; /* Ensure serif font */
   font-weight: 600;
   letter-spacing: -.01em;
   font-size: 15px;
   line-height: 1.3;
-  font-family: var(--serif);
   color: var(--ink);
   transition: color 200ms ease;
 }

@@ -2,8 +2,8 @@
  * Custom TOC Block Styles
  * A clean, editorial-quality table of contents
  * 
- * Desktop (>1000px): Sticky sidebar with vertical list
- * Tablet/Mobile (<=1000px): Horizontal pill layout inline with content
+ * Desktop (>768px): Sticky sidebar with vertical list
+ * Tablet/Mobile (<=768px): Collapsible accordion
  */
 
 /* =========================================
@@ -13,15 +13,14 @@
     background: linear-gradient(135deg, var(--bgWarm, #FAF8F5) 0%, #F5F0EA 100%);
     border: 1px solid var(--hair2, rgba(125,107,93,0.15));
     border-radius: 6px;
-    /* Asymmetric padding: less on left to reduce wasted space */
-    padding: 24px 24px 24px 16px;
+    padding: 24px;
     margin: var(--space-5, 40px) 0;
     max-width: 280px;
     box-shadow: 
         0 2px 8px rgba(125,107,93,0.06),
         0 1px 2px rgba(125,107,93,0.04);
     position: relative;
-    overflow: visible; /* Allow indicator to be visible */
+    overflow: visible;
 }
 
 /* Decorative accent line at top */
@@ -52,7 +51,7 @@
    ========================================= */
 .customToc__title {
     font-family: var(--serif, Georgia, serif);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.01em;
     color: var(--ink, #1a1a1a);
@@ -110,8 +109,8 @@
     background-size: 0 !important;
     display: flex;
     align-items: baseline;
-    gap: 10px; /* Gap between number and text */
-    padding: 7px 20px 7px 0; /* Right padding for indicator space */
+    gap: 10px;
+    padding: 8px 0; /* No horizontal padding - let indicator position from container edge */
     border-radius: 0;
     transition: 
         color 150ms ease,
@@ -127,16 +126,17 @@
     font-size: 10px;
     font-weight: 500;
     color: rgba(125,107,93,0.4);
-    min-width: 14px;
+    min-width: 16px;
     flex-shrink: 0;
     transition: color 150ms ease;
 }
 
-/* Right-side active indicator - FIXED 8px from right edge of TOC container */
+/* Right-side active indicator - positioned at fixed 4px gap from container's right border */
 .customToc__link::after {
     content: '';
     position: absolute;
-    right: -16px; /* Fixed position: 24px right padding - 8px from edge = -16px */
+    /* Container has 24px padding, so right: -20px lands 4px from the border */
+    right: -20px;
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
@@ -146,7 +146,7 @@
     transition: height 200ms ease;
 }
 
-/* Hover state - subtle color change only */
+/* Hover state */
 .customToc__link:hover {
     color: var(--muted, #666);
     text-decoration: none !important;
@@ -241,33 +241,72 @@
 }
 
 /* =========================================
-   RESPONSIVE: Tablet/Mobile (<= 1000px)
-   Transitions to horizontal pill layout earlier
+   RESPONSIVE: Tablet/Mobile (<= 768px)
+   Collapsible accordion instead of pills
    ========================================= */
-@media (max-width: 1000px) {
+@media (max-width: 768px) {
     .customToc--sticky {
         position: static;
         float: none;
-        margin: var(--space-5, 40px) auto;
-        margin-left: auto;
-        margin-right: auto;
+        margin: var(--space-4, 32px) 0;
+        margin-left: 0;
+        margin-right: 0;
         max-width: 100%;
     }
     
     .customToc {
         max-width: 100%;
-        padding: 24px;
+        padding: 16px 20px;
     }
     
-    /* Horizontal pill layout */
-    .customToc__list {
+    /* Title becomes the toggle button */
+    .customToc__title {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        cursor: pointer;
         display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Expand/collapse icon */
+    .customToc__title::after {
+        content: '+';
+        font-family: var(--mono, 'SF Mono', monospace);
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--warm, #7D6B5D);
+        transition: transform 200ms ease;
+    }
+    
+    /* Expanded state - rotate icon */
+    .customToc.is-expanded .customToc__title::after {
+        content: '−';
+    }
+    
+    /* List hidden by default on mobile */
+    .customToc.is-collapsed .customToc__list {
+        display: none;
+    }
+    
+    /* List visible when expanded */
+    .customToc.is-expanded .customToc__list {
+        display: block;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--hair2, rgba(125,107,93,0.15));
+    }
+    
+    /* Keep vertical list layout - NOT pills */
+    .customToc__list {
+        display: block;
     }
     
     .customToc__item {
-        flex: 0 0 auto;
+        display: block;
     }
     
     .customToc__item + .customToc__item {
@@ -275,70 +314,65 @@
     }
     
     .customToc__link {
-        padding: 8px 14px;
-        font-size: 11px;
-        color: rgba(125,107,93,0.7);
-        border: 1px solid var(--hair2, rgba(125,107,93,0.15));
-        border-radius: 20px;
-        background: #fff;
-        gap: 6px;
+        padding: 10px 0;
+        font-size: 13px;
+        border-bottom: 1px solid var(--hair2, rgba(125,107,93,0.08));
+    }
+    
+    .customToc__item:last-child .customToc__link {
+        border-bottom: none;
     }
     
     .customToc__link::before {
-        font-size: 9px;
-        min-width: auto;
+        font-size: 11px;
+        min-width: 20px;
     }
     
-    /* Hide the right-edge indicator on pills */
+    /* Hide the right-edge indicator on mobile */
     .customToc__link::after {
         display: none;
     }
     
-    /* Active pill style */
+    /* Active state on mobile - bold text, no indicator */
     .customToc--highlight .customToc__link.is-active {
-        background: var(--warm, #7D6B5D);
-        color: #fff;
+        color: var(--warm, #7D6B5D);
         font-weight: 600;
-        border-color: var(--warm, #7D6B5D);
     }
     
     .customToc--highlight .customToc__link.is-active::before {
-        color: rgba(255,255,255,0.7);
-    }
-}
-
-/* =========================================
-   RESPONSIVE: Mobile (<= 640px)
-   ========================================= */
-@media (max-width: 640px) {
-    .customToc {
-        padding: 20px 16px;
-        margin: var(--space-4, 32px) 0;
-    }
-    
-    .customToc__title {
-        font-size: 12px;
-        margin-bottom: 12px;
-        padding-bottom: 10px;
-    }
-    
-    .customToc__title::before {
-        font-size: 8px;
-        margin-bottom: 4px;
-    }
-    
-    .customToc__link {
-        font-size: 10px;
-        padding: 6px 12px;
-    }
-    
-    .customToc__link::before {
-        font-size: 8px;
+        color: var(--warm, #7D6B5D);
     }
     
     /* Hide TOC on mobile if option enabled */
     .customToc[data-hide-mobile="true"] {
         display: none;
+    }
+}
+
+/* =========================================
+   RESPONSIVE: Small Mobile (<= 480px)
+   ========================================= */
+@media (max-width: 480px) {
+    .customToc {
+        padding: 14px 16px;
+        margin: var(--space-3, 24px) 0;
+    }
+    
+    .customToc__title {
+        font-size: 13px;
+    }
+    
+    .customToc__title::before {
+        font-size: 8px;
+    }
+    
+    .customToc__link {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+    
+    .customToc__link::before {
+        font-size: 10px;
     }
 }
 
@@ -363,6 +397,10 @@
 }
 
 :root[data-theme="dark"] .customToc__title::before {
+    color: var(--k-color-dark-accent, #E8A87C);
+}
+
+:root[data-theme="dark"] .customToc__title::after {
     color: var(--k-color-dark-accent, #E8A87C);
 }
 
@@ -394,20 +432,17 @@
     color: var(--k-color-dark-accent, #E8A87C);
 }
 
-/* Dark mode tablet/mobile pills */
-@media (max-width: 1000px) {
+/* Dark mode mobile */
+@media (max-width: 768px) {
     :root[data-theme="dark"] .customToc__link {
-        background: var(--bgAlt, #1f1f1f);
-        border-color: var(--hair, rgba(255,255,255,0.1));
+        border-bottom-color: var(--hair, rgba(255,255,255,0.05));
+    }
+    
+    :root[data-theme="dark"] .customToc.is-expanded .customToc__list {
+        border-top-color: var(--hair, rgba(255,255,255,0.1));
     }
     
     :root[data-theme="dark"] .customToc--highlight .customToc__link.is-active {
-        background: var(--k-color-dark-accent, #E8A87C);
-        color: #1a1a1a;
-        border-color: var(--k-color-dark-accent, #E8A87C);
-    }
-    
-    :root[data-theme="dark"] .customToc--highlight .customToc__link.is-active::before {
-        color: rgba(0,0,0,0.5);
+        color: var(--k-color-dark-accent, #E8A87C);
     }
 }

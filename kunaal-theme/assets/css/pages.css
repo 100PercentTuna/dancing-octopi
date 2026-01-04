@@ -245,12 +245,19 @@ main.article {
   }
   
   .heroImage {
-    margin: var(--space-2) var(--space-3) var(--space-4);
-    border-radius: 2px;
+    /* Align with articleHeader - no extra horizontal margin */
+    margin: var(--space-2) 0 var(--space-4);
+    /* Match article header padding to ensure visual alignment */
+    padding-left: var(--space-3, 24px);
+    padding-right: var(--space-3, 24px);
+    border-radius: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .heroImage img {
     aspect-ratio: 2/1; /* Taller on mobile */
+    border-radius: 2px;
   }
 }
 
