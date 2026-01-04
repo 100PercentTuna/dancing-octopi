@@ -121,15 +121,32 @@ function kunaal_generate_pdf(): void {
         
     } else {
         // Fallback: Browser print dialog
+        // Build content-only HTML (not a full document, since we wrap it ourselves)
         $styles = kunaal_get_pdf_styles();
         
+        $topics_html = '';
+        if (!empty($topics) && !is_wp_error($topics)) {
+            $topic_names = array_map(function($t) { return '#' . esc_html($t->name); }, $topics);
+            $topics_html = '<p class="pdf-topics">' . implode('  ', $topic_names) . '</p>';
+        }
+        
+        $meta_parts = array();
+        $meta_parts[] = '<span>' . esc_html($author_name) . '</span>';
+        $meta_parts[] = '<span class="sep">•</span>';
+        $meta_parts[] = '<span>' . esc_html($date) . '</span>';
+        if (!empty($read_time)) {
+            $meta_parts[] = '<span class="sep">•</span>';
+            $meta_parts[] = '<span>' . esc_html($read_time) . ' min read</span>';
+        }
+        
+        // Note: CSS should NOT be escaped with esc_html() - it breaks the styles
         echo '<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>' . esc_html($title) . '</title>
     <style>
-    ' . esc_html($styles) . '
+    ' . $styles . '
     @media print {
         @page { margin: 2cm; }
     }
@@ -149,7 +166,22 @@ function kunaal_generate_pdf(): void {
     <div class="print-notice">
         <strong>Save as PDF:</strong> Press Ctrl/Cmd + P and select "Save as PDF" as destination.
     </div>
-    ' . wp_kses_post($html) . '
+    <div class="pdf-wrapper">
+        <header class="pdf-header">
+            <h1 class="pdf-title">' . esc_html($title) . '</h1>
+            ' . ($subtitle ? '<p class="pdf-subtitle">' . esc_html($subtitle) . '</p>' : '') . '
+            <div class="pdf-meta">' . implode(' ', $meta_parts) . '</div>
+            ' . $topics_html . '
+        </header>
+        
+        <div class="pdf-content">
+            ' . wp_kses_post($pdf_content) . '
+        </div>
+        
+        <footer class="pdf-footer">
+            <p>' . esc_html($author_name) . ' · ' . esc_html(wp_parse_url($site_url, PHP_URL_HOST)) . '</p>
+        </footer>
+    </div>
     <script>window.print();</script>
 </body>
 </html>';
@@ -180,13 +212,14 @@ function kunaal_build_pdf_html(array $data): string {
         $meta_parts[] = '<span>' . esc_html($data['read_time']) . ' min read</span>';
     }
     
+    // Note: CSS should NOT be escaped with esc_html() - it breaks the styles
     return '<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>' . esc_html($data['title']) . '</title>
-    <style>' . esc_html($styles) . '</style>
+    <style>' . $styles . '</style>
 </head>
 <body>
     <div class="pdf-wrapper">
