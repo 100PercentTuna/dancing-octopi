@@ -585,19 +585,29 @@
       );
     }
 
-    // CRITICAL: Check if section is already visible on load (fixes mobile issue)
-    // On mobile, section may be in view immediately - no scroll needed
-    if (isInViewport(section)) {
-      // Delay slightly to let page settle, then run
-      setTimeout(run, 300);
-      return; // Skip observer setup since we'll run immediately
+    // Helper: check if section has been scrolled past (above viewport)
+    function hasScrolledPast(el) {
+      var rect = el.getBoundingClientRect();
+      return rect.bottom < 0;
     }
+
+    // Periodic check function - runs animation if section is visible
+    function checkAndRun() {
+      if (!fired && isInViewport(section)) {
+        run();
+      }
+    }
+
+    // ROBUST TRIGGERING STRATEGY:
+    // 1. Set up observers for normal scroll triggering
+    // 2. Check periodically in case observers miss
+    // 3. Fallback timeout ensures animation runs eventually
 
     if (hasGSAP() && !reduceMotion) {
       try {
         window.ScrollTrigger.create({
           trigger: section,
-          start: 'top 80%',
+          start: 'top 85%', // Slightly earlier trigger
           once: true,
           onEnter: run
         });
@@ -612,7 +622,7 @@
                 break;
               }
             }
-          }, { threshold: 0.1 }); // Lower threshold for better mobile trigger
+          }, { threshold: 0.05 }); // Very low threshold for reliable trigger
           io.observe(section);
         } else {
           run();
@@ -627,11 +637,28 @@
             break;
           }
         }
-      }, { threshold: 0.1 }); // Lower threshold for better mobile trigger
+      }, { threshold: 0.05 }); // Very low threshold for reliable trigger
       io.observe(section);
     } else {
       run();
     }
+
+    // PERIODIC CHECKS: Cover edge cases where observers don't fire
+    // Check at 500ms (layout settled)
+    setTimeout(checkAndRun, 500);
+    // Check at 1.5s (user may have scrolled)
+    setTimeout(checkAndRun, 1500);
+    
+    // FALLBACK: Ensure animation runs within 3 seconds no matter what
+    // This catches cases where:
+    // - User already scrolled past before JS initialized
+    // - Observer threshold not met
+    // - Mobile layout edge cases
+    setTimeout(function() {
+      if (!fired) {
+        run();
+      }
+    }, 3000);
   }
 
   // =============================================

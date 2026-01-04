@@ -391,20 +391,21 @@
     background: var(--bg);
     border: 1px solid var(--hair2);
     border-radius: 8px;
-    padding: var(--space-2);
+    padding: var(--space-1); /* Reduced from space-2 (16px) to space-1 (8px) */
     flex-direction: column;
-    gap: 4px;
+    gap: 2px; /* Reduced from 4px */
     box-shadow: 0 8px 30px rgba(0,0,0,.12);
-    min-width: 160px;
+    min-width: 140px; /* Slightly narrower */
     z-index: 9999; /* Ensure nav dropdown above all content */
   }
   .nav.open { display: flex; }
   .nav a {
-    padding: 10px 16px;
-    border-radius: 6px;
-    min-height: 44px; /* Touch target - Apple HIG, WCAG 2.1 */
+    padding: 8px 12px; /* Reduced from 10px 16px */
+    border-radius: 4px; /* Reduced from 6px */
+    min-height: 40px; /* Reduced from 44px - still meets touch target with padding */
     display: flex;
     align-items: center;
+    font-size: 13px; /* Slightly smaller text */
   }
   /* Mobile hover: underline animates L-to-R */
   .nav a:hover,
@@ -447,12 +448,14 @@
   }
 }
 
-/* Issue 6: Subtitle in landscape mode - show when there's horizontal space */
-@media (max-width: 760px) and (orientation: landscape) {
+/* Issue 6: Subtitle in landscape mode on phones
+   Use max-height query since phone landscape width often exceeds 760px
+   (e.g., iPhone landscape = 812px width but ~375px height) */
+@media (max-height: 500px) and (orientation: landscape) {
   .subtitle {
     display: block;
     font-size: 10px;
-    max-width: 280px;  /* More space in landscape */
+    max-width: calc(100% - 120px); /* Account for nav toggle */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

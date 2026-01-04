@@ -996,11 +996,8 @@ a:focus-visible, button:focus-visible {
   line-height: 1;
 }
 
-/* Issue 10: Infinity label hidden until JS animates it */
-.infinity-value + .number-label {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
+/* Infinity label: visible by default for progressive enhancement
+   JS animates both infinity symbol and label together */
 
 /* =============================================
    RABBIT HOLES - Redesigned cloud
@@ -1846,31 +1843,43 @@ a:focus-visible, button:focus-visible {
     font-size: 9px;
   }
   
-  /* Capsules: Compact for mobile */
-  /* Issue 8: Capsules - more compact brick-wall layout for mobile */
+  /* Capsules: Compact brick-wall layout for mobile */
+  /* Issue 8: Allow text wrapping for denser 2-line capsules */
   .kunaal-about-page .capsules-cloud {
-    gap: 0.25rem 0.2rem;  /* Tighter gap - row and column */
+    gap: 0.2rem;        /* Very tight gap */
     padding: 0.25rem 0;
-    max-height: none;  /* Allow natural flow */
+    max-height: none;
   }
   
   .kunaal-about-page .capsule-inner {
-    height: 22px;       /* Reduced from 26px */
-    font-size: 8px;     /* Reduced from 9px */
-    padding: 0 0.4rem 0 0.2rem;
-    gap: 0.25rem;
-    animation: none;    /* Disable floating animation on mobile for cleaner look */
+    height: auto;       /* Remove fixed height - allow content to size */
+    min-height: 20px;
+    font-size: 7px;     /* Smaller text */
+    padding: 3px 6px 3px 3px;
+    gap: 0.2rem;
+    animation: none;
+    border-radius: 12px; /* Less rounded for compact look */
+    max-width: 90px;    /* Force narrower capsules so text wraps */
+    text-align: left;
+  }
+  
+  /* Allow text wrapping in mobile capsules */
+  .kunaal-about-page .capsule-text {
+    white-space: normal;  /* Allow wrapping */
+    line-height: 1.2;
+    word-break: break-word;
   }
   
   .kunaal-about-page .capsule-img {
-    width: 14px;        /* Reduced from 16px */
-    height: 14px;
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
   }
   
   .kunaal-about-page .capsule-count {
-    width: 11px;        /* Reduced from 13px */
-    height: 11px;
-    font-size: 6px;     /* Reduced from 7px */
+    width: 10px;
+    height: 10px;
+    font-size: 5px;
   }
   
   /* Panoramas: Smaller on mobile */
