@@ -161,6 +161,7 @@ main.article {
   max-width: var(--prose);
   width: 100%;
   margin: var(--space-3) 0 var(--space-5);
+  margin-left: 0; /* Explicit left alignment - matches articleHeader */
   position: relative;
   overflow: hidden;
   border-radius: 3px;

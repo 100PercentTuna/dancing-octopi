@@ -10,10 +10,11 @@
    BASE CONTAINER
    ========================================= */
 .customToc {
+    --toc-padding: 24px; /* Used for indicator positioning */
     background: linear-gradient(135deg, var(--bgWarm, #FAF8F5) 0%, #F5F0EA 100%);
     border: 1px solid var(--hair2, rgba(125,107,93,0.15));
     border-radius: 6px;
-    padding: 24px;
+    padding: var(--toc-padding);
     margin: var(--space-5, 40px) 0;
     max-width: 280px;
     box-shadow: 
@@ -32,6 +33,7 @@
     right: 0;
     height: 3px;
     background: linear-gradient(90deg, var(--warm, #7D6B5D), var(--warmLight, #B5A99A));
+    border-radius: 6px 6px 0 0;
 }
 
 /* =========================================
@@ -97,6 +99,30 @@
 }
 
 /* =========================================
+   ACTIVE INDICATOR - ON ITEM, NOT LINK
+   Positioned relative to container's right edge
+   ========================================= */
+.customToc__item::after {
+    content: '';
+    position: absolute;
+    /* Position 4px from container's right border */
+    right: calc(-1 * var(--toc-padding) + 4px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: var(--warm, #7D6B5D);
+    border-radius: 2px;
+    transition: height 200ms ease;
+    pointer-events: none;
+}
+
+/* Active state - show indicator when item has active link */
+.customToc--highlight .customToc__item.has-active::after {
+    height: 60%;
+}
+
+/* =========================================
    LINK STYLING
    ========================================= */
 .customToc__link {
@@ -110,7 +136,7 @@
     display: flex;
     align-items: baseline;
     gap: 10px;
-    padding: 8px 0; /* No horizontal padding - let indicator position from container edge */
+    padding: 8px 0;
     border-radius: 0;
     transition: 
         color 150ms ease,
@@ -129,21 +155,6 @@
     min-width: 16px;
     flex-shrink: 0;
     transition: color 150ms ease;
-}
-
-/* Right-side active indicator - positioned at fixed 4px gap from container's right border */
-.customToc__link::after {
-    content: '';
-    position: absolute;
-    /* Container has 24px padding, so right: -20px lands 4px from the border */
-    right: -20px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 0;
-    background: var(--warm, #7D6B5D);
-    border-radius: 2px;
-    transition: height 200ms ease;
 }
 
 /* Hover state */
@@ -178,10 +189,6 @@
 
 .customToc--highlight .customToc__link.is-active::before {
     color: var(--warm, #7D6B5D);
-}
-
-.customToc--highlight .customToc__link.is-active::after {
-    height: 70%;
 }
 
 /* =========================================
@@ -242,7 +249,8 @@
 
 /* =========================================
    RESPONSIVE: Tablet/Mobile (<= 768px)
-   Collapsible accordion instead of pills
+   Collapsible accordion - uses NEGATION pattern
+   List hidden by default unless .is-expanded
    ========================================= */
 @media (max-width: 768px) {
     .customToc--sticky {
@@ -255,8 +263,9 @@
     }
     
     .customToc {
+        --toc-padding: 20px;
         max-width: 100%;
-        padding: 16px 20px;
+        padding: 16px var(--toc-padding);
     }
     
     /* Title becomes the toggle button */
@@ -282,27 +291,22 @@
         transition: transform 200ms ease;
     }
     
-    /* Expanded state - rotate icon */
+    /* Expanded state - change icon to minus */
     .customToc.is-expanded .customToc__title::after {
         content: '−';
     }
     
-    /* List hidden by default on mobile */
-    .customToc.is-collapsed .customToc__list {
+    /* LIST HIDDEN BY DEFAULT on mobile - negation pattern */
+    .customToc__list {
         display: none;
     }
     
-    /* List visible when expanded */
+    /* List visible ONLY when expanded */
     .customToc.is-expanded .customToc__list {
         display: block;
         margin-top: 16px;
         padding-top: 12px;
         border-top: 1px solid var(--hair2, rgba(125,107,93,0.15));
-    }
-    
-    /* Keep vertical list layout - NOT pills */
-    .customToc__list {
-        display: block;
     }
     
     .customToc__item {
@@ -329,7 +333,7 @@
     }
     
     /* Hide the right-edge indicator on mobile */
-    .customToc__link::after {
+    .customToc__item::after {
         display: none;
     }
     
@@ -354,7 +358,8 @@
    ========================================= */
 @media (max-width: 480px) {
     .customToc {
-        padding: 14px 16px;
+        --toc-padding: 16px;
+        padding: 14px var(--toc-padding);
         margin: var(--space-3, 24px) 0;
     }
     
@@ -420,7 +425,7 @@
     color: var(--k-color-dark-accent, #E8A87C);
 }
 
-:root[data-theme="dark"] .customToc__link::after {
+:root[data-theme="dark"] .customToc__item::after {
     background: var(--k-color-dark-accent, #E8A87C);
 }
 
