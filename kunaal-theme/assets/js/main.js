@@ -1017,22 +1017,70 @@
     const prose = document.getElementById('articleProse');
     if (!prose) return;
 
-    const headings = prose.querySelectorAll('h2[id], .sectionHead h2[id]');
-    if (headings.length === 0) {
+    // Collect all headings - both regular h2 and section-header blocks
+    const tocEntries = [];
+    
+    // 1. Find section-header blocks (ID is on the wrapper div)
+    prose.querySelectorAll('.wp-block-kunaal-section-header, .sectionHead').forEach(wrapper => {
+      const h2 = wrapper.querySelector('h2');
+      if (!h2) return;
+      
+      // Use wrapper's ID if available, otherwise generate one
+      let id = wrapper.id;
+      if (!id) {
+        id = 'section-' + slugify(h2.textContent);
+        wrapper.id = id;
+      }
+      
+      tocEntries.push({
+        id: id,
+        text: h2.textContent,
+        element: wrapper
+      });
+    });
+    
+    // 2. Find regular h2 headings (not inside section-header blocks)
+    prose.querySelectorAll('h2').forEach(h2 => {
+      // Skip if inside a section-header block (already handled)
+      if (h2.closest('.wp-block-kunaal-section-header, .sectionHead')) return;
+      
+      // Use existing ID or generate one
+      let id = h2.id;
+      if (!id) {
+        id = 'heading-' + slugify(h2.textContent);
+        h2.id = id;
+      }
+      
+      tocEntries.push({
+        id: id,
+        text: h2.textContent,
+        element: h2
+      });
+    });
+    
+    // Sort by document order
+    tocEntries.sort((a, b) => {
+      const position = a.element.compareDocumentPosition(b.element);
+      return position & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+    });
+
+    if (tocEntries.length === 0) {
       // Hide rail if no headings
       const rail = document.getElementById('articleRail');
       if (rail) rail.style.display = 'none';
       return;
     }
 
+    // Build TOC list
     let counter = 1;
-    headings.forEach(h => {
+    tocEntries.forEach(entry => {
       const li = document.createElement('li');
       const a = document.createElement('a');
-      a.href = '#' + h.id;
+      a.href = '#' + entry.id;
+      a.dataset.tocTarget = entry.id;
       
       const spanText = document.createElement('span');
-      spanText.textContent = h.textContent;
+      spanText.textContent = entry.text;
       
       const spanNum = document.createElement('span');
       spanNum.className = 'num';
@@ -1044,6 +1092,50 @@
       tocList.appendChild(li);
       
       counter++;
+    });
+    
+    // Highlight active TOC item on scroll
+    initTOCHighlight(tocEntries);
+  }
+  
+  // Helper: Convert text to URL-safe slug
+  function slugify(text) {
+    return text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]+/g, '')
+      .replace(/\-\-+/g, '-')
+      .substring(0, 50);
+  }
+  
+  // Highlight active TOC item based on scroll position
+  function initTOCHighlight(tocEntries) {
+    if (!tocEntries.length) return;
+    
+    const tocLinks = tocList.querySelectorAll('a[data-toc-target]');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          tocLinks.forEach(link => {
+            if (link.dataset.tocTarget === id) {
+              link.classList.add('is-active');
+            } else {
+              link.classList.remove('is-active');
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    });
+    
+    tocEntries.forEach(entry => {
+      observer.observe(entry.element);
     });
   }
 

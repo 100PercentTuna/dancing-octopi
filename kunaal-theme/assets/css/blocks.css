@@ -555,4 +555,23 @@
   opacity: 1;
 }
 
+/* Active state - current section in view */
+.tocList a.is-active {
+  color: #2563EB !important;
+  font-weight: 600;
+  padding-left: 4px;
+  background-image: none !important;
+  text-decoration: none !important;
+}
+.tocList a.is-active .num {
+  opacity: 1;
+  color: #2563EB;
+}
+:root[data-theme="dark"] .tocList a.is-active {
+  color: var(--k-color-dark-accent, #E8A87C) !important;
+}
+:root[data-theme="dark"] .tocList a.is-active .num {
+  color: var(--k-color-dark-accent, #E8A87C);
+}
+
 } /* End @layer blocks */
