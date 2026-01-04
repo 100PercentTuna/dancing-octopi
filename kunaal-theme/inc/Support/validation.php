@@ -67,8 +67,12 @@ function kunaal_essay_has_image(WP_REST_Request $request, ?array $meta, int $pos
 
 /**
  * Validate Essay Before Publish (REST API compatible for Gutenberg)
+ * 
+ * @param stdClass $prepared_post Post object prepared for database (NOT WP_Post!)
+ * @param WP_REST_Request $request Request object
+ * @return stdClass|WP_Error The post object or error
  */
-function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
+function kunaal_validate_essay_rest(stdClass $prepared_post, WP_REST_Request $request): stdClass|WP_Error {
     // Only validate essays being published
     if ($prepared_post->post_type !== 'essay' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
@@ -114,8 +118,12 @@ add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
 
 /**
  * Validate Jotting Before Publish (REST API compatible for Gutenberg)
+ * 
+ * @param stdClass $prepared_post Post object prepared for database (NOT WP_Post!)
+ * @param WP_REST_Request $request Request object
+ * @return stdClass|WP_Error The post object or error
  */
-function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
+function kunaal_validate_jotting_rest(stdClass $prepared_post, WP_REST_Request $request): stdClass|WP_Error {
     // Only validate jottings being published
     if ($prepared_post->post_type !== 'jotting' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
