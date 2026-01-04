@@ -38,8 +38,6 @@ function kunaal_register_post_types(): void {
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'custom-fields'),
         'menu_icon' => 'dashicons-media-document',
         'show_in_rest' => true,
-        'capability_type' => 'post',
-        'map_meta_cap' => true,
         'template' => array(
             array('core/paragraph', array('placeholder' => 'Start writing your essay...')),
         ),
@@ -65,8 +63,6 @@ function kunaal_register_post_types(): void {
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'custom-fields'),
         'menu_icon' => 'dashicons-edit',
         'show_in_rest' => true,
-        'capability_type' => 'post',
-        'map_meta_cap' => true,
     ));
 
     /**

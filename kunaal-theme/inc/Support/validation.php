@@ -15,55 +15,14 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Debug: Log REST API authentication errors
- * This helps diagnose where permission failures originate
- */
-add_filter('rest_authentication_errors', function($result) {
-    if (is_wp_error($result)) {
-        error_log('[kunaal-debug] REST auth error: ' . $result->get_error_message());
-    }
-    return $result;
-}, 999);
-
-/**
- * Debug: Log REST API permission checks for essay post type
- */
-add_filter('rest_pre_dispatch', function($result, $server, $request) {
-    $route = $request->get_route();
-    if (strpos($route, '/wp/v2/essay') !== false) {
-        $user_id = get_current_user_id();
-        $can_edit = current_user_can('edit_posts');
-        error_log('[kunaal-debug] REST request to: ' . $route . ' | Method: ' . $request->get_method() . ' | User: ' . $user_id . ' | can_edit_posts: ' . ($can_edit ? 'yes' : 'no'));
-    }
-    return $result;
-}, 10, 3);
-
-/**
- * Ensure REST API recognizes user capabilities for essay/jotting
- * This filter runs early to ensure the user is properly authenticated
- */
-add_filter('rest_pre_dispatch', function($result, $server, $request) {
-    // Force WordPress to re-check current user on REST requests
-    // This can help with cookie/nonce authentication issues
-    if (is_user_logged_in()) {
-        wp_set_current_user(get_current_user_id());
-    }
-    return $result;
-}, 1, 3);
-
-/**
  * Get meta value from request or post meta
  * 
- * @param array|null $meta Request meta array (nullable for REST API safety)
+ * @param array $meta Request meta array
  * @param string $key Meta key
  * @param int $post_id Post ID
  * @return mixed Meta value or null
  */
-function kunaal_get_meta_value(?array $meta, string $key, int $post_id = 0): mixed {
-    // Handle null meta from REST requests
-    if ($meta === null) {
-        $meta = array();
-    }
+function kunaal_get_meta_value(array $meta, string $key, int $post_id = 0): mixed {
     if (isset($meta[$key]) && !empty($meta[$key])) {
         return $meta[$key];
     }
@@ -96,11 +55,11 @@ function kunaal_essay_has_topics(WP_REST_Request $request, int $post_id = 0): bo
  * Check if essay has image
  * 
  * @param WP_REST_Request $request Request object
- * @param array|null $meta Request meta array (nullable for REST API safety)
+ * @param array $meta Request meta array
  * @param int $post_id Post ID
  * @return bool True if has image
  */
-function kunaal_essay_has_image(WP_REST_Request $request, ?array $meta, int $post_id = 0): bool {
+function kunaal_essay_has_image(WP_REST_Request $request, array $meta, int $post_id = 0): bool {
     $featured_media = $request->get_param('featured_media');
     $card_image = kunaal_get_meta_value($meta, 'kunaal_card_image', $post_id);
     return !empty($card_image) || !empty($featured_media) || ($post_id && has_post_thumbnail($post_id));
@@ -108,82 +67,53 @@ function kunaal_essay_has_image(WP_REST_Request $request, ?array $meta, int $pos
 
 /**
  * Validate Essay Before Publish (REST API compatible for Gutenberg)
- * 
- * Wrapped in try-catch per architecture rule 6.3 to prevent uncaught
- * exceptions from causing 500 errors in the REST API.
  */
 function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
-    // DEBUG: Log that we reached validation
-    error_log('[kunaal-debug] Essay validation filter triggered for post type: ' . $prepared_post->post_type . ' status: ' . $prepared_post->post_status);
-    
-    // TEMPORARY DEBUG: Skip all validation to test if this is the issue
-    // Remove this block once debugging is complete
-    if (defined('KUNAAL_SKIP_VALIDATION') && KUNAAL_SKIP_VALIDATION) {
-        error_log('[kunaal-debug] Validation skipped due to KUNAAL_SKIP_VALIDATION');
-        return $prepared_post;
-    }
-    
     // Only validate essays being published
     if ($prepared_post->post_type !== 'essay' || $prepared_post->post_status !== 'publish') {
         return $prepared_post;
     }
     
-    try {
-        $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
-        $errors = array();
-        // Null coalesce to empty array - REST requests may not include meta
-        $meta = $request->get_param('meta') ?? array();
-        
-        // Check for subtitle (now required)
-        $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
-        if (empty($subtitle)) {
-            $errors[] = '📝 SUBTITLE/DEK is required — Find "Essay Details" in the right sidebar';
-        }
-        
-        // Check for read time
-        $read_time = kunaal_get_meta_value($meta, 'kunaal_read_time', $post_id);
-        if (empty($read_time)) {
-            $errors[] = '⏱️ READ TIME is required — Find "Essay Details" in the right sidebar';
-        }
-        
-        // Check for topics
-        if (!kunaal_essay_has_topics($request, $post_id)) {
-            $errors[] = '🏷️ At least one TOPIC is required — Find "Topics" in the right sidebar';
-        }
-        
-        // Check for card image or featured image
-        if (!kunaal_essay_has_image($request, $meta, $post_id)) {
-            $errors[] = '🖼️ A CARD IMAGE is required — Find "Card Image" or "Featured Image" in the right sidebar';
-        }
-        
-        if (!empty($errors)) {
-            return new WP_Error(
-                'kunaal_essay_incomplete',
-                "📝 ESSAY CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
-                array('status' => 400)
-            );
-        }
-        
-        return $prepared_post;
-    } catch (\Throwable $e) {
-        // Log the error for debugging
-        if (function_exists('kunaal_log')) {
-            kunaal_log('validation_error', 'Essay validation failed: ' . $e->getMessage());
-        }
+    $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
+    $errors = array();
+    $meta = $request->get_param('meta');
+    
+    // Check for subtitle (now required)
+    $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
+    if (empty($subtitle)) {
+        $errors[] = '📝 SUBTITLE/DEK is required — Find "Essay Details" in the right sidebar';
+    }
+    
+    // Check for read time
+    $read_time = kunaal_get_meta_value($meta, 'kunaal_read_time', $post_id);
+    if (empty($read_time)) {
+        $errors[] = '⏱️ READ TIME is required — Find "Essay Details" in the right sidebar';
+    }
+    
+    // Check for topics
+    if (!kunaal_essay_has_topics($request, $post_id)) {
+        $errors[] = '🏷️ At least one TOPIC is required — Find "Topics" in the right sidebar';
+    }
+    
+    // Check for card image or featured image
+    if (!kunaal_essay_has_image($request, $meta, $post_id)) {
+        $errors[] = '🖼️ A CARD IMAGE is required — Find "Card Image" or "Featured Image" in the right sidebar';
+    }
+    
+    if (!empty($errors)) {
         return new WP_Error(
-            'validation_error',
-            'An unexpected error occurred during validation. Please try again.',
-            array('status' => 500)
+            'kunaal_essay_incomplete',
+            "📝 ESSAY CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
+            array('status' => 400)
         );
     }
+    
+    return $prepared_post;
 }
 add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
 
 /**
  * Validate Jotting Before Publish (REST API compatible for Gutenberg)
- * 
- * Wrapped in try-catch per architecture rule 6.3 to prevent uncaught
- * exceptions from causing 500 errors in the REST API.
  */
 function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
     // Only validate jottings being published
@@ -191,38 +121,25 @@ function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $r
         return $prepared_post;
     }
     
-    try {
-        $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
-        $errors = array();
-        // Null coalesce to empty array - REST requests may not include meta
-        $meta = $request->get_param('meta') ?? array();
-        
-        // Check for subtitle (required for jottings)
-        $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
-        if (empty($subtitle)) {
-            $errors[] = '📝 SUBTITLE/DEK is required — Find "Jotting Details" in the right sidebar';
-        }
-        
-        if (!empty($errors)) {
-            return new WP_Error(
-                'kunaal_jotting_incomplete',
-                "📝 JOTTING CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
-                array('status' => 400)
-            );
-        }
-        
-        return $prepared_post;
-    } catch (\Throwable $e) {
-        // Log the error for debugging
-        if (function_exists('kunaal_log')) {
-            kunaal_log('validation_error', 'Jotting validation failed: ' . $e->getMessage());
-        }
+    $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
+    $errors = array();
+    $meta = $request->get_param('meta');
+    
+    // Check for subtitle (required for jottings)
+    $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
+    if (empty($subtitle)) {
+        $errors[] = '📝 SUBTITLE/DEK is required — Find "Jotting Details" in the right sidebar';
+    }
+    
+    if (!empty($errors)) {
         return new WP_Error(
-            'validation_error',
-            'An unexpected error occurred during validation. Please try again.',
-            array('status' => 500)
+            'kunaal_jotting_incomplete',
+            "📝 JOTTING CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
+            array('status' => 400)
         );
     }
+    
+    return $prepared_post;
 }
 add_filter('rest_pre_insert_jotting', 'kunaal_validate_jotting_rest', 10, 2);
 

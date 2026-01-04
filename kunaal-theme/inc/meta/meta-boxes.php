@@ -172,17 +172,9 @@ function kunaal_calculate_reading_time(int $post_id): int {
 }
 
 /**
- * Save Meta Box Data (Classic Editor only)
- * 
- * Note: Parameter is mixed because WordPress hooks may pass int or string.
- * We cast to int internally for type safety.
- * 
- * @param int|string $post_id Post ID (may be string from some WordPress contexts)
+ * Save Meta Box Data
  */
-function kunaal_save_meta_box_data($post_id): void {
-    // Cast to int for type safety (WordPress sometimes passes string)
-    $post_id = (int) $post_id;
-    
+function kunaal_save_meta_box_data(int $post_id): void {
     // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce is verified below
     if (!isset($_POST['kunaal_meta_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['kunaal_meta_nonce'])), 'kunaal_save_meta')) {
         return;
@@ -213,19 +205,16 @@ add_action('save_post', 'kunaal_save_meta_box_data');
 
 /**
  * Register meta fields for REST API access (needed for Gutenberg)
- * 
- * Note: We intentionally omit auth_callback to use WordPress's default
- * permission check (can user edit this post), which is more reliable
- * than custom callbacks in REST API context.
  */
 function kunaal_register_meta_fields(): void {
-    // Essay meta fields
     register_post_meta('essay', 'kunaal_read_time', array(
         'show_in_rest' => true,
         'single' => true,
         'type' => 'integer',
         'sanitize_callback' => 'absint',
-        'default' => 0,
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
     ));
 
     register_post_meta('essay', 'kunaal_subtitle', array(
@@ -233,7 +222,9 @@ function kunaal_register_meta_fields(): void {
         'single' => true,
         'type' => 'string',
         'sanitize_callback' => 'sanitize_text_field',
-        'default' => '',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
     ));
 
     register_post_meta('essay', 'kunaal_card_image', array(
@@ -241,7 +232,19 @@ function kunaal_register_meta_fields(): void {
         'single' => true,
         'type' => 'integer',
         'sanitize_callback' => 'absint',
-        'default' => 0,
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
+    ));
+
+    register_post_meta('jotting', 'kunaal_subtitle', array(
+        'show_in_rest' => true,
+        'single' => true,
+        'type' => 'string',
+        'sanitize_callback' => 'sanitize_text_field',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
     ));
 
     register_post_meta('essay', 'kunaal_summary', array(
@@ -249,16 +252,9 @@ function kunaal_register_meta_fields(): void {
         'single' => true,
         'type' => 'string',
         'sanitize_callback' => 'sanitize_textarea_field',
-        'default' => '',
-    ));
-
-    // Jotting meta fields
-    register_post_meta('jotting', 'kunaal_subtitle', array(
-        'show_in_rest' => true,
-        'single' => true,
-        'type' => 'string',
-        'sanitize_callback' => 'sanitize_text_field',
-        'default' => '',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
     ));
 
     register_post_meta('jotting', 'kunaal_summary', array(
@@ -266,7 +262,9 @@ function kunaal_register_meta_fields(): void {
         'single' => true,
         'type' => 'string',
         'sanitize_callback' => 'sanitize_textarea_field',
-        'default' => '',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
     ));
 }
 add_action('init', 'kunaal_register_meta_fields');

@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.91.5');
+define('KUNAAL_THEME_VERSION', '4.91.0');
 
 // ============================================================================
 // SETUP (Platform)
@@ -109,26 +109,3 @@ require_once KUNAAL_THEME_DIR . '/pdf-generator.php';
 // Main asset enqueuing (must load after all helpers are available)
 // This function is defined in inc/Setup/enqueue.php
 add_action('wp_enqueue_scripts', 'kunaal_enqueue_assets');
-
-// ============================================================================
-// DIAGNOSTIC ENDPOINT (TEMPORARY - REMOVE AFTER DEBUGGING)
-// ============================================================================
-add_action('rest_api_init', function() {
-    register_rest_route('kunaal/v1', '/diagnose', array(
-        'methods' => 'GET',
-        'callback' => function() {
-            return array(
-                'status' => 'ok',
-                'theme_version' => KUNAAL_THEME_VERSION,
-                'user_id' => get_current_user_id(),
-                'can_edit_posts' => current_user_can('edit_posts'),
-                'can_publish_posts' => current_user_can('publish_posts'),
-                'essay_cpt_exists' => post_type_exists('essay'),
-                'php_version' => PHP_VERSION,
-                'wp_version' => get_bloginfo('version'),
-                'timestamp' => current_time('mysql'),
-            );
-        },
-        'permission_callback' => '__return_true', // Public for testing
-    ));
-});
