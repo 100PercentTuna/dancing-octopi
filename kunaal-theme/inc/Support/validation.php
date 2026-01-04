@@ -17,12 +17,16 @@ if (!defined('ABSPATH')) {
 /**
  * Get meta value from request or post meta
  * 
- * @param array $meta Request meta array
+ * @param array|null $meta Request meta array (nullable for REST API safety)
  * @param string $key Meta key
  * @param int $post_id Post ID
  * @return mixed Meta value or null
  */
-function kunaal_get_meta_value(array $meta, string $key, int $post_id = 0): mixed {
+function kunaal_get_meta_value(?array $meta, string $key, int $post_id = 0): mixed {
+    // Handle null meta from REST requests
+    if ($meta === null) {
+        $meta = array();
+    }
     if (isset($meta[$key]) && !empty($meta[$key])) {
         return $meta[$key];
     }
@@ -55,11 +59,11 @@ function kunaal_essay_has_topics(WP_REST_Request $request, int $post_id = 0): bo
  * Check if essay has image
  * 
  * @param WP_REST_Request $request Request object
- * @param array $meta Request meta array
+ * @param array|null $meta Request meta array (nullable for REST API safety)
  * @param int $post_id Post ID
  * @return bool True if has image
  */
-function kunaal_essay_has_image(WP_REST_Request $request, array $meta, int $post_id = 0): bool {
+function kunaal_essay_has_image(WP_REST_Request $request, ?array $meta, int $post_id = 0): bool {
     $featured_media = $request->get_param('featured_media');
     $card_image = kunaal_get_meta_value($meta, 'kunaal_card_image', $post_id);
     return !empty($card_image) || !empty($featured_media) || ($post_id && has_post_thumbnail($post_id));
@@ -67,6 +71,9 @@ function kunaal_essay_has_image(WP_REST_Request $request, array $meta, int $post
 
 /**
  * Validate Essay Before Publish (REST API compatible for Gutenberg)
+ * 
+ * Wrapped in try-catch per architecture rule 6.3 to prevent uncaught
+ * exceptions from causing 500 errors in the REST API.
  */
 function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
     // Only validate essays being published
@@ -74,46 +81,62 @@ function kunaal_validate_essay_rest(WP_Post $prepared_post, WP_REST_Request $req
         return $prepared_post;
     }
     
-    $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
-    $errors = array();
-    $meta = $request->get_param('meta');
-    
-    // Check for subtitle (now required)
-    $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
-    if (empty($subtitle)) {
-        $errors[] = '📝 SUBTITLE/DEK is required — Find "Essay Details" in the right sidebar';
-    }
-    
-    // Check for read time
-    $read_time = kunaal_get_meta_value($meta, 'kunaal_read_time', $post_id);
-    if (empty($read_time)) {
-        $errors[] = '⏱️ READ TIME is required — Find "Essay Details" in the right sidebar';
-    }
-    
-    // Check for topics
-    if (!kunaal_essay_has_topics($request, $post_id)) {
-        $errors[] = '🏷️ At least one TOPIC is required — Find "Topics" in the right sidebar';
-    }
-    
-    // Check for card image or featured image
-    if (!kunaal_essay_has_image($request, $meta, $post_id)) {
-        $errors[] = '🖼️ A CARD IMAGE is required — Find "Card Image" or "Featured Image" in the right sidebar';
-    }
-    
-    if (!empty($errors)) {
+    try {
+        $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
+        $errors = array();
+        // Null coalesce to empty array - REST requests may not include meta
+        $meta = $request->get_param('meta') ?? array();
+        
+        // Check for subtitle (now required)
+        $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
+        if (empty($subtitle)) {
+            $errors[] = '📝 SUBTITLE/DEK is required — Find "Essay Details" in the right sidebar';
+        }
+        
+        // Check for read time
+        $read_time = kunaal_get_meta_value($meta, 'kunaal_read_time', $post_id);
+        if (empty($read_time)) {
+            $errors[] = '⏱️ READ TIME is required — Find "Essay Details" in the right sidebar';
+        }
+        
+        // Check for topics
+        if (!kunaal_essay_has_topics($request, $post_id)) {
+            $errors[] = '🏷️ At least one TOPIC is required — Find "Topics" in the right sidebar';
+        }
+        
+        // Check for card image or featured image
+        if (!kunaal_essay_has_image($request, $meta, $post_id)) {
+            $errors[] = '🖼️ A CARD IMAGE is required — Find "Card Image" or "Featured Image" in the right sidebar';
+        }
+        
+        if (!empty($errors)) {
+            return new WP_Error(
+                'kunaal_essay_incomplete',
+                "📝 ESSAY CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
+                array('status' => 400)
+            );
+        }
+        
+        return $prepared_post;
+    } catch (\Throwable $e) {
+        // Log the error for debugging
+        if (function_exists('kunaal_log')) {
+            kunaal_log('validation_error', 'Essay validation failed: ' . $e->getMessage());
+        }
         return new WP_Error(
-            'kunaal_essay_incomplete',
-            "📝 ESSAY CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
-            array('status' => 400)
+            'validation_error',
+            'An unexpected error occurred during validation. Please try again.',
+            array('status' => 500)
         );
     }
-    
-    return $prepared_post;
 }
 add_filter('rest_pre_insert_essay', 'kunaal_validate_essay_rest', 10, 2);
 
 /**
  * Validate Jotting Before Publish (REST API compatible for Gutenberg)
+ * 
+ * Wrapped in try-catch per architecture rule 6.3 to prevent uncaught
+ * exceptions from causing 500 errors in the REST API.
  */
 function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $request): WP_Post|WP_Error {
     // Only validate jottings being published
@@ -121,25 +144,38 @@ function kunaal_validate_jotting_rest(WP_Post $prepared_post, WP_REST_Request $r
         return $prepared_post;
     }
     
-    $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
-    $errors = array();
-    $meta = $request->get_param('meta');
-    
-    // Check for subtitle (required for jottings)
-    $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
-    if (empty($subtitle)) {
-        $errors[] = '📝 SUBTITLE/DEK is required — Find "Jotting Details" in the right sidebar';
-    }
-    
-    if (!empty($errors)) {
+    try {
+        $post_id = isset($prepared_post->ID) ? $prepared_post->ID : 0;
+        $errors = array();
+        // Null coalesce to empty array - REST requests may not include meta
+        $meta = $request->get_param('meta') ?? array();
+        
+        // Check for subtitle (required for jottings)
+        $subtitle = kunaal_get_meta_value($meta, 'kunaal_subtitle', $post_id);
+        if (empty($subtitle)) {
+            $errors[] = '📝 SUBTITLE/DEK is required — Find "Jotting Details" in the right sidebar';
+        }
+        
+        if (!empty($errors)) {
+            return new WP_Error(
+                'kunaal_jotting_incomplete',
+                "📝 JOTTING CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
+                array('status' => 400)
+            );
+        }
+        
+        return $prepared_post;
+    } catch (\Throwable $e) {
+        // Log the error for debugging
+        if (function_exists('kunaal_log')) {
+            kunaal_log('validation_error', 'Jotting validation failed: ' . $e->getMessage());
+        }
         return new WP_Error(
-            'kunaal_jotting_incomplete',
-            "📝 JOTTING CANNOT BE PUBLISHED YET\n\nPlease complete these required fields:\n\n" . implode("\n\n", $errors),
-            array('status' => 400)
+            'validation_error',
+            'An unexpected error occurred during validation. Please try again.',
+            array('status' => 500)
         );
     }
-    
-    return $prepared_post;
 }
 add_filter('rest_pre_insert_jotting', 'kunaal_validate_jotting_rest', 10, 2);
 
