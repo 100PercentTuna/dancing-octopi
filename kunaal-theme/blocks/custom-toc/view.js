@@ -6,7 +6,7 @@
     'use strict';
 
     function initCustomToc() {
-        const tocs = document.querySelectorAll('.customToc');
+        var tocs = document.querySelectorAll('.customToc');
         if (!tocs.length) return;
 
         tocs.forEach(function(toc) {
@@ -14,22 +14,22 @@
             if (toc.hasAttribute('data-toc-init')) return;
             toc.setAttribute('data-toc-init', 'true');
 
-            const links = toc.querySelectorAll('.customToc__link');
+            var links = toc.querySelectorAll('.customToc__link');
             if (!links.length) return;
 
-            const shouldHighlight = toc.classList.contains('customToc--highlight');
+            var shouldHighlight = toc.classList.contains('customToc--highlight');
 
             // Build anchors array - find target elements by ID
-            const anchors = [];
+            var anchors = [];
             links.forEach(function(link) {
-                let anchorId = link.getAttribute('data-anchor');
+                var anchorId = link.getAttribute('data-anchor');
                 if (!anchorId) return;
                 
                 // Clean the anchor ID - remove # prefix, trim whitespace
                 anchorId = anchorId.replace(/^#/, '').trim();
                 
                 // Find target element
-                const target = document.getElementById(anchorId);
+                var target = document.getElementById(anchorId);
                 if (target) {
                     anchors.push({ link: link, target: target, id: anchorId });
                 }
@@ -37,16 +37,16 @@
 
             // Scroll-based active highlighting
             if (shouldHighlight && anchors.length > 0) {
-                let ticking = false;
+                var ticking = false;
                 
                 function updateActiveLink() {
                     ticking = false;
-                    const offset = 200;
-                    let activeIndex = 0;
+                    var offset = 150;
+                    var activeIndex = 0;
 
                     // Find current section based on scroll position
                     anchors.forEach(function(anchor, index) {
-                        const rect = anchor.target.getBoundingClientRect();
+                        var rect = anchor.target.getBoundingClientRect();
                         if (rect.top <= offset) {
                             activeIndex = index;
                         }
@@ -80,30 +80,32 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    let anchorId = link.getAttribute('data-anchor');
+                    var anchorId = link.getAttribute('data-anchor');
                     if (!anchorId) return;
                     
                     anchorId = anchorId.replace(/^#/, '').trim();
-                    const target = document.getElementById(anchorId);
+                    var target = document.getElementById(anchorId);
                     if (!target) return;
                     
-                    // Calculate scroll position
-                    const mastHeight = parseInt(
-                        getComputedStyle(document.documentElement).getPropertyValue('--mastH')
-                    ) || 77;
+                    // Get masthead height
+                    var mastHeight = 77;
+                    var mastHValue = getComputedStyle(document.documentElement).getPropertyValue('--mastH');
+                    if (mastHValue) {
+                        mastHeight = parseInt(mastHValue) || 77;
+                    }
                     
-                    // Use scrollY instead of pageYOffset (modern)
-                    const currentScroll = window.scrollY || window.pageYOffset;
-                    const targetRect = target.getBoundingClientRect();
-                    const targetPosition = currentScroll + targetRect.top - mastHeight - 24;
+                    // Use scrollIntoView then adjust for header
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     
-                    // Smooth scroll to target
-                    window.scrollTo({
-                        top: Math.max(0, targetPosition),
-                        behavior: 'smooth'
-                    });
+                    // Offset adjustment after scroll starts
+                    setTimeout(function() {
+                        window.scrollBy({ 
+                            top: -(mastHeight + 32), 
+                            behavior: 'instant' 
+                        });
+                    }, 100);
 
-                    // Update URL hash
+                    // Update URL hash without jumping
                     if (history.pushState) {
                         history.pushState(null, null, '#' + anchorId);
                     }

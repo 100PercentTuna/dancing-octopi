@@ -174,19 +174,19 @@ main.article {
   transition: filter 500ms ease, transform 200ms ease;
   position: relative;
   z-index: 1;
-  /* Top-to-bottom transparency: subtle at top, completely transparent at bottom */
+  /* Top-to-bottom transparency: more gradual fade from solid at top to transparent at bottom */
   -webkit-mask-image: linear-gradient(to bottom, 
-    rgba(0,0,0,0.95) 0%,
-    rgba(0,0,0,0.85) 30%,
-    rgba(0,0,0,0.5) 70%,
-    rgba(0,0,0,0.15) 90%,
+    black 0%,
+    black 20%,
+    rgba(0,0,0,0.7) 50%,
+    rgba(0,0,0,0.3) 80%,
     transparent 100%
   );
   mask-image: linear-gradient(to bottom, 
-    rgba(0,0,0,0.95) 0%,
-    rgba(0,0,0,0.85) 30%,
-    rgba(0,0,0,0.5) 70%,
-    rgba(0,0,0,0.15) 90%,
+    black 0%,
+    black 20%,
+    rgba(0,0,0,0.7) 50%,
+    rgba(0,0,0,0.3) 80%,
     transparent 100%
   );
   /* For parallax - slight scale to prevent gaps */
@@ -208,8 +208,8 @@ main.article {
 /* Mobile article adjustments */
 @media (max-width: 640px) {
   main.article {
-    /* Clear fixed masthead + breathing room */
-    padding-top: calc(var(--mastH, 77px) + var(--space-4, 32px));
+    /* Clear fixed masthead + breathing room - !important to override shorthand padding */
+    padding-top: calc(var(--mastH, 77px) + var(--space-4, 32px)) !important;
   }
   
   .articleHeader {
@@ -240,6 +240,10 @@ main.article {
     padding-top: 8px;
   }
   
+  .articleMeta__tags {
+    row-gap: 2px; /* Tighter on mobile */
+  }
+  
   .heroImage {
     margin: var(--space-2) var(--space-3) var(--space-4);
     border-radius: 2px;
@@ -247,12 +251,6 @@ main.article {
   
   .heroImage img {
     aspect-ratio: 2/1; /* Taller on mobile */
-  }
-  
-  /* Proper side margins for prose content on mobile */
-  .prose {
-    padding-left: var(--space-3, 24px);
-    padding-right: var(--space-3, 24px);
   }
 }
 
@@ -414,6 +412,14 @@ main.article {
   font-size: 11px;
   color: var(--warm);
   text-align: left;
+}
+
+/* Mobile prose margins - MUST be after base .prose to override */
+@media (max-width: 640px) {
+  .prose {
+    padding-left: var(--space-3, 24px) !important;
+    padding-right: var(--space-3, 24px) !important;
+  }
 }
 
 /* ========================================

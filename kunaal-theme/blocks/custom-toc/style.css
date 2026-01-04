@@ -86,9 +86,9 @@
 /* Links - NO underline, use background/bold for hover */
 .customToc__link {
     font-family: var(--sans, 'Inter', sans-serif);
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.5;
-    color: var(--warmLight, #B5A99A); /* Grayer - less prominent than essay text */
+    color: rgba(125,107,93,0.55); /* Much grayer - less prominent than essay text */
     text-decoration: none !important;
     background-image: none !important;
     background-size: 0 !important;
@@ -110,18 +110,19 @@
 .customToc__link::before {
     content: counter(toc-counter, decimal-leading-zero);
     font-family: var(--mono, 'SF Mono', monospace);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
-    color: var(--hair2, rgba(125,107,93,0.4)); /* Even more subtle */
-    min-width: 20px;
+    color: rgba(125,107,93,0.35); /* Very subtle */
+    min-width: 18px;
     transition: color 150ms ease;
 }
 
-/* Right-side active indicator (invisible by default) */
+/* Right-side active indicator (invisible by default) - MUST be on right */
 .customToc__link::after {
     content: '';
     position: absolute;
-    right: 0;
+    right: 0 !important;
+    left: auto !important;
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
@@ -260,7 +261,8 @@
     .customToc__link {
         padding: 8px 14px;
         margin: 0;
-        font-size: 13px;
+        font-size: 11px;
+        color: rgba(125,107,93,0.6);
         border: 1px solid var(--hair2, rgba(125,107,93,0.15));
         border-radius: 20px;
         background: #fff;
@@ -273,6 +275,7 @@
     .customToc--highlight .customToc__link.is-active {
         background: var(--warm, #7D6B5D);
         color: #fff;
+        font-weight: 600;
         border-color: var(--warm, #7D6B5D);
     }
     
@@ -287,7 +290,7 @@
     }
     
     .customToc__title {
-        font-size: 13px;
+        font-size: 11px;
         margin-bottom: var(--space-3, 24px);
         padding-bottom: var(--space-2, 16px);
     }
@@ -297,13 +300,13 @@
     }
     
     .customToc__link {
-        font-size: 12px;
+        font-size: 10px;
         padding: 6px 12px;
     }
     
     .customToc__link::before {
-        font-size: 10px;
-        min-width: 18px;
+        font-size: 9px;
+        min-width: 16px;
     }
 }
 
