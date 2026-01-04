@@ -249,12 +249,13 @@ body.js:not(.gsap-ready) [data-reveal] {
    - GSAP moves image within container based on scroll position
    
    MATH FOR "NEVER RUNS OUT":
-   - Parallax amplitude in JS: ±25% of image height (50% total travel)
-   - Image height: 280% of container = extra 180% for movement
-   - Starting position: top: -90% (centered within the 280% height)
-   - Movement range: -25% to +25% = top: -115% to -65%
-   - At top: -115% + 280% = 165% bottom → still covers 100% container
-   - At bottom: -65% + 280% = 215% bottom → still covers 100% container
+   - Image height: 280% of container height
+   - Starting position: top: -90% (image spans -90% to +190% of container)
+   - GSAP uses yPercent which is % of ELEMENT height (not container)
+   - Parallax amplitude: ±25% yPercent max = ±70% of container movement
+   - At yPercent -25: image top at -90% - 70% = -160%, bottom at 120% ✓
+   - At yPercent +25: image top at -90% + 70% = -20%, bottom at 260% ✓
+   - Container (0-100%) is always covered in both extremes
    ============================================= */
 /* First panorama after hero - ensure it's BELOW the fold */
 .kunaal-about-page section.hero + .panorama,
@@ -293,7 +294,7 @@ body.js:not(.gsap-ready) [data-reveal] {
 
 .panorama-img {
   width: 100%;
-  /* Height: 280% to allow ±40% parallax movement with buffer */
+  /* Height: 280% to allow ±70% container parallax movement with safety buffer */
   height: 280%;
   object-fit: cover;
   /* Center the visible portion - neutral starting point */
@@ -301,7 +302,7 @@ body.js:not(.gsap-ready) [data-reveal] {
   filter: grayscale(100%);
   transition: filter 5s ease;
   position: absolute;
-  /* Starting position: center the 280% image in the 100% container
+  /* Starting position: offset by -90% to center the 280% image
      -(280% - 100%) / 2 = -90% */
   top: -90%;
   left: 0;

@@ -162,7 +162,10 @@
   // ========================================
   function cacheViewport() {
     const doc = document.documentElement;
-    cachedDocH = (doc.scrollHeight - doc.clientHeight) || 1;
+    // Ensure we have a valid scrollable height (minimum 1 to avoid division by zero)
+    const scrollHeight = doc.scrollHeight || 0;
+    const clientHeight = doc.clientHeight || 0;
+    cachedDocH = Math.max(scrollHeight - clientHeight, 1);
   }
 
   function updateScrollEffects(y) {
@@ -181,6 +184,10 @@
         progressFill.style.width = '0%';
         progressFill.style.opacity = '0';
       } else {
+        // Recalculate if cachedDocH seems too small (images may have loaded)
+        if (cachedDocH < 100) {
+          cacheViewport();
+        }
         const targetFrac = Math.min(y / cachedDocH, 1);
         progressFill.style.width = (targetFrac * 100) + '%';
         progressFill.style.opacity = '1';
@@ -1273,6 +1280,16 @@
         cacheViewport();
         requestTick(); // Update progress bar with correct values
       });
+      
+      // Also recalculate periodically during first few seconds (for lazy-loaded images)
+      let recalcCount = 0;
+      const recalcInterval = setInterval(() => {
+        cacheViewport();
+        recalcCount++;
+        if (recalcCount >= 5) {
+          clearInterval(recalcInterval);
+        }
+      }, 1000);
 
       initNav();
       initAvatar();

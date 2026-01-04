@@ -168,35 +168,62 @@
   
   /**
    * Initialize scroll indicator fade behavior
+   * Fades out the "SCROLL" indicator as user scrolls down
    */
   function initScrollIndicatorFade(scrollIndicator) {
+    if (!scrollIndicator) return;
+    
     let ticking = false;
+    let lastKnownScroll = 0;
     
     function updateFade() {
       ticking = false;
-      const scrollY = window.scrollY || window.pageYOffset;
-      const fadeStart = 100;
-      const fadeEnd = 300;
       
+      // Use stored scroll value to avoid forced reflow
+      const scrollY = lastKnownScroll;
+      
+      // Start fading immediately on scroll, fully hidden by 150px
+      // This creates a quick, responsive fade as soon as user starts scrolling
+      const fadeStart = 20;  // Start fading very early
+      const fadeEnd = 150;   // Fully hidden relatively quickly
+      
+      let opacity;
       if (scrollY <= fadeStart) {
-        scrollIndicator.style.opacity = '1';
+        opacity = 1;
       } else if (scrollY >= fadeEnd) {
-        scrollIndicator.style.opacity = '0';
+        opacity = 0;
       } else {
         const progress = (scrollY - fadeStart) / (fadeEnd - fadeStart);
-        scrollIndicator.style.opacity = (1 - progress).toFixed(3);
+        opacity = 1 - progress;
       }
+      
+      // Apply opacity with !important to override any GSAP-set values
+      scrollIndicator.style.setProperty('opacity', opacity.toFixed(3), 'important');
     }
     
     function onScroll() {
+      lastKnownScroll = window.scrollY || window.pageYOffset || 0;
       if (!ticking) {
         ticking = true;
         requestAnimationFrame(updateFade);
       }
     }
     
+    // Listen for scroll events
     window.addEventListener('scroll', onScroll, { passive: true });
-    updateFade(); // Initial state
+    
+    // Also listen for wheel events as a backup (some browsers)
+    window.addEventListener('wheel', function() {
+      lastKnownScroll = window.scrollY || window.pageYOffset || 0;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateFade);
+      }
+    }, { passive: true });
+    
+    // Initial state - set immediately
+    lastKnownScroll = window.scrollY || window.pageYOffset || 0;
+    updateFade();
   }
   
   /**
@@ -412,9 +439,12 @@
         let speed = parseFloat(band.getAttribute('data-speed') || '1');
         if (!isFinite(speed) || speed <= 0) speed = 1;
         
-        // Amplitude: 30% base, scaled by speed
-        // This keeps image within bounds (see CSS math above)
-        const amp = 30 * Math.min(speed, 1.5); // Cap speed to prevent edge exposure
+        // IMPORTANT: yPercent is relative to ELEMENT height (280%), not container.
+        // Image: 280% height, starts at top: -90% (CSS)
+        // Safe movement: ±90% of container = ±32% of image height (90/2.8)
+        // We use ±10% (conservative) scaled by speed, capped at 25% max
+        // This ensures image never "runs out" at any scroll position
+        const amp = 10 * Math.min(speed, 2.5); // Max 25% yPercent = 70% container movement
         
         try {
           window.gsap.fromTo(img,
