@@ -996,8 +996,12 @@ a:focus-visible, button:focus-visible {
   line-height: 1;
 }
 
-/* Infinity label: visible by default for progressive enhancement
-   JS animates both infinity symbol and label together */
+/* Issue 10: Infinity label - hidden initially on desktop, JS animates it
+   Mobile: visible immediately via .number-label opacity: 1 !important in mobile breakpoint */
+.infinity-value + .number-label {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
 
 /* =============================================
    RABBIT HOLES - Redesigned cloud
