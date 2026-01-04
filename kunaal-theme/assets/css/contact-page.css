@@ -67,22 +67,23 @@
 
 .contact-title {
     font-family: var(--serif);
-    font-size: clamp(1.5rem, 3.5vw, 2rem);
     font-weight: 400;
     color: var(--ink);
     margin-bottom: var(--space-2);
     line-height: 1.2;
+    /* Default size - overridden by size variants */
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
 }
 
-/* Contact title size variants */
-.contact-title.contact-title--small {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
+/* Contact title size variants - use higher specificity */
+.contact-page .contact-title.contact-title--small {
+    font-size: 1.1rem !important;
 }
-.contact-title.contact-title--medium {
-    font-size: clamp(1.25rem, 3vw, 1.5rem);
+.contact-page .contact-title.contact-title--medium {
+    font-size: 1.35rem !important;
 }
-.contact-title.contact-title--large {
-    font-size: clamp(1.5rem, 3.5vw, 2rem);
+.contact-page .contact-title.contact-title--large {
+    font-size: clamp(1.5rem, 3.5vw, 2rem) !important;
 }
 
 .contact-intro {
