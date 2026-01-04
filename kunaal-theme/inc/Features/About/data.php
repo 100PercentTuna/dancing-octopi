@@ -113,6 +113,12 @@ function kunaal_get_rabbit_holes(): array {
     for ($i = 1; $i <= 200; $i++) {
         $text = kunaal_mod("kunaal_about_rabbit_hole_{$i}_text", '');
         if (!empty($text)) {
+            // Check visibility toggle (default: true)
+            $visible = kunaal_mod("kunaal_about_rabbit_hole_{$i}_visible", true);
+            if (!$visible) {
+                continue;
+            }
+            
             $image_id = kunaal_mod("kunaal_about_rabbit_hole_{$i}_image", 0);
             $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
             $category = kunaal_mod("kunaal_about_rabbit_hole_{$i}_category", '');
@@ -174,6 +180,12 @@ function kunaal_get_books(): array {
     for ($i = 1; $i <= 6; $i++) {
         $title = kunaal_mod("kunaal_about_book_{$i}_title", '');
         if (!empty($title)) {
+            // Check visibility toggle (default: true)
+            $visible = kunaal_mod("kunaal_about_book_{$i}_visible", true);
+            if (!$visible) {
+                continue;
+            }
+            
             $cover_id = kunaal_mod("kunaal_about_book_{$i}_cover", 0);
             $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
             
@@ -197,6 +209,12 @@ function kunaal_get_digital_media(): array {
     for ($i = 1; $i <= 6; $i++) {
         $title = kunaal_mod("kunaal_about_digital_{$i}_title", '');
         if (!empty($title)) {
+            // Check visibility toggle (default: true)
+            $visible = kunaal_mod("kunaal_about_digital_{$i}_visible", true);
+            if (!$visible) {
+                continue;
+            }
+            
             $cover_id = kunaal_mod("kunaal_about_digital_{$i}_cover", 0);
             $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
             $link_type = kunaal_mod("kunaal_about_digital_{$i}_link_type", 'spotify');

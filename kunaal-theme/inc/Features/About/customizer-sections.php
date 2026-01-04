@@ -259,6 +259,18 @@ function kunaal_register_about_rabbit_holes_section(WP_Customize_Manager $wp_cus
     
     // Rabbit Holes (up to 200)
     for ($i = 1; $i <= 200; $i++) {
+        // Visible Toggle
+        $wp_customize->add_setting("kunaal_about_rabbit_hole_{$i}_visible", array(
+            'default' => true,
+            'sanitize_callback' => 'wp_validate_boolean',
+        ));
+        $wp_customize->add_control("kunaal_about_rabbit_hole_{$i}_visible", array(
+            'label' => "Rabbit Hole {$i}: Show",
+            'description' => 'Uncheck to hide this rabbit hole without deleting it',
+            'section' => 'kunaal_about_rabbit_holes',
+            'type' => 'checkbox',
+        ));
+        
         // Image
         $wp_customize->add_setting("kunaal_about_rabbit_hole_{$i}_image", array(
             'sanitize_callback' => 'absint',
@@ -440,6 +452,18 @@ function kunaal_register_about_books_section(WP_Customize_Manager $wp_customize)
     
     // Books (up to 6)
     for ($i = 1; $i <= 6; $i++) {
+        // Visible Toggle
+        $wp_customize->add_setting("kunaal_about_book_{$i}_visible", array(
+            'default' => true,
+            'sanitize_callback' => 'wp_validate_boolean',
+        ));
+        $wp_customize->add_control("kunaal_about_book_{$i}_visible", array(
+            'label' => "Book {$i}: Show",
+            'description' => 'Uncheck to hide this book without deleting it',
+            'section' => 'kunaal_about_books',
+            'type' => 'checkbox',
+        ));
+        
         // Cover Image
         $wp_customize->add_setting("kunaal_about_book_{$i}_cover", array(
             'sanitize_callback' => 'absint',
@@ -510,6 +534,18 @@ function kunaal_register_about_digital_section(WP_Customize_Manager $wp_customiz
     
     // Digital Items (up to 6)
     for ($i = 1; $i <= 6; $i++) {
+        // Visible Toggle
+        $wp_customize->add_setting("kunaal_about_digital_{$i}_visible", array(
+            'default' => true,
+            'sanitize_callback' => 'wp_validate_boolean',
+        ));
+        $wp_customize->add_control("kunaal_about_digital_{$i}_visible", array(
+            'label' => "Digital {$i}: Show",
+            'description' => 'Uncheck to hide this item without deleting it',
+            'section' => 'kunaal_about_digital',
+            'type' => 'checkbox',
+        ));
+        
         // Cover Image
         $wp_customize->add_setting("kunaal_about_digital_{$i}_cover", array(
             'sanitize_callback' => 'absint',
