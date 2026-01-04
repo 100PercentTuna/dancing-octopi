@@ -35,44 +35,64 @@
                 }
             });
 
-            // Scroll-based active highlighting
+            // Scroll-based active highlighting - must update live as user scrolls
             if (shouldHighlight && anchors.length > 0) {
-                var ticking = false;
+                var lastActiveIndex = -1;
                 
                 function updateActiveLink() {
-                    ticking = false;
-                    var offset = 150;
+                    // Get masthead height for offset
+                    var mastHeight = 77;
+                    var mastHValue = getComputedStyle(document.documentElement).getPropertyValue('--mastH');
+                    if (mastHValue) {
+                        mastHeight = parseInt(mastHValue) || 77;
+                    }
+                    
+                    var offset = mastHeight + 100; // Trigger point below header
                     var activeIndex = 0;
 
                     // Find current section based on scroll position
-                    anchors.forEach(function(anchor, index) {
-                        var rect = anchor.target.getBoundingClientRect();
+                    for (var i = 0; i < anchors.length; i++) {
+                        var rect = anchors[i].target.getBoundingClientRect();
                         if (rect.top <= offset) {
-                            activeIndex = index;
+                            activeIndex = i;
                         }
-                    });
+                    }
 
-                    // Update active states
-                    links.forEach(function(link) {
-                        link.classList.remove('is-active');
-                    });
-                    
-                    if (anchors[activeIndex]) {
-                        anchors[activeIndex].link.classList.add('is-active');
+                    // Only update DOM if active index changed
+                    if (activeIndex !== lastActiveIndex) {
+                        lastActiveIndex = activeIndex;
+                        
+                        // Update active states
+                        links.forEach(function(link) {
+                            link.classList.remove('is-active');
+                        });
+                        
+                        if (anchors[activeIndex]) {
+                            anchors[activeIndex].link.classList.add('is-active');
+                        }
                     }
                 }
 
+                // Use scroll event directly (no throttling for smooth updates)
+                var scrollTimeout;
                 function onScroll() {
-                    if (!ticking) {
-                        ticking = true;
-                        requestAnimationFrame(updateActiveLink);
+                    // Clear any pending timeout
+                    if (scrollTimeout) {
+                        cancelAnimationFrame(scrollTimeout);
                     }
+                    // Schedule update
+                    scrollTimeout = requestAnimationFrame(updateActiveLink);
                 }
 
                 window.addEventListener('scroll', onScroll, { passive: true });
                 
-                // Initial state
-                setTimeout(updateActiveLink, 100);
+                // Also listen to resize (content might shift)
+                window.addEventListener('resize', updateActiveLink, { passive: true });
+                
+                // Initial state - run immediately and after a short delay (for lazy content)
+                updateActiveLink();
+                setTimeout(updateActiveLink, 500);
+                setTimeout(updateActiveLink, 1500);
             }
 
             // Click handler for smooth scroll
@@ -94,16 +114,16 @@
                         mastHeight = parseInt(mastHValue) || 77;
                     }
                     
-                    // Use scrollIntoView then adjust for header
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Calculate exact scroll position
+                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    var targetRect = target.getBoundingClientRect();
+                    var targetPosition = scrollTop + targetRect.top - mastHeight - 32;
                     
-                    // Offset adjustment after scroll starts
-                    setTimeout(function() {
-                        window.scrollBy({ 
-                            top: -(mastHeight + 32), 
-                            behavior: 'instant' 
-                        });
-                    }, 100);
+                    // Smooth scroll to target
+                    window.scrollTo({
+                        top: Math.max(0, targetPosition),
+                        behavior: 'smooth'
+                    });
 
                     // Update URL hash without jumping
                     if (history.pushState) {
@@ -120,10 +140,15 @@
         });
     }
 
-    // Initialize once when DOM is ready
+    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCustomToc);
     } else {
         initCustomToc();
     }
+    
+    // Re-initialize after full page load (handles lazy-loaded content)
+    window.addEventListener('load', function() {
+        setTimeout(initCustomToc, 100);
+    });
 })();

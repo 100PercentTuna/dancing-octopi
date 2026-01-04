@@ -196,6 +196,18 @@ function kunaal_customize_register_essay_layout_section(WP_Customize_Manager $wp
         'section' => 'kunaal_essay_layout',
         'type' => 'text',
     ));
+
+    // Custom TOC Block - Hide on Mobile
+    $wp_customize->add_setting('kunaal_custom_toc_hide_mobile', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_custom_toc_hide_mobile', array(
+        'label' => 'Hide Custom TOC on Mobile',
+        'description' => 'Hide the Custom TOC block on mobile devices (< 640px width)',
+        'section' => 'kunaal_essay_layout',
+        'type' => 'checkbox',
+    ));
 }
 
 /**

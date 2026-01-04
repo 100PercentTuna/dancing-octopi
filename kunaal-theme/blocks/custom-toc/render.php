@@ -13,6 +13,9 @@ $show_numbers = isset($attributes['showNumbers']) ? $attributes['showNumbers'] :
 $anchor = isset($attributes['anchor']) ? ' id="' . esc_attr($attributes['anchor']) . '"' : '';
 $class_name = isset($attributes['className']) ? ' ' . esc_attr($attributes['className']) : '';
 
+// Check Customizer setting for hiding on mobile
+$hide_mobile = get_theme_mod('kunaal_custom_toc_hide_mobile', false);
+
 // Build classes
 $classes = 'wp-block-kunaal-custom-toc customToc';
 if ($sticky) {
@@ -30,8 +33,14 @@ $classes .= $class_name;
 if (empty($items)) {
     return;
 }
+
+// Build data attributes
+$data_attrs = 'data-highlight="' . ($highlight_active ? 'true' : 'false') . '"';
+if ($hide_mobile) {
+    $data_attrs .= ' data-hide-mobile="true"';
+}
 ?>
-<nav<?php echo $anchor; ?> class="<?php echo esc_attr($classes); ?>" data-highlight="<?php echo $highlight_active ? 'true' : 'false'; ?>">
+<nav<?php echo $anchor; ?> class="<?php echo esc_attr($classes); ?>" <?php echo $data_attrs; ?>>
     <?php if ($title) : ?>
         <h4 class="customToc__title"><?php echo esc_html($title); ?></h4>
     <?php endif; ?>
@@ -51,4 +60,3 @@ if (empty($items)) {
         <?php endforeach; ?>
     </ul>
 </nav>
-

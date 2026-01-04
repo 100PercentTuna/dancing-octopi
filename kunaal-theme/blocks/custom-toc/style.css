@@ -1,15 +1,21 @@
 /**
  * Custom TOC Block Styles
- * A visually striking, editorial-quality table of contents
+ * A clean, editorial-quality table of contents
+ * 
+ * Desktop (>960px): Sticky sidebar with vertical list
+ * Tablet/Mobile (<=960px): Horizontal pill layout inline with content
  */
 
+/* =========================================
+   BASE CONTAINER
+   ========================================= */
 .customToc {
     background: linear-gradient(135deg, var(--bgWarm, #FAF8F5) 0%, #F5F0EA 100%);
     border: 1px solid var(--hair2, rgba(125,107,93,0.15));
     border-radius: 6px;
-    padding: var(--space-5, 40px) var(--space-4, 32px);
+    padding: var(--space-4, 32px);
     margin: var(--space-5, 40px) 0;
-    max-width: 400px; /* Wider to reduce line wrapping */
+    max-width: 320px;
     box-shadow: 
         0 2px 8px rgba(125,107,93,0.06),
         0 1px 2px rgba(125,107,93,0.04);
@@ -28,22 +34,31 @@
     background: linear-gradient(90deg, var(--warm, #7D6B5D), var(--warmLight, #B5A99A));
 }
 
-/* Sticky positioning */
+/* Hide on mobile option - controlled by data attribute */
+.customToc[data-hide-mobile="true"] {
+    /* Will be hidden via media query below */
+}
+
+/* =========================================
+   STICKY POSITIONING (Desktop only)
+   ========================================= */
 .customToc--sticky {
     position: sticky;
     top: calc(var(--mastH, 77px) + var(--space-4, 32px));
     float: right;
-    margin-left: var(--space-6, 48px);
-    margin-right: calc(-1 * (var(--space-6, 48px) + 400px));
+    margin-left: var(--space-5, 40px);
+    margin-right: calc(-1 * (var(--space-5, 40px) + 320px));
     z-index: 10;
 }
 
-/* Title */
+/* =========================================
+   TITLE
+   ========================================= */
 .customToc__title {
     font-family: var(--serif, Georgia, serif);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     color: var(--ink, #1a1a1a);
     margin: 0 0 var(--space-3, 24px);
     padding-bottom: var(--space-2, 16px);
@@ -51,7 +66,7 @@
     position: relative;
 }
 
-/* Small "CONTENTS" label above title */
+/* Small "IN THIS ESSAY" label above title */
 .customToc__title::before {
     content: 'IN THIS ESSAY';
     display: block;
@@ -59,17 +74,21 @@
     font-size: 9px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     color: var(--warm, #7D6B5D);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
-/* List */
+/* =========================================
+   LIST STRUCTURE
+   ========================================= */
 .customToc__list {
     list-style: none;
     margin: 0;
     padding: 0;
     counter-reset: toc-counter;
+    /* Position relative for the right-edge active indicator */
+    position: relative;
 }
 
 .customToc__item {
@@ -80,49 +99,49 @@
 }
 
 .customToc__item + .customToc__item {
-    margin-top: 2px;
+    margin-top: 0;
 }
 
-/* Links - NO underline, use background/bold for hover */
+/* =========================================
+   LINK STYLING
+   ========================================= */
 .customToc__link {
     font-family: var(--sans, 'Inter', sans-serif);
-    font-size: 11px;
-    line-height: 1.5;
-    color: rgba(125,107,93,0.55); /* Much grayer - less prominent than essay text */
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(125,107,93,0.6);
     text-decoration: none !important;
     background-image: none !important;
     background-size: 0 !important;
     display: flex;
     align-items: baseline;
-    gap: 8px;
-    padding: 8px 12px;
-    margin: 0 -12px;
-    border-radius: 4px;
+    gap: 12px; /* More gap between number and text */
+    padding: 8px 16px 8px 0; /* No left padding - numbers start at edge */
+    border-radius: 0;
     transition: 
-        background-color 150ms ease,
         color 150ms ease,
         font-weight 100ms ease;
     position: relative;
     border: none !important;
 }
 
-/* Counter number */
+/* Counter number - flush left */
 .customToc__link::before {
-    content: counter(toc-counter, decimal-leading-zero);
+    content: counter(toc-counter);
     font-family: var(--mono, 'SF Mono', monospace);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 500;
-    color: rgba(125,107,93,0.35); /* Very subtle */
-    min-width: 18px;
+    color: rgba(125,107,93,0.4);
+    min-width: 16px;
+    flex-shrink: 0;
     transition: color 150ms ease;
 }
 
-/* Right-side active indicator (invisible by default) - MUST be on right */
+/* Right-side active indicator - positioned at RIGHT EDGE of the TOC box */
 .customToc__link::after {
     content: '';
     position: absolute;
-    right: 0 !important;
-    left: auto !important;
+    right: calc(-1 * var(--space-4, 32px) + 4px); /* Position at right edge of container */
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
@@ -132,32 +151,34 @@
     transition: height 200ms ease;
 }
 
-/* Hover state - darker background, bolder text */
+/* Hover state - subtle color change only, no ugly backgrounds */
 .customToc__link:hover {
-    background-color: rgba(125,107,93,0.06);
     color: var(--muted, #666);
-    font-weight: 500;
     text-decoration: none !important;
     background-image: none !important;
 }
 
 .customToc__link:hover::before {
-    color: var(--warmLight, #B5A99A);
+    color: var(--warm, #7D6B5D);
 }
 
-/* Focus state */
+/* Focus state - clean outline only, no ugly box shadow */
 .customToc__link:focus {
-    outline: none;
-    background-color: rgba(125,107,93,0.08);
-    box-shadow: 0 0 0 2px var(--warm, #7D6B5D) inset;
+    outline: 2px solid var(--warm, #7D6B5D);
+    outline-offset: 2px;
     text-decoration: none !important;
 }
 
-/* Active state - bolder, darker, right-side accent bar */
+.customToc__link:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* =========================================
+   ACTIVE STATE
+   ========================================= */
 .customToc--highlight .customToc__link.is-active {
     color: var(--ink, #1a1a1a);
     font-weight: 600;
-    background-color: rgba(125,107,93,0.08);
 }
 
 .customToc--highlight .customToc__link.is-active::before {
@@ -165,10 +186,12 @@
 }
 
 .customToc--highlight .customToc__link.is-active::after {
-    height: 60%;
+    height: 70%;
 }
 
-/* Numbered variant - show explicit numbers instead of CSS counter */
+/* =========================================
+   NUMBERED VARIANT (explicit numbers)
+   ========================================= */
 .customToc--numbered .customToc__link::before {
     display: none;
 }
@@ -181,25 +204,16 @@
 
 .customToc__number {
     font-family: var(--mono, 'SF Mono', monospace);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    color: var(--warmLight, #B5A99A);
-    min-width: 22px;
-    padding-left: 14px;
+    color: rgba(125,107,93,0.4);
+    min-width: 20px;
+    flex-shrink: 0;
 }
 
-/* Progress indicator at bottom */
-.customToc::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: var(--space-4, 32px);
-    right: var(--space-4, 32px);
-    height: 1px;
-    background: linear-gradient(90deg, var(--hair2, rgba(125,107,93,0.15)), transparent);
-}
-
-/* Editor styles */
+/* =========================================
+   EDITOR STYLES
+   ========================================= */
 .customToc__item-editor {
     background: #fff;
     border: 1px solid #ddd;
@@ -232,18 +246,25 @@
 }
 
 /* =========================================
-   MOBILE / TABLET: Inline card layout
+   RESPONSIVE: Tablet/Mobile (<= 960px)
+   Transitions to horizontal pill layout
    ========================================= */
-@media (max-width: 1200px) {
+@media (max-width: 960px) {
     .customToc--sticky {
         position: static;
         float: none;
-        margin: var(--space-6, 48px) auto;
+        margin: var(--space-5, 40px) auto;
+        margin-left: auto;
         margin-right: auto;
         max-width: 100%;
     }
     
-    /* Horizontal layout on tablet */
+    .customToc {
+        max-width: 100%;
+        padding: var(--space-4, 32px);
+    }
+    
+    /* Horizontal pill layout */
     .customToc__list {
         display: flex;
         flex-wrap: wrap;
@@ -260,18 +281,25 @@
     
     .customToc__link {
         padding: 8px 14px;
-        margin: 0;
         font-size: 11px;
-        color: rgba(125,107,93,0.6);
+        color: rgba(125,107,93,0.7);
         border: 1px solid var(--hair2, rgba(125,107,93,0.15));
         border-radius: 20px;
         background: #fff;
+        gap: 6px;
     }
     
+    .customToc__link::before {
+        font-size: 9px;
+        min-width: auto;
+    }
+    
+    /* Hide the right-edge indicator on pills */
     .customToc__link::after {
         display: none;
     }
     
+    /* Active pill style */
     .customToc--highlight .customToc__link.is-active {
         background: var(--warm, #7D6B5D);
         color: #fff;
@@ -284,19 +312,24 @@
     }
 }
 
+/* =========================================
+   RESPONSIVE: Mobile (<= 640px)
+   ========================================= */
 @media (max-width: 640px) {
     .customToc {
-        padding: var(--space-4, 32px) var(--space-3, 24px);
+        padding: var(--space-3, 24px);
+        margin: var(--space-4, 32px) 0;
     }
     
     .customToc__title {
-        font-size: 11px;
-        margin-bottom: var(--space-3, 24px);
+        font-size: 12px;
+        margin-bottom: var(--space-2, 16px);
         padding-bottom: var(--space-2, 16px);
     }
     
     .customToc__title::before {
         font-size: 8px;
+        margin-bottom: 4px;
     }
     
     .customToc__link {
@@ -305,8 +338,31 @@
     }
     
     .customToc__link::before {
-        font-size: 9px;
-        min-width: 16px;
+        font-size: 8px;
+    }
+    
+    /* Hide TOC on mobile if option enabled */
+    .customToc[data-hide-mobile="true"] {
+        display: none;
+    }
+}
+
+/* =========================================
+   NARROW DESKTOP (prevent overlap issues)
+   ========================================= */
+@media (min-width: 961px) and (max-width: 1100px) {
+    /* At narrow desktop widths, reduce TOC width to prevent overlap */
+    .customToc {
+        max-width: 260px;
+    }
+    
+    .customToc--sticky {
+        margin-right: calc(-1 * (var(--space-4, 32px) + 260px));
+        margin-left: var(--space-4, 32px);
+    }
+    
+    .customToc__link::after {
+        right: calc(-1 * var(--space-4, 32px) + 4px);
     }
 }
 
@@ -335,15 +391,14 @@
 }
 
 :root[data-theme="dark"] .customToc__link {
-    color: var(--warmLight, #8B7B6B); /* Grayer in dark mode */
+    color: rgba(255,255,255,0.5);
 }
 
 :root[data-theme="dark"] .customToc__link::before {
-    color: rgba(255,255,255,0.2); /* Subtle */
+    color: rgba(255,255,255,0.25);
 }
 
 :root[data-theme="dark"] .customToc__link:hover {
-    background-color: rgba(255,255,255,0.05);
     color: var(--ink, #fff);
 }
 
@@ -357,15 +412,14 @@
 
 :root[data-theme="dark"] .customToc--highlight .customToc__link.is-active {
     color: var(--ink, #fff);
-    background-color: rgba(255,255,255,0.03);
 }
 
 :root[data-theme="dark"] .customToc--highlight .customToc__link.is-active::before {
     color: var(--k-color-dark-accent, #E8A87C);
 }
 
-/* Dark mode tablet/mobile */
-@media (max-width: 1200px) {
+/* Dark mode tablet/mobile pills */
+@media (max-width: 960px) {
     :root[data-theme="dark"] .customToc__link {
         background: var(--bgAlt, #1f1f1f);
         border-color: var(--hair, rgba(255,255,255,0.1));
