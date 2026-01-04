@@ -1,14 +1,10 @@
 /**
  * Custom TOC Block - Frontend Script
  * Handles smooth scrolling and active section highlighting
- * 
- * Uses IntersectionObserver for scroll detection.
- * Scroll lock prevents flickering during smooth scroll navigation.
  */
 (function() {
     'use strict';
 
-    // Get masthead height from CSS variable
     function getMastHeight() {
         var mastHeight = 77;
         var mastHValue = getComputedStyle(document.documentElement).getPropertyValue('--mastH');
@@ -23,7 +19,6 @@
         if (!tocs.length) return;
 
         tocs.forEach(function(toc) {
-            // Prevent duplicate initialization
             if (toc.hasAttribute('data-toc-init')) return;
             toc.setAttribute('data-toc-init', 'true');
 
@@ -32,36 +27,28 @@
 
             var shouldHighlight = toc.classList.contains('customToc--highlight');
 
-            // Build anchors array - find target elements by ID
+            // Build anchors array
             var anchors = [];
             links.forEach(function(link, index) {
                 var anchorId = link.getAttribute('data-anchor');
                 if (!anchorId) return;
                 
-                // Clean the anchor ID - remove # prefix, trim whitespace
                 anchorId = anchorId.replace(/^#/, '').trim();
-                
-                // Find target element
                 var target = document.getElementById(anchorId);
                 if (target) {
-                    // Store index on link for quick lookup
                     link.setAttribute('data-toc-index', index);
                     anchors.push({ link: link, target: target, id: anchorId, index: index });
                 }
             });
 
-            // =========================================
-            // ACTIVE STATE MANAGEMENT
-            // Defined at TOC scope so all handlers can access
-            // =========================================
+            // Active state management - at TOC scope
             var currentActiveIndex = -1;
-            var isScrollingToTarget = false; // Scroll lock flag
+            var isScrollingToTarget = false;
             
             function setActiveIndex(index) {
                 if (index === currentActiveIndex) return;
                 currentActiveIndex = index;
                 
-                // Remove active class from all links and items
                 links.forEach(function(link) {
                     link.classList.remove('is-active');
                     var parentItem = link.closest('.customToc__item');
@@ -70,7 +57,6 @@
                     }
                 });
                 
-                // Add active class to current link and its parent item
                 if (anchors[index]) {
                     anchors[index].link.classList.add('is-active');
                     var parentItem = anchors[index].link.closest('.customToc__item');
@@ -80,9 +66,7 @@
                 }
             }
 
-            // =========================================
-            // SCROLL-BASED ACTIVE HIGHLIGHTING
-            // =========================================
+            // Scroll-based highlighting
             if (shouldHighlight && anchors.length > 0) {
                 function updateActiveSection() {
                     if (isScrollingToTarget) return;
@@ -93,9 +77,7 @@
                     
                     for (var i = 0; i < anchors.length; i++) {
                         var rect = anchors[i].target.getBoundingClientRect();
-                        var distance = rect.top - triggerLine;
-                        
-                        if (distance <= 0) {
+                        if (rect.top - triggerLine <= 0) {
                             bestIndex = i;
                         }
                     }
@@ -103,25 +85,20 @@
                     setActiveIndex(bestIndex);
                 }
                 
-                // IntersectionObserver for detecting section changes
                 var mastHeight = getMastHeight();
-                var observerOptions = {
-                    root: null,
-                    rootMargin: '-' + mastHeight + 'px 0px -60% 0px',
-                    threshold: [0, 0.25, 0.5, 0.75, 1]
-                };
-                
                 var observer = new IntersectionObserver(function(entries) {
                     if (isScrollingToTarget) return;
                     updateActiveSection();
-                }, observerOptions);
+                }, {
+                    root: null,
+                    rootMargin: '-' + mastHeight + 'px 0px -60% 0px',
+                    threshold: [0, 0.25, 0.5, 0.75, 1]
+                });
                 
-                // Observe all anchor targets
                 anchors.forEach(function(anchor) {
                     observer.observe(anchor.target);
                 });
                 
-                // Also listen to scroll for more responsive updates
                 var scrollTimeout;
                 window.addEventListener('scroll', function() {
                     if (isScrollingToTarget) return;
@@ -129,15 +106,11 @@
                     scrollTimeout = setTimeout(updateActiveSection, 50);
                 }, { passive: true });
                 
-                // Initial state
                 setActiveIndex(0);
                 setTimeout(updateActiveSection, 300);
-                setTimeout(updateActiveSection, 1000);
             }
 
-            // =========================================
-            // MOBILE COLLAPSE/EXPAND
-            // =========================================
+            // Mobile collapse/expand
             function setupMobileToggle() {
                 var title = toc.querySelector('.customToc__title');
                 if (!title) return;
@@ -146,31 +119,26 @@
                 
                 if (isMobile) {
                     toc.classList.remove('is-expanded');
-                    
                     title.setAttribute('role', 'button');
                     title.setAttribute('aria-expanded', 'false');
                     title.setAttribute('tabindex', '0');
                     
-                    function toggleExpanded(e) {
-                        e.preventDefault();
-                        var isExpanded = toc.classList.contains('is-expanded');
-                        
-                        if (isExpanded) {
-                            toc.classList.remove('is-expanded');
-                            title.setAttribute('aria-expanded', 'false');
-                        } else {
-                            toc.classList.add('is-expanded');
-                            title.setAttribute('aria-expanded', 'true');
-                        }
-                    }
-                    
-                    // Prevent duplicate listeners
                     if (!title._toggleHandler) {
-                        title._toggleHandler = toggleExpanded;
-                        title.addEventListener('click', toggleExpanded);
+                        title._toggleHandler = function(e) {
+                            e.preventDefault();
+                            var isExpanded = toc.classList.contains('is-expanded');
+                            if (isExpanded) {
+                                toc.classList.remove('is-expanded');
+                                title.setAttribute('aria-expanded', 'false');
+                            } else {
+                                toc.classList.add('is-expanded');
+                                title.setAttribute('aria-expanded', 'true');
+                            }
+                        };
+                        title.addEventListener('click', title._toggleHandler);
                         title.addEventListener('keydown', function(e) {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                toggleExpanded(e);
+                                title._toggleHandler(e);
                             }
                         });
                     }
@@ -193,12 +161,11 @@
                 }, 150);
             });
 
-            // =========================================
-            // CLICK HANDLER FOR SMOOTH SCROLL
-            // =========================================
-            links.forEach(function(link, linkIndex) {
+            // CLICK HANDLER - Smooth scroll to target
+            links.forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     
                     var anchorId = link.getAttribute('data-anchor');
                     if (!anchorId) return;
@@ -207,57 +174,62 @@
                     var target = document.getElementById(anchorId);
                     if (!target) return;
                     
-                    // SCROLL LOCK
+                    // Set scroll lock
                     isScrollingToTarget = true;
                     
+                    // Calculate scroll position
                     var mastHeight = getMastHeight();
-                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                     var targetRect = target.getBoundingClientRect();
+                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                     var targetPosition = scrollTop + targetRect.top - mastHeight - 24;
                     
-                    // Update active state IMMEDIATELY
+                    // Update active state immediately
                     for (var i = 0; i < anchors.length; i++) {
-                        if (anchors[i].link === link) {
+                        if (anchors[i].id === anchorId) {
                             setActiveIndex(i);
                             break;
                         }
                     }
                     
-                    // Smooth scroll to target
-                    window.scrollTo({
-                        top: Math.max(0, targetPosition),
-                        behavior: 'smooth'
-                    });
+                    // Scroll to target - use scrollTo for reliability
+                    try {
+                        window.scrollTo({
+                            top: Math.max(0, targetPosition),
+                            behavior: 'smooth'
+                        });
+                    } catch (err) {
+                        // Fallback for older browsers
+                        window.scrollTo(0, Math.max(0, targetPosition));
+                    }
 
                     // Update URL hash
                     if (history.pushState) {
                         history.pushState(null, null, '#' + anchorId);
                     }
                     
-                    // Release scroll lock after animation
+                    // Release scroll lock
                     setTimeout(function() {
                         isScrollingToTarget = false;
-                    }, 800);
+                    }, 1000);
                     
-                    // On mobile, collapse after selection
+                    // Collapse on mobile
                     if (window.innerWidth <= 768) {
                         toc.classList.remove('is-expanded');
-                        var title = toc.querySelector('.customToc__title');
-                        if (title) title.setAttribute('aria-expanded', 'false');
+                        var titleEl = toc.querySelector('.customToc__title');
+                        if (titleEl) titleEl.setAttribute('aria-expanded', 'false');
                     }
                 });
             });
         });
     }
 
-    // Initialize when DOM is ready
+    // Initialize
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCustomToc);
     } else {
         initCustomToc();
     }
     
-    // Re-initialize after full page load
     window.addEventListener('load', function() {
         setTimeout(initCustomToc, 100);
     });

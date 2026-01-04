@@ -49,26 +49,41 @@
   }
 
   // ========================================
-  // DOM REFERENCES
+  // DOM REFERENCES - Lazy getters to ensure DOM is ready
   // ========================================
-  // Unique page elements (acceptable to use IDs)
-  // Note: progressFill is queried lazily to ensure DOM is ready
-  let progressFill = null;
+  // Progress bar - queried lazily
+  let _progressFill = null;
   function getProgressFill() {
-    if (!progressFill) {
-      progressFill = document.getElementById('progressFill');
+    if (!_progressFill) {
+      _progressFill = document.getElementById('progressFill');
     }
-    return progressFill;
+    return _progressFill;
   }
+  
+  // Navigation - queried lazily for landscape mode fix
+  let _navToggle = null;
+  let _nav = null;
+  function getNavToggle() {
+    if (!_navToggle) {
+      _navToggle = document.querySelector('[data-ui="nav-toggle"]');
+    }
+    return _navToggle;
+  }
+  function getNav() {
+    if (!_nav) {
+      _nav = document.querySelector('[data-ui="nav"]');
+    }
+    return _nav;
+  }
+  
+  // Other DOM references (queried at init time via functions)
   const avatar = document.getElementById('avatar');
   const avatarImg = document.getElementById('avatarImg');
   const downloadButton = document.getElementById('downloadButton');
   const tocList = document.getElementById('tocList');
   const infiniteLoader = document.getElementById('infiniteLoader');
   
-  // Reusable components (using data-* hooks instead of IDs)
-  const navToggle = document.querySelector('[data-ui="nav-toggle"]');
-  const nav = document.querySelector('[data-ui="nav"]');
+  // Reusable components
   const actionDock = document.querySelector('[data-ui="action-dock"]');
   const shareToggle = document.querySelector('[data-ui="share-toggle"]');
   const subscribeToggle = document.querySelector('[data-ui="subscribe-toggle"]');
@@ -76,11 +91,6 @@
   const subscribePanel = document.querySelector('[data-ui="subscribe-panel"]');
   const essayGrid = document.querySelector('[data-ui="essay-grid"]');
   const jotList = document.querySelector('[data-ui="jot-list"]');
-  
-  // Early exit if critical DOM elements are missing
-  if (!navToggle || !nav) {
-    // Navigation not available - continue with other features
-  }
 
   // State
   let lastY = 0;
@@ -349,27 +359,46 @@
   }
 
   // ========================================
-  // MOBILE NAV
+  // MOBILE NAV - Works in both portrait and landscape
   // ========================================
   function initNav() {
+    const navToggle = getNavToggle();
+    const nav = getNav();
+    
     if (!navToggle || !nav) return;
 
-    navToggle.addEventListener('click', () => {
-      const isOpen = nav.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    // Remove any existing listeners (prevents duplicates on reinit)
+    const newToggle = navToggle.cloneNode(true);
+    navToggle.parentNode.replaceChild(newToggle, navToggle);
+    _navToggle = newToggle; // Update cached reference
+    
+    newToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const currentNav = getNav();
+      if (!currentNav) return;
+      
+      const isOpen = currentNav.classList.toggle('open');
+      newToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
-    document.addEventListener('click', (e) => {
-      if (!nav.contains(e.target) && !navToggle.contains(e.target)) {
-        nav.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
+    document.addEventListener('click', function(e) {
+      const currentNav = getNav();
+      const currentToggle = getNavToggle();
+      if (!currentNav || !currentToggle) return;
+      
+      if (!currentNav.contains(e.target) && !currentToggle.contains(e.target)) {
+        currentNav.classList.remove('open');
+        currentToggle.setAttribute('aria-expanded', 'false');
       }
     });
 
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        nav.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
+        const currentNav = getNav();
+        const currentToggle = getNavToggle();
+        if (currentNav) currentNav.classList.remove('open');
+        if (currentToggle) currentToggle.setAttribute('aria-expanded', 'false');
       }
     });
   }
@@ -1325,6 +1354,9 @@
 
       window.addEventListener('resize', () => {
         cacheViewport();
+        // Update scroll effects immediately after resize (fixes landscape rotation)
+        lastY = window.scrollY || 0;
+        requestTick();
       });
 
       // Recalculate document height after all resources (images) load

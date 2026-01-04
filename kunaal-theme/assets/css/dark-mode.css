@@ -61,6 +61,13 @@
   background-attachment: fixed;
 }
 
+/* Landscape mobile fix for dark mode */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root[data-theme="dark"] body {
+    background-attachment: scroll;
+  }
+}
+
 /* 
    NOTE: Dark mode .mast styling is defined in header.css
    This is kept for specificity fallback only - do not duplicate styles here
