@@ -958,28 +958,32 @@ a:focus-visible, button:focus-visible {
   background: var(--bg);
 }
 .numbers-inner {
-  max-width: 750px;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: center;
+  padding: 0 1rem;
 }
 .numbers-grid {
-  display: flex;
-  justify-content: center;
-  gap: 2.5rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
+  display: grid;
+  /* Auto-fit columns: minimum 140px, grow to fill space */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 2rem 3rem;
+  margin-top: 1.5rem;
+  justify-items: center;
 }
 .number-item {
   text-align: center;
-  min-width: 85px;
+  min-width: 0;
+  width: 100%;
+  max-width: 200px;
 }
 .number-value {
   font-family: var(--serif);
-  font-size: clamp(2rem, 4.5vw, 2.5rem);
+  font-size: clamp(2.25rem, 5vw, 3rem);
   font-weight: 300;
   color: var(--warm);
   line-height: 1;
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
   justify-content: center;
   gap: 0;
@@ -989,18 +993,21 @@ a:focus-visible, button:focus-visible {
   /* Inherits parent styles */
 }
 .number-value__suffix {
-  /* Default: inline with number */
+  /* Default: inline with number, same styling */
 }
 .number-value__suffix--subscript {
-  font-family: var(--sans);
-  font-size: 0.4em;
-  font-weight: 400;
-  text-transform: lowercase;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  align-self: flex-end;
-  margin-bottom: 0.15em;
-  margin-left: 0.1em;
+  /* Subscript: same serif font, smaller size, positioned as natural subscript */
+  font-family: var(--serif);
+  font-size: 0.45em;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--warm);
+  opacity: 0.85;
+  /* Baseline alignment - subscript sits slightly below baseline */
+  position: relative;
+  top: -0.1em;
+  margin-left: 0.08em;
 }
 .number-label {
   font-family: var(--mono);
@@ -1023,6 +1030,20 @@ a:focus-visible, button:focus-visible {
 .infinity-value + .number-label {
   opacity: 0;
   transition: opacity 0.5s ease;
+}
+
+/* Numbers - Tablet breakpoint */
+@media (max-width: 900px) {
+  .numbers-inner {
+    max-width: 700px;
+  }
+  .numbers-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem 2rem;
+  }
+  .number-value {
+    font-size: clamp(2rem, 4.5vw, 2.5rem);
+  }
 }
 
 /* =============================================
@@ -1857,26 +1878,21 @@ a:focus-visible, button:focus-visible {
   
   /* Numbers: Proper 2x2 grid - high specificity to override flex */
   .kunaal-about-page .numbers .numbers-grid {
-    display: grid !important;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    justify-items: center;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
+    gap: 1.25rem 1rem;
+    max-width: 320px;
+    margin: 1rem auto 0;
   }
   
   .kunaal-about-page .numbers .number-item {
-    min-width: 0;  /* Remove min-width constraint */
-    width: 100%;
-    text-align: center;
+    max-width: none;
   }
   
   /* CRITICAL: Force numbers visibility on mobile - CSS-only fallback
      Overrides inline styles and GSAP transforms with !important */
   .kunaal-about-page .number-value,
   .kunaal-about-page .infinity-value {
-    font-size: 1.75rem;
+    font-size: 2rem;
     opacity: 1 !important;
     transform: none !important;
   }
