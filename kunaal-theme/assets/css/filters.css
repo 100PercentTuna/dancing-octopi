@@ -278,17 +278,21 @@
 }
 
 /* ========================================
-   MOBILE FILTER - Complete Overhaul
-   - 44px touch targets (Apple HIG, WCAG 2.1)
+   MOBILE FILTER - Refined Styling
+   Issue 7: Reduced chunky appearance while maintaining usability
+   - 40px heights (still meets touch targets, looks lighter)
    - 16px font size (prevents iOS zoom on focus)
-   - Stacked vertical layout
-   - Unified dropdown styling
+   - Refined visual styling with subtle borders/shadows
    ======================================== */
 @media (max-width: 640px) {
   .toolbar { 
     flex-direction: column;
     align-items: stretch;
-    gap: var(--space-2);
+    gap: var(--space-1);  /* Tighter gap */
+    padding: var(--space-2);
+    background: var(--bg);
+    border-radius: 8px;
+    border: 1px solid var(--hair);
   }
   
   .filterControls { 
@@ -301,27 +305,46 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: var(--space-2);
+    gap: var(--space-1);  /* Tighter gap */
   }
   
-  /* All filter controls - consistent height and styling */
+  /* All filter controls - consistent styling */
   .filterToggle,
   .topicDropdownBtn,
   .modernSelect,
   .searchWrap,
   .resetBtn {
     width: 100%;
-    height: 44px; /* Touch target - Apple HIG, WCAG 2.1 */
-    font-size: 16px; /* Prevents iOS zoom on focus */
+    height: 40px; /* Slightly smaller - still meets touch target */
+    font-size: 14px; /* Smaller text for refined look */
+    border-radius: 6px;
+    border: 1px solid var(--hair);
+    background: var(--bg);
   }
   
-  /* Filter toggle - full width with label visible */
+  /* Focus/active state */
+  .filterToggle:focus,
+  .topicDropdownBtn:focus,
+  .modernSelect:focus,
+  .searchWrap:focus-within,
+  .resetBtn:focus {
+    border-color: var(--blue);
+    outline: none;
+  }
+  
+  /* Filter toggle - compact */
   .filterToggle { 
     justify-content: center;
-    padding: 0 16px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
   }
   .filterToggle span { 
-    display: inline; /* Show label on mobile */
+    display: inline;
+  }
+  .filterToggle svg {
+    width: 14px;
+    height: 14px;
   }
   
   /* Topics dropdown - unified styling */
@@ -330,14 +353,14 @@
   }
   .topicDropdownBtn {
     min-width: 100%;
-    padding: 0 40px 0 16px;
-    font-size: 16px; /* Prevents iOS zoom */
+    padding: 0 32px 0 12px;
+    font-size: 14px;
     justify-content: flex-start;
   }
   .topicDropdownBtn .caret {
-    right: 14px;
-    width: 16px;
-    height: 16px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
   }
   
   /* Topic dropdown panel */
@@ -346,59 +369,70 @@
     right: 0;
     min-width: 100%;
     max-width: 100%;
-    max-height: 50vh; /* Don't take too much screen */
+    max-height: 50vh;
+    border-radius: 6px;
+    border: 1px solid var(--hair);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
   
-  /* Topic options - proper touch targets */
+  /* Topic options */
   .topicOpt {
-    min-height: 44px; /* Touch target */
-    padding: 12px 14px;
-    font-size: 14px;
+    min-height: 40px;
+    padding: 10px 12px;
+    font-size: 13px;
   }
   .topicOpt input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
   .topicOpt .tName {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   /* Sort select - unified with topics dropdown */
   .modernSelect { 
     min-width: 100%;
-    padding: 0 40px 0 16px;
-    font-size: 16px; /* Prevents iOS zoom */
-    background-position: right 14px center;
-    background-size: 12px 12px;
-  }
-  .modernSelect option {
-    font-size: 16px;
-    padding: 12px;
+    padding: 0 32px 0 12px;
+    font-size: 14px;
+    background-position: right 10px center;
+    background-size: 10px 10px;
+    -webkit-appearance: none;
+    appearance: none;
   }
   
-  /* Search - full width, usable size */
+  /* Search - refined */
   .searchWrap { 
     width: 100%;
-    padding: 0 16px;
+    padding: 0 12px;
+    gap: 8px;
   }
   .searchWrap svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
   }
   .searchInput { 
     width: 100%;
-    font-size: 16px; /* Prevents iOS zoom */
+    font-size: 14px;
+    background: transparent;
+    border: none;
   }
   .searchInput:focus { 
     width: 100%; 
     outline: none; 
   }
   
-  /* Reset button - full width */
+  /* Reset button - subtle */
   .resetBtn {
     justify-content: center;
-    padding: 0 16px;
-    font-size: 16px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--muted);
+    background: transparent;
+  }
+  .resetBtn:hover {
+    color: var(--ink);
+    background: var(--hair);
   }
 }
 

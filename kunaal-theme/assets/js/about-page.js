@@ -53,7 +53,7 @@
     initNumbers(gsapOk);
     initWorldMap();
     // Progress bar is handled by main.js (single owner - see architecture.mdc)
-    initHeaderNav();
+    // Header nav is handled by main.js (single owner - see architecture.mdc)
     initHeroMosaicCycle();
     initCapsuleLife();
     initFooterYear();
@@ -511,6 +511,8 @@
     if (!numberEls.length) return;
 
     const infinityEl = section.querySelector('.infinity-value');
+    // Find the infinity label (sibling of infinity-value)
+    const infinityLabel = infinityEl ? infinityEl.nextElementSibling : null;
     let fired = false;
 
     function run() {
@@ -556,16 +558,39 @@
           if (hasGSAP() && !reduceMotion) {
             try {
               window.gsap.to(infinityEl, { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(2)' });
+              // Animate label after infinity symbol (Issue 10)
+              if (infinityLabel) {
+                window.gsap.to(infinityLabel, { opacity: 1, duration: 0.5, delay: 0.3, ease: 'power2.out' });
+              }
             } catch (e) {
               infinityEl.style.opacity = '1';
               infinityEl.style.transform = 'scale(1)';
+              if (infinityLabel) infinityLabel.style.opacity = '1';
             }
           } else {
             infinityEl.style.opacity = '1';
             infinityEl.style.transform = 'scale(1)';
+            if (infinityLabel) infinityLabel.style.opacity = '1';
           }
         }, numberEls.length * 180 + 800);
       }
+    }
+
+    // Helper: check if section is already in viewport
+    function isInViewport(el) {
+      var rect = el.getBoundingClientRect();
+      return (
+        rect.top < window.innerHeight &&
+        rect.bottom > 0
+      );
+    }
+
+    // CRITICAL: Check if section is already visible on load (fixes mobile issue)
+    // On mobile, section may be in view immediately - no scroll needed
+    if (isInViewport(section)) {
+      // Delay slightly to let page settle, then run
+      setTimeout(run, 300);
+      return; // Skip observer setup since we'll run immediately
     }
 
     if (hasGSAP() && !reduceMotion) {
@@ -579,7 +604,7 @@
       } catch (e) {
         // Fallback to IntersectionObserver
         if ('IntersectionObserver' in window) {
-          const io = new IntersectionObserver(function (entries) {
+          var io = new IntersectionObserver(function (entries) {
             for (var i = 0; i < entries.length; i++) {
               if (entries[i].isIntersecting) {
                 run();
@@ -587,14 +612,14 @@
                 break;
               }
             }
-          }, { threshold: 0.25 });
+          }, { threshold: 0.1 }); // Lower threshold for better mobile trigger
           io.observe(section);
         } else {
           run();
         }
       }
     } else if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(function (entries) {
+      var io = new IntersectionObserver(function (entries) {
         for (var i = 0; i < entries.length; i++) {
           if (entries[i].isIntersecting) {
             run();
@@ -602,7 +627,7 @@
             break;
           }
         }
-      }, { threshold: 0.25 });
+      }, { threshold: 0.1 }); // Lower threshold for better mobile trigger
       io.observe(section);
     } else {
       run();
@@ -993,59 +1018,9 @@
 
   // =============================================
   // Progress bar - REMOVED (single owner: main.js)
+  // Header nav - REMOVED (single owner: main.js)
   // See architecture.mdc for UI contract ownership
   // =============================================
-
-  // =============================================
-  // Header nav (mobile toggle)
-  // =============================================
-  function initHeaderNav(){
-    const toggle = document.querySelector('[data-ui="nav-toggle"]');
-    const nav = document.querySelector('[data-ui="nav"]');
-    if(!toggle || !nav) return;
-
-    function close(){
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded','false');
-    }
-    function open(){
-      nav.classList.add('open');
-      toggle.setAttribute('aria-expanded','true');
-    }
-
-    toggle.setAttribute('aria-expanded','false');
-
-    toggle.addEventListener('click', function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      if(nav.classList.contains('open')) close();
-      else open();
-    });
-
-    // Close when clicking outside
-    document.addEventListener('click', function(e){
-      if(!nav.classList.contains('open')) return;
-      const t = e.target;
-      if(nav.contains(t) || toggle.contains(t)) return;
-      close();
-    });
-
-    // Close after selecting a link (mobile)
-    nav.addEventListener('click', function(e){
-      const a = e.target && e.target.closest ? e.target.closest('a') : null;
-      if(a) close();
-    });
-
-    // Escape closes
-    document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape') close();
-    });
-
-    // Resizing up closes
-    window.addEventListener('resize', function(){
-      if(window.innerWidth > 760) close();
-    }, { passive: true });
-  }
 
   // =============================================
   // Hero mosaic: keep ONE tile in color, cycling like subtle "Christmas lights"
