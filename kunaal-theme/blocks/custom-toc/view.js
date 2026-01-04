@@ -2,7 +2,7 @@
  * Custom TOC Block - Frontend Script
  * Handles smooth scrolling and active section highlighting
  * 
- * Uses IntersectionObserver as the SINGLE source of truth for scroll detection.
+ * Uses IntersectionObserver for scroll detection.
  * Scroll lock prevents flickering during smooth scroll navigation.
  */
 (function() {
@@ -51,55 +51,50 @@
             });
 
             // =========================================
-            // SCROLL-BASED ACTIVE HIGHLIGHTING
-            // Single IntersectionObserver with scroll lock
+            // ACTIVE STATE MANAGEMENT
+            // Defined at TOC scope so all handlers can access
             // =========================================
-            if (shouldHighlight && anchors.length > 0) {
-                var currentActiveIndex = -1;
+            var currentActiveIndex = -1;
+            var isScrollingToTarget = false; // Scroll lock flag
+            
+            function setActiveIndex(index) {
+                if (index === currentActiveIndex) return;
+                currentActiveIndex = index;
                 
-                // SCROLL LOCK: Prevents observer updates during smooth scroll
-                // This fixes the "jumps back up by one" issue
-                var isScrollingToTarget = false;
+                // Remove active class from all links and items
+                links.forEach(function(link) {
+                    link.classList.remove('is-active');
+                    var parentItem = link.closest('.customToc__item');
+                    if (parentItem) {
+                        parentItem.classList.remove('has-active');
+                    }
+                });
                 
-                function setActiveIndex(index) {
-                    if (index === currentActiveIndex) return;
-                    currentActiveIndex = index;
-                    
-                    // Remove active class from all links and items
-                    links.forEach(function(link) {
-                        link.classList.remove('is-active');
-                        // Also update parent item for indicator positioning
-                        var parentItem = link.closest('.customToc__item');
-                        if (parentItem) {
-                            parentItem.classList.remove('has-active');
-                        }
-                    });
-                    
-                    // Add active class to current link and its parent item
-                    if (anchors[index]) {
-                        anchors[index].link.classList.add('is-active');
-                        var parentItem = anchors[index].link.closest('.customToc__item');
-                        if (parentItem) {
-                            parentItem.classList.add('has-active');
-                        }
+                // Add active class to current link and its parent item
+                if (anchors[index]) {
+                    anchors[index].link.classList.add('is-active');
+                    var parentItem = anchors[index].link.closest('.customToc__item');
+                    if (parentItem) {
+                        parentItem.classList.add('has-active');
                     }
                 }
-                
+            }
+
+            // =========================================
+            // SCROLL-BASED ACTIVE HIGHLIGHTING
+            // =========================================
+            if (shouldHighlight && anchors.length > 0) {
                 function updateActiveSection() {
-                    // Skip updates during programmatic scroll
                     if (isScrollingToTarget) return;
                     
-                    // Find the section whose top has most recently passed the trigger line
                     var mastHeight = getMastHeight();
-                    var triggerLine = mastHeight + 50; // 50px below header
-                    
+                    var triggerLine = mastHeight + 50;
                     var bestIndex = 0;
                     
                     for (var i = 0; i < anchors.length; i++) {
                         var rect = anchors[i].target.getBoundingClientRect();
                         var distance = rect.top - triggerLine;
                         
-                        // If section top is above trigger line (we've scrolled past it)
                         if (distance <= 0) {
                             bestIndex = i;
                         }
@@ -108,7 +103,7 @@
                     setActiveIndex(bestIndex);
                 }
                 
-                // IntersectionObserver for detecting when sections enter/exit viewport
+                // IntersectionObserver for detecting section changes
                 var mastHeight = getMastHeight();
                 var observerOptions = {
                     root: null,
@@ -117,10 +112,7 @@
                 };
                 
                 var observer = new IntersectionObserver(function(entries) {
-                    // Skip updates during programmatic scroll
                     if (isScrollingToTarget) return;
-                    
-                    // After processing entries, update the active section
                     updateActiveSection();
                 }, observerOptions);
                 
@@ -128,6 +120,14 @@
                 anchors.forEach(function(anchor) {
                     observer.observe(anchor.target);
                 });
+                
+                // Also listen to scroll for more responsive updates
+                var scrollTimeout;
+                window.addEventListener('scroll', function() {
+                    if (isScrollingToTarget) return;
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(updateActiveSection, 50);
+                }, { passive: true });
                 
                 // Initial state
                 setActiveIndex(0);
@@ -145,7 +145,6 @@
                 var isMobile = window.innerWidth <= 768;
                 
                 if (isMobile) {
-                    // On mobile, start collapsed (list hidden by default via CSS)
                     toc.classList.remove('is-expanded');
                     
                     title.setAttribute('role', 'button');
@@ -166,17 +165,16 @@
                     }
                     
                     // Prevent duplicate listeners
-                    title.removeEventListener('click', title._toggleHandler);
-                    title._toggleHandler = toggleExpanded;
-                    title.addEventListener('click', toggleExpanded);
-                    
-                    title.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            toggleExpanded(e);
-                        }
-                    });
+                    if (!title._toggleHandler) {
+                        title._toggleHandler = toggleExpanded;
+                        title.addEventListener('click', toggleExpanded);
+                        title.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                toggleExpanded(e);
+                            }
+                        });
+                    }
                 } else {
-                    // Desktop - remove mobile attributes
                     toc.classList.remove('is-expanded');
                     title.removeAttribute('role');
                     title.removeAttribute('aria-expanded');
@@ -186,7 +184,6 @@
             
             setupMobileToggle();
             
-            // Re-check on resize (debounced)
             var resizeTimeout;
             window.addEventListener('resize', function() {
                 clearTimeout(resizeTimeout);
@@ -210,25 +207,19 @@
                     var target = document.getElementById(anchorId);
                     if (!target) return;
                     
-                    // SCROLL LOCK: Prevent observer from overriding during smooth scroll
+                    // SCROLL LOCK
                     isScrollingToTarget = true;
                     
-                    // Get masthead height
                     var mastHeight = getMastHeight();
-                    
-                    // Calculate exact scroll position
                     var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                     var targetRect = target.getBoundingClientRect();
                     var targetPosition = scrollTop + targetRect.top - mastHeight - 24;
                     
-                    // Update active state IMMEDIATELY (before scroll starts)
-                    if (toc.classList.contains('customToc--highlight')) {
-                        // Find the anchor index for this link
-                        for (var i = 0; i < anchors.length; i++) {
-                            if (anchors[i].link === link) {
-                                setActiveIndex(i);
-                                break;
-                            }
+                    // Update active state IMMEDIATELY
+                    for (var i = 0; i < anchors.length; i++) {
+                        if (anchors[i].link === link) {
+                            setActiveIndex(i);
+                            break;
                         }
                     }
                     
@@ -238,12 +229,12 @@
                         behavior: 'smooth'
                     });
 
-                    // Update URL hash without jumping
+                    // Update URL hash
                     if (history.pushState) {
                         history.pushState(null, null, '#' + anchorId);
                     }
                     
-                    // Release scroll lock after animation completes (800ms is enough for most scrolls)
+                    // Release scroll lock after animation
                     setTimeout(function() {
                         isScrollingToTarget = false;
                     }, 800);
@@ -266,7 +257,7 @@
         initCustomToc();
     }
     
-    // Re-initialize after full page load (handles lazy-loaded content)
+    // Re-initialize after full page load
     window.addEventListener('load', function() {
         setTimeout(initCustomToc, 100);
     });

@@ -447,6 +447,8 @@
 @media (max-width: 640px) {
     .contact-page {
         padding: var(--space-4) var(--space-2);
+        /* Ensure content starts below masthead on mobile */
+        padding-top: calc(var(--space-4) + var(--mastH, 100px));
     }
     
     .contact-card {

@@ -52,7 +52,14 @@
   // DOM REFERENCES
   // ========================================
   // Unique page elements (acceptable to use IDs)
-  const progressFill = document.getElementById('progressFill');
+  // Note: progressFill is queried lazily to ensure DOM is ready
+  let progressFill = null;
+  function getProgressFill() {
+    if (!progressFill) {
+      progressFill = document.getElementById('progressFill');
+    }
+    return progressFill;
+  }
   const avatar = document.getElementById('avatar');
   const avatarImg = document.getElementById('avatarImg');
   const downloadButton = document.getElementById('downloadButton');
@@ -179,18 +186,19 @@
     // Force 0% and hidden when at/near top (<5px) to avoid artifacts from
     // early document height calculations before images load.
     // Opacity controls visibility to hide box-shadow at 0% width.
-    if (progressFill) {
+    const pf = getProgressFill();
+    if (pf) {
       if (y < 5) {
-        progressFill.style.width = '0%';
-        progressFill.style.opacity = '0';
+        pf.style.width = '0%';
+        pf.style.opacity = '0';
       } else {
         // Recalculate if cachedDocH seems too small (images may have loaded)
         if (cachedDocH < 100) {
           cacheViewport();
         }
         const targetFrac = Math.min(y / cachedDocH, 1);
-        progressFill.style.width = (targetFrac * 100) + '%';
-        progressFill.style.opacity = '1';
+        pf.style.width = (targetFrac * 100) + '%';
+        pf.style.opacity = '1';
       }
     }
   }
@@ -1359,8 +1367,9 @@
       updateScrollEffects(lastY); // Immediate, synchronous (not via requestAnimationFrame)
       
       // Remove no-transition class to enable smooth animations for future updates
-      if (progressFill) {
-        progressFill.classList.remove('no-transition');
+      const pf = getProgressFill();
+      if (pf) {
+        pf.classList.remove('no-transition');
       }
     } catch (e) {
       if (window.kunaalTheme?.debug) {

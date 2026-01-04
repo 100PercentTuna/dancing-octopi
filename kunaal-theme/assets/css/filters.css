@@ -293,6 +293,7 @@
     background: transparent; /* Remove white box */
     border-radius: 0;
     border: none; /* Remove border */
+    margin-top: var(--space-4); /* Extra spacing from masthead on mobile */
   }
   
   .filterControls { 

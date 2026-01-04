@@ -405,9 +405,9 @@
   // Panorama parallax effect
   // =============================================
   // Performance optimizations:
-  // - Disabled on mobile (touch devices)
   // - Uses IntersectionObserver to only activate when near viewport
   // - Uses GSAP scrub for smooth, RAF-synced animation
+  // - Mobile gets reduced amplitude (50% of desktop)
   //
   // CSS coordination:
   // - Image is 280% height, positioned at top: -90%
@@ -418,12 +418,12 @@
   function initPanoramaParallax(gsapOk) {
     if (reduceMotion || !gsapOk) return;
     
-    // Disable on mobile for performance
-    const isMobile = window.innerWidth < 900 || window.matchMedia('(hover: none)').matches;
-    if (isMobile) return;
-    
     const bands = document.querySelectorAll('.panorama');
     if (!bands.length) return;
+    
+    // Mobile gets reduced amplitude for performance
+    const isMobile = window.innerWidth < 900 || window.matchMedia('(hover: none)').matches;
+    const mobileMultiplier = isMobile ? 0.5 : 1;
     
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
@@ -443,8 +443,8 @@
         // Image: 280% height, starts at top: -90% (CSS)
         // Safe movement: ±90% of container = ±32% of image height (90/2.8)
         // We use ±10% (conservative) scaled by speed, capped at 25% max
-        // This ensures image never "runs out" at any scroll position
-        const amp = 10 * Math.min(speed, 2.5); // Max 25% yPercent = 70% container movement
+        // Mobile gets 50% of this for better performance
+        const amp = 10 * Math.min(speed, 2.5) * mobileMultiplier;
         
         try {
           window.gsap.fromTo(img,
@@ -457,7 +457,7 @@
                 trigger: band,
                 start: 'top bottom',
                 end: 'bottom top',
-                scrub: true
+                scrub: isMobile ? 0.5 : true // Faster scrub on mobile
               }
             }
           );
