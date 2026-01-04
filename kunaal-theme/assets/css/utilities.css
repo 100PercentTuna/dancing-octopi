@@ -26,6 +26,10 @@
   background: var(--blue);
   box-shadow: 0 0 10px rgba(30,90,255,.4);
   transition: width 250ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease-out;
+  /* Safari GPU acceleration hints */
+  will-change: width, opacity;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 /* Disable transition on initial load to prevent flash - JS removes this class after first update */
 .progressFill.no-transition {

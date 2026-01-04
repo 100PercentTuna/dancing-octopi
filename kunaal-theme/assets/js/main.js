@@ -51,7 +51,7 @@
   // ========================================
   // DOM REFERENCES - Lazy getters to ensure DOM is ready
   // ========================================
-  // Progress bar - queried lazily
+  // Progress bar - queried lazily with retry
   let _progressFill = null;
   function getProgressFill() {
     if (!_progressFill) {
@@ -60,20 +60,12 @@
     return _progressFill;
   }
   
-  // Navigation - queried lazily for landscape mode fix
-  let _navToggle = null;
-  let _nav = null;
+  // Navigation - always query fresh (no caching) for Safari compatibility
   function getNavToggle() {
-    if (!_navToggle) {
-      _navToggle = document.querySelector('[data-ui="nav-toggle"]');
-    }
-    return _navToggle;
+    return document.querySelector('[data-ui="nav-toggle"]');
   }
   function getNav() {
-    if (!_nav) {
-      _nav = document.querySelector('[data-ui="nav"]');
-    }
-    return _nav;
+    return document.querySelector('[data-ui="nav"]');
   }
   
   // Other DOM references (queried at init time via functions)
@@ -176,12 +168,25 @@
 
   // ========================================
   // SCROLL ENGINE - Header compaction & progress
+  // Safari iOS compatible with defensive checks
   // ========================================
   function cacheViewport() {
+    // Use both document.body and documentElement for Safari compatibility
     const doc = document.documentElement;
+    const body = document.body;
+    
+    // Safari sometimes reports different values between body and documentElement
+    const scrollHeight = Math.max(
+      body ? body.scrollHeight : 0,
+      doc.scrollHeight || 0
+    );
+    const clientHeight = Math.max(
+      body ? body.clientHeight : 0,
+      doc.clientHeight || 0,
+      window.innerHeight || 0
+    );
+    
     // Ensure we have a valid scrollable height (minimum 1 to avoid division by zero)
-    const scrollHeight = doc.scrollHeight || 0;
-    const clientHeight = doc.clientHeight || 0;
     cachedDocH = Math.max(scrollHeight - clientHeight, 1);
   }
 
@@ -192,23 +197,35 @@
       document.body.style.setProperty('--p', p.toFixed(4));
     }
 
-    // Progress bar
-    // Force 0% and hidden when at/near top (<5px) to avoid artifacts from
-    // early document height calculations before images load.
-    // Opacity controls visibility to hide box-shadow at 0% width.
-    const pf = getProgressFill();
+    // Progress bar with Safari-specific handling
+    // Re-query element if cached version is null (handles late DOM ready)
+    let pf = getProgressFill();
+    if (!pf) {
+      // Force re-query
+      _progressFill = null;
+      pf = getProgressFill();
+    }
+    
     if (pf) {
       if (y < 5) {
+        // At top: hide progress bar completely
         pf.style.width = '0%';
         pf.style.opacity = '0';
       } else {
-        // Recalculate if cachedDocH seems too small (images may have loaded)
-        if (cachedDocH < 100) {
+        // Recalculate viewport if cachedDocH seems wrong
+        // (page height changed, images loaded, orientation changed)
+        if (cachedDocH < 100 || isNaN(cachedDocH)) {
           cacheViewport();
         }
-        const targetFrac = Math.min(y / cachedDocH, 1);
-        pf.style.width = (targetFrac * 100) + '%';
-        pf.style.opacity = '1';
+        
+        // Calculate progress fraction
+        const targetFrac = cachedDocH > 0 ? Math.min(y / cachedDocH, 1) : 0;
+        
+        // Only show if we have valid progress
+        if (!isNaN(targetFrac) && targetFrac >= 0) {
+          pf.style.width = (targetFrac * 100).toFixed(2) + '%';
+          pf.style.opacity = '1';
+        }
       }
     }
   }
@@ -359,46 +376,50 @@
   }
 
   // ========================================
-  // MOBILE NAV - Works in both portrait and landscape
+  // MOBILE NAV - Event delegation for Safari iOS compatibility
+  // Uses document-level event delegation instead of direct binding
+  // This avoids cloneNode issues and works reliably in landscape mode
   // ========================================
+  let navInitialized = false;
   function initNav() {
-    const navToggle = getNavToggle();
-    const nav = getNav();
+    // Only initialize once - event delegation handles all future clicks
+    if (navInitialized) return;
+    navInitialized = true;
     
-    if (!navToggle || !nav) return;
-
-    // Remove any existing listeners (prevents duplicates on reinit)
-    const newToggle = navToggle.cloneNode(true);
-    navToggle.parentNode.replaceChild(newToggle, navToggle);
-    _navToggle = newToggle; // Update cached reference
-    
-    newToggle.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const currentNav = getNav();
-      if (!currentNav) return;
-      
-      const isOpen = currentNav.classList.toggle('open');
-      newToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
-
+    // Event delegation on document for nav toggle clicks
     document.addEventListener('click', function(e) {
-      const currentNav = getNav();
-      const currentToggle = getNavToggle();
-      if (!currentNav || !currentToggle) return;
+      // Check if click is on nav toggle button
+      const toggle = e.target.closest('[data-ui="nav-toggle"]');
+      if (toggle) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const nav = getNav();
+        if (!nav) return;
+        
+        const isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        return;
+      }
       
-      if (!currentNav.contains(e.target) && !currentToggle.contains(e.target)) {
-        currentNav.classList.remove('open');
-        currentToggle.setAttribute('aria-expanded', 'false');
+      // Close nav if clicking outside
+      const nav = getNav();
+      const navToggle = getNavToggle();
+      if (nav && nav.classList.contains('open')) {
+        if (!nav.contains(e.target) && (!navToggle || !navToggle.contains(e.target))) {
+          nav.classList.remove('open');
+          if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+        }
       }
     });
 
+    // Escape key closes nav
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        const currentNav = getNav();
-        const currentToggle = getNavToggle();
-        if (currentNav) currentNav.classList.remove('open');
-        if (currentToggle) currentToggle.setAttribute('aria-expanded', 'false');
+        const nav = getNav();
+        const navToggle = getNavToggle();
+        if (nav) nav.classList.remove('open');
+        if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
       }
     });
   }

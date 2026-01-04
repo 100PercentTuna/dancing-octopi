@@ -12,6 +12,9 @@ html {
   overflow-x: hidden; /* Prevent horizontal scroll - critical for mobile */
   max-width: 100%; /* Use 100% instead of 100vw to avoid scrollbar issues */
   width: 100%;
+  /* iPhone safe area support for notch/home indicator */
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
 }
 html, body { height: 100%; }
 
@@ -35,9 +38,20 @@ body {
   overflow-x: hidden; /* Prevent horizontal scroll - critical for mobile */
   width: 100%;
   max-width: 100%;
+  /* iPhone safe area support */
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
 }
 
-/* Landscape mobile fix - background-attachment: fixed can cause gaps */
+/* iOS Safari: Disable fixed background (causes gaps and performance issues) */
+/* @supports (-webkit-touch-callout: none) targets iOS Safari specifically */
+@supports (-webkit-touch-callout: none) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* Additional landscape fix for older iOS versions */
 @media (orientation: landscape) and (max-height: 500px) {
   body {
     background-attachment: scroll;
@@ -66,6 +80,12 @@ img { max-width: 100%; height: auto; display: block; }
     width: 100%;
     overflow-x: hidden;
     box-sizing: border-box;
+  }
+  
+  /* Ensure containers respect safe areas in landscape */
+  .container, main.container, .article.container {
+    padding-left: max(var(--space-4), env(safe-area-inset-left, 0));
+    padding-right: max(var(--space-4), env(safe-area-inset-right, 0));
   }
 }
 

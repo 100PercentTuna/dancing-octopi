@@ -19,6 +19,9 @@
   width: 100%;
   max-width: 100%; /* Changed from 100vw - 100vw includes scrollbar width causing overflow */
   box-sizing: border-box;
+  /* iPhone safe area support for notch in landscape */
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
 }
 
 /* ========================================

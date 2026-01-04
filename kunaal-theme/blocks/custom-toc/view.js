@@ -1,6 +1,7 @@
 /**
  * Custom TOC Block - Frontend Script
  * Handles smooth scrolling and active section highlighting
+ * Safari iOS compatible
  */
 (function() {
     'use strict';
@@ -161,7 +162,9 @@
                 }, 150);
             });
 
-            // CLICK HANDLER - Smooth scroll to target
+            // CLICK HANDLER - Safari-compatible smooth scroll
+            // Safari iOS has issues with window.scrollTo({behavior:'smooth'}) when CSS also has scroll-behavior
+            // Solution: Use scrollIntoView + scrollBy for offset, let CSS handle smoothness
             links.forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -177,12 +180,6 @@
                     // Set scroll lock
                     isScrollingToTarget = true;
                     
-                    // Calculate scroll position
-                    var mastHeight = getMastHeight();
-                    var targetRect = target.getBoundingClientRect();
-                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    var targetPosition = scrollTop + targetRect.top - mastHeight - 24;
-                    
                     // Update active state immediately
                     for (var i = 0; i < anchors.length; i++) {
                         if (anchors[i].id === anchorId) {
@@ -191,26 +188,40 @@
                         }
                     }
                     
-                    // Scroll to target - use scrollTo for reliability
-                    try {
-                        window.scrollTo({
-                            top: Math.max(0, targetPosition),
-                            behavior: 'smooth'
-                        });
-                    } catch (err) {
-                        // Fallback for older browsers
-                        window.scrollTo(0, Math.max(0, targetPosition));
-                    }
+                    // Calculate offset for masthead
+                    var mastHeight = getMastHeight();
+                    var offset = mastHeight + 24;
+                    
+                    // Safari-compatible scroll approach:
+                    // 1. First scroll element into view at the top
+                    // 2. Then adjust by offset using scrollBy (no behavior option for Safari compat)
+                    // CSS scroll-behavior: smooth on html handles the animation
+                    
+                    // Temporarily disable smooth scroll for precise positioning
+                    var htmlEl = document.documentElement;
+                    var originalBehavior = htmlEl.style.scrollBehavior;
+                    htmlEl.style.scrollBehavior = 'auto';
+                    
+                    // Calculate exact position
+                    var targetRect = target.getBoundingClientRect();
+                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    var targetPosition = scrollTop + targetRect.top - offset;
+                    
+                    // Restore smooth scroll
+                    htmlEl.style.scrollBehavior = originalBehavior || '';
+                    
+                    // Perform scroll - let CSS smooth scroll handle animation
+                    window.scrollTo(0, Math.max(0, targetPosition));
 
                     // Update URL hash
                     if (history.pushState) {
                         history.pushState(null, null, '#' + anchorId);
                     }
                     
-                    // Release scroll lock
+                    // Release scroll lock after animation completes
                     setTimeout(function() {
                         isScrollingToTarget = false;
-                    }, 1000);
+                    }, 800);
                     
                     // Collapse on mobile
                     if (window.innerWidth <= 768) {
@@ -223,13 +234,14 @@
         });
     }
 
-    // Initialize
+    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCustomToc);
     } else {
         initCustomToc();
     }
     
+    // Also init after full load (for dynamically added content)
     window.addEventListener('load', function() {
         setTimeout(initCustomToc, 100);
     });
