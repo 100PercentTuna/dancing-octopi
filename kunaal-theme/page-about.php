@@ -39,6 +39,7 @@ $categories = kunaal_get_categories();
 $rabbit_holes = kunaal_get_rabbit_holes();
 $rabbit_holes_show = kunaal_mod('kunaal_about_rabbit_holes_show', true);
 $rabbit_holes_title = kunaal_mod('kunaal_about_rabbit_holes_title', "Things I can't stop exploring");
+$rabbit_holes_legend_show = kunaal_mod('kunaal_about_rabbit_holes_legend_show', true);
 
 $panoramas = kunaal_get_panoramas();
 
@@ -248,7 +249,7 @@ kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
             </<?php echo $tag; ?>>
             <?php endforeach; ?>
         </div>
-        <?php if (!empty($categories)) : ?>
+        <?php if ($rabbit_holes_legend_show && !empty($categories)) : ?>
         <div class="capsules-legend">
             <?php foreach ($categories as $slug => $category) : ?>
             <div class="legend-item">

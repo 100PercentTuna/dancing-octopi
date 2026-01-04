@@ -257,6 +257,18 @@ function kunaal_register_about_rabbit_holes_section(WP_Customize_Manager $wp_cus
         'type' => 'text',
     ));
     
+    // Show Legend
+    $wp_customize->add_setting('kunaal_about_rabbit_holes_legend_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_rabbit_holes_legend_show', array(
+        'label' => 'Show Category Legend',
+        'description' => 'Display the color-coded category legend below the capsules',
+        'section' => 'kunaal_about_rabbit_holes',
+        'type' => 'checkbox',
+    ));
+    
     // Rabbit Holes (up to 200)
     for ($i = 1; $i <= 200; $i++) {
         // Visible Toggle

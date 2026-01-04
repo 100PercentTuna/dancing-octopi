@@ -1116,6 +1116,81 @@
         inner.appendChild(dot);
       }
     });
+    
+    // Balance capsules across rows after a short delay to ensure layout is complete
+    requestAnimationFrame(function() {
+      balanceCapsuleRows();
+    });
+    
+    // Re-balance on resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(balanceCapsuleRows, 150);
+    });
+  }
+  
+  /**
+   * Balance capsules across rows to prevent lopsided distribution
+   * (e.g., 9 items on row 1, 1 on row 2 becomes 5 and 5)
+   */
+  function balanceCapsuleRows() {
+    const cloud = document.querySelector('.capsules-cloud');
+    if (!cloud) return;
+    
+    const capsules = Array.from(cloud.querySelectorAll('.capsule'));
+    if (capsules.length < 2) return;
+    
+    // Remove any previously inserted spacers
+    cloud.querySelectorAll('.capsule-row-spacer').forEach(function(s) { s.remove(); });
+    
+    // Reset container to natural width to measure
+    cloud.style.maxWidth = '';
+    
+    // Measure each capsule's width including gap
+    const gap = 10; // Approximate gap in px
+    const capsuleWidths = capsules.map(function(cap) {
+      return cap.offsetWidth + gap;
+    });
+    const totalWidth = capsuleWidths.reduce(function(a, b) { return a + b; }, 0);
+    const containerWidth = cloud.offsetWidth;
+    
+    // Calculate how many rows we'd naturally get
+    let currentRowWidth = 0;
+    let naturalRows = 1;
+    for (let i = 0; i < capsuleWidths.length; i++) {
+      if (currentRowWidth + capsuleWidths[i] > containerWidth && currentRowWidth > 0) {
+        naturalRows++;
+        currentRowWidth = capsuleWidths[i];
+      } else {
+        currentRowWidth += capsuleWidths[i];
+      }
+    }
+    
+    // If only 1 row, no balancing needed
+    if (naturalRows <= 1) return;
+    
+    // Calculate ideal items per row for balanced distribution
+    const idealRowCount = naturalRows;
+    const idealItemsPerRow = Math.ceil(capsules.length / idealRowCount);
+    
+    // Calculate the max width needed to fit idealItemsPerRow items
+    // We want the narrowest width that still fits this many items
+    let targetMaxWidth = 0;
+    for (let row = 0; row < idealRowCount; row++) {
+      const startIdx = row * idealItemsPerRow;
+      const endIdx = Math.min(startIdx + idealItemsPerRow, capsules.length);
+      let rowWidth = 0;
+      for (let i = startIdx; i < endIdx; i++) {
+        rowWidth += capsuleWidths[i];
+      }
+      if (rowWidth > targetMaxWidth) {
+        targetMaxWidth = rowWidth;
+      }
+    }
+    
+    // Apply the calculated max-width (with some padding)
+    cloud.style.maxWidth = Math.min(targetMaxWidth + 20, containerWidth) + 'px';
   }
 
   // =============================================

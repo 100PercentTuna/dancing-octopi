@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.94.2');
+define('KUNAAL_THEME_VERSION', '4.94.3');
 
 // ============================================================================
 // SETUP (Platform)
