@@ -66,7 +66,7 @@ body.kunaal-about-page {
 :root[data-theme="dark"] .kunaal-about-page .say-hello {
   border-top-color: rgba(201, 184, 168, 0.15);
 }
-:root[data-theme="dark"] .kunaal-about-page .say-hello-label {
+:root[data-theme="dark"] .kunaal-about-page .say-hello .section-label {
   color: var(--k-color-dark-accent, #E8A87C);
 }
 :root[data-theme="dark"] .kunaal-about-page .say-hello .section-title {
@@ -1757,12 +1757,13 @@ a:focus-visible, button:focus-visible {
   align-items: center;
   text-align: center;
 }
-.say-hello-label {
+/* Say Hello section label - base styles (size controlled by variant classes) */
+.say-hello .section-label {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 10px; /* Default, overridden by size variants */
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--blue);
+  color: var(--warm);
   margin-bottom: 0.75rem;
 }
 /* Remove border-bottom line from say-hello section title */
@@ -1775,15 +1776,18 @@ a:focus-visible, button:focus-visible {
   display: none; /* Remove blue line animation */
 }
 
-/* Section label size variants (for Say Hello and other sections) */
-.section-label--small {
+/* Section label size variants - scoped to say-hello for proper specificity */
+.say-hello .section-label.section-label--small {
   font-size: 9px;
+  letter-spacing: 0.12em;
 }
-.section-label--medium {
+.say-hello .section-label.section-label--medium {
   font-size: 11px;
+  letter-spacing: 0.1em;
 }
-.section-label--large {
+.say-hello .section-label.section-label--large {
   font-size: 13px;
+  letter-spacing: 0.08em;
 }
 
 /* Say Hello description text */
