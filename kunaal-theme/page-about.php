@@ -72,6 +72,10 @@ $inspirations_show = kunaal_mod('kunaal_about_inspirations_show', true);
 $inspirations_title = kunaal_mod('kunaal_about_inspirations_title', "People I learn from");
 
 $say_hello_show = kunaal_mod('kunaal_about_say_hello_show', true);
+$say_hello_label = kunaal_mod('kunaal_about_say_hello_label', 'Say Hello');
+$say_hello_label_size = kunaal_mod('kunaal_about_say_hello_label_size', 'auto');
+$say_hello_title = kunaal_mod('kunaal_about_say_hello_title', "Let's connect");
+$say_hello_description = kunaal_mod('kunaal_about_say_hello_description', '');
 $contact_email = kunaal_mod('kunaal_contact_email', '');
 // Get enabled social links for say-hello section
 $about_social_platforms = array('linkedin', 'twitter', 'instagram', 'facebook', 'youtube', 'github', 'tiktok');
@@ -455,15 +459,35 @@ kunaal_render_panoramas($places_panoramas);
 
 <?php if ($say_hello_show) : ?>
 <!-- SAY HELLO -->
+<?php
+// Calculate label size class
+$label_size_class = '';
+if ($say_hello_label_size === 'auto') {
+    // Auto-adjust: longer text gets smaller font
+    $label_length = strlen($say_hello_label);
+    if ($label_length > 25) {
+        $label_size_class = 'section-label--small';
+    } elseif ($label_length > 15) {
+        $label_size_class = 'section-label--medium';
+    } else {
+        $label_size_class = 'section-label--large';
+    }
+} else {
+    $label_size_class = 'section-label--' . $say_hello_label_size;
+}
+?>
 <section class="say-hello section">
     <div class="section-inner">
-        <div class="section-label" data-reveal="up">Say Hello</div>
-        <h2 class="section-title u-section-underline" data-reveal="up">Let's connect</h2>
+        <div class="section-label <?php echo esc_attr($label_size_class); ?>" data-reveal="up"><?php echo esc_html($say_hello_label); ?></div>
+        <h2 class="section-title" data-reveal="up"><?php echo esc_html($say_hello_title); ?></h2>
+        <?php if ($say_hello_description) : ?>
+        <p class="say-hello-description" data-reveal="up"><?php echo nl2br(esc_html($say_hello_description)); ?></p>
+        <?php endif; ?>
+        <?php if ($contact_email) : ?>
         <p class="say-hello-text" data-reveal="up">
-            <?php if ($contact_email) : ?>
             <a href="mailto:<?php echo esc_attr($contact_email); ?>"><?php echo esc_html($contact_email); ?></a>
-            <?php endif; ?>
         </p>
+        <?php endif; ?>
         <?php if (!empty($about_enabled_socials)) : ?>
         <div class="say-hello-social" data-reveal="up">
             <?php foreach ($about_enabled_socials as $platform => $data) : ?>

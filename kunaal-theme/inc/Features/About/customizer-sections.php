@@ -950,7 +950,7 @@ function kunaal_register_about_say_hello_section(WP_Customize_Manager $wp_custom
         'title' => 'Say Hello',
         'panel' => 'kunaal_about_panel',
         'priority' => 70,
-        'description' => 'Contact section. Uses email, LinkedIn, and Twitter from Author Info settings.',
+        'description' => 'Contact section. Uses email and social links from Author Info settings.',
     ));
     
     // Show Say Hello Section
@@ -962,6 +962,63 @@ function kunaal_register_about_say_hello_section(WP_Customize_Manager $wp_custom
         'label' => 'Show Say Hello Section',
         'section' => 'kunaal_about_say_hello',
         'type' => 'checkbox',
+    ));
+    
+    // Section Label
+    $wp_customize->add_setting('kunaal_about_say_hello_label', array(
+        'default' => 'Say Hello',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_say_hello_label', array(
+        'label' => 'Section Label',
+        'description' => 'Small text above the title (e.g., "Say Hello", "Get in Touch", "Best reached in person.")',
+        'section' => 'kunaal_about_say_hello',
+        'type' => 'text',
+    ));
+    
+    // Label Font Size
+    $wp_customize->add_setting('kunaal_about_say_hello_label_size', array(
+        'default' => 'auto',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_about_say_hello_label_size', array(
+        'label' => 'Label Font Size',
+        'description' => 'Auto adjusts based on text length',
+        'section' => 'kunaal_about_say_hello',
+        'type' => 'select',
+        'choices' => array(
+            'auto' => 'Auto (adjusts to text length)',
+            'small' => 'Small (10px)',
+            'medium' => 'Medium (12px)',
+            'large' => 'Large (14px)',
+        ),
+    ));
+    
+    // Section Title
+    $wp_customize->add_setting('kunaal_about_say_hello_title', array(
+        'default' => "Let's connect",
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_say_hello_title', array(
+        'label' => KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL,
+        'description' => 'Main heading (e.g., "Let\'s connect", "Leave a note...", "Drop me a line")',
+        'section' => 'kunaal_about_say_hello',
+        'type' => 'text',
+    ));
+    
+    // Optional Description
+    $wp_customize->add_setting('kunaal_about_say_hello_description', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_say_hello_description', array(
+        'label' => 'Description (Optional)',
+        'description' => 'Additional text below the title (e.g., "I\'d love to hear from you")',
+        'section' => 'kunaal_about_say_hello',
+        'type' => 'textarea',
     ));
 }
 

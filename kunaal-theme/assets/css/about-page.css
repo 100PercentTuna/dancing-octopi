@@ -72,6 +72,9 @@ body.kunaal-about-page {
 :root[data-theme="dark"] .kunaal-about-page .say-hello .section-title {
   color: #fff;
 }
+:root[data-theme="dark"] .kunaal-about-page .say-hello-description {
+  color: var(--muted);
+}
 :root[data-theme="dark"] .kunaal-about-page .say-hello-text a {
   color: var(--ink);
 }
@@ -1771,6 +1774,28 @@ a:focus-visible, button:focus-visible {
 .say-hello .section-title::after {
   display: none; /* Remove blue line animation */
 }
+
+/* Section label size variants (for Say Hello and other sections) */
+.section-label--small {
+  font-size: 9px;
+}
+.section-label--medium {
+  font-size: 11px;
+}
+.section-label--large {
+  font-size: 13px;
+}
+
+/* Say Hello description text */
+.say-hello-description {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto 1.25rem;
+}
+
 .say-hello-text {
   margin-bottom: 1.25rem; /* Add spacing between email and social icons */
 }
