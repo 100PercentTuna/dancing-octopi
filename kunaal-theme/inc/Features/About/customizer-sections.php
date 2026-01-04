@@ -100,6 +100,76 @@ function kunaal_register_about_hero_section(WP_Customize_Manager $wp_customize):
         'section' => 'kunaal_about_hero',
         'type' => 'text',
     ));
+    
+    // Custom Meta Row 1
+    $wp_customize->add_setting('kunaal_about_hero_custom1_show', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_hero_custom1_show', array(
+        'label' => 'Show Custom Meta Row 1',
+        'section' => 'kunaal_about_hero',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_hero_custom1_label', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_hero_custom1_label', array(
+        'label' => 'Custom 1: Label',
+        'description' => 'Left side label (e.g., "Watching", "Playing")',
+        'section' => 'kunaal_about_hero',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_hero_custom1_value', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_hero_custom1_value', array(
+        'label' => 'Custom 1: Value',
+        'description' => 'Right side value (e.g., "The Bear", "Chess")',
+        'section' => 'kunaal_about_hero',
+        'type' => 'text',
+    ));
+    
+    // Custom Meta Row 2
+    $wp_customize->add_setting('kunaal_about_hero_custom2_show', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_hero_custom2_show', array(
+        'label' => 'Show Custom Meta Row 2',
+        'section' => 'kunaal_about_hero',
+        'type' => 'checkbox',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_hero_custom2_label', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_hero_custom2_label', array(
+        'label' => 'Custom 2: Label',
+        'description' => 'Left side label (e.g., "Cooking", "Learning")',
+        'section' => 'kunaal_about_hero',
+        'type' => 'text',
+    ));
+    
+    $wp_customize->add_setting('kunaal_about_hero_custom2_value', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_hero_custom2_value', array(
+        'label' => 'Custom 2: Value',
+        'description' => 'Right side value (e.g., "Italian food", "Spanish")',
+        'section' => 'kunaal_about_hero',
+        'type' => 'text',
+    ));
 }
 
 /**
@@ -143,9 +213,21 @@ function kunaal_register_about_numbers_section(WP_Customize_Manager $wp_customiz
         ));
         $wp_customize->add_control("kunaal_about_number_{$i}_suffix", array(
             'label' => "Number {$i}: Suffix",
-            'description' => 'Optional suffix (e.g., "+", "%", "hrs")',
+            'description' => 'Optional suffix (e.g., "+", "%", "hrs", " things"). Spaces are preserved.',
             'section' => 'kunaal_about_numbers',
             'type' => 'text',
+        ));
+        
+        // Suffix as Subscript
+        $wp_customize->add_setting("kunaal_about_number_{$i}_suffix_subscript", array(
+            'default' => false,
+            'sanitize_callback' => 'wp_validate_boolean',
+        ));
+        $wp_customize->add_control("kunaal_about_number_{$i}_suffix_subscript", array(
+            'label' => "Number {$i}: Show suffix as subscript",
+            'description' => 'Display suffix as smaller subscript text (ideal for words like "things", "cups")',
+            'section' => 'kunaal_about_numbers',
+            'type' => 'checkbox',
         ));
         
         // Number Label
@@ -253,6 +335,44 @@ function kunaal_register_about_rabbit_holes_section(WP_Customize_Manager $wp_cus
     ));
     $wp_customize->add_control('kunaal_about_rabbit_holes_title', array(
         'label' => KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL,
+        'section' => 'kunaal_about_rabbit_holes',
+        'type' => 'text',
+    ));
+    
+    // Section Label (small text above title)
+    $wp_customize->add_setting('kunaal_about_rabbit_holes_label', array(
+        'default' => 'Rabbit Holes',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_rabbit_holes_label', array(
+        'label' => 'Section Label',
+        'description' => 'Small text above the section title',
+        'section' => 'kunaal_about_rabbit_holes',
+        'type' => 'text',
+    ));
+    
+    // Show Background Word
+    $wp_customize->add_setting('kunaal_about_rabbit_holes_bgword_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_rabbit_holes_bgword_show', array(
+        'label' => 'Show Background Word',
+        'description' => 'Display the large faint word behind the section',
+        'section' => 'kunaal_about_rabbit_holes',
+        'type' => 'checkbox',
+    ));
+    
+    // Background Word Text
+    $wp_customize->add_setting('kunaal_about_rabbit_holes_bgword_text', array(
+        'default' => 'Rabbit Holes',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_rabbit_holes_bgword_text', array(
+        'label' => 'Background Word',
+        'description' => 'Large faint text displayed behind the section',
         'section' => 'kunaal_about_rabbit_holes',
         'type' => 'text',
     ));
@@ -649,6 +769,44 @@ function kunaal_register_about_places_section(WP_Customize_Manager $wp_customize
     ));
     $wp_customize->add_control('kunaal_about_places_title', array(
         'label' => KUNAAL_CUSTOMIZER_SECTION_TITLE_LABEL,
+        'section' => 'kunaal_about_places',
+        'type' => 'text',
+    ));
+    
+    // Section Label (small text above title)
+    $wp_customize->add_setting('kunaal_about_places_label', array(
+        'default' => 'Places',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_places_label', array(
+        'label' => 'Section Label',
+        'description' => 'Small text above the section title',
+        'section' => 'kunaal_about_places',
+        'type' => 'text',
+    ));
+    
+    // Show Background Word
+    $wp_customize->add_setting('kunaal_about_places_bgword_show', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_about_places_bgword_show', array(
+        'label' => 'Show Background Word',
+        'description' => 'Display the large faint word behind the section',
+        'section' => 'kunaal_about_places',
+        'type' => 'checkbox',
+    ));
+    
+    // Background Word Text
+    $wp_customize->add_setting('kunaal_about_places_bgword_text', array(
+        'default' => 'Wanderlust',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport' => 'postMessage',
+    ));
+    $wp_customize->add_control('kunaal_about_places_bgword_text', array(
+        'label' => 'Background Word',
+        'description' => 'Large faint text displayed behind the section',
         'section' => 'kunaal_about_places',
         'type' => 'text',
     ));

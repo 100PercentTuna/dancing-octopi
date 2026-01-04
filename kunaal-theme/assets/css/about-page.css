@@ -979,6 +979,28 @@ a:focus-visible, button:focus-visible {
   font-weight: 300;
   color: var(--warm);
   line-height: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+  white-space: pre; /* Preserve spaces in suffix */
+}
+.number-value__num {
+  /* Inherits parent styles */
+}
+.number-value__suffix {
+  /* Default: inline with number */
+}
+.number-value__suffix--subscript {
+  font-family: var(--sans);
+  font-size: 0.4em;
+  font-weight: 400;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  align-self: flex-end;
+  margin-bottom: 0.15em;
+  margin-left: 0.1em;
 }
 .number-label {
   font-family: var(--mono);

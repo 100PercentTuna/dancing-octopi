@@ -32,6 +32,14 @@ $hero_location = kunaal_mod('kunaal_about_hero_location', 'Singapore');
 $hero_listening = kunaal_mod('kunaal_about_hero_listening', 'Ezra Klein Show');
 $hero_reading = kunaal_mod('kunaal_about_hero_reading', 'Master of the Senate');
 
+// Custom meta rows
+$hero_custom1_show = kunaal_mod('kunaal_about_hero_custom1_show', false);
+$hero_custom1_label = kunaal_mod('kunaal_about_hero_custom1_label', '');
+$hero_custom1_value = kunaal_mod('kunaal_about_hero_custom1_value', '');
+$hero_custom2_show = kunaal_mod('kunaal_about_hero_custom2_show', false);
+$hero_custom2_label = kunaal_mod('kunaal_about_hero_custom2_label', '');
+$hero_custom2_value = kunaal_mod('kunaal_about_hero_custom2_value', '');
+
 $numbers = kunaal_get_numbers();
 $numbers_show = kunaal_mod('kunaal_about_numbers_show', true);
 
@@ -39,6 +47,9 @@ $categories = kunaal_get_categories();
 $rabbit_holes = kunaal_get_rabbit_holes();
 $rabbit_holes_show = kunaal_mod('kunaal_about_rabbit_holes_show', true);
 $rabbit_holes_title = kunaal_mod('kunaal_about_rabbit_holes_title', "Things I can't stop exploring");
+$rabbit_holes_label = kunaal_mod('kunaal_about_rabbit_holes_label', 'Rabbit Holes');
+$rabbit_holes_bgword_show = kunaal_mod('kunaal_about_rabbit_holes_bgword_show', true);
+$rabbit_holes_bgword_text = kunaal_mod('kunaal_about_rabbit_holes_bgword_text', 'Rabbit Holes');
 $rabbit_holes_legend_show = kunaal_mod('kunaal_about_rabbit_holes_legend_show', true);
 
 $panoramas = kunaal_get_panoramas();
@@ -52,6 +63,9 @@ $digital_show = kunaal_mod('kunaal_about_digital_show', true);
 $places = kunaal_get_places();
 $places_show = kunaal_mod('kunaal_about_places_show', true);
 $places_title = kunaal_mod('kunaal_about_places_title', "Where I've been");
+$places_label = kunaal_mod('kunaal_about_places_label', 'Places');
+$places_bgword_show = kunaal_mod('kunaal_about_places_bgword_show', true);
+$places_bgword_text = kunaal_mod('kunaal_about_places_bgword_text', 'Wanderlust');
 
 $inspirations = kunaal_get_inspirations();
 $inspirations_show = kunaal_mod('kunaal_about_inspirations_show', true);
@@ -123,6 +137,18 @@ for ($slot = 1; $slot <= 4; $slot++) :
             <span class="label">Reading</span>
             <span class="value"><?php echo esc_html($hero_reading); ?></span>
         </div>
+        <?php if ($hero_custom1_show && $hero_custom1_label && $hero_custom1_value) : ?>
+        <div class="hero-meta-row">
+            <span class="label"><?php echo esc_html($hero_custom1_label); ?></span>
+            <span class="value"><?php echo esc_html($hero_custom1_value); ?></span>
+        </div>
+        <?php endif; ?>
+        <?php if ($hero_custom2_show && $hero_custom2_label && $hero_custom2_value) : ?>
+        <div class="hero-meta-row">
+            <span class="label"><?php echo esc_html($hero_custom2_label); ?></span>
+            <span class="value"><?php echo esc_html($hero_custom2_value); ?></span>
+        </div>
+        <?php endif; ?>
     </div>
     
     <!-- Scroll indicator - moved inside hero-text after meta rows -->
@@ -205,9 +231,13 @@ kunaal_render_panoramas($panoramas['after_hero'] ?? array());
                         <?php 
                         // Show actual value - JS will animate from 0 on desktop
                         // On mobile, CSS ensures visibility, so actual value shows
-                        $display_value = number_format((int)$number['value']) . $number['suffix'];
+                        $formatted_value = number_format((int)$number['value']);
+                        $suffix = $number['suffix'];
+                        $is_subscript = !empty($number['suffix_subscript']);
                         ?>
-                        <div class="number-value" data-suffix="<?php echo esc_attr($number['suffix']); ?>" data-target="<?php echo esc_attr($number['value']); ?>"><?php echo esc_html($display_value); ?></div>
+                        <div class="number-value" data-suffix="<?php echo esc_attr($suffix); ?>" data-suffix-subscript="<?php echo $is_subscript ? 'true' : 'false'; ?>" data-target="<?php echo esc_attr($number['value']); ?>">
+                            <span class="number-value__num"><?php echo esc_html($formatted_value); ?></span><?php if ($suffix) : ?><span class="number-value__suffix<?php echo $is_subscript ? ' number-value__suffix--subscript' : ''; ?>"><?php echo esc_html($suffix); ?></span><?php endif; ?>
+                        </div>
                         <div class="number-label"><?php echo esc_html($number['label']); ?></div>
                     </div>
                 <?php endif; ?>
@@ -226,8 +256,10 @@ kunaal_render_panoramas($panoramas['after_numbers'] ?? array());
 <!-- RABBIT HOLES - Redesigned cloud with images -->
 <section class="rabbit-holes section warm">
     <div class="section-inner">
-        <div class="section-bgword" data-dir="left" data-marquee="">Rabbit Holes</div>
-        <div class="section-label" data-reveal="up">Rabbit Holes</div>
+        <?php if ($rabbit_holes_bgword_show) : ?>
+        <div class="section-bgword" data-dir="left" data-marquee=""><?php echo esc_html($rabbit_holes_bgword_text); ?></div>
+        <?php endif; ?>
+        <div class="section-label" data-reveal="up"><?php echo esc_html($rabbit_holes_label); ?></div>
         <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($rabbit_holes_title); ?></h2>
         <div class="capsules-cloud">
             <?php foreach ($rabbit_holes as $index => $hole) :
@@ -359,7 +391,10 @@ kunaal_render_panoramas($panoramas['after_media'] ?? array());
 <!-- PLACES -->
 <section class="places section">
     <div class="section-inner">
-        <div class="section-label" data-reveal="up">Places</div>
+        <?php if ($places_bgword_show) : ?>
+        <div class="section-bgword" data-dir="right" data-marquee=""><?php echo esc_html($places_bgword_text); ?></div>
+        <?php endif; ?>
+        <div class="section-label" data-reveal="up"><?php echo esc_html($places_label); ?></div>
         <h2 class="section-title u-section-underline" data-reveal="up"><?php echo esc_html($places_title); ?></h2>
         <div class="map-container" id="world-map" data-reveal="up">
             <!-- Map rendered by D3.js -->

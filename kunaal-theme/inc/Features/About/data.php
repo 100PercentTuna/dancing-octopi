@@ -65,6 +65,7 @@ function kunaal_get_numbers(): array {
             $numbers[] = array(
                 'value' => $value,
                 'suffix' => kunaal_mod("kunaal_about_number_{$i}_suffix", ''),
+                'suffix_subscript' => kunaal_mod("kunaal_about_number_{$i}_suffix_subscript", false),
                 'label' => $label,
             );
         }
@@ -77,6 +78,7 @@ function kunaal_get_numbers(): array {
             $numbers[] = array(
                 'value' => 'infinity',
                 'suffix' => '',
+                'suffix_subscript' => false,
                 'label' => $infinity_label,
             );
         }

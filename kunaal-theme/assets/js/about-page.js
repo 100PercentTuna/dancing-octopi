@@ -523,12 +523,22 @@
         (function (el, idx) {
           const target = parseInt(el.getAttribute('data-target') || '0', 10);
           const suffix = el.getAttribute('data-suffix') || '';
+          const isSubscript = el.getAttribute('data-suffix-subscript') === 'true';
+          // Find the number span if it exists (new structure), otherwise use the element itself
+          const numSpan = el.querySelector('.number-value__num');
+          const targetEl = numSpan || el;
           let spins = 0;
           const maxSpins = 12 + Math.floor(Math.random() * 6);
 
           setTimeout(function () {
             const spinInterval = setInterval(function () {
-              el.textContent = Math.floor(Math.random() * target * 1.3).toLocaleString() + suffix;
+              // Only update the number part, suffix is in its own span (or appended for legacy)
+              const randomVal = Math.floor(Math.random() * target * 1.3).toLocaleString();
+              if (numSpan) {
+                numSpan.textContent = randomVal;
+              } else {
+                targetEl.textContent = randomVal + suffix;
+              }
               spins++;
               if (spins >= maxSpins) {
                 clearInterval(spinInterval);
@@ -541,7 +551,11 @@
                   const p = Math.min(1, (now - t0) / duration);
                   const eased = 1 - Math.pow(1 - p, 3);
                   const val = Math.floor(start + (target - start) * eased);
-                  el.textContent = val.toLocaleString() + suffix;
+                  if (numSpan) {
+                    numSpan.textContent = val.toLocaleString();
+                  } else {
+                    targetEl.textContent = val.toLocaleString() + suffix;
+                  }
                   if (p < 1) {
                     requestAnimationFrame(tick);
                   }
