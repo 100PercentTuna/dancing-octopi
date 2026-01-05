@@ -33,7 +33,16 @@ _None currently logged._
 
 ## High Priority
 
-_None currently logged._
+### [SonarCloud] Exported issues include files that do not exist (stale / wrong-branch analysis)
+- **Added**: 2026-01-05
+- **Severity**: High
+- **Impact**: Sonar remediation loop cannot be completed deterministically; exports list CRITICAL/MAJOR issues for files that are absent locally (e.g. `kunaal-theme/inc/validation/validation.php`, `homepage-test.html`).
+- **Evidence**: `python scripts/sonar-export.py` + `python scripts/analyze-sonar-issues.py` reports 101 CRITICAL, including missing paths.
+- **Suggested fix**:
+  - Confirm SonarCloud project’s main branch / analysis target matches `main`.
+  - Trigger a fresh analysis for `main` and verify issues for removed files disappear.
+  - Update `scripts/sonar-export.py` / analyzers to filter to `main` branch and/or “new code” period, and to flag missing paths as “stale” instead of treating as actionable.
+  - Optionally add a CI gate: fail if exported issues reference non-existent files (signals stale export).
 
 <!-- Example entry:
 ### [Hardcoding] Hardcoded site URLs
