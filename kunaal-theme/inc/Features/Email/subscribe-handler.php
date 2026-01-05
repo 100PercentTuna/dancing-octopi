@@ -51,20 +51,28 @@ function kunaal_generate_subscribe_token(): string {
  * 
  * Logs PHPMailer errors on failure for debugging.
  */
+function kunaal_subscribe_confirmation_preflight(string $email): bool {
+    if (!function_exists('kunaal_smtp_preflight_fast')) {
+        return true;
+    }
+    $preflight = kunaal_smtp_preflight_fast();
+    if (!isset($preflight['ok']) || $preflight['ok'] !== false) {
+        return true;
+    }
+    // Log reachability details (no secrets)
+    if (function_exists('kunaal_theme_log')) {
+        kunaal_theme_log('Subscribe confirmation preflight failed', array(
+            'to' => $email,
+            'details' => isset($preflight['details']) ? $preflight['details'] : array(),
+        ));
+    }
+    return false;
+}
+
 function kunaal_send_subscribe_confirmation(string $email, string $token): bool {
     // Fail-fast SMTP preflight (avoids 30s hangs when SMTP host/port is unreachable)
-    if (function_exists('kunaal_smtp_preflight_fast')) {
-        $preflight = kunaal_smtp_preflight_fast();
-        if (isset($preflight['ok']) && $preflight['ok'] === false) {
-            // Log reachability details (no secrets)
-            if (function_exists('kunaal_theme_log')) {
-                kunaal_theme_log('Subscribe confirmation preflight failed', array(
-                    'to' => $email,
-                    'details' => isset($preflight['details']) ? $preflight['details'] : array(),
-                ));
-            }
-            return false;
-        }
+    if (!kunaal_subscribe_confirmation_preflight($email)) {
+        return false;
     }
 
     $to = $email;

@@ -48,12 +48,6 @@ main.article {
   padding-bottom: var(--space-12);
 }
 
-/* DEFENSIVE: Ensure article title is never behind the masthead.
-   The articleTitle gets scroll-margin-top for anchor links. */
-.articleTitle {
-  scroll-margin-top: calc(var(--mastH, 100px) + var(--space-4, 32px));
-}
-
 /* Anchor targets inside prose: ensure hash navigation lands below masthead */
 .prose [id] {
   scroll-margin-top: calc(var(--mastH, 100px) + var(--space-6, 48px));
@@ -75,6 +69,7 @@ main.article {
 /* Title - prominent, first element */
 .articleTitle {
   margin: 0 0 6px; /* Tight spacing to subtitle */
+  scroll-margin-top: calc(var(--mastH, 100px) + var(--space-4, 32px));
   font-family: var(--serif, Georgia, serif);
   font-weight: 600;
   letter-spacing: -0.02em;

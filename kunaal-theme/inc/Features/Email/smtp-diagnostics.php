@@ -58,28 +58,26 @@ function kunaal_smtp_test_tcp_connectivity(int $timeout_seconds = 6): array {
     $s = kunaal_smtp_resolve_settings();
     $host = $s['host'];
     $port = (int) $s['port'];
+    $result = array(
+        'ok' => false,
+        'host' => $host,
+        'port' => $port,
+        'ip' => '',
+        'error' => '',
+    );
 
     if ($host === '' || $port <= 0) {
-        return array(
-            'ok' => false,
-            'host' => $host,
-            'port' => $port,
-            'ip' => '',
-            'error' => 'Missing SMTP host/port.',
-        );
+        $result['error'] = 'Missing SMTP host/port.';
+        return $result;
     }
 
     $ip = gethostbyname($host);
     if ($ip === $host) {
         // DNS resolution failed (gethostbyname returns input on failure)
-        return array(
-            'ok' => false,
-            'host' => $host,
-            'port' => $port,
-            'ip' => '',
-            'error' => 'DNS resolution failed for host.',
-        );
+        $result['error'] = 'DNS resolution failed for host.';
+        return $result;
     }
+    $result['ip'] = $ip;
 
     $errno = 0;
     $errstr = '';
@@ -88,22 +86,14 @@ function kunaal_smtp_test_tcp_connectivity(int $timeout_seconds = 6): array {
     $fp = @fsockopen($host, $port, $errno, $errstr, $timeout_seconds);
     if (is_resource($fp)) {
         fclose($fp);
-        return array(
-            'ok' => true,
-            'host' => $host,
-            'port' => $port,
-            'ip' => $ip,
-            'error' => '',
-        );
+        $result['ok'] = true;
+        return $result;
     }
 
-    return array(
-        'ok' => false,
-        'host' => $host,
-        'port' => $port,
-        'ip' => $ip,
-        'error' => trim($errstr) !== '' ? (trim($errstr) . ' (errno ' . (string) $errno . ')') : ('Connection failed (errno ' . (string) $errno . ').'),
-    );
+    $result['error'] = trim($errstr) !== ''
+        ? (trim($errstr) . ' (errno ' . (string) $errno . ')')
+        : ('Connection failed (errno ' . (string) $errno . ').');
+    return $result;
 }
 
 /**
@@ -112,13 +102,15 @@ function kunaal_smtp_test_tcp_connectivity(int $timeout_seconds = 6): array {
  * @return array{ok:bool,message:string,details:array}
  */
 function kunaal_smtp_preflight_fast(): array {
+    $result = array('ok' => true, 'message' => '', 'details' => array());
     if (!function_exists('kunaal_smtp_is_enabled') || !kunaal_smtp_is_enabled()) {
-        return array('ok' => true, 'message' => '', 'details' => array());
+        return $result;
     }
-
+    
     $test = kunaal_smtp_test_tcp_connectivity(6);
     if ($test['ok']) {
-        return array('ok' => true, 'message' => '', 'details' => $test);
+        $result['details'] = $test;
+        return $result;
     }
 
     // Log reachability details (no secrets).
@@ -131,11 +123,10 @@ function kunaal_smtp_preflight_fast(): array {
         ));
     }
 
-    return array(
-        'ok' => false,
-        'message' => 'Email delivery is currently unavailable (SMTP connection failed).',
-        'details' => $test,
-    );
+    $result['ok'] = false;
+    $result['message'] = 'Email delivery is currently unavailable (SMTP connection failed).';
+    $result['details'] = $test;
+    return $result;
 }
 
 /**
