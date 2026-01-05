@@ -414,10 +414,12 @@ function kunaal_add_global_styles_overrides(): void {
     // Dark mode: WP global styles may override our typography colors after theme CSS loads.
     // Attach overrides to `global-styles` so they appear after WP's own global styles output.
     $css = ''
-        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleHeader h1.articleTitle{color:var(--ink);}'
-        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleMeta__tags{color:var(--muted);}'
-        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleMeta__tags a{color:var(--muted);}'
-        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleMeta__tags a:hover{color:var(--ink);}';
+        // Title
+        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleHeader h1.articleTitle{color:var(--k-color-ink);}'
+        // Meta tags
+        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleMeta__tags{color:var(--k-color-muted);}'
+        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleMeta__tags a{color:var(--k-color-muted);}'
+        . ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleMeta__tags a:hover{color:var(--k-color-ink);}';
     wp_add_inline_style('global-styles', $css);
 }
 add_action('wp_enqueue_scripts', 'kunaal_add_global_styles_overrides', 100);

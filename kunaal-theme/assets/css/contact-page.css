@@ -250,9 +250,9 @@
 }
 
 .contact-submit:hover {
-    background: #1a4fe6;
+    background: color-mix(in srgb, var(--blue) 88%, var(--ink));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(30,90,255,0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--blue) 28%, transparent);
 }
 
 .contact-submit:active {

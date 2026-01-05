@@ -106,10 +106,27 @@ function kunaal_smtp_preflight_fast(): array {
     if (!function_exists('kunaal_smtp_is_enabled') || !kunaal_smtp_is_enabled()) {
         return $result;
     }
-    
-    $test = kunaal_smtp_test_tcp_connectivity(6);
+
+    // Cache reachability results to avoid repeated multi-second delays on form submits.
+    // This is especially important on managed hosts where outbound SMTP ports time out.
+    $cache_key = 'kunaal_smtp_preflight_tcp_v1';
+    $cached = get_transient($cache_key);
+    if (is_array($cached) && isset($cached['ok'])) {
+        if ($cached['ok']) {
+            $result['details'] = isset($cached['details']) && is_array($cached['details']) ? $cached['details'] : array();
+            return $result;
+        }
+        $result['ok'] = false;
+        $result['message'] = 'Email delivery is currently unavailable (SMTP connection failed).';
+        $result['details'] = isset($cached['details']) && is_array($cached['details']) ? $cached['details'] : array();
+        return $result;
+    }
+
+    // Keep the preflight fast; diagnostics endpoint uses the longer timeout.
+    $test = kunaal_smtp_test_tcp_connectivity(2);
     if ($test['ok']) {
         $result['details'] = $test;
+        set_transient($cache_key, array('ok' => true, 'details' => $test), 10 * MINUTE_IN_SECONDS);
         return $result;
     }
 
@@ -126,6 +143,7 @@ function kunaal_smtp_preflight_fast(): array {
     $result['ok'] = false;
     $result['message'] = 'Email delivery is currently unavailable (SMTP connection failed).';
     $result['details'] = $test;
+    set_transient($cache_key, array('ok' => false, 'details' => $test), 10 * MINUTE_IN_SECONDS);
     return $result;
 }
 
