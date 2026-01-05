@@ -445,7 +445,7 @@ function kunaal_subscribers_migrate_from_cpt(): array {
             global $wpdb;
             $table = kunaal_subscribers_table();
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
-            $wpdb->query($wpdb->prepare("UPDATE {$table} SET created_gmt = %s WHERE id = %d", gmdate('Y-m-d H:i:s', strtotime($created)), (int) $id));
+            $wpdb->query($wpdb->prepare("UPDATE {$table} SET created_gmt = %s WHERE id = %d", gmdate(KUNAAL_GMT_DATETIME_FORMAT, strtotime($created)), (int) $id));
         }
 
         $migrated++;

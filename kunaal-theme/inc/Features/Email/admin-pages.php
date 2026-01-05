@@ -14,6 +14,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+const KUNAAL_SUBSCRIBERS_ADMIN_PAGE = 'kunaal-subscribers';
+const KUNAAL_SUBSCRIBERS_ADMIN_BASE = 'tools.php?page=kunaal-subscribers';
+const KUNAAL_SUBSCRIBERS_NONCE_ERROR = 'Invalid nonce.';
+
+function kunaal_subscribers_is_admin_page(): bool {
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- routing only
+    if (!isset($_GET['page'])) {
+        return false;
+    }
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- routing only
+    return sanitize_text_field(wp_unslash($_GET['page'])) === KUNAAL_SUBSCRIBERS_ADMIN_PAGE;
+}
+
+function kunaal_subscribers_admin_redirect(): void {
+    wp_safe_redirect(admin_url(KUNAAL_SUBSCRIBERS_ADMIN_BASE));
+    exit;
+}
+
 /**
  * Register Subscribers admin page under Tools.
  */
@@ -35,35 +53,34 @@ function kunaal_subscribers_admin_handle_actions(): void {
     if (!is_admin() || !current_user_can('manage_options')) {
         return;
     }
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified per-action below
-    if (!isset($_GET['page']) || sanitize_text_field(wp_unslash($_GET['page'])) !== 'kunaal-subscribers') {
+    if (!kunaal_subscribers_is_admin_page()) {
         return;
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing
+    $action = isset($_GET['action']) ? sanitize_text_field(wp_unslash($_GET['action'])) : '';
+
     // Export CSV
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified below
-    if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'export') {
+    if ($action === 'export') {
         $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
         if (!wp_verify_nonce($nonce, 'kunaal_subscribers_export')) {
-            wp_die('Invalid nonce.', 'Subscribers', array('response' => 400));
+            wp_die(KUNAAL_SUBSCRIBERS_NONCE_ERROR, 'Subscribers', array('response' => 400));
         }
         kunaal_subscribers_admin_export_csv();
         exit;
     }
 
     // Unsubscribe action
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified below
-    if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) === 'unsubscribe' && isset($_GET['id'])) {
+    if ($action === 'unsubscribe' && isset($_GET['id'])) {
         $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
         if (!wp_verify_nonce($nonce, 'kunaal_subscribers_unsub')) {
-            wp_die('Invalid nonce.', 'Subscribers', array('response' => 400));
+            wp_die(KUNAAL_SUBSCRIBERS_NONCE_ERROR, 'Subscribers', array('response' => 400));
         }
         $id = absint(wp_unslash($_GET['id']));
         if ($id > 0 && function_exists('kunaal_subscriber_update_status')) {
             kunaal_subscriber_update_status($id, 'unsubscribed');
         }
-        wp_safe_redirect(admin_url('tools.php?page=kunaal-subscribers'));
-        exit;
+        kunaal_subscribers_admin_redirect();
     }
 
     // Add subscriber (POST)
@@ -71,7 +88,7 @@ function kunaal_subscribers_admin_handle_actions(): void {
     if (isset($_POST['kunaal_subscribers_add']) && $_POST['kunaal_subscribers_add'] === '1') {
         $nonce = isset($_POST['_wpnonce']) ? sanitize_text_field(wp_unslash($_POST['_wpnonce'])) : '';
         if (!wp_verify_nonce($nonce, 'kunaal_subscribers_add')) {
-            wp_die('Invalid nonce.', 'Subscribers', array('response' => 400));
+            wp_die(KUNAAL_SUBSCRIBERS_NONCE_ERROR, 'Subscribers', array('response' => 400));
         }
         $email = isset($_POST['email']) ? sanitize_email(wp_unslash($_POST['email'])) : '';
         $status = isset($_POST['status']) ? sanitize_text_field(wp_unslash($_POST['status'])) : 'confirmed';
@@ -86,8 +103,7 @@ function kunaal_subscribers_admin_handle_actions(): void {
                 }
             }
         }
-        wp_safe_redirect(admin_url('tools.php?page=kunaal-subscribers'));
-        exit;
+        kunaal_subscribers_admin_redirect();
     }
 }
 add_action('admin_init', 'kunaal_subscribers_admin_handle_actions');
@@ -155,7 +171,7 @@ function kunaal_render_subscribers_admin_page(): void {
     $rows = (array) $list['rows'];
     $total_pages = max(1, (int) ceil($total / $per_page));
 
-    $export_url = wp_nonce_url(admin_url('tools.php?page=kunaal-subscribers&action=export'), 'kunaal_subscribers_export');
+    $export_url = wp_nonce_url(admin_url(KUNAAL_SUBSCRIBERS_ADMIN_BASE . '&action=export'), 'kunaal_subscribers_export');
 
     echo '<div class="wrap">';
     echo '<h1>Subscribers</h1>';
@@ -163,7 +179,7 @@ function kunaal_render_subscribers_admin_page(): void {
 
     // Add form.
     echo '<h2>Add subscriber</h2>';
-    echo '<form method="post" action="' . esc_url(admin_url('tools.php?page=kunaal-subscribers')) . '">';
+    echo '<form method="post" action="' . esc_url(admin_url(KUNAAL_SUBSCRIBERS_ADMIN_BASE)) . '">';
     wp_nonce_field('kunaal_subscribers_add');
     echo '<input type="hidden" name="kunaal_subscribers_add" value="1" />';
     echo '<input type="email" name="email" placeholder="email@example.com" required style="min-width:280px" /> ';
@@ -178,7 +194,7 @@ function kunaal_render_subscribers_admin_page(): void {
     // Search/filter.
     echo '<hr/>';
     echo '<form method="get" style="margin: 12px 0;">';
-    echo '<input type="hidden" name="page" value="kunaal-subscribers" />';
+    echo '<input type="hidden" name="page" value="' . esc_attr(KUNAAL_SUBSCRIBERS_ADMIN_PAGE) . '" />';
     echo '<input type="search" name="s" value="' . esc_attr($search) . '" placeholder="Search email" /> ';
     echo '<select name="status">';
     echo '<option value="">all</option>';
@@ -205,7 +221,7 @@ function kunaal_render_subscribers_admin_page(): void {
         $unsub = isset($r['unsubscribed_gmt']) ? (string) $r['unsubscribed_gmt'] : '';
 
         $unsub_url = $id > 0
-            ? wp_nonce_url(admin_url('tools.php?page=kunaal-subscribers&action=unsubscribe&id=' . $id), 'kunaal_subscribers_unsub')
+            ? wp_nonce_url(admin_url(KUNAAL_SUBSCRIBERS_ADMIN_BASE . '&action=unsubscribe&id=' . $id), 'kunaal_subscribers_unsub')
             : '';
 
         echo '<tr>';
@@ -231,7 +247,7 @@ function kunaal_render_subscribers_admin_page(): void {
 
     // Pagination.
     if ($total_pages > 1) {
-        $base = admin_url('tools.php?page=kunaal-subscribers');
+        $base = admin_url(KUNAAL_SUBSCRIBERS_ADMIN_BASE);
         $query = array();
         if ($status !== '') {
             $query['status'] = $status;

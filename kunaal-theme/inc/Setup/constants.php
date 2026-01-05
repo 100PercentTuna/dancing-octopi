@@ -47,7 +47,7 @@ if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
  * The filemtime alone isn't enough when WordPress page cache stores old timestamps.
  */
 if (!defined('KUNAAL_ASSET_CACHE_BUST')) {
-    define('KUNAAL_ASSET_CACHE_BUST', '26');
+    define('KUNAAL_ASSET_CACHE_BUST', '27');
 }
 
 // Standard GMT datetime format used across queue/subscriber tables.

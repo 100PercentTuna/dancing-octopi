@@ -15,6 +15,47 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Save subscriber email meta fields.
+ */
+function kunaal_save_subscriber_email_meta(int $post_id): void {
+    $notify_enabled = isset($_POST['kunaal_notify_subscribers']) && wp_validate_boolean(wp_unslash($_POST['kunaal_notify_subscribers']));
+    update_post_meta($post_id, 'kunaal_notify_subscribers', $notify_enabled ? '1' : '0');
+
+    $mode = isset($_POST['kunaal_notify_mode']) ? sanitize_text_field(wp_unslash($_POST['kunaal_notify_mode'])) : 'delay';
+    $mode = in_array($mode, array('delay', 'time'), true) ? $mode : 'delay';
+    update_post_meta($post_id, 'kunaal_notify_mode', $mode);
+
+    $delay_minutes = isset($_POST['kunaal_notify_delay_minutes']) ? absint(wp_unslash($_POST['kunaal_notify_delay_minutes'])) : 0;
+    update_post_meta($post_id, 'kunaal_notify_delay_minutes', $delay_minutes);
+
+    $scheduled_local = isset($_POST['kunaal_notify_scheduled_local']) ? sanitize_text_field(wp_unslash($_POST['kunaal_notify_scheduled_local'])) : '';
+    if ($scheduled_local !== '') {
+        $scheduled_gmt = get_gmt_from_date($scheduled_local, KUNAAL_GMT_DATETIME_FORMAT);
+        update_post_meta($post_id, 'kunaal_notify_scheduled_gmt', $scheduled_gmt);
+    } else {
+        delete_post_meta($post_id, 'kunaal_notify_scheduled_gmt');
+    }
+}
+
+/**
+ * Save subtitle meta.
+ */
+function kunaal_save_subtitle_meta(int $post_id): void {
+    if (isset($_POST['kunaal_subtitle'])) {
+        update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field(wp_unslash($_POST['kunaal_subtitle'])));
+    }
+}
+
+/**
+ * Save card image meta.
+ */
+function kunaal_save_card_image_meta(int $post_id): void {
+    if (isset($_POST['kunaal_card_image'])) {
+        update_post_meta($post_id, 'kunaal_card_image', absint(wp_unslash($_POST['kunaal_card_image'])));
+    }
+}
+
+/**
  * Register Meta Boxes for Classic Editor fallback only
  * Gutenberg uses the JavaScript sidebar plugin instead
  */
@@ -275,29 +316,8 @@ function kunaal_save_meta_box_data(int $post_id): void {
         return;
     }
 
-    if (isset($_POST['kunaal_subtitle'])) {
-        update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field(wp_unslash($_POST['kunaal_subtitle'])));
-    }
-
-    // Subscriber email settings (essay + jotting)
-    $notify_enabled = isset($_POST['kunaal_notify_subscribers']) && wp_validate_boolean(wp_unslash($_POST['kunaal_notify_subscribers']));
-    update_post_meta($post_id, 'kunaal_notify_subscribers', $notify_enabled ? '1' : '0');
-
-    $mode = isset($_POST['kunaal_notify_mode']) ? sanitize_text_field(wp_unslash($_POST['kunaal_notify_mode'])) : 'delay';
-    $mode = in_array($mode, array('delay', 'time'), true) ? $mode : 'delay';
-    update_post_meta($post_id, 'kunaal_notify_mode', $mode);
-
-    $delay_minutes = isset($_POST['kunaal_notify_delay_minutes']) ? absint(wp_unslash($_POST['kunaal_notify_delay_minutes'])) : 0;
-    update_post_meta($post_id, 'kunaal_notify_delay_minutes', $delay_minutes);
-
-    $scheduled_local = isset($_POST['kunaal_notify_scheduled_local']) ? sanitize_text_field(wp_unslash($_POST['kunaal_notify_scheduled_local'])) : '';
-    if ($scheduled_local !== '') {
-        // Convert local datetime string to GMT for storage.
-        $scheduled_gmt = get_gmt_from_date($scheduled_local, 'Y-m-d H:i:s');
-        update_post_meta($post_id, 'kunaal_notify_scheduled_gmt', $scheduled_gmt);
-    } else {
-        delete_post_meta($post_id, 'kunaal_notify_scheduled_gmt');
-    }
+    kunaal_save_subtitle_meta($post_id);
+    kunaal_save_subscriber_email_meta($post_id);
     
     // Auto-calculate reading time for essays
     $post_type = get_post_type($post_id);
@@ -306,9 +326,7 @@ function kunaal_save_meta_box_data(int $post_id): void {
         update_post_meta($post_id, 'kunaal_read_time', $reading_time);
     }
     
-    if (isset($_POST['kunaal_card_image'])) {
-        update_post_meta($post_id, 'kunaal_card_image', absint(wp_unslash($_POST['kunaal_card_image'])));
-    }
+    kunaal_save_card_image_meta($post_id);
 }
 add_action('save_post', 'kunaal_save_meta_box_data');
 
