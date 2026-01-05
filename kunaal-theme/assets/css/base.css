@@ -91,7 +91,8 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* Font distribution */
 body, .nameLine, .nav a, .subtitle, .dek, .jText, .mailWrap, footer, select, input, button { font-family: var(--sans); }
-h2, .articleTitle { font-family: var(--sans); font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-family: var(--sans); font-weight: 600; letter-spacing: -0.01em; }
+/* NOTE: .articleTitle is styled in pages.css with serif font - do NOT add it here */
 .tTitle, .jTitle { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; }
 .count, .submeta, .meta, .jDate, .jTags, .topCounts, .articleMeta, .sectionNum, .chartCaption, .chartNote { font-family: var(--mono); }
 

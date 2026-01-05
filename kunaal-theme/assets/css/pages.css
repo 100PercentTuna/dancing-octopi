@@ -510,7 +510,34 @@ main.article {
   }
 }
 
-/* Desktop (961+): No padding needed - prose max-width handles containment */
+/* Narrow desktop (961-1150px): Center content and add padding to avoid asymmetric layout.
+   At these widths, the 620px prose would be left-aligned with 268px+ gap on right.
+   Fix: Center content and add minimum side padding. */
+@media (max-width: 1150px) and (min-width: 961px) {
+  .articleHeader,
+  .prose {
+    /* Center the prose content */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    /* Add minimum padding to prevent text touching edges */
+    padding-left: var(--space-4, 32px) !important;
+    padding-right: var(--space-4, 32px) !important;
+    box-sizing: border-box;
+    /* Max width is prose (620px) + padding (64px) = 684px, or 100% if viewport is smaller */
+    max-width: min(calc(var(--prose) + var(--space-4, 32px) * 2), 100%) !important;
+  }
+  
+  /* Hero image also centered */
+  .heroImage {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4, 32px);
+    padding-right: var(--space-4, 32px);
+    max-width: min(calc(var(--prose) + var(--space-4, 32px) * 2), 100%);
+  }
+}
+
+/* Desktop (1151+): No special handling - prose max-width handles containment */
 
 /* ========================================
    PAGE UTILITIES

@@ -1728,6 +1728,56 @@
     }
   }
 
+  // ========================================
+  // STANDALONE PROGRESS BAR (FAILSAFE)
+  // This runs independently to ensure progress bar works even if main init fails
+  // ========================================
+  function initProgressBarStandalone() {
+    const pf = document.getElementById('progressFill');
+    if (!pf) return;
+    
+    // Remove no-transition class
+    pf.classList.remove('no-transition');
+    
+    function updateProgress() {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const docHeight = Math.max(
+        document.body.scrollHeight - window.innerHeight,
+        document.documentElement.scrollHeight - window.innerHeight,
+        1
+      );
+      
+      if (scrollY < 5) {
+        pf.style.setProperty('width', '0%', 'important');
+        pf.style.setProperty('opacity', '0', 'important');
+      } else {
+        const progress = Math.min(Math.max(scrollY / docHeight, 0), 1);
+        pf.style.setProperty('width', (progress * 100).toFixed(2) + '%', 'important');
+        pf.style.setProperty('opacity', '1', 'important');
+      }
+    }
+    
+    // Attach scroll listener
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    
+    // Initial update
+    updateProgress();
+    
+    // Update after images load
+    window.addEventListener('load', function() {
+      setTimeout(updateProgress, 100);
+      setTimeout(updateProgress, 500);
+      setTimeout(updateProgress, 1000);
+    });
+  }
+  
+  // Run progress bar init immediately when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProgressBarStandalone);
+  } else {
+    initProgressBarStandalone();
+  }
+
   // Run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

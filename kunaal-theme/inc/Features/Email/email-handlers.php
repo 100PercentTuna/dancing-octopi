@@ -139,10 +139,12 @@ function kunaal_build_contact_email(string $name, string $email, string $message
     $email_body .= "Time: " . gmdate('c') . " (UTC)\n\n";
     $email_body .= "Message:\n{$message}\n";
     
-    $headers = array(
-        'From: ' . $site_name . ' <' . get_option('admin_email') . '>',
-    );
+    // IMPORTANT: Do NOT set From header here - let the SMTP filter handle it.
+    // O365 requires the From address to match the authenticated SMTP username.
+    // The wp_mail_from filter in smtp-config.php sets this correctly.
+    $headers = array();
     if (!empty($email)) {
+        // Reply-To is safe to set - allows recipient to reply directly to the sender
         $headers[] = 'Reply-To: ' . $sender_name . ' <' . $email . '>';
     }
     
