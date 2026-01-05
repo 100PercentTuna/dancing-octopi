@@ -74,6 +74,7 @@ require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/embed-card.php';
 
 // Email handlers (contact form, subscribe, SMTP)
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/email-handlers.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/db.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/subscribe-handler.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-config.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-diagnostics.php';

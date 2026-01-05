@@ -75,6 +75,14 @@ function kunaal_theme_activation_handler() {
     // 1. Register post types and rewrite rules
     kunaal_register_post_types();
     flush_rewrite_rules();
+
+    // 1b. Install/upgrade subscriber DB schema and migrate legacy subscriber CPT.
+    if (function_exists('kunaal_subscribers_install_schema')) {
+        kunaal_subscribers_install_schema();
+    }
+    if (function_exists('kunaal_subscribers_migrate_from_cpt')) {
+        kunaal_subscribers_migrate_from_cpt();
+    }
     
     // 2. Create default pages
     if (!get_page_by_path('about')) {
