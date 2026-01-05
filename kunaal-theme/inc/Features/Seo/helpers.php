@@ -48,26 +48,12 @@ function kunaal_seo_setting(string $key, $default = null) {
  */
 function kunaal_seo_get_title(): string {
     if (is_singular()) {
-        $post_id = get_queried_object_id();
-        $custom = trim((string) get_post_meta($post_id, 'kunaal_seo_title', true));
-        if ($custom !== '') {
-            return $custom;
-        }
-        return (string) get_the_title($post_id);
+        return kunaal_seo_get_singular_title();
     }
 
-    if (is_post_type_archive()) {
-        $pt = get_query_var('post_type');
-        $pt = is_array($pt) ? reset($pt) : $pt;
-        $obj = $pt ? get_post_type_object((string) $pt) : null;
-        return $obj && !empty($obj->labels->name) ? (string) $obj->labels->name : (string) get_bloginfo('name');
-    }
-
-    if (is_tax() || is_category() || is_tag()) {
-        $term = get_queried_object();
-        if ($term instanceof WP_Term) {
-            return (string) $term->name;
-        }
+    $archive_title = kunaal_seo_get_archive_title();
+    if ($archive_title !== '') {
+        return $archive_title;
     }
 
     if (is_home() || is_front_page()) {
@@ -82,36 +68,12 @@ function kunaal_seo_get_title(): string {
  */
 function kunaal_seo_get_description(): string {
     if (is_singular()) {
-        $post_id = get_queried_object_id();
-
-        $custom = trim((string) get_post_meta($post_id, 'kunaal_seo_description', true));
-        if ($custom !== '') {
-            return $custom;
-        }
-
-        $subtitle = trim((string) get_post_meta($post_id, 'kunaal_subtitle', true));
-        if ($subtitle !== '') {
-            return $subtitle;
-        }
-
-        if (has_excerpt($post_id)) {
-            return (string) get_the_excerpt($post_id);
-        }
-
-        $post = get_post($post_id);
-        if ($post) {
-            return (string) wp_trim_words(wp_strip_all_tags((string) $post->post_content), 30);
-        }
+        return kunaal_seo_get_singular_description();
     }
 
-    if (is_post_type_archive('essay')) {
-        return (string) kunaal_seo_setting('archive_essay_description', kunaal_seo_setting('default_description', ''));
-    }
-    if (is_post_type_archive('jotting')) {
-        return (string) kunaal_seo_setting('archive_jotting_description', kunaal_seo_setting('default_description', ''));
-    }
-    if (is_tax('topic')) {
-        return (string) kunaal_seo_setting('archive_topic_description', kunaal_seo_setting('default_description', ''));
+    $archive_desc = kunaal_seo_get_archive_description();
+    if ($archive_desc !== '') {
+        return $archive_desc;
     }
 
     return (string) kunaal_seo_setting('default_description', '');
@@ -150,20 +112,9 @@ function kunaal_seo_get_canonical_url(): string {
         return (string) get_permalink(get_queried_object_id());
     }
 
-    if (is_post_type_archive()) {
-        $pt = get_query_var('post_type');
-        $pt = is_array($pt) ? reset($pt) : $pt;
-        $base = $pt ? get_post_type_archive_link((string) $pt) : home_url('/');
-        return kunaal_seo_apply_pagination((string) $base);
-    }
-
-    if (is_tax() || is_category() || is_tag()) {
-        $term = get_queried_object();
-        $base = ($term instanceof WP_Term) ? get_term_link($term) : home_url('/');
-        if (is_wp_error($base)) {
-            $base = home_url('/');
-        }
-        return kunaal_seo_apply_pagination((string) $base);
+    $archive_base = kunaal_seo_get_archive_canonical_base();
+    if ($archive_base !== '') {
+        return kunaal_seo_apply_pagination($archive_base);
     }
 
     if (is_front_page()) {
@@ -193,32 +144,139 @@ function kunaal_seo_apply_pagination(string $base_url): string {
  * Get an absolute share image URL for OG/Twitter/Schema.
  */
 function kunaal_seo_get_share_image_url(): string {
+    $url = '';
+
     if (is_singular()) {
-        $post_id = get_queried_object_id();
-        $seo_img = absint(get_post_meta($post_id, 'kunaal_seo_og_image_id', true));
-        if ($seo_img) {
-            $url = wp_get_attachment_image_url($seo_img, 'large');
-            if ($url) return (string) $url;
-        }
-
-        $card_image = absint(get_post_meta($post_id, 'kunaal_card_image', true));
-        if ($card_image) {
-            $url = wp_get_attachment_image_url($card_image, 'large');
-            if ($url) return (string) $url;
-        }
-
-        if (has_post_thumbnail($post_id)) {
-            $url = get_the_post_thumbnail_url($post_id, 'large');
-            if ($url) return (string) $url;
-        }
+        $url = kunaal_seo_get_singular_share_image_url();
     }
 
-    $default_id = absint(kunaal_seo_setting('default_share_image_id', 0));
-    if ($default_id) {
-        $url = wp_get_attachment_image_url($default_id, 'large');
-        if ($url) return (string) $url;
+    if ($url === '') {
+        $url = kunaal_seo_get_default_share_image_url();
+    }
+
+    return $url;
+}
+
+function kunaal_seo_get_singular_title(): string {
+    $post_id = get_queried_object_id();
+    $custom = trim((string) get_post_meta($post_id, 'kunaal_seo_title', true));
+    return ($custom !== '') ? $custom : (string) get_the_title($post_id);
+}
+
+function kunaal_seo_get_archive_title(): string {
+    if (is_post_type_archive()) {
+        $pt = get_query_var('post_type');
+        $pt = is_array($pt) ? reset($pt) : $pt;
+        $obj = $pt ? get_post_type_object((string) $pt) : null;
+        return ($obj && !empty($obj->labels->name)) ? (string) $obj->labels->name : (string) get_bloginfo('name');
+    }
+
+    if (is_tax() || is_category() || is_tag()) {
+        $term = get_queried_object();
+        if ($term instanceof WP_Term) {
+            return (string) $term->name;
+        }
     }
 
     return '';
+}
+
+function kunaal_seo_get_singular_description(): string {
+    $post_id = get_queried_object_id();
+
+    $custom = trim((string) get_post_meta($post_id, 'kunaal_seo_description', true));
+    if ($custom !== '') {
+        return $custom;
+    }
+
+    $subtitle = trim((string) get_post_meta($post_id, 'kunaal_subtitle', true));
+    if ($subtitle !== '') {
+        return $subtitle;
+    }
+
+    if (has_excerpt($post_id)) {
+        return (string) get_the_excerpt($post_id);
+    }
+
+    $post = get_post($post_id);
+    if ($post) {
+        return (string) wp_trim_words(wp_strip_all_tags((string) $post->post_content), 30);
+    }
+
+    return '';
+}
+
+function kunaal_seo_get_archive_description(): string {
+    $fallback = (string) kunaal_seo_setting('default_description', '');
+
+    if (is_post_type_archive('essay')) {
+        return (string) kunaal_seo_setting('archive_essay_description', $fallback);
+    }
+    if (is_post_type_archive('jotting')) {
+        return (string) kunaal_seo_setting('archive_jotting_description', $fallback);
+    }
+    if (is_tax('topic')) {
+        return (string) kunaal_seo_setting('archive_topic_description', $fallback);
+    }
+
+    return '';
+}
+
+function kunaal_seo_get_archive_canonical_base(): string {
+    if (is_post_type_archive()) {
+        $pt = get_query_var('post_type');
+        $pt = is_array($pt) ? reset($pt) : $pt;
+        return $pt ? (string) get_post_type_archive_link((string) $pt) : home_url('/');
+    }
+
+    if (is_tax() || is_category() || is_tag()) {
+        $term = get_queried_object();
+        $base = ($term instanceof WP_Term) ? get_term_link($term) : home_url('/');
+        if (is_wp_error($base)) {
+            return home_url('/');
+        }
+        return (string) $base;
+    }
+
+    return '';
+}
+
+function kunaal_seo_get_singular_share_image_url(): string {
+    $post_id = get_queried_object_id();
+
+    $seo_img = absint(get_post_meta($post_id, 'kunaal_seo_og_image_id', true));
+    if ($seo_img) {
+        $url = wp_get_attachment_image_url($seo_img, 'large');
+        if ($url) {
+            return (string) $url;
+        }
+    }
+
+    $card_image = absint(get_post_meta($post_id, 'kunaal_card_image', true));
+    if ($card_image) {
+        $url = wp_get_attachment_image_url($card_image, 'large');
+        if ($url) {
+            return (string) $url;
+        }
+    }
+
+    if (has_post_thumbnail($post_id)) {
+        $url = get_the_post_thumbnail_url($post_id, 'large');
+        if ($url) {
+            return (string) $url;
+        }
+    }
+
+    return '';
+}
+
+function kunaal_seo_get_default_share_image_url(): string {
+    $default_id = absint(kunaal_seo_setting('default_share_image_id', 0));
+    if (!$default_id) {
+        return '';
+    }
+
+    $url = wp_get_attachment_image_url($default_id, 'large');
+    return $url ? (string) $url : '';
 }
 

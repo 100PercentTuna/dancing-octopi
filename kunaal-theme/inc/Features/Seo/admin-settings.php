@@ -98,7 +98,9 @@ function kunaal_seo_add_settings_page(): void {
 add_action('admin_menu', 'kunaal_seo_add_settings_page');
 
 function kunaal_seo_render_settings_page(): void {
-    if (!current_user_can('manage_options')) return;
+    if (!current_user_can('manage_options')) {
+        return;
+    }
     ?>
     <div class="wrap">
         <h1>SEO</h1>
