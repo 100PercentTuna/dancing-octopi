@@ -46,7 +46,7 @@ if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
  * Cache-bust suffix: Increment this when CSS changes need to bypass stale page caches.
  * The filemtime alone isn't enough when WordPress page cache stores old timestamps.
  */
-define('KUNAAL_ASSET_CACHE_BUST', '13');
+define('KUNAAL_ASSET_CACHE_BUST', '14');
 
 function kunaal_asset_version(string $relative_path): string {
     $relative_path = ltrim((string) $relative_path, '/');

@@ -391,6 +391,28 @@
     }
   }
 
+  // Failsafe: some browsers/pages do not emit a reliable scroll event for the actual scroller.
+  // Poll scrollTop and update when it changes (throttled). This is lightweight and prevents
+  // regressions where progress/mast/hero effects appear "dead" even though the page scrolls.
+  let _lastPolledY = -1;
+  let _lastPollTs = 0;
+  function startScrollPoller() {
+    function loop(ts) {
+      // Throttle to ~20fps max
+      if (ts - _lastPollTs > 50) {
+        _lastPollTs = ts;
+        const y = getScrollTop();
+        if (y !== _lastPolledY) {
+          _lastPolledY = y;
+          lastY = y;
+          requestTick();
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  }
+
   // ========================================
   // PARALLAX for card images
   // ========================================
@@ -1727,6 +1749,9 @@
       lastY = getScrollTop();
       cacheViewport();
       updateScrollEffects(lastY);
+
+      // Start scroll poller after first synchronous paint update
+      startScrollPoller();
       
       // Remove no-transition class and force progress bar visibility check
       const pf = getProgressFill();
