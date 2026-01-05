@@ -304,8 +304,9 @@
     if (pf) {
       if (y < 5) {
         // At top: hide progress bar completely
-        pf.style.width = '0%';
-        pf.style.opacity = '0';
+        // Use setProperty with 'important' to override any CSS rules
+        pf.style.setProperty('width', '0%', 'important');
+        pf.style.setProperty('opacity', '0', 'important');
       } else {
         // Recalculate viewport if cachedDocH seems invalid
         if (!hasValidDocHeight || cachedDocH < 100 || isNaN(cachedDocH)) {
@@ -330,8 +331,9 @@
         
         // Only show if we have valid progress (not NaN, not Infinity)
         if (isFinite(targetFrac) && targetFrac >= 0) {
-          pf.style.width = (targetFrac * 100).toFixed(2) + '%';
-          pf.style.opacity = '1';
+          // Use setProperty with 'important' to override any CSS rules
+          pf.style.setProperty('width', (targetFrac * 100).toFixed(2) + '%', 'important');
+          pf.style.setProperty('opacity', '1', 'important');
         }
       }
     }
@@ -539,30 +541,66 @@
       handleNavClose(e);
     });
     
-    // Touch events for iOS Safari
-    let touchMoved = false;
-    document.addEventListener('touchstart', function() {
-      touchMoved = false;
-    }, { passive: true });
+    // Touch events for iOS Safari - SIMPLIFIED for landscape reliability
+    // Track if we're touching the nav toggle specifically
+    let navToggleTouchStart = null;
     
-    document.addEventListener('touchmove', function() {
-      touchMoved = true;
-    }, { passive: true });
-    
-    document.addEventListener('touchend', function(e) {
-      // Only handle if touch didn't move (wasn't a scroll)
-      if (touchMoved) return;
-      
+    // Touchstart on the toggle itself - record the start position
+    document.addEventListener('touchstart', function(e) {
       const toggle = e.target.closest('[data-ui="nav-toggle"]');
       if (toggle) {
+        const touch = e.touches[0];
+        navToggleTouchStart = {
+          x: touch.clientX,
+          y: touch.clientY,
+          target: toggle
+        };
+      } else {
+        navToggleTouchStart = null;
+      }
+    }, { passive: true });
+    
+    // Touchend - if we started on toggle and didn't move much, toggle the nav
+    document.addEventListener('touchend', function(e) {
+      if (!navToggleTouchStart) return;
+      
+      const touch = e.changedTouches[0];
+      const dx = Math.abs(touch.clientX - navToggleTouchStart.x);
+      const dy = Math.abs(touch.clientY - navToggleTouchStart.y);
+      
+      // Only toggle if we didn't move more than 10px (wasn't a scroll/swipe)
+      if (dx < 10 && dy < 10) {
         e.preventDefault();
+        e.stopPropagation();
         
         // Record touch time for ghost click prevention
         lastNavTouchTime = Date.now();
         
-        toggleNav(toggle);
+        toggleNav(navToggleTouchStart.target);
       }
+      
+      navToggleTouchStart = null;
     }, { passive: false });
+    
+    // BACKUP: Direct touchstart toggle for iOS Safari landscape
+    // Some iOS versions in landscape don't fire touchend reliably
+    const directToggle = document.querySelector('[data-ui="nav-toggle"]');
+    if (directToggle) {
+      let tapStart = 0;
+      directToggle.addEventListener('touchstart', function(e) {
+        tapStart = Date.now();
+      }, { passive: true });
+      
+      directToggle.addEventListener('touchend', function(e) {
+        // If it was a quick tap (< 200ms), toggle
+        if (Date.now() - tapStart < 200) {
+          e.preventDefault();
+          e.stopPropagation();
+          lastNavTouchTime = Date.now();
+          toggleNav(this);
+        }
+      }, { passive: false });
+    }
 
     // Escape key closes nav
     document.addEventListener('keydown', function(e) {
@@ -1665,6 +1703,25 @@
           updateScrollEffects(lastY);
         }, delay);
       });
+      
+      // FALLBACK: After 4 seconds, check if progress bar is still stuck at 0%
+      // If user has scrolled but progress bar isn't showing, force it
+      setTimeout(function() {
+        const pf = getProgressFill();
+        if (pf) {
+          const currentY = window.scrollY || window.pageYOffset || 0;
+          const computedWidth = window.getComputedStyle(pf).width;
+          
+          // If user has scrolled but progress is still 0 or very small, force update
+          if (currentY > 50 && (computedWidth === '0px' || computedWidth === '0%' || parseFloat(computedWidth) < 1)) {
+            // Force recalculation
+            cachedDocH = 0;
+            hasValidDocHeight = false;
+            cacheViewport();
+            updateScrollEffects(currentY);
+          }
+        }
+      }, 4000);
     } catch (e) {
       // Silent fail - don't break the page
       document.documentElement.classList.remove('js-ready');

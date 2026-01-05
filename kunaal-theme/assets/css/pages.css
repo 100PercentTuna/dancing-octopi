@@ -7,6 +7,8 @@
  * @since 4.20.8
  */
 
+@layer pages {
+
 /* ========================================
    ARCHIVE HEADER
    ======================================== */
@@ -33,12 +35,13 @@
    Professional publication layout:
    Title → Subtitle → Author Byline → Meta (date/time + tags)
    
-   CRITICAL: Body has padding-top: var(--mastH) to clear the fixed header,
-   but this can fail if --mastH isn't set or if CSS layers conflict.
-   We use padding-top here as additional breathing room only.
+   CRITICAL FIX: Body has padding-top: var(--mastH) to clear the fixed header.
+   But we also add margin-top here as EXTRA clearance to ensure content
+   never overlaps with the masthead, even if body padding fails or is overridden.
    ======================================== */
 main.article { 
-  margin-top: 0;
+  /* Extra clearance beyond body's mastH padding - this ADDS to the body padding */
+  margin-top: var(--space-3, 24px);
   padding-top: var(--space-4);
   padding-left: 0;
   padding-right: 0;
@@ -46,16 +49,16 @@ main.article {
 }
 
 /* DEFENSIVE: Ensure article title is never behind the masthead.
-   The articleTitle gets scroll-margin-top for anchor links and
-   a min safe distance from the body's mastH clearance. */
+   The articleTitle gets scroll-margin-top for anchor links. */
 .articleTitle {
-  scroll-margin-top: calc(var(--mastH, 100px) + var(--space-2, 16px));
+  scroll-margin-top: calc(var(--mastH, 100px) + var(--space-4, 32px));
 }
 
-/* Ensure first visible element in article has extra clearance if needed */
+/* Ensure first visible element in article has extra clearance if needed.
+   Uses margin-top (not padding-top) so it ADDS to parent margins. */
 .articleHeader:first-child {
-  /* If body padding isn't applied, this provides fallback clearance */
-  padding-top: max(0px, calc(var(--mastH, 0px) - 100px));
+  /* Fallback clearance: 10% of mastH provides meaningful space */
+  margin-top: var(--space-2, 16px);
 }
 
 /* Article header - matches prose width and alignment */
@@ -230,9 +233,9 @@ main.article {
 /* Mobile article adjustments (portrait) */
 @media (max-width: 640px) {
   main.article {
-    /* Breathing room after body's mastH padding */
-    margin-top: 0;
-    padding-top: var(--space-4, 32px) !important;
+    /* Extra clearance beyond body's mastH padding on mobile */
+    margin-top: var(--space-4, 32px);
+    padding-top: var(--space-3, 24px) !important;
   }
 }
 
@@ -240,8 +243,9 @@ main.article {
 @media (max-height: 500px) and (orientation: landscape) {
   main.article {
     /* In landscape, mast may be shorter but viewport is cramped.
-       Ensure content doesn't overlap with fixed header. */
-    padding-top: var(--space-3, 24px) !important;
+       Add margin-top for extra clearance beyond body's mastH padding. */
+    margin-top: var(--space-3, 24px);
+    padding-top: var(--space-2, 16px) !important;
   }
   
   .articleHeader {

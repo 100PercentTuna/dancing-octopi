@@ -123,9 +123,28 @@ function kunaal_action_phpmailer_init(PHPMailer\PHPMailer\PHPMailer $phpmailer):
     $phpmailer->Password = $pass;
     $phpmailer->SMTPAutoTLS = true;
     
-    // Set shorter timeout (15 seconds instead of default 30)
-    // Helps with O365 which can hang on misconfiguration
-    $phpmailer->Timeout = 15;
+    // Set longer timeout for O365 (can be slow to respond)
+    $phpmailer->Timeout = 30;
+    
+    // O365 CRITICAL: Force TLS 1.2 (required by Microsoft)
+    // This fixes "SMTP connect() failed" errors with O365
+    $phpmailer->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => true,
+            'verify_peer_name' => true,
+            'allow_self_signed' => false,
+            'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
+        ),
+    );
+    
+    // O365 CRITICAL: Set FROM address to match authenticated username
+    // O365 rejects emails where FROM doesn't match the authenticated user
+    $from_email = kunaal_mod('kunaal_smtp_from_email', '');
+    if (empty($from_email) || !is_email($from_email)) {
+        // If no custom FROM is set, use the SMTP username (required for O365)
+        $from_email = $user;
+    }
+    $phpmailer->setFrom($from_email, kunaal_mod('kunaal_smtp_from_name', get_bloginfo('name')));
     
     // Enable debug mode if constant is defined
     // Add define('KUNAAL_SMTP_DEBUG', true); to wp-config.php to enable

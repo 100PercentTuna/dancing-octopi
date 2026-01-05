@@ -48,6 +48,8 @@ function kunaal_generate_subscribe_token(): string {
 
 /**
  * Send subscribe confirmation email
+ * 
+ * Logs PHPMailer errors on failure for debugging.
  */
 function kunaal_send_subscribe_confirmation(string $email, string $token): bool {
     $to = $email;
@@ -55,7 +57,23 @@ function kunaal_send_subscribe_confirmation(string $email, string $token): bool 
     $confirm_url = add_query_arg(array('kunaal_sub_confirm' => $token), home_url('/'));
     $subject = '[' . $site . '] Confirm your subscription';
     $body = "Hi!\n\nPlease confirm your subscription by clicking the link below:\n\n" . esc_url_raw($confirm_url) . "\n\nIf you didn't request this, you can ignore this email.\n";
-    return wp_mail($to, $subject, $body);
+    
+    $sent = wp_mail($to, $subject, $body);
+    
+    // Log PHPMailer error on failure for debugging
+    if (!$sent) {
+        global $phpmailer;
+        $error_info = '';
+        if (isset($phpmailer) && is_object($phpmailer) && property_exists($phpmailer, 'ErrorInfo')) {
+            $error_info = $phpmailer->ErrorInfo;
+        }
+        kunaal_theme_log('Subscribe confirmation email failed', array(
+            'to' => $email,
+            'error' => $error_info ?: 'Unknown error (PHPMailer ErrorInfo empty)',
+        ));
+    }
+    
+    return $sent;
 }
 
 /**
