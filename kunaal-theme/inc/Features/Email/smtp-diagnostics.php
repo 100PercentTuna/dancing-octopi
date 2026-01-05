@@ -170,4 +170,84 @@ function kunaal_handle_smtp_diagnostics(): void {
 }
 add_action('wp_ajax_kunaal_smtp_diagnostics', 'kunaal_handle_smtp_diagnostics');
 
+/**
+ * Admin-only AJAX endpoint to test actual sending via wp_mail.
+ * This helps diagnose deliverability vs connectivity vs From-address policy issues.
+ *
+ * POST:
+ * - nonce (kunaal_theme_nonce)
+ * - type: "contact" | "subscribe"
+ * - to: optional recipient (defaults to current user email)
+ * - forcePhp: "1" to temporarily disable SMTP hook for this send
+ */
+function kunaal_handle_smtp_send_test(): void {
+    try {
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => 'Unauthorized.'), 403);
+            wp_die();
+        }
+
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+        if (!$nonce || !wp_verify_nonce($nonce, 'kunaal_theme_nonce')) {
+            wp_send_json_error(array('message' => 'Invalid nonce.'), 400);
+            wp_die();
+        }
+
+        $type = isset($_POST['type']) ? sanitize_text_field(wp_unslash($_POST['type'])) : 'contact';
+        $to = isset($_POST['to']) ? sanitize_email(wp_unslash($_POST['to'])) : '';
+        if ($to === '' && function_exists('wp_get_current_user')) {
+            $u = wp_get_current_user();
+            $to = ($u && isset($u->user_email)) ? (string) $u->user_email : '';
+        }
+        if (!is_email($to)) {
+            wp_send_json_error(array('message' => 'Provide a valid recipient email in `to`.'), 400);
+            wp_die();
+        }
+
+        $force_php = isset($_POST['forcePhp']) ? sanitize_text_field(wp_unslash($_POST['forcePhp'])) : '';
+        $force_php = ($force_php === '1');
+
+        $site = get_bloginfo('name');
+        $subject = '[' . $site . '] Test email (' . $type . ')';
+        $body = "This is a test email triggered from Kunaal Theme SMTP diagnostics.\n\n"
+            . "Type: " . $type . "\n"
+            . "Time (UTC): " . gmdate('c') . "\n"
+            . "Home URL: " . home_url('/') . "\n";
+
+        if ($force_php && function_exists('kunaal_action_phpmailer_init')) {
+            remove_action('phpmailer_init', 'kunaal_action_phpmailer_init');
+        }
+
+        $sent = wp_mail($to, $subject, $body);
+
+        if ($force_php && function_exists('kunaal_action_phpmailer_init')) {
+            add_action('phpmailer_init', 'kunaal_action_phpmailer_init');
+        }
+
+        global $phpmailer;
+        $error_info = '';
+        if (!$sent && isset($phpmailer) && is_object($phpmailer) && property_exists($phpmailer, 'ErrorInfo')) {
+            $error_info = (string) $phpmailer->ErrorInfo;
+        }
+
+        wp_send_json_success(array(
+            'sent' => (bool) $sent,
+            'to' => $to,
+            'type' => $type,
+            'forcePhp' => $force_php,
+            'smtpEnabled' => function_exists('kunaal_smtp_is_enabled') ? (bool) kunaal_smtp_is_enabled() : false,
+            'tcp' => kunaal_smtp_test_tcp_connectivity(6),
+            'errorInfo' => $error_info,
+        ));
+        wp_die();
+    } catch (\Throwable $e) {
+        if (function_exists('kunaal_theme_log')) {
+            kunaal_theme_log('SMTP send test error', array('error' => $e->getMessage()));
+        }
+        wp_send_json_error(array('message' => 'SMTP send test failed.'), 500);
+        wp_die();
+    }
+}
+add_action('wp_ajax_kunaal_smtp_send_test', 'kunaal_handle_smtp_send_test');
+
 
