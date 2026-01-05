@@ -86,7 +86,9 @@ function kunaal_smtp_test_tcp_connectivity(int $timeout_seconds = 6): array {
     $errstr = '';
 
     // Suppress warnings; we return errors explicitly.
-    $fp = @fsockopen($host, $port, $errno, $errstr, $timeout_seconds);
+    // Use the resolved IPv4 address for the socket connect (avoids "localhost" quirks on some hosts).
+    $connect_host = $ip !== '' ? $ip : $host;
+    $fp = @fsockopen($connect_host, $port, $errno, $errstr, $timeout_seconds);
     if (is_resource($fp)) {
         fclose($fp);
         $result['ok'] = true;

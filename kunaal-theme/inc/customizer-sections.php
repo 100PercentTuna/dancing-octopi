@@ -542,7 +542,7 @@ function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $
     ));
     $wp_customize->add_control('kunaal_smtp_host_gui', array(
         'label' => 'SMTP Host',
-        'description' => 'e.g., smtp.gmail.com, smtp.mail.yahoo.com',
+        'description' => 'Example: smtp.gmail.com (TLS 587). If you are on GoDaddy shared hosting and O365/Gmail times out, use GoDaddy SMTP relay (commonly relay-hosting.secureserver.net) with port 25, no encryption, and SMTP Authentication OFF.',
         'section' => 'kunaal_email_delivery',
         'type' => 'text',
     ));
