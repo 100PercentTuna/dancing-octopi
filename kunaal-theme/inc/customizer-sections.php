@@ -352,10 +352,36 @@ function kunaal_customize_register_subscribe_section(WP_Customize_Manager $wp_cu
     ));
     $wp_customize->add_control('kunaal_subscribe_notify_delay_hours', array(
         'label' => 'Email Delay (Hours)',
-        'description' => 'Send notification emails X hours after a new essay/jotting is published (0 = immediately)',
+        'description' => 'Legacy default delay (hours). New system uses minutes + a global minimum delay; this remains as a fallback default if minutes are not set.',
         'section' => 'kunaal_subscribe',
         'type' => 'number',
         'input_attrs' => array('min' => 0, 'max' => 168, 'step' => 1),
+    ));
+
+    // Global minimum delay (minutes). Enforced as >= 60 minutes.
+    $wp_customize->add_setting('kunaal_subscribe_global_min_delay_minutes', array(
+        'default' => 60,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_global_min_delay_minutes', array(
+        'label' => 'Global Minimum Delay (Minutes)',
+        'description' => 'All subscriber emails (post notifications) will be scheduled at least this many minutes in the future (minimum enforced: 60).',
+        'section' => 'kunaal_subscribe',
+        'type' => 'number',
+        'input_attrs' => array('min' => 60, 'max' => 10080, 'step' => 1),
+    ));
+
+    // Default delay minutes for post notifications when a post-level delay is not set.
+    $wp_customize->add_setting('kunaal_subscribe_default_delay_minutes', array(
+        'default' => 0,
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_default_delay_minutes', array(
+        'label' => 'Default Post Email Delay (Minutes)',
+        'description' => 'If a post does not specify its own delay/time, this default is used (0 = use the legacy hours setting).',
+        'section' => 'kunaal_subscribe',
+        'type' => 'number',
+        'input_attrs' => array('min' => 0, 'max' => 10080, 'step' => 1),
     ));
 
     // Subscribe mode (built-in vs external)
@@ -408,6 +434,29 @@ function kunaal_customize_register_subscribe_section(WP_Customize_Manager $wp_cu
     $wp_customize->add_control('kunaal_subscribe_confirm_body', array(
         'label' => 'Confirmation Email Body',
         'description' => 'Plain text. Placeholders: {site}, {confirm_url}, {unsubscribe_url}',
+        'section' => 'kunaal_subscribe',
+        'type' => 'textarea',
+    ));
+
+    // Post notification templates.
+    $wp_customize->add_setting('kunaal_subscribe_post_subject', array(
+        'default' => '[{site}] New: {title}',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_post_subject', array(
+        'label' => 'New Post Email Subject',
+        'description' => 'Placeholders: {site}, {title}, {url}, {unsubscribe_url}',
+        'section' => 'kunaal_subscribe',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_subscribe_post_body', array(
+        'default' => "{title}\n\nRead: {url}\n\n—\nYou are receiving this because you subscribed to {site}.",
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_post_body', array(
+        'label' => 'New Post Email Body',
+        'description' => 'Plain text. Placeholders: {site}, {title}, {url}, {unsubscribe_url}',
         'section' => 'kunaal_subscribe',
         'type' => 'textarea',
     ));

@@ -19,13 +19,32 @@ if (!defined('ABSPATH')) {
  * Gutenberg uses the JavaScript sidebar plugin instead
  */
 function kunaal_add_meta_boxes(): void {
-    // Only add meta boxes if NOT using Gutenberg
+    $is_block_editor = false;
+    $post_type = '';
     if (function_exists('use_block_editor_for_post_type')) {
         $screen = get_current_screen();
-        $post_type = ($screen && isset($screen->post_type)) ? $screen->post_type : '';
+        $post_type = ($screen && isset($screen->post_type)) ? (string) $screen->post_type : '';
         if ($post_type && use_block_editor_for_post_type($post_type)) {
-            return; // Gutenberg is active, use JS sidebar instead
+            $is_block_editor = true;
         }
+    }
+
+    // Always add the subscriber email meta box (works in both classic + block editor).
+    if ($post_type === 'essay' || $post_type === 'jotting') {
+        add_meta_box(
+            'kunaal_subscriber_email',
+            'Subscriber Email',
+            'kunaal_subscriber_email_meta_box_callback',
+            $post_type,
+            'side',
+            'high'
+        );
+    }
+
+    // Only add the classic “required fields” meta boxes when NOT using Gutenberg.
+    // Gutenberg editing uses REST meta + editor UI patterns; these classic boxes are fallback.
+    if ($is_block_editor) {
+        return;
     }
     
     add_meta_box(
@@ -56,6 +75,76 @@ function kunaal_add_meta_boxes(): void {
     );
 }
 add_action('add_meta_boxes', 'kunaal_add_meta_boxes');
+
+/**
+ * Subscriber Email Meta Box (essay + jotting)
+ *
+ * Controls whether and when a post triggers an email to subscribers upon publish.
+ */
+function kunaal_subscriber_email_meta_box_callback(WP_Post $post): void {
+    wp_nonce_field('kunaal_save_meta', 'kunaal_meta_nonce');
+
+    $enabled = (bool) get_post_meta($post->ID, 'kunaal_notify_subscribers', true);
+    $mode = (string) get_post_meta($post->ID, 'kunaal_notify_mode', true);
+    $mode = $mode !== '' ? $mode : 'delay';
+    $delay_minutes = (int) get_post_meta($post->ID, 'kunaal_notify_delay_minutes', true);
+    $scheduled_gmt = (string) get_post_meta($post->ID, 'kunaal_notify_scheduled_gmt', true);
+
+    // Display scheduled time as local (site timezone) in the input.
+    $scheduled_local = '';
+    if ($scheduled_gmt !== '') {
+        $scheduled_local = get_date_from_gmt($scheduled_gmt, 'Y-m-d\\TH:i');
+    }
+
+    ?>
+    <p>
+        <label>
+            <input type="checkbox" name="kunaal_notify_subscribers" value="1" <?php checked($enabled); ?> />
+            <strong>Email subscribers when this is published</strong>
+        </label>
+    </p>
+
+    <p style="margin-bottom:6px;">
+        <label for="kunaal_notify_mode"><strong>Send timing</strong></label><br>
+        <select id="kunaal_notify_mode" name="kunaal_notify_mode" style="width:100%;">
+            <option value="delay" <?php selected($mode, 'delay'); ?>>Delay (minutes)</option>
+            <option value="time" <?php selected($mode, 'time'); ?>>Specific time</option>
+        </select>
+    </p>
+
+    <div id="kunaal-notify-delay" style="<?php echo $mode === 'delay' ? '' : 'display:none;'; ?>">
+        <p style="margin-top:0;">
+            <label for="kunaal_notify_delay_minutes">Delay (minutes)</label><br>
+            <input type="number" id="kunaal_notify_delay_minutes" name="kunaal_notify_delay_minutes" value="<?php echo esc_attr((string) $delay_minutes); ?>" min="0" step="1" style="width:100%;" />
+        </p>
+    </div>
+
+    <div id="kunaal-notify-time" style="<?php echo $mode === 'time' ? '' : 'display:none;'; ?>">
+        <p style="margin-top:0;">
+            <label for="kunaal_notify_scheduled_local">Scheduled time</label><br>
+            <input type="datetime-local" id="kunaal_notify_scheduled_local" name="kunaal_notify_scheduled_local" value="<?php echo esc_attr($scheduled_local); ?>" style="width:100%;" />
+        </p>
+    </div>
+
+    <p style="font-size:11px;color:#666;margin-top:6px;">
+        Note: sending is queued and may be delayed by your configured global minimum delay.
+    </p>
+
+    <script>
+    (function() {
+        var sel = document.getElementById('kunaal_notify_mode');
+        if (!sel) return;
+        var delayEl = document.getElementById('kunaal-notify-delay');
+        var timeEl = document.getElementById('kunaal-notify-time');
+        sel.addEventListener('change', function() {
+            var v = sel.value;
+            if (delayEl) delayEl.style.display = (v === 'delay') ? '' : 'none';
+            if (timeEl) timeEl.style.display = (v === 'time') ? '' : 'none';
+        });
+    })();
+    </script>
+    <?php
+}
 
 /**
  * Essay Meta Box
@@ -189,6 +278,26 @@ function kunaal_save_meta_box_data(int $post_id): void {
     if (isset($_POST['kunaal_subtitle'])) {
         update_post_meta($post_id, 'kunaal_subtitle', sanitize_text_field(wp_unslash($_POST['kunaal_subtitle'])));
     }
+
+    // Subscriber email settings (essay + jotting)
+    $notify_enabled = isset($_POST['kunaal_notify_subscribers']) && wp_validate_boolean(wp_unslash($_POST['kunaal_notify_subscribers']));
+    update_post_meta($post_id, 'kunaal_notify_subscribers', $notify_enabled ? '1' : '0');
+
+    $mode = isset($_POST['kunaal_notify_mode']) ? sanitize_text_field(wp_unslash($_POST['kunaal_notify_mode'])) : 'delay';
+    $mode = in_array($mode, array('delay', 'time'), true) ? $mode : 'delay';
+    update_post_meta($post_id, 'kunaal_notify_mode', $mode);
+
+    $delay_minutes = isset($_POST['kunaal_notify_delay_minutes']) ? absint(wp_unslash($_POST['kunaal_notify_delay_minutes'])) : 0;
+    update_post_meta($post_id, 'kunaal_notify_delay_minutes', $delay_minutes);
+
+    $scheduled_local = isset($_POST['kunaal_notify_scheduled_local']) ? sanitize_text_field(wp_unslash($_POST['kunaal_notify_scheduled_local'])) : '';
+    if ($scheduled_local !== '') {
+        // Convert local datetime string to GMT for storage.
+        $scheduled_gmt = get_gmt_from_date($scheduled_local, 'Y-m-d H:i:s');
+        update_post_meta($post_id, 'kunaal_notify_scheduled_gmt', $scheduled_gmt);
+    } else {
+        delete_post_meta($post_id, 'kunaal_notify_scheduled_gmt');
+    }
     
     // Auto-calculate reading time for essays
     $post_type = get_post_type($post_id);
@@ -266,6 +375,49 @@ function kunaal_register_meta_fields(): void {
             return current_user_can('edit_posts');
         },
     ));
+
+    // Subscriber email settings (essay + jotting)
+    foreach (array('essay', 'jotting') as $pt) {
+        register_post_meta($pt, 'kunaal_notify_subscribers', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'boolean',
+            'sanitize_callback' => 'wp_validate_boolean',
+            'auth_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+        ));
+
+        register_post_meta($pt, 'kunaal_notify_mode', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'auth_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+        ));
+
+        register_post_meta($pt, 'kunaal_notify_delay_minutes', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'integer',
+            'sanitize_callback' => 'absint',
+            'auth_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+        ));
+
+        register_post_meta($pt, 'kunaal_notify_scheduled_gmt', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'auth_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+        ));
+    }
 }
 add_action('init', 'kunaal_register_meta_fields');
 

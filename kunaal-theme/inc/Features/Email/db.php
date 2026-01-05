@@ -252,6 +252,41 @@ function kunaal_subscribers_list(array $args = array()): array {
 }
 
 /**
+ * Get confirmed subscribers in batches.
+ *
+ * @param int $offset
+ * @param int $limit
+ * @return array<int,array{id:int,email:string}>
+ */
+function kunaal_subscribers_get_confirmed_batch(int $offset, int $limit): array {
+    global $wpdb;
+    $table = kunaal_subscribers_table();
+    $limit = max(1, min(2000, $limit));
+    $offset = max(0, $offset);
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
+    $rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT id, email FROM {$table} WHERE status = %s ORDER BY id ASC LIMIT %d OFFSET %d",
+            'confirmed',
+            $limit,
+            $offset
+        ),
+        ARRAY_A
+    );
+    if (!is_array($rows)) {
+        return array();
+    }
+    $out = array();
+    foreach ($rows as $r) {
+        if (!isset($r['id'], $r['email'])) {
+            continue;
+        }
+        $out[] = array('id' => (int) $r['id'], 'email' => (string) $r['email']);
+    }
+    return $out;
+}
+
+/**
  * Mark last email sent timestamp.
  *
  * @param int $subscriber_id
