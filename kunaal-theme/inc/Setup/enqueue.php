@@ -402,6 +402,22 @@ function kunaal_enqueue_assets(): void {
 }
 
 /**
+ * Add small, targeted CSS overrides AFTER WordPress global styles.
+ * This is necessary when WP's `global-styles` output overrides theme CSS even in later layers.
+ */
+function kunaal_add_global_styles_overrides(): void {
+    // Ensure the handle exists on modern WP
+    if (!wp_style_is('global-styles', 'enqueued') && !wp_style_is('global-styles', 'done')) {
+        return;
+    }
+
+    // Dark mode: force article titles to use token ink (observed overridden to light-mode ink on frontend).
+    $css = ':root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleHeader h1.articleTitle{color:var(--ink);}';
+    wp_add_inline_style('global-styles', $css);
+}
+add_action('wp_enqueue_scripts', 'kunaal_add_global_styles_overrides', 100);
+
+/**
  * Add defer attribute to non-critical scripts for better performance
  * 
  * Moved from functions.php to keep functions.php bootstrap-only.

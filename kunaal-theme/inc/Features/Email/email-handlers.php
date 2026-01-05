@@ -191,12 +191,13 @@ function kunaal_handle_contact_form(): void {
             wp_die();
         }
 
-        // Fail-fast SMTP preflight (avoids 30s hangs on managed hosts when SMTP is unreachable)
+        // SMTP preflight: if SMTP is unreachable, try a non-SMTP fallback instead of failing hard.
+        // This improves real-world deliverability on managed hosts that block outbound SMTP ports.
+        $smtp_unreachable = false;
         if (function_exists('kunaal_smtp_preflight_fast')) {
             $preflight = kunaal_smtp_preflight_fast();
             if (isset($preflight['ok']) && $preflight['ok'] === false) {
-                wp_send_json_error(array('message' => $preflight['message'] . ' Please email directly.'));
-                wp_die();
+                $smtp_unreachable = true;
             }
         }
         
@@ -212,7 +213,15 @@ function kunaal_handle_contact_form(): void {
         }
         
         $email_data = kunaal_build_contact_email($inputs['name'], $inputs['email'], $inputs['message']);
+
+        // If SMTP is unreachable, temporarily disable SMTP hooks for this send and use PHP mail.
+        if ($smtp_unreachable && function_exists('kunaal_action_phpmailer_init')) {
+            remove_action('phpmailer_init', 'kunaal_action_phpmailer_init');
+        }
         $sent = wp_mail($email_data['to'], $email_data['subject'], $email_data['body'], $email_data['headers']);
+        if ($smtp_unreachable && function_exists('kunaal_action_phpmailer_init')) {
+            add_action('phpmailer_init', 'kunaal_action_phpmailer_init');
+        }
         
         if ($sent) {
             wp_send_json_success(array('message' => 'Thank you! Your message has been sent.'));

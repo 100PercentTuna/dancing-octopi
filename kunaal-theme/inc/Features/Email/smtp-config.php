@@ -63,7 +63,17 @@ function kunaal_filter_wp_mail_from(string $from_email): string {
         return $from_email;
     }
     $custom = kunaal_mod('kunaal_smtp_from_email', '');
-    return is_email($custom) ? $custom : $from_email;
+    if (is_email($custom)) {
+        return $custom;
+    }
+
+    // If SMTP is enabled and no explicit FROM is set, default to SMTP username.
+    // This improves deliverability for O365 which expects FROM to match authenticated user.
+    if (defined('KUNAAL_SMTP_USER') && is_email((string) KUNAAL_SMTP_USER)) {
+        return (string) KUNAAL_SMTP_USER;
+    }
+    $gui_user = (string) kunaal_mod('kunaal_smtp_username_gui', '');
+    return is_email($gui_user) ? $gui_user : $from_email;
 }
 add_filter('wp_mail_from', 'kunaal_filter_wp_mail_from');
 

@@ -10,12 +10,14 @@
    BASE CONTAINER
    ========================================= */
 .customToc {
-    --toc-padding: 20px; /* Used for indicator positioning */
-    --toc-width: 320px;  /* Desktop TOC width (single source of truth) */
+    --toc-width: 250px;     /* Desktop TOC width (as requested) */
+    --toc-pad-y: 20px;
+    --toc-pad-left: 16px;   /* Slightly tighter left edge */
+    --toc-pad-right: 26px;  /* More space on the right */
     background: linear-gradient(135deg, var(--bgWarm, #FAF8F5) 0%, #F5F0EA 100%);
     border: 1px solid var(--hair2, rgba(125,107,93,0.15));
     border-radius: 6px;
-    padding: var(--toc-padding);
+    padding: var(--toc-pad-y) var(--toc-pad-right) var(--toc-pad-y) var(--toc-pad-left);
     margin: var(--space-5, 40px) 0;
     max-width: var(--toc-width);
     box-shadow: 
@@ -44,7 +46,8 @@
     position: sticky;
     top: calc(var(--mastH, 77px) + var(--space-4, 32px));
     float: right;
-    margin-left: var(--space-4, 32px);
+    /* Bring TOC closer to prose */
+    margin-left: var(--space-3, 24px);
     margin-right: calc(-1 * (var(--space-4, 32px) + var(--toc-width)));
     z-index: 10;
 }
@@ -107,7 +110,7 @@
     content: '';
     position: absolute;
     /* Position 4px from container's right border */
-    right: calc(-1 * var(--toc-padding) + 4px);
+    right: calc(-1 * var(--toc-pad-right) + 4px);
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
@@ -153,7 +156,7 @@
     font-size: 10px;
     font-weight: 500;
     color: rgba(125,107,93,0.4);
-    min-width: 14px;
+    min-width: 12px;
     flex-shrink: 0;
     transition: color 150ms ease;
 }
@@ -264,9 +267,11 @@
     }
     
     .customToc {
-        --toc-padding: 20px;
+        --toc-pad-left: 18px;
+        --toc-pad-right: 18px;
+        --toc-pad-y: 16px;
         max-width: 100%;
-        padding: 16px var(--toc-padding);
+        padding: var(--toc-pad-y) var(--toc-pad-right) var(--toc-pad-y) var(--toc-pad-left);
     }
     
     /* Title becomes the toggle button */
@@ -359,8 +364,10 @@
    ========================================= */
 @media (max-width: 480px) {
     .customToc {
-        --toc-padding: 16px;
-        padding: 14px var(--toc-padding);
+        --toc-pad-left: 14px;
+        --toc-pad-right: 14px;
+        --toc-pad-y: 14px;
+        padding: var(--toc-pad-y) var(--toc-pad-right) var(--toc-pad-y) var(--toc-pad-left);
         margin: var(--space-3, 24px) 0;
     }
     

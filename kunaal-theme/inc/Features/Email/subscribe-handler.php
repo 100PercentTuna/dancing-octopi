@@ -71,9 +71,7 @@ function kunaal_subscribe_confirmation_preflight(string $email): bool {
 
 function kunaal_send_subscribe_confirmation(string $email, string $token): bool {
     // Fail-fast SMTP preflight (avoids 30s hangs when SMTP host/port is unreachable)
-    if (!kunaal_subscribe_confirmation_preflight($email)) {
-        return false;
-    }
+    $smtp_unreachable = !kunaal_subscribe_confirmation_preflight($email);
 
     $to = $email;
     $site = get_bloginfo('name');
@@ -81,7 +79,14 @@ function kunaal_send_subscribe_confirmation(string $email, string $token): bool 
     $subject = '[' . $site . '] Confirm your subscription';
     $body = "Hi!\n\nPlease confirm your subscription by clicking the link below:\n\n" . esc_url_raw($confirm_url) . "\n\nIf you didn't request this, you can ignore this email.\n";
     
+    // If SMTP is unreachable, temporarily disable SMTP hook for this send and use PHP mail.
+    if ($smtp_unreachable && function_exists('kunaal_action_phpmailer_init')) {
+        remove_action('phpmailer_init', 'kunaal_action_phpmailer_init');
+    }
     $sent = wp_mail($to, $subject, $body);
+    if ($smtp_unreachable && function_exists('kunaal_action_phpmailer_init')) {
+        add_action('phpmailer_init', 'kunaal_action_phpmailer_init');
+    }
     
     // Log PHPMailer error on failure for debugging
     if (!$sent) {
