@@ -41,7 +41,7 @@
    ======================================== */
 main.article { 
   /* Extra clearance beyond body's mastH padding - this ADDS to the body padding */
-  margin-top: var(--space-3, 24px);
+  margin-top: var(--space-5, 40px);
   padding-top: var(--space-4);
   padding-left: 0;
   padding-right: 0;
@@ -52,6 +52,11 @@ main.article {
    The articleTitle gets scroll-margin-top for anchor links. */
 .articleTitle {
   scroll-margin-top: calc(var(--mastH, 100px) + var(--space-4, 32px));
+}
+
+/* Anchor targets inside prose: ensure hash navigation lands below masthead */
+.prose [id] {
+  scroll-margin-top: calc(var(--mastH, 100px) + var(--space-6, 48px));
 }
 
 /* Ensure first visible element in article has extra clearance if needed.
@@ -78,6 +83,12 @@ main.article {
   color: var(--ink);
 }
 .articleTitle::after { display: none; }
+
+/* Dark mode hardening: WP global styles can override h1 colors after our CSS loads.
+   Win via specificity (no !important) so titles remain legible. */
+:root[data-theme="dark"] body.wp-theme-kunaal-theme.kunaal-essay .articleHeader h1.articleTitle {
+  color: var(--ink);
+}
 
 /* Subtitle/Dek - simple, clean style */
 .articleDek,

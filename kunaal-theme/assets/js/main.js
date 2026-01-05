@@ -220,49 +220,80 @@
   // Safari iOS compatible with defensive checks
   // ========================================
   
+  /**
+   * SCROLL SOURCE RESOLUTION
+   *
+   * Some browsers/pages end up scrolling the <body> element (body.scrollTop changes)
+   * while window.scrollY stays 0 and document.scrollingElement (HTML) doesn't move.
+   * This breaks any logic that assumes the document is the scroller.
+   *
+   * Contract:
+   * - Use one canonical scroll source for: header compaction + progress bar + parallax
+   * - Prefer the element that actually scrolls (body/docEl/nested scroller)
+   * - Update from capture-phase scroll events so we see non-bubbling scroll events
+   */
+  let activeScroller = null; // HTMLElement|null
+
+  function isScrollableElement(el) {
+    if (!el || el === document || el === window) return false;
+    if (!(el instanceof HTMLElement)) return false;
+    return (el.scrollHeight - el.clientHeight) > 20;
+  }
+
+  function guessScroller() {
+    const doc = document.documentElement;
+    const body = document.body;
+    if (!doc || !body) return null;
+
+    // If BODY is scrollable but HTML isn't, BODY is the real scroller (your observed case).
+    const bodyCan = (body.scrollHeight - body.clientHeight) > 20;
+    const docCan = (doc.scrollHeight - doc.clientHeight) > 20;
+    if (bodyCan && !docCan) return body;
+    if (docCan) return doc;
+    if (bodyCan) return body;
+
+    const se = document.scrollingElement;
+    if (se && isScrollableElement(se)) return se;
+    return null;
+  }
+
+  function getScroller() {
+    if (activeScroller && isScrollableElement(activeScroller)) return activeScroller;
+    activeScroller = guessScroller();
+    return activeScroller;
+  }
+
+  function getScrollTop() {
+    const scroller = getScroller();
+    if (scroller && typeof scroller.scrollTop === 'number') return scroller.scrollTop;
+    return window.scrollY || window.pageYOffset || 0;
+  }
+
+  function getScrollMax() {
+    const scroller = getScroller();
+    if (scroller) return Math.max(1, (scroller.scrollHeight - scroller.clientHeight));
+    // Fallback to document heights
+    const body = document.body;
+    const doc = document.documentElement;
+    return Math.max(
+      (body ? body.scrollHeight : 0) - window.innerHeight,
+      (doc ? doc.scrollHeight : 0) - window.innerHeight,
+      1
+    );
+  }
+
   // Track if we've ever gotten a valid document height
   let hasValidDocHeight = false;
   let resizeObserverActive = false;
   
   function cacheViewport() {
-    // Use both document.body and documentElement for Safari compatibility
-    const doc = document.documentElement;
-    const body = document.body;
-    
-    if (!body || !doc) {
-      // DOM not ready yet
-      return;
-    }
-    
-    // Safari sometimes reports different values between body and documentElement
-    // Use the LARGEST value to ensure we capture all content
-    const scrollHeight = Math.max(
-      body.scrollHeight || 0,
-      doc.scrollHeight || 0,
-      // Fallback: manually sum all direct children heights
-      body.offsetHeight || 0
-    );
-    
-    const clientHeight = Math.max(
-      window.innerHeight || 0,
-      doc.clientHeight || 0,
-      body.clientHeight || 0
-    );
-    
-    // Calculate scrollable height
-    const newDocH = scrollHeight - clientHeight;
-    
-    // Sanity check: scrollable height should be positive and reasonable
-    // If page has any scrollable content, it should be at least 100px
-    if (newDocH > 50) {
-      cachedDocH = newDocH;
+    const max = getScrollMax();
+    if (max > 50) {
+      cachedDocH = max;
       hasValidDocHeight = true;
     } else if (!hasValidDocHeight) {
-      // First calculation - use whatever we got, but set minimum
-      cachedDocH = Math.max(newDocH, 1);
+      cachedDocH = Math.max(max, 1);
     }
-    // If we already have a valid height and new calculation is tiny, keep old value
-    // (This prevents issues during orientation change when heights are temporarily wrong)
   }
   
   // Setup ResizeObserver to detect content height changes (lazy loaded images, etc)
@@ -312,19 +343,11 @@
         if (!hasValidDocHeight || cachedDocH < 100 || isNaN(cachedDocH)) {
           cacheViewport();
         }
-        
-        // Double-check we have a valid denominator
+
+        // Use the real scroll container's max scroll as the denominator
         let effectiveDocH = cachedDocH;
-        if (effectiveDocH < 50 || isNaN(effectiveDocH)) {
-          // Emergency fallback: calculate on the fly
-          const body = document.body;
-          const doc = document.documentElement;
-          effectiveDocH = Math.max(
-            (body ? body.scrollHeight : 0) - window.innerHeight,
-            (doc ? doc.scrollHeight : 0) - window.innerHeight,
-            500
-          );
-        }
+        const liveMax = getScrollMax();
+        if (liveMax > 50) effectiveDocH = liveMax;
         
         // Calculate progress fraction
         const targetFrac = Math.min(Math.max(y / effectiveDocH, 0), 1);
@@ -413,14 +436,15 @@
     heroParallaxBound = true;
     
     function onHeroScroll() {
-      const scrollY = window.scrollY || 0;
+      const scrollY = getScrollTop();
       // Very subtle parallax: 6% speed difference
       const parallax = scrollY * 0.06;
       // Apply transform with initial scale to prevent gaps
       heroImg.style.transform = 'translateY(' + parallax + 'px) scale(1.02)';
     }
     
-    window.addEventListener('scroll', onHeroScroll, { passive: true });
+    // Use capture scroll so this works even when <body> (not window) is the scroller
+    document.addEventListener('scroll', onHeroScroll, { passive: true, capture: true });
     onHeroScroll(); // Initial state
   }
 
@@ -1583,12 +1607,21 @@
       
       // Scroll handler - shared between scroll and touch events
       function handleScroll() {
-        lastY = window.scrollY || window.pageYOffset || 0;
+        lastY = getScrollTop();
         requestTick();
       }
       
-      // Primary scroll event
-      window.addEventListener('scroll', handleScroll, { passive: true });
+      // Primary scroll event (capture to catch non-bubbling scroll events)
+      document.addEventListener('scroll', function(e) {
+        // If the scroll target is a scrollable element, treat it as our active scroller
+        const t = e && e.target;
+        if (isScrollableElement(t)) {
+          activeScroller = t;
+        } else if (t === document || t === document.documentElement || t === document.body) {
+          activeScroller = guessScroller();
+        }
+        handleScroll();
+      }, { passive: true, capture: true });
       
       // iOS Safari fallback: touchmove can fire when scroll doesn't
       window.addEventListener('touchmove', handleScroll, { passive: true });
@@ -1604,7 +1637,7 @@
       window.addEventListener('resize', () => {
         cacheViewport();
         // Update scroll effects immediately after resize (fixes landscape rotation)
-        lastY = window.scrollY || window.pageYOffset || 0;
+        lastY = getScrollTop();
         requestTick();
       });
 
@@ -1612,7 +1645,7 @@
       window.addEventListener('orientationchange', () => {
         setTimeout(() => {
           cacheViewport();
-          lastY = window.scrollY || window.pageYOffset || 0;
+          lastY = getScrollTop();
           requestTick();
         }, 100);
       });
@@ -1675,7 +1708,7 @@
       initSubscribeForms();
 
       // Initial scroll effect - IMMEDIATE synchronous update
-      lastY = window.scrollY || window.pageYOffset || 0;
+      lastY = getScrollTop();
       cacheViewport();
       updateScrollEffects(lastY);
       
@@ -1699,7 +1732,7 @@
       [100, 300, 600, 1000, 2000, 3000].forEach(function(delay) {
         setTimeout(function() {
           cacheViewport();
-          lastY = window.scrollY || window.pageYOffset || 0;
+          lastY = getScrollTop();
           updateScrollEffects(lastY);
         }, delay);
       });
@@ -1709,7 +1742,7 @@
       setTimeout(function() {
         const pf = getProgressFill();
         if (pf) {
-          const currentY = window.scrollY || window.pageYOffset || 0;
+          const currentY = getScrollTop();
           const computedWidth = window.getComputedStyle(pf).width;
           
           // If user has scrolled but progress is still 0 or very small, force update
@@ -1726,56 +1759,6 @@
       // Silent fail - don't break the page
       document.documentElement.classList.remove('js-ready');
     }
-  }
-
-  // ========================================
-  // STANDALONE PROGRESS BAR (FAILSAFE)
-  // This runs independently to ensure progress bar works even if main init fails
-  // ========================================
-  function initProgressBarStandalone() {
-    const pf = document.getElementById('progressFill');
-    if (!pf) return;
-    
-    // Remove no-transition class
-    pf.classList.remove('no-transition');
-    
-    function updateProgress() {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const docHeight = Math.max(
-        document.body.scrollHeight - window.innerHeight,
-        document.documentElement.scrollHeight - window.innerHeight,
-        1
-      );
-      
-      if (scrollY < 5) {
-        pf.style.setProperty('width', '0%', 'important');
-        pf.style.setProperty('opacity', '0', 'important');
-      } else {
-        const progress = Math.min(Math.max(scrollY / docHeight, 0), 1);
-        pf.style.setProperty('width', (progress * 100).toFixed(2) + '%', 'important');
-        pf.style.setProperty('opacity', '1', 'important');
-      }
-    }
-    
-    // Attach scroll listener
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    
-    // Initial update
-    updateProgress();
-    
-    // Update after images load
-    window.addEventListener('load', function() {
-      setTimeout(updateProgress, 100);
-      setTimeout(updateProgress, 500);
-      setTimeout(updateProgress, 1000);
-    });
-  }
-  
-  // Run progress bar init immediately when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProgressBarStandalone);
-  } else {
-    initProgressBarStandalone();
   }
 
   // Run on DOM ready

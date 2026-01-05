@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 
 define('KUNAAL_THEME_DIR', get_template_directory());
 define('KUNAAL_THEME_URI', get_template_directory_uri());
-define('KUNAAL_THEME_VERSION', '4.99.8');
+define('KUNAAL_THEME_VERSION', '4.99.9');
 
 // ============================================================================
 // SETUP (Platform)
@@ -68,6 +68,7 @@ require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/embed-card.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/email-handlers.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/subscribe-handler.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-config.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-diagnostics.php';
 
 // SEO (Open Graph, Twitter Cards)
 require_once KUNAAL_THEME_DIR . '/inc/Features/Seo/open-graph.php';

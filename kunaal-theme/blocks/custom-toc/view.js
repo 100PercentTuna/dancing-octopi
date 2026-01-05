@@ -15,6 +15,19 @@
         return mastHeight;
     }
 
+    // Resolve the actual scroll container (some browsers scroll BODY, not window/documentElement)
+    function getScroller() {
+        var doc = document.documentElement;
+        var body = document.body;
+        if (body && (body.scrollHeight - body.clientHeight) > 20) {
+            return body;
+        }
+        if (doc && (doc.scrollHeight - doc.clientHeight) > 20) {
+            return doc;
+        }
+        return document.scrollingElement || window;
+    }
+
     function initCustomToc() {
         var tocs = document.querySelectorAll('.customToc');
         if (!tocs.length) return;
@@ -189,32 +202,45 @@
                     
                     // Calculate offset for masthead
                     var mastHeight = getMastHeight();
-                    var offset = mastHeight + 24;
+                    // Provide additional breathing room so target text isn't tucked under the mast.
+                    var offset = mastHeight + 64;
+                    var scroller = getScroller();
                     
                     // Get target position
                     var targetRect = target.getBoundingClientRect();
-                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                    var scrollTop = (scroller && typeof scroller.scrollTop === 'number')
+                        ? scroller.scrollTop
+                        : (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
                     var targetPosition = Math.max(0, scrollTop + targetRect.top - offset);
                     
                     // iOS Safari scroll fix: Use multiple methods
-                    // Method 1: Direct scrollTo on window
+                    // Method 1: Direct scrollTo on the actual scroller
                     try {
-                        window.scrollTo({
-                            top: targetPosition,
-                            left: 0,
-                            behavior: 'smooth'
-                        });
+                        if (scroller && scroller !== window && typeof scroller.scrollTo === 'function') {
+                            scroller.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                        } else {
+                            window.scrollTo({ top: targetPosition, left: 0, behavior: 'smooth' });
+                        }
                     } catch (err) {
                         // Method 2: Fallback for older browsers
-                        window.scrollTo(0, targetPosition);
+                        if (scroller && scroller !== window && typeof scroller.scrollTop === 'number') {
+                            scroller.scrollTop = targetPosition;
+                        } else {
+                            window.scrollTo(0, targetPosition);
+                        }
                     }
                     
                     // Method 3: Also try scrolling documentElement and body (iOS Safari quirk)
                     // Some iOS versions scroll body, others scroll documentElement
                     setTimeout(function() {
-                        var currentScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+                        var currentScroll = (scroller && typeof scroller.scrollTop === 'number')
+                            ? scroller.scrollTop
+                            : (window.pageYOffset || document.documentElement.scrollTop || 0);
                         // If scroll didn't happen, try alternative methods
                         if (Math.abs(currentScroll - targetPosition) > 100) {
+                            if (scroller && scroller !== window && typeof scroller.scrollTop === 'number') {
+                                scroller.scrollTop = targetPosition;
+                            }
                             document.documentElement.scrollTop = targetPosition;
                             document.body.scrollTop = targetPosition;
                         }
@@ -225,10 +251,11 @@
                         history.pushState(null, null, '#' + anchorId);
                     }
                     
-                    // Release scroll lock after animation completes
-                    setTimeout(function() {
-                        isScrollingToTarget = false;
-                    }, 1000);
+                    // Release scroll lock after animation completes.
+                    // Scale lock duration lightly with distance to avoid observer fighting the click-scroll.
+                    var distance = Math.abs(targetPosition - scrollTop);
+                    var lockMs = Math.min(1600, Math.max(900, Math.round(distance * 0.6)));
+                    setTimeout(function() { isScrollingToTarget = false; }, lockMs);
                     
                     // Collapse on mobile
                     if (window.innerWidth <= 768 || window.innerHeight <= 500) {

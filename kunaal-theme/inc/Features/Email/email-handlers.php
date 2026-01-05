@@ -190,6 +190,15 @@ function kunaal_handle_contact_form(): void {
             wp_send_json_error(array('message' => 'Sorry, your message could not be sent.'));
             wp_die();
         }
+
+        // Fail-fast SMTP preflight (avoids 30s hangs on managed hosts when SMTP is unreachable)
+        if (function_exists('kunaal_smtp_preflight_fast')) {
+            $preflight = kunaal_smtp_preflight_fast();
+            if (isset($preflight['ok']) && $preflight['ok'] === false) {
+                wp_send_json_error(array('message' => $preflight['message'] . ' Please email directly.'));
+                wp_die();
+            }
+        }
         
         if (!kunaal_check_contact_rate_limit()) {
             wp_send_json_error(array('message' => 'Please wait a bit before sending another message.'));
