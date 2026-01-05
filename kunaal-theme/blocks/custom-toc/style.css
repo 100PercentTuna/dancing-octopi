@@ -19,6 +19,7 @@
     border-radius: 6px;
     padding: var(--toc-pad-y) var(--toc-pad-right) var(--toc-pad-y) var(--toc-pad-left);
     margin: var(--space-5, 40px) 0;
+    width: var(--toc-width);
     max-width: var(--toc-width);
     box-shadow: 
         0 2px 8px rgba(125,107,93,0.06),

@@ -165,13 +165,12 @@
 
           const data = await res.json();
           if (data && data.success) {
-            // Success: green feedback
+            // Success: use warm accent (avoid green flash)
             if (statusEl) {
               statusEl.textContent = (data.data && data.data.message) ? data.data.message : 'Check your inbox to confirm your subscription.';
-              statusEl.style.color = '#38a169';
+              statusEl.style.color = '';
             }
-            btn.style.background = '#38a169';
-            btn.textContent = 'Sent!';
+            btn.textContent = 'Sent';
             form.reset();
             // Reset button after delay
             setTimeout(() => {

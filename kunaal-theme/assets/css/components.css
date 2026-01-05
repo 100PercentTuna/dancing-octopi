@@ -842,12 +842,12 @@ a.jRow:hover h3.jTitle {
 
 /* Dark mode: Subscribe button should use orange/warm accent, not blue */
 :root[data-theme="dark"] .subscribe-form-dock button {
-  background: var(--orange, #FF6B35);
+  background: var(--warm);
   color: var(--bg);
 }
 :root[data-theme="dark"] .subscribe-form-dock button:hover {
-  background: #E55A28; /* Darker orange for hover */
-  box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+  background: color-mix(in srgb, var(--warm) 86%, #000);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--warm) 28%, transparent);
 }
 
 /* ========================================

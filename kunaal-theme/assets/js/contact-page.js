@@ -114,17 +114,13 @@
         submitBtn.classList.remove('is-loading');
         
         if (data.success) {
-          submitBtn.classList.add('is-success');
           form.reset();
           if (optionalFields) {
             optionalFields.style.display = 'none';
             if (checkbox) checkbox.checked = false;
           }
-          
-          setTimeout(function() {
-            submitBtn.classList.remove('is-success');
-            submitBtn.disabled = false;
-          }, 3000);
+          // Don't flash green success state; just re-enable quickly.
+          setTimeout(function() { submitBtn.disabled = false; }, 250);
         } else {
           if (status) {
             status.className = 'contact-status is-error';
