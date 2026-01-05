@@ -18,44 +18,39 @@ if (!defined('ABSPATH')) {
  * Add Open Graph Meta Tags for Social Sharing (LinkedIn, X/Twitter, Facebook)
  */
 function kunaal_add_open_graph_tags(): void {
-    if (!is_singular(array('essay', 'jotting', 'post', 'page'))) {
+    if (kunaal_seo_is_yoast_active()) {
         return;
     }
-    
-    global $post;
-    if (!$post) {
+
+    if (is_admin() || wp_doing_ajax()) {
         return;
     }
-    
-    $title = get_the_title($post->ID);
-    $url = get_permalink($post->ID);
+
+    if (!is_singular(array('essay', 'jotting', 'post', 'page')) && !is_home() && !is_front_page() && !is_post_type_archive() && !is_tax('topic')) {
+        return;
+    }
+
+    $title = kunaal_seo_get_title();
+    $url = kunaal_seo_get_canonical_url();
     $site_name = get_bloginfo('name');
     $author_first = kunaal_mod('kunaal_author_first_name', 'Kunaal');
     $author_last = kunaal_mod('kunaal_author_last_name', 'Wadhwa');
     $author_name = $author_first . ' ' . $author_last;
     
     // Get description
-    $description = get_post_meta($post->ID, 'kunaal_subtitle', true);
-    if (empty($description)) {
-        $description = has_excerpt($post->ID) ? get_the_excerpt($post->ID) : wp_trim_words(strip_tags($post->post_content), 30);
-    }
-    $description = esc_attr($description);
+    $description = kunaal_seo_get_description();
     
     // Get image
-    $image = '';
-    $card_image = get_post_meta($post->ID, 'kunaal_card_image', true);
-    if ($card_image) {
-        $image = wp_get_attachment_image_url($card_image, 'large');
-    } elseif (has_post_thumbnail($post->ID)) {
-        $image = get_the_post_thumbnail_url($post->ID, 'large');
-    }
+    $image = kunaal_seo_get_share_image_url();
     
     // Twitter handle
-    $twitter_handle = kunaal_mod('kunaal_twitter_handle', '');
+    $twitter_handle = (string) kunaal_mod('kunaal_twitter_handle', '');
+    $twitter_handle = ltrim(trim($twitter_handle), '@');
+    $type = is_singular() ? 'article' : 'website';
     
     ?>
     <!-- Open Graph Meta Tags -->
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="<?php echo esc_attr($type); ?>" />
     <meta property="og:title" content="<?php echo esc_attr($title); ?>" />
     <meta property="og:description" content="<?php echo esc_attr($description); ?>" />
     <meta property="og:url" content="<?php echo esc_url($url); ?>" />
@@ -65,8 +60,11 @@ function kunaal_add_open_graph_tags(): void {
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <?php endif; ?>
+    <?php if (is_singular()) : ?>
     <meta property="article:author" content="<?php echo esc_attr($author_name); ?>" />
-    <meta property="article:published_time" content="<?php echo get_the_date('c', $post->ID); ?>" />
+    <meta property="article:published_time" content="<?php echo esc_attr(get_the_date('c', get_queried_object_id())); ?>" />
+    <meta property="article:modified_time" content="<?php echo esc_attr(get_the_modified_date('c', get_queried_object_id())); ?>" />
+    <?php endif; ?>
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
