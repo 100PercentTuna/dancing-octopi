@@ -170,24 +170,70 @@
   // SCROLL ENGINE - Header compaction & progress
   // Safari iOS compatible with defensive checks
   // ========================================
+  
+  // Track if we've ever gotten a valid document height
+  let hasValidDocHeight = false;
+  let resizeObserverActive = false;
+  
   function cacheViewport() {
     // Use both document.body and documentElement for Safari compatibility
     const doc = document.documentElement;
     const body = document.body;
     
+    if (!body || !doc) {
+      // DOM not ready yet
+      return;
+    }
+    
     // Safari sometimes reports different values between body and documentElement
+    // Use the LARGEST value to ensure we capture all content
     const scrollHeight = Math.max(
-      body ? body.scrollHeight : 0,
-      doc.scrollHeight || 0
-    );
-    const clientHeight = Math.max(
-      body ? body.clientHeight : 0,
-      doc.clientHeight || 0,
-      window.innerHeight || 0
+      body.scrollHeight || 0,
+      doc.scrollHeight || 0,
+      // Fallback: manually sum all direct children heights
+      body.offsetHeight || 0
     );
     
-    // Ensure we have a valid scrollable height (minimum 1 to avoid division by zero)
-    cachedDocH = Math.max(scrollHeight - clientHeight, 1);
+    const clientHeight = Math.max(
+      window.innerHeight || 0,
+      doc.clientHeight || 0,
+      body.clientHeight || 0
+    );
+    
+    // Calculate scrollable height
+    const newDocH = scrollHeight - clientHeight;
+    
+    // Sanity check: scrollable height should be positive and reasonable
+    // If page has any scrollable content, it should be at least 100px
+    if (newDocH > 50) {
+      cachedDocH = newDocH;
+      hasValidDocHeight = true;
+    } else if (!hasValidDocHeight) {
+      // First calculation - use whatever we got, but set minimum
+      cachedDocH = Math.max(newDocH, 1);
+    }
+    // If we already have a valid height and new calculation is tiny, keep old value
+    // (This prevents issues during orientation change when heights are temporarily wrong)
+  }
+  
+  // Setup ResizeObserver to detect content height changes (lazy loaded images, etc)
+  function setupResizeObserver() {
+    if (resizeObserverActive || typeof ResizeObserver === 'undefined') return;
+    
+    try {
+      const observer = new ResizeObserver(function() {
+        // Debounce the recalculation
+        clearTimeout(observer._timeout);
+        observer._timeout = setTimeout(function() {
+          cacheViewport();
+        }, 100);
+      });
+      
+      observer.observe(document.body);
+      resizeObserverActive = true;
+    } catch (e) {
+      // ResizeObserver not supported - fallback to interval
+    }
   }
 
   function updateScrollEffects(y) {
@@ -212,17 +258,29 @@
         pf.style.width = '0%';
         pf.style.opacity = '0';
       } else {
-        // Recalculate viewport if cachedDocH seems wrong
-        // (page height changed, images loaded, orientation changed)
-        if (cachedDocH < 100 || isNaN(cachedDocH)) {
+        // Recalculate viewport if cachedDocH seems invalid
+        if (!hasValidDocHeight || cachedDocH < 100 || isNaN(cachedDocH)) {
           cacheViewport();
         }
         
-        // Calculate progress fraction
-        const targetFrac = cachedDocH > 0 ? Math.min(y / cachedDocH, 1) : 0;
+        // Double-check we have a valid denominator
+        let effectiveDocH = cachedDocH;
+        if (effectiveDocH < 50 || isNaN(effectiveDocH)) {
+          // Emergency fallback: calculate on the fly
+          const body = document.body;
+          const doc = document.documentElement;
+          effectiveDocH = Math.max(
+            (body ? body.scrollHeight : 0) - window.innerHeight,
+            (doc ? doc.scrollHeight : 0) - window.innerHeight,
+            500
+          );
+        }
         
-        // Only show if we have valid progress
-        if (!isNaN(targetFrac) && targetFrac >= 0) {
+        // Calculate progress fraction
+        const targetFrac = Math.min(Math.max(y / effectiveDocH, 0), 1);
+        
+        // Only show if we have valid progress (not NaN, not Infinity)
+        if (isFinite(targetFrac) && targetFrac >= 0) {
           pf.style.width = (targetFrac * 100).toFixed(2) + '%';
           pf.style.opacity = '1';
         }
@@ -378,32 +436,27 @@
   // ========================================
   // MOBILE NAV - Event delegation for Safari iOS compatibility
   // Uses document-level event delegation instead of direct binding
-  // Handles both click and touch events for reliable mobile support
+  // Ghost click prevention: tracks last touch time to prevent double-toggle
   // ========================================
   let navInitialized = false;
+  let lastNavTouchTime = 0; // Timestamp of last touch event for ghost click prevention
+  
   function initNav() {
     // Only initialize once - event delegation handles all future clicks
     if (navInitialized) return;
     navInitialized = true;
     
-    // Handler function for toggle
-    function handleNavToggle(e) {
-      const toggle = e.target.closest('[data-ui="nav-toggle"]');
-      if (toggle) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const nav = getNav();
-        if (!nav) return;
-        
-        const isOpen = nav.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        return true;
-      }
-      return false;
+    // Core toggle function - single source of truth
+    function toggleNav(toggle) {
+      const nav = getNav();
+      if (!nav) return false;
+      
+      const isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      return true;
     }
     
-    // Handler function for closing nav
+    // Handler function for closing nav when clicking outside
     function handleNavClose(e) {
       const nav = getNav();
       const navToggle = getNavToggle();
@@ -415,15 +468,29 @@
       }
     }
     
-    // Click event for desktop and some mobile
+    // Click event - with ghost click prevention
     document.addEventListener('click', function(e) {
-      if (!handleNavToggle(e)) {
-        handleNavClose(e);
+      const toggle = e.target.closest('[data-ui="nav-toggle"]');
+      if (toggle) {
+        // Ghost click prevention: skip if this click came right after a touch
+        // iOS fires touchend, then click ~300ms later
+        if (Date.now() - lastNavTouchTime < 500) {
+          e.preventDefault();
+          e.stopPropagation();
+          return; // Skip - already handled by touchend
+        }
+        
+        e.preventDefault();
+        e.stopPropagation();
+        toggleNav(toggle);
+        return;
       }
+      
+      // Not a toggle click - check if we should close nav
+      handleNavClose(e);
     });
     
-    // Touch event specifically for iOS Safari which may not fire click reliably
-    // Use touchend instead of touchstart to allow scrolling
+    // Touch events for iOS Safari
     let touchMoved = false;
     document.addEventListener('touchstart', function() {
       touchMoved = false;
@@ -441,11 +508,10 @@
       if (toggle) {
         e.preventDefault();
         
-        const nav = getNav();
-        if (!nav) return;
+        // Record touch time for ghost click prevention
+        lastNavTouchTime = Date.now();
         
-        const isOpen = nav.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggleNav(toggle);
       }
     }, { passive: false });
 
@@ -1444,9 +1510,17 @@
       window.addEventListener('load', () => {
         cacheViewport();
         requestTick();
+        
+        // Setup ResizeObserver after load for dynamic content
+        setupResizeObserver();
+        
+        // Additional delayed recalculations for lazy-loaded content
+        setTimeout(cacheViewport, 500);
+        setTimeout(cacheViewport, 1000);
+        setTimeout(cacheViewport, 2000);
       });
       
-      // Periodic recalculation for lazy-loaded content
+      // Periodic recalculation for lazy-loaded content (first 5 seconds)
       let recalcCount = 0;
       const recalcInterval = setInterval(() => {
         cacheViewport();
@@ -1456,6 +1530,23 @@
           clearInterval(recalcInterval);
         }
       }, 500);
+      
+      // Fallback: if after 2 seconds we still don't have valid height, force recalc
+      setTimeout(() => {
+        if (!hasValidDocHeight || cachedDocH < 100) {
+          // Force a fresh calculation
+          const body = document.body;
+          const doc = document.documentElement;
+          if (body && doc) {
+            cachedDocH = Math.max(
+              body.scrollHeight - window.innerHeight,
+              doc.scrollHeight - window.innerHeight,
+              500 // Absolute minimum fallback
+            );
+            hasValidDocHeight = cachedDocH > 100;
+          }
+        }
+      }, 2000);
 
       initNav();
       initAvatar();

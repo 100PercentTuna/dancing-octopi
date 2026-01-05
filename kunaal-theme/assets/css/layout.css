@@ -21,21 +21,14 @@ main.container,
   padding-top: var(--space-6);
 }
 
-/* Narrow desktop (700-960px) - ensure adequate padding */
+/* Narrow desktop (641-960px) - ensure adequate padding */
 @media (max-width: 960px) and (min-width: 641px) { 
   main.container,
   .article.container { 
     padding-left: var(--space-4);
     padding-right: var(--space-4);
   }
-  
-  /* Ensure prose content doesn't get too close to edges */
-  .prose,
-  .articleHeader {
-    padding-left: 0;
-    padding-right: 0;
-    max-width: calc(100% - var(--space-2)); /* Prevent touching edges */
-  }
+  /* NOTE: .prose and .articleHeader padding is handled in pages.css to avoid cascade conflicts */
 }
 
 @media (max-width: 640px) { 

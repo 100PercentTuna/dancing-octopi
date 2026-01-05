@@ -18,6 +18,15 @@
   } catch (e) {
     reduceMotion = false;
   }
+  
+  // Detect landscape mobile (short viewport height)
+  // iPhone landscape: ~390px height, ~844px width
+  function isLandscapeMobile() {
+    return window.innerHeight < 500 && window.innerWidth > window.innerHeight;
+  }
+  
+  // Track orientation for change detection
+  let wasLandscape = isLandscapeMobile();
 
   function ready(fn) {
     if (document.readyState === 'loading') {
@@ -56,6 +65,14 @@
   function init() {
     try {
       const gsapOk = hasGSAP();
+      const isLandscape = isLandscapeMobile();
+      
+      // In landscape mode, prioritize content visibility over animations
+      // GSAP ScrollTrigger can miscalculate with short viewport heights
+      if (isLandscape) {
+        ensureContentVisible();
+        // Still try GSAP but with simpler config
+      }
       
       // Mark elements as GSAP-ready only if GSAP is available
       if (gsapOk) {
@@ -68,10 +85,11 @@
       }
 
       // Initialize all modules - each wrapped for safety
-      try { initPageLoad(gsapOk); } catch (e) { /* fail silently */ }
+      // In landscape, some modules may behave differently
+      try { initPageLoad(gsapOk && !isLandscape); } catch (e) { /* fail silently */ }
       try { initScrollReveals(gsapOk); } catch (e) { /* fail silently */ }
       try { initPanoramaParallax(gsapOk); } catch (e) { /* fail silently */ }
-      try { initPinnedScenes(gsapOk); } catch (e) { /* fail silently */ }
+      try { initPinnedScenes(gsapOk && !isLandscape); } catch (e) { /* fail silently */ } // Skip pinning in landscape
       try { initMarqueeWords(gsapOk); } catch (e) { /* fail silently */ }
       try { initNumbers(gsapOk); } catch (e) { /* fail silently */ }
       try { initWorldMap(); } catch (e) { /* fail silently */ }
@@ -93,10 +111,52 @@
       // Ensure content is visible after init completes
       setTimeout(ensureContentVisible, 200);
       
+      // Handle orientation change
+      setupOrientationChangeHandler(gsapOk);
+      
     } catch (e) {
       // Critical failure - ensure content is still visible
       ensureContentVisible();
     }
+  }
+  
+  // Handle orientation changes - refresh ScrollTrigger and ensure visibility
+  function setupOrientationChangeHandler(gsapOk) {
+    function handleOrientationChange() {
+      const nowLandscape = isLandscapeMobile();
+      
+      // Always ensure content is visible after orientation change
+      setTimeout(ensureContentVisible, 100);
+      
+      // Refresh ScrollTrigger if available
+      if (gsapOk && window.ScrollTrigger) {
+        try {
+          window.ScrollTrigger.refresh();
+        } catch (e) {
+          // Fail silently
+        }
+      }
+      
+      // If we switched TO landscape, ensure all content visible immediately
+      if (nowLandscape && !wasLandscape) {
+        ensureContentVisible();
+      }
+      
+      wasLandscape = nowLandscape;
+    }
+    
+    // Listen for orientation change
+    window.addEventListener('orientationchange', function() {
+      // Delay to let browser settle
+      setTimeout(handleOrientationChange, 200);
+    });
+    
+    // Also listen for resize as backup
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleOrientationChange, 300);
+    });
   }
 
   // =============================================
@@ -275,10 +335,13 @@
     if (reduceMotion || !gsapOk) return;
     
     const isMobile = window.innerWidth < 900;
+    const isLandscape = isLandscapeMobile();
     
-    // On mobile, skip ScrollTrigger - CSS handles visibility
-    if (isMobile) {
+    // On mobile or landscape, skip ScrollTrigger - CSS handles visibility
+    // ScrollTrigger can miscalculate with short viewport heights
+    if (isMobile || isLandscape) {
       ensureHeroTextVisible();
+      ensureContentVisible();
       return;
     }
     
@@ -450,9 +513,12 @@
     const bands = document.querySelectorAll('.panorama');
     if (!bands.length) return;
     
-    // Mobile gets reduced amplitude for performance
+    // Mobile and landscape get reduced amplitude for performance and stability
     const isMobile = window.innerWidth < 900 || window.matchMedia('(hover: none)').matches;
-    const mobileMultiplier = isMobile ? 0.5 : 1;
+    const isLandscape = isLandscapeMobile();
+    
+    // In landscape, use very minimal parallax to avoid calculation issues
+    const mobileMultiplier = isLandscape ? 0.3 : (isMobile ? 0.5 : 1);
     
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {

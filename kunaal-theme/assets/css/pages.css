@@ -32,9 +32,16 @@
    SINGLE ARTICLE
    Professional publication layout:
    Title → Subtitle → Author Byline → Meta (date/time + tags)
+   
+   NOTE: Body already has padding-top: var(--mastH) to clear the fixed header.
+   Article only needs breathing room, not to re-add mast clearance.
    ======================================== */
 main.article { 
-  padding: var(--space-8) 0 var(--space-12); /* More top padding for breathing room */
+  /* Explicit properties to avoid shorthand conflicts */
+  padding-top: var(--space-4);    /* Breathing room after body's mastH padding */
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: var(--space-12);
 }
 
 /* Article header - matches prose width and alignment */
@@ -206,11 +213,21 @@ main.article {
 }
 @media (max-width: 860px) { .articleContent { grid-template-columns: 1fr; } }
 
-/* Mobile article adjustments */
+/* Mobile article adjustments (portrait) */
 @media (max-width: 640px) {
   main.article {
-    /* Clear fixed masthead + breathing room - !important to override shorthand padding */
-    padding-top: calc(var(--mastH, 77px) + var(--space-4, 32px)) !important;
+    /* Breathing room after body's mastH padding */
+    margin-top: 0;
+    padding-top: var(--space-4, 32px) !important;
+  }
+}
+
+/* Mobile landscape - short viewport needs explicit clearance */
+@media (max-height: 500px) and (orientation: landscape) {
+  main.article {
+    /* In landscape, mast may be shorter but viewport is cramped.
+       Ensure content doesn't overlap with fixed header. */
+    padding-top: var(--space-3, 24px) !important;
   }
   
   .articleHeader {
@@ -422,7 +439,17 @@ main.article {
   text-align: left;
 }
 
-/* Mobile margins - ensure content doesn't touch edges on narrow screens */
+/* ========================================
+   ARTICLE CONTENT PADDING - SINGLE SOURCE OF TRUTH
+   
+   Consolidated here to avoid cascade conflicts with layout.css.
+   Breakpoints:
+   - Mobile (0-640px): 24px padding
+   - Tablet (641-960px): 32px padding  
+   - Desktop (961+): No padding (prose max-width handles it)
+   ======================================== */
+
+/* Mobile (0-640px): 24px padding on all sides */
 @media (max-width: 640px) {
   .prose {
     padding-left: var(--space-3, 24px) !important;
@@ -442,14 +469,23 @@ main.article {
   }
 }
 
-/* Narrow desktop (641-800px) - also needs padding to prevent edge touching */
-@media (max-width: 800px) and (min-width: 641px) {
+/* Tablet/Narrow desktop (641-960px): 32px padding */
+@media (max-width: 960px) and (min-width: 641px) {
   .articleHeader,
   .prose {
-    padding-left: var(--space-4, 32px);
-    padding-right: var(--space-4, 32px);
+    padding-left: var(--space-4, 32px) !important;
+    padding-right: var(--space-4, 32px) !important;
+    box-sizing: border-box;
+  }
+  
+  .heroImage {
+    margin-left: var(--space-4, 32px);
+    margin-right: var(--space-4, 32px);
+    max-width: calc(100% - var(--space-4, 32px) * 2);
   }
 }
+
+/* Desktop (961+): No padding needed - prose max-width handles containment */
 
 /* ========================================
    PAGE UTILITIES
