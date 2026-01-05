@@ -245,6 +245,13 @@
     const body = document.body;
     if (!doc || !body) return null;
 
+    // Prefer the element that is actually moving right now.
+    // Some pages report both as scrollable, but only BODY.scrollTop changes (Edge/Safari quirks).
+    const bodyTop = body.scrollTop || 0;
+    const docTop = doc.scrollTop || 0;
+    if (bodyTop > 0 && docTop === 0) return body;
+    if (docTop > 0 && bodyTop === 0) return doc;
+
     // If BODY is scrollable but HTML isn't, BODY is the real scroller (your observed case).
     const bodyCan = (body.scrollHeight - body.clientHeight) > 20;
     const docCan = (doc.scrollHeight - doc.clientHeight) > 20;
@@ -264,22 +271,31 @@
   }
 
   function getScrollTop() {
-    const scroller = getScroller();
-    if (scroller && typeof scroller.scrollTop === 'number') return scroller.scrollTop;
-    return window.scrollY || window.pageYOffset || 0;
+    const doc = document.documentElement;
+    const body = document.body;
+    const winY = window.scrollY || window.pageYOffset || 0;
+    const bodyY = body ? (body.scrollTop || 0) : 0;
+    const docY = doc ? (doc.scrollTop || 0) : 0;
+    const y = Math.max(winY, bodyY, docY);
+
+    // If we detect that BODY is moving, lock to BODY; if HTML is moving, lock to HTML.
+    if (body && bodyY === y && y > 0) activeScroller = body;
+    if (doc && docY === y && y > 0) activeScroller = doc;
+    return y;
   }
 
   function getScrollMax() {
-    const scroller = getScroller();
-    if (scroller) return Math.max(1, (scroller.scrollHeight - scroller.clientHeight));
-    // Fallback to document heights
     const body = document.body;
     const doc = document.documentElement;
-    return Math.max(
-      (body ? body.scrollHeight : 0) - window.innerHeight,
-      (doc ? doc.scrollHeight : 0) - window.innerHeight,
-      1
-    );
+    const bodyMax = body ? Math.max(1, (body.scrollHeight - body.clientHeight)) : 1;
+    const docMax = doc ? Math.max(1, (doc.scrollHeight - doc.clientHeight)) : 1;
+
+    // Match denominator to the active scroller if possible.
+    if (activeScroller === body) return bodyMax;
+    if (activeScroller === doc) return docMax;
+
+    // Otherwise, use the larger scroll range.
+    return Math.max(bodyMax, docMax, 1);
   }
 
   // Track if we've ever gotten a valid document height

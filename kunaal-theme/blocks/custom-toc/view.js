@@ -203,7 +203,8 @@
                     // Calculate offset for masthead
                     var mastHeight = getMastHeight();
                     // Provide additional breathing room so target text isn't tucked under the mast.
-                    var offset = mastHeight + 64;
+                    // (Users reported first line still clipping under mast on some viewports.)
+                    var offset = mastHeight + 96;
                     var scroller = getScroller();
                     
                     // Get target position
