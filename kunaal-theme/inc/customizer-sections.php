@@ -388,6 +388,53 @@ function kunaal_customize_register_subscribe_section(WP_Customize_Manager $wp_cu
         'section' => 'kunaal_subscribe',
         'type' => 'email',
     ));
+
+    // Confirmation email subject/body templates (built-in mode).
+    $wp_customize->add_setting('kunaal_subscribe_confirm_subject', array(
+        'default' => '[{site}] Confirm your subscription',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_confirm_subject', array(
+        'label' => 'Confirmation Email Subject',
+        'description' => 'Placeholders: {site}, {confirm_url}, {unsubscribe_url}',
+        'section' => 'kunaal_subscribe',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('kunaal_subscribe_confirm_body', array(
+        'default' => "Hi!\n\nPlease confirm your subscription by clicking the link below:\n\n{confirm_url}\n\nIf you didn't request this, you can ignore this email.",
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_confirm_body', array(
+        'label' => 'Confirmation Email Body',
+        'description' => 'Plain text. Placeholders: {site}, {confirm_url}, {unsubscribe_url}',
+        'section' => 'kunaal_subscribe',
+        'type' => 'textarea',
+    ));
+
+    // Footer appended to all subscriber emails.
+    $wp_customize->add_setting('kunaal_subscribe_email_footer', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_email_footer', array(
+        'label' => 'Subscriber Email Footer',
+        'description' => 'Appended to all subscriber emails (plain text).',
+        'section' => 'kunaal_subscribe',
+        'type' => 'textarea',
+    ));
+
+    // Unsubscribe text.
+    $wp_customize->add_setting('kunaal_subscribe_unsubscribe_text', array(
+        'default' => 'Unsubscribe',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_unsubscribe_text', array(
+        'label' => 'Unsubscribe Link Text',
+        'description' => 'Shown above the unsubscribe URL in subscriber emails.',
+        'section' => 'kunaal_subscribe',
+        'type' => 'text',
+    ));
 }
 
 /**

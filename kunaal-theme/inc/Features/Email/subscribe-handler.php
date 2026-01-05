@@ -49,10 +49,24 @@ function kunaal_send_subscribe_confirmation(string $email, string $token): bool 
     $smtp_unreachable = !kunaal_subscribe_confirmation_preflight($email);
 
     $to = $email;
-    $site = get_bloginfo('name');
     $confirm_url = add_query_arg(array('kunaal_sub_confirm' => $token), home_url('/'));
-    $subject = '[' . $site . '] Confirm your subscription';
-    $body = "Hi!\n\nPlease confirm your subscription by clicking the link below:\n\n" . esc_url_raw($confirm_url) . "\n\nIf you didn't request this, you can ignore this email.\n";
+
+    // Render via template layer (ensures entity decoding, footer, unsubscribe line).
+    $row = function_exists('kunaal_subscriber_get_by_email') ? kunaal_subscriber_get_by_email($email) : null;
+    $subscriber = ($row && isset($row['id']) && isset($row['email']))
+        ? array('id' => (int) $row['id'], 'email' => (string) $row['email'])
+        : array('id' => 0, 'email' => $email);
+
+    if (function_exists('kunaal_email_render_confirmation') && $subscriber['id'] > 0) {
+        $rendered = kunaal_email_render_confirmation($subscriber, $confirm_url);
+        $subject = $rendered['subject'];
+        $body = $rendered['body'];
+    } else {
+        // Fallback (should be rare).
+        $site = wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES);
+        $subject = '[' . $site . '] Confirm your subscription';
+        $body = "Hi!\n\nPlease confirm your subscription by clicking the link below:\n\n" . esc_url_raw($confirm_url) . "\n\nIf you didn't request this, you can ignore this email.\n";
+    }
     
     // If SMTP is unreachable, temporarily disable SMTP hook for this send and use PHP mail.
     if ($smtp_unreachable && function_exists('kunaal_action_phpmailer_init')) {
