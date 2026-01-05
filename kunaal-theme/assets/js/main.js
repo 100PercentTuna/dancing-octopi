@@ -109,6 +109,10 @@
       const input = form.querySelector('input[type="email"]');
       const btn = form.querySelector('button[type="submit"]');
       if (!input || !btn) return;
+      
+      // Store original styles for feedback
+      const originalBtnBg = btn.style.background || '';
+      const originalBtnColor = btn.style.color || '';
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -116,20 +120,34 @@
         const ajaxUrl = window.kunaalTheme?.ajaxUrl;
         const nonce = window.kunaalTheme?.nonce;
         if (!ajaxUrl || !nonce) {
-          if (statusEl) statusEl.textContent = 'Subscribe is not configured correctly.';
+          if (statusEl) {
+            statusEl.textContent = 'Subscribe is not configured correctly.';
+            statusEl.style.color = '#e53e3e';
+          }
+          // Visual feedback: red flash
+          btn.style.background = '#e53e3e';
+          setTimeout(() => { btn.style.background = originalBtnBg; }, 300);
           return;
         }
 
         const email = (input.value || '').trim();
         if (!email) {
-          if (statusEl) statusEl.textContent = 'Please enter an email address.';
+          if (statusEl) {
+            statusEl.textContent = 'Please enter an email address.';
+            statusEl.style.color = '#e53e3e';
+          }
+          input.focus();
           return;
         }
 
         btn.disabled = true;
         const originalText = btn.textContent;
-        btn.textContent = 'Working…';
-        if (statusEl) statusEl.textContent = '';
+        btn.textContent = 'Sending…';
+        btn.style.opacity = '0.7';
+        if (statusEl) {
+          statusEl.textContent = '';
+          statusEl.style.color = '';
+        }
 
         try {
           const body = new URLSearchParams();
@@ -147,16 +165,47 @@
 
           const data = await res.json();
           if (data && data.success) {
-            if (statusEl) statusEl.textContent = (data.data && data.data.message) ? data.data.message : 'Check your inbox to confirm your subscription.';
+            // Success: green feedback
+            if (statusEl) {
+              statusEl.textContent = (data.data && data.data.message) ? data.data.message : 'Check your inbox to confirm your subscription.';
+              statusEl.style.color = '#38a169';
+            }
+            btn.style.background = '#38a169';
+            btn.textContent = 'Sent!';
             form.reset();
+            // Reset button after delay
+            setTimeout(() => {
+              btn.style.background = originalBtnBg;
+              btn.textContent = originalText;
+            }, 2000);
           } else {
-            if (statusEl) statusEl.textContent = (data && data.data && data.data.message) ? data.data.message : 'Unable to subscribe right now.';
+            // Error from server
+            if (statusEl) {
+              statusEl.textContent = (data && data.data && data.data.message) ? data.data.message : 'Unable to subscribe right now.';
+              statusEl.style.color = '#e53e3e';
+            }
+            btn.style.background = '#e53e3e';
+            btn.textContent = 'Error';
+            setTimeout(() => {
+              btn.style.background = originalBtnBg;
+              btn.textContent = originalText;
+            }, 2000);
           }
         } catch (err) {
-          if (statusEl) statusEl.textContent = 'Network error. Please try again.';
+          // Network error
+          if (statusEl) {
+            statusEl.textContent = 'Network error. Please try again.';
+            statusEl.style.color = '#e53e3e';
+          }
+          btn.style.background = '#e53e3e';
+          btn.textContent = 'Error';
+          setTimeout(() => {
+            btn.style.background = originalBtnBg;
+            btn.textContent = originalText;
+          }, 2000);
         } finally {
           btn.disabled = false;
-          btn.textContent = originalText;
+          btn.style.opacity = '1';
         }
       });
     });
@@ -523,6 +572,30 @@
         if (nav) nav.classList.remove('open');
         if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
       }
+    });
+    
+    // Close nav on orientation change (fixes: nav opens in landscape, stays open when rotated to portrait)
+    window.addEventListener('orientationchange', function() {
+      setTimeout(function() {
+        const nav = getNav();
+        const navToggle = getNavToggle();
+        if (nav) nav.classList.remove('open');
+        if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+      }, 100);
+    });
+    
+    // Also close on resize (catches orientation changes that don't fire orientationchange)
+    let lastWidth = window.innerWidth;
+    window.addEventListener('resize', function() {
+      const newWidth = window.innerWidth;
+      // If width changed significantly (orientation change), close nav
+      if (Math.abs(newWidth - lastWidth) > 100) {
+        const nav = getNav();
+        const navToggle = getNavToggle();
+        if (nav) nav.classList.remove('open');
+        if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+      }
+      lastWidth = newWidth;
     });
   }
 
@@ -1568,11 +1641,30 @@
       cacheViewport();
       updateScrollEffects(lastY);
       
-      // Remove no-transition class
+      // Remove no-transition class and force progress bar visibility check
       const pf = getProgressFill();
       if (pf) {
         pf.classList.remove('no-transition');
+        
+        // Force progress bar to show if we're not at the top
+        if (lastY > 10) {
+          // Wait for CSS to be ready, then force update
+          requestAnimationFrame(function() {
+            cacheViewport();
+            updateScrollEffects(lastY);
+          });
+        }
       }
+      
+      // Additional forced updates to catch late-loading content
+      // This is especially important for pages with images or lazy content
+      [100, 300, 600, 1000, 2000, 3000].forEach(function(delay) {
+        setTimeout(function() {
+          cacheViewport();
+          lastY = window.scrollY || window.pageYOffset || 0;
+          updateScrollEffects(lastY);
+        }, delay);
+      });
     } catch (e) {
       // Silent fail - don't break the page
       document.documentElement.classList.remove('js-ready');

@@ -33,15 +33,29 @@
    Professional publication layout:
    Title → Subtitle → Author Byline → Meta (date/time + tags)
    
-   NOTE: Body already has padding-top: var(--mastH) to clear the fixed header.
-   Article only needs breathing room, not to re-add mast clearance.
+   CRITICAL: Body has padding-top: var(--mastH) to clear the fixed header,
+   but this can fail if --mastH isn't set or if CSS layers conflict.
+   We use padding-top here as additional breathing room only.
    ======================================== */
 main.article { 
-  /* Explicit properties to avoid shorthand conflicts */
-  padding-top: var(--space-4);    /* Breathing room after body's mastH padding */
+  margin-top: 0;
+  padding-top: var(--space-4);
   padding-left: 0;
   padding-right: 0;
   padding-bottom: var(--space-12);
+}
+
+/* DEFENSIVE: Ensure article title is never behind the masthead.
+   The articleTitle gets scroll-margin-top for anchor links and
+   a min safe distance from the body's mastH clearance. */
+.articleTitle {
+  scroll-margin-top: calc(var(--mastH, 100px) + var(--space-2, 16px));
+}
+
+/* Ensure first visible element in article has extra clearance if needed */
+.articleHeader:first-child {
+  /* If body padding isn't applied, this provides fallback clearance */
+  padding-top: max(0px, calc(var(--mastH, 0px) - 100px));
 }
 
 /* Article header - matches prose width and alignment */
@@ -469,13 +483,20 @@ main.article {
   }
 }
 
-/* Tablet/Narrow desktop (641-960px): 32px padding */
+/* Tablet/Narrow desktop (641-960px): 32px padding + full-width prose */
 @media (max-width: 960px) and (min-width: 641px) {
   .articleHeader,
   .prose {
     padding-left: var(--space-4, 32px) !important;
     padding-right: var(--space-4, 32px) !important;
     box-sizing: border-box;
+    /* At tablet widths, prose should fill available space, not be limited to 620px */
+    max-width: 100% !important;
+  }
+  
+  /* articleContent grid becomes single column at tablet to prevent sidebar squeeze */
+  .articleContent {
+    grid-template-columns: 1fr !important;
   }
   
   .heroImage {

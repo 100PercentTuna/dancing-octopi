@@ -835,6 +835,16 @@ a.jRow:hover h3.jTitle {
   box-shadow: 0 4px 12px rgba(30,90,255,0.3);
 }
 
+/* Dark mode: Subscribe button should use orange/warm accent, not blue */
+:root[data-theme="dark"] .subscribe-form-dock button {
+  background: var(--orange, #FF6B35);
+  color: var(--bg);
+}
+:root[data-theme="dark"] .subscribe-form-dock button:hover {
+  background: #E55A28; /* Darker orange for hover */
+  box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+}
+
 /* ========================================
    FOOTER
    ======================================== */
@@ -988,6 +998,15 @@ footer {
   background: var(--ink);
   transform: translateY(-1px);
 }
+
+/* Dark mode: Subscribe form button */
+:root[data-theme="dark"] .subscribe-form button {
+  background: var(--orange, #FF6B35);
+  color: #1a1a1a;
+}
+:root[data-theme="dark"] .subscribe-form button:hover {
+  background: #E55A28; /* Darker orange for hover */
+}
 .subscribe-note {
   font-size: 12px;
   color: var(--muted2);
@@ -1004,6 +1023,18 @@ footer {
 /* Hidden by default - enable via Customizer */
 .subscribe-section.hidden {
   display: none;
+}
+
+/* Subscribe status message styling */
+.subscribe-status {
+  min-height: 1.5em;
+  margin-top: var(--space-2, 12px);
+  font-size: 14px;
+  text-align: center;
+  transition: color 200ms ease;
+}
+.subscribe-status:empty {
+  visibility: hidden;
 }
 
 /* ========================================
