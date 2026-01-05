@@ -152,6 +152,36 @@ function kunaal_handle_existing_subscriber(int $subscriber_id): bool {
     if ($status === 'confirmed') {
         wp_send_json_success(array('message' => 'You are already subscribed.'));
     } else {
+        // Pending subscriber: resend confirmation (rate-limited) so users can recover if email
+        // delivery was broken during their first attempt.
+        $last_sent = (string) get_post_meta($subscriber_id, 'kunaal_last_sent_gmt', true);
+        if ($last_sent !== '') {
+            $last_ts = strtotime($last_sent);
+            if ($last_ts !== false && (time() - $last_ts) < 10 * MINUTE_IN_SECONDS) {
+                wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription. (You can request a new email in a few minutes.)'));
+                wp_die();
+                return true;
+            }
+        }
+
+        $email = (string) get_post_meta($subscriber_id, 'kunaal_email', true);
+        if (!is_email($email)) {
+            wp_send_json_error(array('message' => 'Subscription record is invalid. Please try again later.'));
+            wp_die();
+            return true;
+        }
+
+        $token = kunaal_generate_subscribe_token();
+        update_post_meta($subscriber_id, 'kunaal_token', $token);
+        update_post_meta($subscriber_id, 'kunaal_last_sent_gmt', gmdate('c'));
+
+        $sent = kunaal_send_subscribe_confirmation($email, $token);
+        if (!$sent) {
+            wp_send_json_error(array('message' => 'Unable to send confirmation email. Please try again later.'));
+            wp_die();
+            return true;
+        }
+
         wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription.'));
     }
     wp_die();
