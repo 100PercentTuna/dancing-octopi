@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 /**
  * Resolve SMTP settings from wp-config.php constants (preferred) or Customizer GUI.
  *
- * @return array{host:string,port:int,enc:string,user:string}
+ * @return array{host:string,port:int,enc:string,user:string,auth:bool}
  */
 function kunaal_smtp_resolve_settings(): array {
     $has_config_creds = defined('KUNAAL_SMTP_HOST') &&
@@ -32,11 +32,13 @@ function kunaal_smtp_resolve_settings(): array {
         $user = (string) KUNAAL_SMTP_USER;
         $port = defined('KUNAAL_SMTP_PORT') ? (int) KUNAAL_SMTP_PORT : 587;
         $enc  = defined('KUNAAL_SMTP_SECURE') ? (string) KUNAAL_SMTP_SECURE : 'tls';
+        $auth = true;
     } else {
         $host = (string) kunaal_mod('kunaal_smtp_host_gui', '');
         $user = (string) kunaal_mod('kunaal_smtp_username_gui', '');
         $port = (int) kunaal_mod('kunaal_smtp_port_gui', 587);
         $enc  = (string) kunaal_mod('kunaal_smtp_encryption_gui', 'tls');
+        $auth = (bool) kunaal_mod('kunaal_smtp_auth_gui', true);
     }
 
     return array(
@@ -44,6 +46,7 @@ function kunaal_smtp_resolve_settings(): array {
         'port' => $port > 0 ? $port : 587,
         'enc'  => $enc !== '' ? $enc : 'tls',
         'user' => $user,
+        'auth' => $auth,
     );
 }
 
@@ -109,7 +112,8 @@ function kunaal_smtp_preflight_fast(): array {
 
     // Cache reachability results to avoid repeated multi-second delays on form submits.
     // This is especially important on managed hosts where outbound SMTP ports time out.
-    $cache_key = 'kunaal_smtp_preflight_tcp_v1';
+    $s = kunaal_smtp_resolve_settings();
+    $cache_key = 'kunaal_smtp_preflight_tcp_v1_' . md5(strtolower($s['host']) . '|' . (string) $s['port']);
     $cached = get_transient($cache_key);
     if (is_array($cached) && isset($cached['ok'])) {
         if ($cached['ok']) {

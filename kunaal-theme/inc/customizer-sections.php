@@ -576,6 +576,20 @@ function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $
         ),
     ));
 
+    // SMTP Authentication
+    // Some managed hosts (e.g., GoDaddy shared hosting) only support a local/relay SMTP hop
+    // without authentication (e.g., host "localhost" on port 25).
+    $wp_customize->add_setting('kunaal_smtp_auth_gui', array(
+        'default' => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_smtp_auth_gui', array(
+        'label' => 'SMTP Authentication',
+        'description' => 'Turn OFF for GoDaddy relay/local SMTP (e.g., host "localhost" on port 25). Leave ON for Gmail/O365/etc.',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'checkbox',
+    ));
+
     // SMTP Username
     $wp_customize->add_setting('kunaal_smtp_username_gui', array(
         'default' => '',
