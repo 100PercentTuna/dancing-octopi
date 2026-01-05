@@ -15,31 +15,6 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Find subscriber by email address
- */
-function kunaal_find_subscriber_by_email(string $email): int {
-    $email = strtolower(trim($email));
-    if (!is_email($email)) {
-        return 0;
-    }
-    $q = new WP_Query(array(
-        'post_type' => 'kunaal_subscriber',
-        'post_status' => 'private',
-        'fields' => 'ids',
-        'posts_per_page' => 1,
-        'meta_query' => array(
-            array(
-                'key' => 'kunaal_email',
-                'value' => $email,
-                'compare' => '=',
-            ),
-        ),
-        'no_found_rows' => true,
-    ));
-    return !empty($q->posts) ? (int) $q->posts[0] : 0;
-}
-
-/**
  * Generate subscribe confirmation token
  */
 function kunaal_generate_subscribe_token(): string {
@@ -105,6 +80,23 @@ function kunaal_send_subscribe_confirmation(string $email, string $token): bool 
 }
 
 /**
+ * Rate-limit resend attempts (default 10 minutes).
+ *
+ * @param string $last_sent_gmt
+ * @return bool True if resend is allowed
+ */
+function kunaal_subscribe_can_resend(string $last_sent_gmt): bool {
+    if ($last_sent_gmt === '') {
+        return true;
+    }
+    $ts = strtotime($last_sent_gmt);
+    if ($ts === false) {
+        return true;
+    }
+    return (time() - $ts) >= 10 * MINUTE_IN_SECONDS;
+}
+
+/**
  * Validate subscribe request nonce and mode
  *
  * @return array|WP_Error Returns error array on failure, null on success
@@ -148,23 +140,25 @@ function kunaal_validate_subscribe_email(): string|WP_Error {
  * @return bool True if response sent, false otherwise
  */
 function kunaal_handle_existing_subscriber(int $subscriber_id): bool {
-    $status = get_post_meta($subscriber_id, 'kunaal_status', true);
+    $row = function_exists('kunaal_subscriber_get_by_id') ? kunaal_subscriber_get_by_id($subscriber_id) : null;
+    if (!$row) {
+        wp_send_json_error(array('message' => 'Subscription record not found. Please try again.'));
+        wp_die();
+        return true;
+    }
+
+    $status = isset($row['status']) ? (string) $row['status'] : 'pending';
     if ($status === 'confirmed') {
         wp_send_json_success(array('message' => 'You are already subscribed.'));
     } else {
-        // Pending subscriber: resend confirmation (rate-limited) so users can recover if email
-        // delivery was broken during their first attempt.
-        $last_sent = (string) get_post_meta($subscriber_id, 'kunaal_last_sent_gmt', true);
-        if ($last_sent !== '') {
-            $last_ts = strtotime($last_sent);
-            if ($last_ts !== false && (time() - $last_ts) < 10 * MINUTE_IN_SECONDS) {
-                wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription. (You can request a new email in a few minutes.)'));
-                wp_die();
-                return true;
-            }
+        $last_sent = isset($row['last_confirm_sent_gmt']) ? (string) $row['last_confirm_sent_gmt'] : '';
+        if (!kunaal_subscribe_can_resend($last_sent)) {
+            wp_send_json_success(array('message' => 'Check your inbox to confirm your subscription. (You can request a new email in a few minutes.)'));
+            wp_die();
+            return true;
         }
 
-        $email = (string) get_post_meta($subscriber_id, 'kunaal_email', true);
+        $email = isset($row['email']) ? (string) $row['email'] : '';
         if (!is_email($email)) {
             wp_send_json_error(array('message' => 'Subscription record is invalid. Please try again later.'));
             wp_die();
@@ -172,8 +166,10 @@ function kunaal_handle_existing_subscriber(int $subscriber_id): bool {
         }
 
         $token = kunaal_generate_subscribe_token();
-        update_post_meta($subscriber_id, 'kunaal_token', $token);
-        update_post_meta($subscriber_id, 'kunaal_last_sent_gmt', gmdate('c'));
+        if (function_exists('kunaal_subscribers_hash_token') && function_exists('kunaal_subscriber_set_token_hash')) {
+            $token_hash = kunaal_subscribers_hash_token($token);
+            kunaal_subscriber_set_token_hash($subscriber_id, $token_hash);
+        }
 
         $sent = kunaal_send_subscribe_confirmation($email, $token);
         if (!$sent) {
@@ -196,22 +192,21 @@ function kunaal_handle_existing_subscriber(int $subscriber_id): bool {
  * @return int|WP_Error Subscriber post ID or error
  */
 function kunaal_create_subscriber_post(string $email, string $token): int|WP_Error {
-    $subscriber_id = wp_insert_post(array(
-        'post_type' => 'kunaal_subscriber',
-        'post_status' => 'private',
-        'post_title' => $email,
-    ), true);
-
-    if (is_wp_error($subscriber_id) || empty($subscriber_id)) {
-        return new WP_Error('create_failed', 'Unable to create subscription. Please try again.');
+    if (!function_exists('kunaal_subscriber_insert') || !function_exists('kunaal_subscribers_hash_token')) {
+        return new WP_Error('db_missing', 'Subscription database is not available.');
     }
 
-    update_post_meta($subscriber_id, 'kunaal_email', $email);
-    update_post_meta($subscriber_id, 'kunaal_status', 'pending');
-    update_post_meta($subscriber_id, 'kunaal_token', $token);
-    update_post_meta($subscriber_id, 'kunaal_created_gmt', gmdate('c'));
-
-    return $subscriber_id;
+    $token_hash = kunaal_subscribers_hash_token($token);
+    $source = isset($_POST['source']) ? sanitize_text_field(wp_unslash($_POST['source'])) : '';
+    $id = kunaal_subscriber_insert($email, 'pending', $source, $token_hash);
+    if (is_wp_error($id)) {
+        return $id;
+    }
+    if (function_exists('kunaal_subscriber_set_token_hash')) {
+        // Ensures last_confirm_sent_gmt is set.
+        kunaal_subscriber_set_token_hash((int) $id, $token_hash);
+    }
+    return (int) $id;
 }
 
 /**
@@ -233,10 +228,10 @@ function kunaal_handle_subscribe(): void {
             wp_die();
         }
 
-        // Check for existing subscriber
-        $existing_id = kunaal_find_subscriber_by_email($email);
-        if ($existing_id) {
-            kunaal_handle_existing_subscriber($existing_id);
+        // Check for existing subscriber (DB).
+        $existing = function_exists('kunaal_subscriber_get_by_email') ? kunaal_subscriber_get_by_email($email) : null;
+        if ($existing && isset($existing['id'])) {
+            kunaal_handle_existing_subscriber((int) $existing['id']);
             return;
         }
 
@@ -278,37 +273,69 @@ function kunaal_handle_subscribe_confirmation_request(): void {
         return;
     }
 
-    $q = new WP_Query(array(
-        'post_type' => 'kunaal_subscriber',
-        'post_status' => 'private',
-        'posts_per_page' => 1,
-        'no_found_rows' => true,
-        'meta_query' => array(
-            array(
-                'key' => 'kunaal_token',
-                'value' => $token,
-                'compare' => '=',
-            ),
-        ),
-    ));
+    if (!function_exists('kunaal_subscribers_hash_token') || !function_exists('kunaal_subscriber_get_by_token_hash')) {
+        wp_die('Subscription system is unavailable.', 'Subscription', array('response' => 500));
+    }
 
-    if (empty($q->posts)) {
+    $hash = kunaal_subscribers_hash_token($token);
+    $row = kunaal_subscriber_get_by_token_hash($hash);
+    if (!$row || !isset($row['id'])) {
         wp_die('Invalid or expired confirmation link.', 'Subscription', array('response' => 400));
     }
 
-    $post = $q->posts[0];
-    update_post_meta($post->ID, 'kunaal_status', 'confirmed');
-    delete_post_meta($post->ID, 'kunaal_token');
+    $id = (int) $row['id'];
+    if (function_exists('kunaal_subscriber_update_status')) {
+        kunaal_subscriber_update_status($id, 'confirmed');
+    }
 
     // Notify admin (optional)
     $notify = kunaal_mod('kunaal_subscribe_notify_email', get_option('admin_email'));
     if (is_email($notify)) {
         $site = get_bloginfo('name');
-        $email = get_post_meta($post->ID, 'kunaal_email', true);
-        wp_mail($notify, '[' . $site . '] New subscriber', "New subscriber confirmed:\n\n" . $email . "\n");
+        $email = isset($row['email']) ? (string) $row['email'] : '';
+        if (is_email($email)) {
+            wp_mail($notify, '[' . $site . '] New subscriber', "New subscriber confirmed:\n\n" . $email . "\n");
+        }
     }
 
     wp_die('Subscription confirmed. Thank you!', 'Subscription', array('response' => 200));
 }
 add_action('template_redirect', 'kunaal_handle_subscribe_confirmation_request');
+
+/**
+ * Signed unsubscribe link handler.
+ *
+ * URL format:
+ *   /?kunaal_unsub=1&sid=123&sig=...
+ */
+function kunaal_handle_subscribe_unsubscribe_request(): void {
+    if (empty($_GET['kunaal_unsub']) || empty($_GET['sid']) || empty($_GET['sig'])) {
+        return;
+    }
+
+    $sid = absint(wp_unslash($_GET['sid']));
+    $sig = sanitize_text_field(wp_unslash($_GET['sig']));
+    if ($sid <= 0 || $sig === '') {
+        return;
+    }
+
+    if (!function_exists('kunaal_subscriber_get_by_id') || !function_exists('kunaal_subscriber_update_status')) {
+        wp_die('Subscription system is unavailable.', 'Unsubscribe', array('response' => 500));
+    }
+
+    $row = kunaal_subscriber_get_by_id($sid);
+    if (!$row || !isset($row['email'])) {
+        wp_die('Invalid unsubscribe link.', 'Unsubscribe', array('response' => 400));
+    }
+
+    $email = (string) $row['email'];
+    $expected = hash_hmac('sha256', $sid . '|' . strtolower($email), wp_salt('nonce'));
+    if (!hash_equals($expected, $sig)) {
+        wp_die('Invalid unsubscribe link.', 'Unsubscribe', array('response' => 400));
+    }
+
+    kunaal_subscriber_update_status($sid, 'unsubscribed');
+    wp_die('You have been unsubscribed.', 'Unsubscribe', array('response' => 200));
+}
+add_action('template_redirect', 'kunaal_handle_subscribe_unsubscribe_request');
 

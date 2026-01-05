@@ -76,6 +76,7 @@ require_once KUNAAL_THEME_DIR . '/inc/Features/Ajax/embed-card.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/email-handlers.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/db.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/subscribe-handler.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/admin-pages.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-config.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-diagnostics.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-admin-page.php';

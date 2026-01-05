@@ -176,6 +176,100 @@ function kunaal_subscriber_get_by_id(int $id): array|null {
 }
 
 /**
+ * Get subscriber row by token hash (confirmation).
+ *
+ * @param string $token_hash
+ * @return array<string,mixed>|null
+ */
+function kunaal_subscriber_get_by_token_hash(string $token_hash): array|null {
+    global $wpdb;
+    if ($token_hash === '') {
+        return null;
+    }
+    $table = kunaal_subscribers_table();
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
+    $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE token_hash = %s LIMIT 1", $token_hash), ARRAY_A);
+    return is_array($row) ? $row : null;
+}
+
+/**
+ * List subscribers for admin.
+ *
+ * @param array{status?:string,search?:string,offset?:int,limit?:int,orderBy?:string,order?:string} $args
+ * @return array{rows:array<int,array<string,mixed>>,total:int}
+ */
+function kunaal_subscribers_list(array $args = array()): array {
+    global $wpdb;
+    $table = kunaal_subscribers_table();
+
+    $status = isset($args['status']) ? (string) $args['status'] : '';
+    $search = isset($args['search']) ? (string) $args['search'] : '';
+    $offset = isset($args['offset']) ? max(0, (int) $args['offset']) : 0;
+    $limit = isset($args['limit']) ? max(1, min(500, (int) $args['limit'])) : 50;
+
+    $order_by = isset($args['orderBy']) ? (string) $args['orderBy'] : 'created_gmt';
+    $order = isset($args['order']) ? strtoupper((string) $args['order']) : 'DESC';
+
+    $allowed_order_by = array('created_gmt', 'email', 'status', 'confirmed_gmt', 'unsubscribed_gmt', 'last_email_sent_gmt');
+    if (!in_array($order_by, $allowed_order_by, true)) {
+        $order_by = 'created_gmt';
+    }
+    if ($order !== 'ASC') {
+        $order = 'DESC';
+    }
+
+    $where = array('1=1');
+    $params = array();
+
+    if ($status !== '') {
+        $where[] = 'status = %s';
+        $params[] = $status;
+    }
+    if ($search !== '') {
+        $where[] = 'email LIKE %s';
+        $params[] = '%' . $wpdb->esc_like($search) . '%';
+    }
+
+    $where_sql = implode(' AND ', $where);
+
+    // Count total.
+    $sql_count = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
+    $total = (int) ($params ? $wpdb->get_var($wpdb->prepare($sql_count, $params)) : $wpdb->get_var($sql_count));
+
+    // Rows.
+    $sql_rows = "SELECT * FROM {$table} WHERE {$where_sql} ORDER BY {$order_by} {$order} LIMIT %d OFFSET %d";
+    $params_rows = $params;
+    $params_rows[] = $limit;
+    $params_rows[] = $offset;
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
+    $rows = $wpdb->get_results($wpdb->prepare($sql_rows, $params_rows), ARRAY_A);
+
+    return array(
+        'rows' => is_array($rows) ? $rows : array(),
+        'total' => $total,
+    );
+}
+
+/**
+ * Mark last email sent timestamp.
+ *
+ * @param int $subscriber_id
+ * @return void
+ */
+function kunaal_subscriber_touch_last_email_sent(int $subscriber_id): void {
+    global $wpdb;
+    $table = kunaal_subscribers_table();
+    $wpdb->update(
+        $table,
+        array('last_email_sent_gmt' => gmdate('Y-m-d H:i:s')),
+        array('id' => $subscriber_id),
+        array('%s'),
+        array('%d')
+    );
+}
+
+/**
  * Insert subscriber (pending by default).
  *
  * @param string $email
