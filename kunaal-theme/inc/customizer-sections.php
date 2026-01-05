@@ -461,6 +461,18 @@ function kunaal_customize_register_subscribe_section(WP_Customize_Manager $wp_cu
         'type' => 'textarea',
     ));
 
+    // Optional click tracking (best-effort).
+    $wp_customize->add_setting('kunaal_subscribe_click_tracking', array(
+        'default' => false,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ));
+    $wp_customize->add_control('kunaal_subscribe_click_tracking', array(
+        'label' => 'Enable Click Tracking (Best-effort)',
+        'description' => 'Adds redirect links to post notification emails to track clicks. Some privacy tools may block or strip tracking.',
+        'section' => 'kunaal_subscribe',
+        'type' => 'checkbox',
+    ));
+
     // Footer appended to all subscriber emails.
     $wp_customize->add_setting('kunaal_subscribe_email_footer', array(
         'default' => '',

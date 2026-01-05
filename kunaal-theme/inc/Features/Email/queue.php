@@ -304,6 +304,19 @@ function kunaal_email_queue_process(): void {
             }
         }
 
+        // Optional click tracking (best-effort): rewrite the post URL to a signed redirect.
+        if (function_exists('kunaal_subscribe_click_tracking_enabled') && kunaal_subscribe_click_tracking_enabled()) {
+            $type = isset($r['type']) ? (string) $r['type'] : '';
+            $post_id = isset($r['post_id']) ? (int) $r['post_id'] : 0;
+            if ($type === 'post_notify' && $post_id > 0 && function_exists('kunaal_email_click_tracking_url')) {
+                $post_url = get_permalink($post_id);
+                if (is_string($post_url) && $post_url !== '') {
+                    $tracked = kunaal_email_click_tracking_url($id, $sid, $post_url);
+                    $body = str_replace($post_url, esc_url_raw($tracked), $body);
+                }
+            }
+        }
+
         $sent = wp_mail($to, $subject, $body, $headers);
         if ($sent) {
             $wpdb->update(

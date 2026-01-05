@@ -349,6 +349,9 @@ function kunaal_handle_subscribe_unsubscribe_request(): void {
     }
 
     kunaal_subscriber_update_status($sid, 'unsubscribed');
+    if (function_exists('kunaal_email_event_log')) {
+        kunaal_email_event_log($sid, 0, 'unsubscribe', '');
+    }
     wp_die('You have been unsubscribed.', 'Unsubscribe', array('response' => 200));
 }
 add_action('template_redirect', 'kunaal_handle_subscribe_unsubscribe_request');

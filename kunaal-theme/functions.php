@@ -80,6 +80,7 @@ require_once KUNAAL_THEME_DIR . '/inc/Features/Email/admin-pages.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/templates.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/queue.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/blast-admin.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Email/tracking.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-config.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-diagnostics.php';
 require_once KUNAAL_THEME_DIR . '/inc/Features/Email/smtp-admin-page.php';
