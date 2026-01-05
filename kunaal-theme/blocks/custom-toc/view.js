@@ -162,9 +162,8 @@
                 }, 150);
             });
 
-            // CLICK HANDLER - Safari-compatible smooth scroll
-            // Safari iOS has issues with window.scrollTo({behavior:'smooth'}) when CSS also has scroll-behavior
-            // Solution: Use scrollIntoView + scrollBy for offset, let CSS handle smoothness
+            // CLICK HANDLER - iOS Safari compatible smooth scroll
+            // Uses multiple approaches for maximum compatibility
             links.forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -192,26 +191,34 @@
                     var mastHeight = getMastHeight();
                     var offset = mastHeight + 24;
                     
-                    // Safari-compatible scroll approach:
-                    // 1. First scroll element into view at the top
-                    // 2. Then adjust by offset using scrollBy (no behavior option for Safari compat)
-                    // CSS scroll-behavior: smooth on html handles the animation
-                    
-                    // Temporarily disable smooth scroll for precise positioning
-                    var htmlEl = document.documentElement;
-                    var originalBehavior = htmlEl.style.scrollBehavior;
-                    htmlEl.style.scrollBehavior = 'auto';
-                    
-                    // Calculate exact position
+                    // Get target position
                     var targetRect = target.getBoundingClientRect();
-                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    var targetPosition = scrollTop + targetRect.top - offset;
+                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                    var targetPosition = Math.max(0, scrollTop + targetRect.top - offset);
                     
-                    // Restore smooth scroll
-                    htmlEl.style.scrollBehavior = originalBehavior || '';
+                    // iOS Safari scroll fix: Use multiple methods
+                    // Method 1: Direct scrollTo on window
+                    try {
+                        window.scrollTo({
+                            top: targetPosition,
+                            left: 0,
+                            behavior: 'smooth'
+                        });
+                    } catch (err) {
+                        // Method 2: Fallback for older browsers
+                        window.scrollTo(0, targetPosition);
+                    }
                     
-                    // Perform scroll - let CSS smooth scroll handle animation
-                    window.scrollTo(0, Math.max(0, targetPosition));
+                    // Method 3: Also try scrolling documentElement and body (iOS Safari quirk)
+                    // Some iOS versions scroll body, others scroll documentElement
+                    setTimeout(function() {
+                        var currentScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
+                        // If scroll didn't happen, try alternative methods
+                        if (Math.abs(currentScroll - targetPosition) > 100) {
+                            document.documentElement.scrollTop = targetPosition;
+                            document.body.scrollTop = targetPosition;
+                        }
+                    }, 100);
 
                     // Update URL hash
                     if (history.pushState) {
@@ -221,10 +228,10 @@
                     // Release scroll lock after animation completes
                     setTimeout(function() {
                         isScrollingToTarget = false;
-                    }, 800);
+                    }, 1000);
                     
                     // Collapse on mobile
-                    if (window.innerWidth <= 768) {
+                    if (window.innerWidth <= 768 || window.innerHeight <= 500) {
                         toc.classList.remove('is-expanded');
                         var titleEl = toc.querySelector('.customToc__title');
                         if (titleEl) titleEl.setAttribute('aria-expanded', 'false');

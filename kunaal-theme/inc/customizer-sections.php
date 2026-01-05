@@ -490,40 +490,32 @@ function kunaal_customize_register_contact_page_section(WP_Customize_Manager $wp
 /**
  * Register Email Delivery (SMTP) section and controls
  * 
- * SECURITY: SMTP credentials (host, username, password, port, encryption) are read
- * from wp-config.php constants to avoid storing secrets in the database.
+ * Two options for credentials:
+ * 1. wp-config.php constants (more secure - recommended for public repos)
+ * 2. GUI fields below (convenient - stored in database)
  * 
- * Required constants in wp-config.php:
+ * wp-config.php constants (if used, these take priority):
  *   define('KUNAAL_SMTP_HOST', 'smtp.example.com');
  *   define('KUNAAL_SMTP_PORT', 587);
  *   define('KUNAAL_SMTP_USER', 'your-username');
  *   define('KUNAAL_SMTP_PASS', 'your-password');
- *   define('KUNAAL_SMTP_SECURE', 'tls'); // 'tls', 'ssl', or ''
+ *   define('KUNAAL_SMTP_SECURE', 'tls');
  *
  * @param WP_Customize_Manager $wp_customize Customizer manager instance
  */
 function kunaal_customize_register_email_delivery_section(WP_Customize_Manager $wp_customize): void {
-    // Build status message
-    $smtp_status = '';
-    if (defined('KUNAAL_SMTP_HOST') && defined('KUNAAL_SMTP_USER') && defined('KUNAAL_SMTP_PASS')) {
-        $smtp_status = sprintf(
-            '<p style="color: green; font-weight: bold;">✓ SMTP credentials configured in wp-config.php</p><p><strong>Host:</strong> %s<br><strong>Port:</strong> %s<br><strong>Encryption:</strong> %s</p>',
+    // Check if wp-config.php constants are set
+    $has_config_creds = defined('KUNAAL_SMTP_HOST') && defined('KUNAAL_SMTP_USER') && defined('KUNAAL_SMTP_PASS');
+    
+    if ($has_config_creds) {
+        $description = sprintf(
+            '<p style="color: green; font-weight: bold;">✓ Using SMTP credentials from wp-config.php</p><p><strong>Host:</strong> %s<br><strong>Port:</strong> %s</p><p>The GUI fields below are ignored when wp-config.php constants are set.</p>',
             esc_html(KUNAAL_SMTP_HOST),
-            esc_html(defined('KUNAAL_SMTP_PORT') ? KUNAAL_SMTP_PORT : '587'),
-            esc_html(defined('KUNAAL_SMTP_SECURE') ? KUNAAL_SMTP_SECURE : 'tls')
+            esc_html(defined('KUNAAL_SMTP_PORT') ? KUNAAL_SMTP_PORT : '587')
         );
     } else {
-        $smtp_status = '<p style="color: #d63638; font-weight: bold;">⚠ SMTP credentials not configured</p>';
+        $description = '<p>Configure SMTP to send emails reliably (Contact form, Subscribe confirmations).</p><p><strong>For Gmail:</strong> Use smtp.gmail.com, port 587, TLS encryption, and an <a href="https://myaccount.google.com/apppasswords" target="_blank">App Password</a> (not your regular password).</p>';
     }
-
-    $description = sprintf(
-        '%s<p><strong>To enable SMTP:</strong></p><ol><li>Add these constants to your wp-config.php:</li></ol><pre style="background: #f0f0f0; padding: 8px; font-size: 11px; overflow-x: auto;">define(\'KUNAAL_SMTP_HOST\', \'smtp.example.com\');
-define(\'KUNAAL_SMTP_PORT\', 587);
-define(\'KUNAAL_SMTP_USER\', \'your-username\');
-define(\'KUNAAL_SMTP_PASS\', \'your-password\');
-define(\'KUNAAL_SMTP_SECURE\', \'tls\');</pre><p>Then enable the toggle below.</p>',
-        $smtp_status
-    );
 
     $wp_customize->add_section('kunaal_email_delivery', array(
         'title' => 'Email Delivery (SMTP)',
@@ -531,34 +523,103 @@ define(\'KUNAAL_SMTP_SECURE\', \'tls\');</pre><p>Then enable the toggle below.</
         'description' => $description,
     ));
 
+    // Enable toggle
     $wp_customize->add_setting('kunaal_smtp_enabled', array(
         'default' => false,
         'sanitize_callback' => 'wp_validate_boolean',
     ));
     $wp_customize->add_control('kunaal_smtp_enabled', array(
         'label' => 'Enable SMTP',
-        'description' => 'Requires SMTP credentials in wp-config.php (see section description above).',
+        'description' => 'Turn on to use SMTP for outgoing emails.',
         'section' => 'kunaal_email_delivery',
         'type' => 'checkbox',
     ));
 
+    // SMTP Host
+    $wp_customize->add_setting('kunaal_smtp_host_gui', array(
+        'default' => 'smtp.gmail.com',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_host_gui', array(
+        'label' => 'SMTP Host',
+        'description' => 'e.g., smtp.gmail.com, smtp.mail.yahoo.com',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'text',
+    ));
+
+    // SMTP Port
+    $wp_customize->add_setting('kunaal_smtp_port_gui', array(
+        'default' => '587',
+        'sanitize_callback' => 'absint',
+    ));
+    $wp_customize->add_control('kunaal_smtp_port_gui', array(
+        'label' => 'SMTP Port',
+        'description' => '587 for TLS (recommended), 465 for SSL',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 65535),
+    ));
+
+    // SMTP Encryption
+    $wp_customize->add_setting('kunaal_smtp_encryption_gui', array(
+        'default' => 'tls',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_encryption_gui', array(
+        'label' => 'Encryption',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'select',
+        'choices' => array(
+            'tls' => 'TLS (Port 587)',
+            'ssl' => 'SSL (Port 465)',
+            '' => 'None (not recommended)',
+        ),
+    ));
+
+    // SMTP Username
+    $wp_customize->add_setting('kunaal_smtp_username_gui', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_username_gui', array(
+        'label' => 'SMTP Username',
+        'description' => 'Usually your email address',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'text',
+    ));
+
+    // SMTP Password (stored in DB - less secure but more convenient)
+    $wp_customize->add_setting('kunaal_smtp_password_gui', array(
+        'default' => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('kunaal_smtp_password_gui', array(
+        'label' => 'SMTP Password / App Password',
+        'description' => 'For Gmail, use an App Password from Google Account settings.',
+        'section' => 'kunaal_email_delivery',
+        'type' => 'password',
+    ));
+
+    // From Email
     $wp_customize->add_setting('kunaal_smtp_from_email', array(
         'default' => get_option('admin_email'),
         'sanitize_callback' => 'sanitize_email',
     ));
     $wp_customize->add_control('kunaal_smtp_from_email', array(
         'label' => 'From Email',
-        'description' => 'Use an address that matches your domain if possible.',
+        'description' => 'Emails will appear to come from this address.',
         'section' => 'kunaal_email_delivery',
         'type' => 'email',
     ));
 
+    // From Name
     $wp_customize->add_setting('kunaal_smtp_from_name', array(
         'default' => get_bloginfo('name'),
         'sanitize_callback' => 'sanitize_text_field',
     ));
     $wp_customize->add_control('kunaal_smtp_from_name', array(
         'label' => 'From Name',
+        'description' => 'Name shown in the email "From" field.',
         'section' => 'kunaal_email_delivery',
         'type' => 'text',
     ));

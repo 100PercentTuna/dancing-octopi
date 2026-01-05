@@ -1368,40 +1368,64 @@
     try {
       cacheViewport();
       
-      window.addEventListener('scroll', () => {
-        lastY = window.scrollY || 0;
+      // Scroll handler - shared between scroll and touch events
+      function handleScroll() {
+        lastY = window.scrollY || window.pageYOffset || 0;
         requestTick();
+      }
+      
+      // Primary scroll event
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      // iOS Safari fallback: touchmove can fire when scroll doesn't
+      window.addEventListener('touchmove', handleScroll, { passive: true });
+      
+      // Also update on touchend (when momentum scroll starts)
+      window.addEventListener('touchend', function() {
+        // Delayed update to catch momentum scroll
+        setTimeout(handleScroll, 50);
+        setTimeout(handleScroll, 150);
+        setTimeout(handleScroll, 300);
       }, { passive: true });
 
       window.addEventListener('resize', () => {
         cacheViewport();
         // Update scroll effects immediately after resize (fixes landscape rotation)
-        lastY = window.scrollY || 0;
+        lastY = window.scrollY || window.pageYOffset || 0;
         requestTick();
       });
 
+      // Handle orientation change specifically (iOS Safari)
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          cacheViewport();
+          lastY = window.scrollY || window.pageYOffset || 0;
+          requestTick();
+        }, 100);
+      });
+
       // Recalculate document height after all resources (images) load
-      // This fixes progress bar showing wrong values on initial load
       window.addEventListener('load', () => {
         cacheViewport();
-        requestTick(); // Update progress bar with correct values
+        requestTick();
       });
       
-      // Also recalculate periodically during first few seconds (for lazy-loaded images)
+      // Periodic recalculation for lazy-loaded content
       let recalcCount = 0;
       const recalcInterval = setInterval(() => {
         cacheViewport();
+        handleScroll();
         recalcCount++;
-        if (recalcCount >= 5) {
+        if (recalcCount >= 10) {
           clearInterval(recalcInterval);
         }
-      }, 1000);
+      }, 500);
 
       initNav();
       initAvatar();
       initFilters();
       initParallax();
-      initHeroParallax(); // Subtle hero image parallax on article pages
+      initHeroParallax();
       initScrollReveal();
       initInfiniteScroll();
       initDocks();
@@ -1410,24 +1434,20 @@
       initCodeBlocks();
       initAccordions();
       initInlineFormatTouch();
-      initSubscribeForms(); // Initialize built-in subscribe flow if subscribe forms are present
-      // About page functionality is handled by about-page.js
+      initSubscribeForms();
 
-      // Initial scroll effect - IMMEDIATE synchronous update to prevent flash
-      // The no-transition class on progressFill prevents any animation on first paint
-      lastY = window.scrollY || 0;
-      cacheViewport(); // Ensure document height is calculated first
-      updateScrollEffects(lastY); // Immediate, synchronous (not via requestAnimationFrame)
+      // Initial scroll effect - IMMEDIATE synchronous update
+      lastY = window.scrollY || window.pageYOffset || 0;
+      cacheViewport();
+      updateScrollEffects(lastY);
       
-      // Remove no-transition class to enable smooth animations for future updates
+      // Remove no-transition class
       const pf = getProgressFill();
       if (pf) {
         pf.classList.remove('no-transition');
       }
     } catch (e) {
-      if (window.kunaalTheme?.debug) {
-        console.error('Theme init failed; disabling js-only reveals', e);
-      }
+      // Silent fail - don't break the page
       document.documentElement.classList.remove('js-ready');
     }
   }

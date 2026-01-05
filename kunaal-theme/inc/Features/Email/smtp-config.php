@@ -4,9 +4,11 @@
  * 
  * Configures PHPMailer for SMTP email delivery.
  * 
- * SECURITY: SMTP credentials (host, username, password) are read from wp-config.php
- * constants to avoid storing secrets in the database. Define these constants:
+ * Credentials can be provided via:
+ * 1. wp-config.php constants (recommended for public git repos)
+ * 2. GUI fields in Customizer > Email Delivery (SMTP)
  * 
+ * wp-config.php constants (if defined, these take priority):
  *   define('KUNAAL_SMTP_HOST', 'smtp.example.com');
  *   define('KUNAAL_SMTP_PORT', 587);
  *   define('KUNAAL_SMTP_USER', 'your-username');
@@ -24,10 +26,11 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Check if SMTP is enabled
+ * Check if SMTP is enabled and has valid credentials
  * 
- * SMTP is enabled if the required constants are defined in wp-config.php
- * and the Customizer toggle is enabled.
+ * SMTP is enabled if:
+ * 1. Customizer toggle is enabled, AND
+ * 2. Either wp-config.php constants OR GUI fields have credentials
  */
 function kunaal_smtp_is_enabled(): bool {
     // Check if Customizer toggle is enabled
@@ -35,10 +38,21 @@ function kunaal_smtp_is_enabled(): bool {
         return false;
     }
     
-    // Check if required constants are defined
-    return defined('KUNAAL_SMTP_HOST') && 
-           defined('KUNAAL_SMTP_USER') && 
-           defined('KUNAAL_SMTP_PASS');
+    // Check if wp-config.php constants are defined
+    $has_config_creds = defined('KUNAAL_SMTP_HOST') && 
+                        defined('KUNAAL_SMTP_USER') && 
+                        defined('KUNAAL_SMTP_PASS');
+    
+    if ($has_config_creds) {
+        return true;
+    }
+    
+    // Check if GUI credentials are set
+    $gui_host = kunaal_mod('kunaal_smtp_host_gui', '');
+    $gui_user = kunaal_mod('kunaal_smtp_username_gui', '');
+    $gui_pass = kunaal_mod('kunaal_smtp_password_gui', '');
+    
+    return !empty($gui_host) && !empty($gui_user) && !empty($gui_pass);
 }
 
 /**
@@ -68,22 +82,36 @@ add_filter('wp_mail_from_name', 'kunaal_filter_wp_mail_from_name');
 /**
  * Action: Configure PHPMailer for SMTP
  * 
- * Reads credentials from wp-config.php constants for security.
+ * Priority: wp-config.php constants > GUI settings
  */
 function kunaal_action_phpmailer_init(PHPMailer\PHPMailer\PHPMailer $phpmailer): void {
     if (!kunaal_smtp_is_enabled()) {
         return;
     }
 
-    // Read credentials from constants (defined in wp-config.php)
-    $host = defined('KUNAAL_SMTP_HOST') ? (string) KUNAAL_SMTP_HOST : '';
-    $user = defined('KUNAAL_SMTP_USER') ? (string) KUNAAL_SMTP_USER : '';
-    $pass = defined('KUNAAL_SMTP_PASS') ? (string) KUNAAL_SMTP_PASS : '';
-    $port = defined('KUNAAL_SMTP_PORT') ? (int) KUNAAL_SMTP_PORT : 587;
-    $enc  = defined('KUNAAL_SMTP_SECURE') ? (string) KUNAAL_SMTP_SECURE : 'tls';
+    // Check if wp-config.php constants are defined (these take priority)
+    $has_config_creds = defined('KUNAAL_SMTP_HOST') && 
+                        defined('KUNAAL_SMTP_USER') && 
+                        defined('KUNAAL_SMTP_PASS');
+    
+    if ($has_config_creds) {
+        // Use wp-config.php credentials
+        $host = (string) KUNAAL_SMTP_HOST;
+        $user = (string) KUNAAL_SMTP_USER;
+        $pass = (string) KUNAAL_SMTP_PASS;
+        $port = defined('KUNAAL_SMTP_PORT') ? (int) KUNAAL_SMTP_PORT : 587;
+        $enc  = defined('KUNAAL_SMTP_SECURE') ? (string) KUNAAL_SMTP_SECURE : 'tls';
+    } else {
+        // Use GUI credentials from Customizer
+        $host = (string) kunaal_mod('kunaal_smtp_host_gui', '');
+        $user = (string) kunaal_mod('kunaal_smtp_username_gui', '');
+        $pass = (string) kunaal_mod('kunaal_smtp_password_gui', '');
+        $port = (int) kunaal_mod('kunaal_smtp_port_gui', 587);
+        $enc  = (string) kunaal_mod('kunaal_smtp_encryption_gui', 'tls');
+    }
 
     if (empty($host) || empty($user) || empty($pass) || $port <= 0) {
-        // Fail-safe: do not partially configure SMTP.
+        // Fail-safe: do not partially configure SMTP
         return;
     }
 
@@ -104,4 +132,3 @@ function kunaal_action_phpmailer_init(PHPMailer\PHPMailer\PHPMailer $phpmailer):
     }
 }
 add_action('phpmailer_init', 'kunaal_action_phpmailer_init');
-

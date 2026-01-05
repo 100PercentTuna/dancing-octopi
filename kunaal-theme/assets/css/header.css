@@ -385,6 +385,7 @@
   border: 0;
 }
 
+/* Mobile nav styles - portrait mode */
 @media (max-width: 760px) {
   .nav {
     display: none;
@@ -442,6 +443,53 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+/* Mobile nav styles - LANDSCAPE mode on phones
+   iPhone landscape has width ~844px but height ~390px
+   Use max-height to detect landscape phones */
+@media (max-height: 500px) and (orientation: landscape) {
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: env(safe-area-inset-right, 0);
+    background: var(--bg);
+    border: 1px solid var(--hair2);
+    border-radius: 6px;
+    padding: 6px;
+    flex-direction: column;
+    gap: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    min-width: 120px;
+    z-index: 9999;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  .nav.open { display: flex !important; }
+  .nav a {
+    padding: 6px 10px;
+    border-radius: 3px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+  }
+  .navToggle { 
+    display: block !important;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+    padding: 12px;
+  }
+  .navToggle svg {
+    width: 20px;
+    height: 20px;
+  }
+  .mastInner { position: relative; }
+}
     line-height: 1.3;
   }
   
