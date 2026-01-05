@@ -348,6 +348,37 @@ body.js:not(.gsap-ready) [data-reveal] {
   .capsule-inner { animation: none; }
 }
 
+/* Mobile landscape fallback - ensure all content is visible
+   This prevents blank page if JS fails or GSAP has issues */
+@media (max-height: 500px) and (orientation: landscape) {
+  .kunaal-about-page [data-reveal],
+  .kunaal-about-page .hero-intro,
+  .kunaal-about-page .hero-text,
+  .kunaal-about-page .hand-note,
+  .kunaal-about-page .panorama,
+  .kunaal-about-page .section,
+  .kunaal-about-page .numbers,
+  .kunaal-about-page .places,
+  .kunaal-about-page .media,
+  .kunaal-about-page .say-hello,
+  .kunaal-about-page .hero-photo {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+  
+  /* Simpler hero layout in landscape */
+  .kunaal-about-page .hero {
+    min-height: auto;
+    height: auto;
+  }
+  
+  .kunaal-about-page .hero-grid {
+    min-height: auto;
+    height: auto;
+  }
+}
+
 /* Focus states for accessibility */
 a:focus-visible, button:focus-visible {
   outline: 2px solid var(--blue);

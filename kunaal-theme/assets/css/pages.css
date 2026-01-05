@@ -422,11 +422,32 @@ main.article {
   text-align: left;
 }
 
-/* Mobile prose margins - MUST be after base .prose to override */
+/* Mobile margins - ensure content doesn't touch edges on narrow screens */
 @media (max-width: 640px) {
   .prose {
     padding-left: var(--space-3, 24px) !important;
     padding-right: var(--space-3, 24px) !important;
+  }
+  
+  .articleHeader {
+    padding-left: var(--space-3, 24px) !important;
+    padding-right: var(--space-3, 24px) !important;
+    box-sizing: border-box;
+  }
+  
+  .heroImage {
+    margin-left: var(--space-3, 24px);
+    margin-right: var(--space-3, 24px);
+    max-width: calc(100% - var(--space-3, 24px) * 2);
+  }
+}
+
+/* Narrow desktop (641-800px) - also needs padding to prevent edge touching */
+@media (max-width: 800px) and (min-width: 641px) {
+  .articleHeader,
+  .prose {
+    padding-left: var(--space-4, 32px);
+    padding-right: var(--space-4, 32px);
   }
 }
 

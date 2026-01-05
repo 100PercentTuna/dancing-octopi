@@ -378,7 +378,7 @@
   // ========================================
   // MOBILE NAV - Event delegation for Safari iOS compatibility
   // Uses document-level event delegation instead of direct binding
-  // This avoids cloneNode issues and works reliably in landscape mode
+  // Handles both click and touch events for reliable mobile support
   // ========================================
   let navInitialized = false;
   function initNav() {
@@ -386,9 +386,8 @@
     if (navInitialized) return;
     navInitialized = true;
     
-    // Event delegation on document for nav toggle clicks
-    document.addEventListener('click', function(e) {
-      // Check if click is on nav toggle button
+    // Handler function for toggle
+    function handleNavToggle(e) {
       const toggle = e.target.closest('[data-ui="nav-toggle"]');
       if (toggle) {
         e.preventDefault();
@@ -399,10 +398,13 @@
         
         const isOpen = nav.classList.toggle('open');
         toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        return;
+        return true;
       }
-      
-      // Close nav if clicking outside
+      return false;
+    }
+    
+    // Handler function for closing nav
+    function handleNavClose(e) {
       const nav = getNav();
       const navToggle = getNavToggle();
       if (nav && nav.classList.contains('open')) {
@@ -411,7 +413,41 @@
           if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
         }
       }
+    }
+    
+    // Click event for desktop and some mobile
+    document.addEventListener('click', function(e) {
+      if (!handleNavToggle(e)) {
+        handleNavClose(e);
+      }
     });
+    
+    // Touch event specifically for iOS Safari which may not fire click reliably
+    // Use touchend instead of touchstart to allow scrolling
+    let touchMoved = false;
+    document.addEventListener('touchstart', function() {
+      touchMoved = false;
+    }, { passive: true });
+    
+    document.addEventListener('touchmove', function() {
+      touchMoved = true;
+    }, { passive: true });
+    
+    document.addEventListener('touchend', function(e) {
+      // Only handle if touch didn't move (wasn't a scroll)
+      if (touchMoved) return;
+      
+      const toggle = e.target.closest('[data-ui="nav-toggle"]');
+      if (toggle) {
+        e.preventDefault();
+        
+        const nav = getNav();
+        if (!nav) return;
+        
+        const isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+    }, { passive: false });
 
     // Escape key closes nav
     document.addEventListener('keydown', function(e) {

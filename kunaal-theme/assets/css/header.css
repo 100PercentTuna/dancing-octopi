@@ -490,14 +490,6 @@
   }
   .mastInner { position: relative; }
 }
-    line-height: 1.3;
-  }
-  
-  /* Ensure header above all content on mobile */
-  .mast {
-    z-index: 9998;
-  }
-}
 
 /* Issue 6: Subtitle in landscape mode on phones
    Multiple conditions to catch different phone sizes */

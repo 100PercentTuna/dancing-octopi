@@ -122,6 +122,19 @@ function kunaal_action_phpmailer_init(PHPMailer\PHPMailer\PHPMailer $phpmailer):
     $phpmailer->Username = $user;
     $phpmailer->Password = $pass;
     $phpmailer->SMTPAutoTLS = true;
+    
+    // Set shorter timeout (15 seconds instead of default 30)
+    // Helps with O365 which can hang on misconfiguration
+    $phpmailer->Timeout = 15;
+    
+    // Enable debug mode if constant is defined
+    // Add define('KUNAAL_SMTP_DEBUG', true); to wp-config.php to enable
+    if (defined('KUNAAL_SMTP_DEBUG') && KUNAAL_SMTP_DEBUG) {
+        $phpmailer->SMTPDebug = 2; // Show connection status and errors
+        $phpmailer->Debugoutput = function($str, $level) {
+            error_log("SMTP Debug [$level]: $str");
+        };
+    }
 
     if ($enc === 'ssl') {
         $phpmailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;

@@ -31,43 +31,72 @@
     return !!(window.gsap && window.ScrollTrigger);
   }
 
-  function init() {
-    const gsapOk = hasGSAP();
+  // Ensure all content is visible - fallback if JS fails
+  function ensureContentVisible() {
+    // Make all reveal elements visible
+    document.querySelectorAll('[data-reveal]').forEach(function(el) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.visibility = 'visible';
+    });
     
-    // Mark elements as GSAP-ready only if GSAP is available
-    if (gsapOk) {
-      document.body.classList.add('gsap-ready');
-      try { 
-        window.gsap.registerPlugin(window.ScrollTrigger); 
-      } catch (e) {
-        // Fail silently - GSAP is progressive enhancement
-      }
-    }
+    // Ensure panoramas and sections are visible
+    document.querySelectorAll('.panorama, .section, .hero, .numbers, .places, .media, .say-hello').forEach(function(el) {
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+    });
+    
+    // Ensure hero text is visible
+    document.querySelectorAll('.hero-intro, .hero-text, .hand-note').forEach(function(el) {
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+    });
+  }
 
-    // Initialize all modules
-    initPageLoad(gsapOk);
-    initScrollReveals(gsapOk);
-    initPanoramaParallax(gsapOk);
-    initPinnedScenes(gsapOk);
-    initMarqueeWords(gsapOk);
-    initNumbers(gsapOk);
-    initWorldMap();
-    // Progress bar is handled by main.js (single owner - see architecture.mdc)
-    // Header nav is handled by main.js (single owner - see architecture.mdc)
-    initHeroMosaicCycle();
-    initCapsuleLife();
-    initFooterYear();
-    
-    // Verify accent photo overflow after init (defensive check)
-    setTimeout(function() {
-      const accentPhoto = document.querySelector('.hero-photo.has-accent');
-      if (accentPhoto) {
-        const computedOverflow = window.getComputedStyle(accentPhoto).overflow;
-        if (computedOverflow !== 'visible') {
-          accentPhoto.style.overflow = 'visible';
+  function init() {
+    try {
+      const gsapOk = hasGSAP();
+      
+      // Mark elements as GSAP-ready only if GSAP is available
+      if (gsapOk) {
+        document.body.classList.add('gsap-ready');
+        try { 
+          window.gsap.registerPlugin(window.ScrollTrigger); 
+        } catch (e) {
+          // Fail silently - GSAP is progressive enhancement
         }
       }
-    }, 100);
+
+      // Initialize all modules - each wrapped for safety
+      try { initPageLoad(gsapOk); } catch (e) { /* fail silently */ }
+      try { initScrollReveals(gsapOk); } catch (e) { /* fail silently */ }
+      try { initPanoramaParallax(gsapOk); } catch (e) { /* fail silently */ }
+      try { initPinnedScenes(gsapOk); } catch (e) { /* fail silently */ }
+      try { initMarqueeWords(gsapOk); } catch (e) { /* fail silently */ }
+      try { initNumbers(gsapOk); } catch (e) { /* fail silently */ }
+      try { initWorldMap(); } catch (e) { /* fail silently */ }
+      try { initHeroMosaicCycle(); } catch (e) { /* fail silently */ }
+      try { initCapsuleLife(); } catch (e) { /* fail silently */ }
+      try { initFooterYear(); } catch (e) { /* fail silently */ }
+      
+      // Verify accent photo overflow after init (defensive check)
+      setTimeout(function() {
+        var accentPhoto = document.querySelector('.hero-photo.has-accent');
+        if (accentPhoto) {
+          var computedOverflow = window.getComputedStyle(accentPhoto).overflow;
+          if (computedOverflow !== 'visible') {
+            accentPhoto.style.overflow = 'visible';
+          }
+        }
+      }, 100);
+      
+      // Ensure content is visible after init completes
+      setTimeout(ensureContentVisible, 200);
+      
+    } catch (e) {
+      // Critical failure - ensure content is still visible
+      ensureContentVisible();
+    }
   }
 
   // =============================================
