@@ -173,13 +173,13 @@
     --k-color-warm-light: #C9B8A8;
     --k-color-warm-tint: rgba(232, 168, 124, 0.12);
     
-    /* Accent system - remains BLUE in dark mode (warm is separate) */
-    --k-color-accent: #7BA3FF;
-    --k-color-accent-tint: rgba(123, 163, 255, 0.08);
-    --k-color-accent-stroke: rgba(123, 163, 255, 0.35);
-    --k-color-accent-hover: rgba(123, 163, 255, 0.18);
-    --k-color-accent-ring: rgba(123, 163, 255, 0.25);
-    --k-color-accent-solid-hover: #5F93FF;
+    /* Accent system - dark mode uses warm/orange as the primary accent */
+    --k-color-accent: var(--k-color-warm);
+    --k-color-accent-tint: rgba(232, 168, 124, 0.08);
+    --k-color-accent-stroke: rgba(232, 168, 124, 0.35);
+    --k-color-accent-hover: rgba(232, 168, 124, 0.18);
+    --k-color-accent-ring: rgba(232, 168, 124, 0.25);
+    --k-color-accent-solid-hover: color-mix(in srgb, var(--k-color-accent) 86%, #000);
     
     /* Underline colors for dark mode (follows accent system) */
     --k-underline-blue-color: var(--k-color-accent);
@@ -187,8 +187,8 @@
 
     /* --------------------------------------------------------------------
        WordPress preset variable alignment (legibility)
-       WP global-styles uses `--wp--preset--color--*` values derived from theme.json.
-       Those are static hex values, so we override them in dark mode to follow tokens.
+       WP global-styles may define these vars on :root OR on body/.wp-site-blocks.
+       Override on :root, and also mirror on body below to prevent dark headings.
        -------------------------------------------------------------------- */
     --wp--preset--color--background: var(--k-color-bg);
     --wp--preset--color--surface: var(--k-color-bg-alt);
@@ -216,6 +216,18 @@
     --k-chart-gray: #A0A0A0;
     --k-chart-gray-light: #B8B8B8;
     --k-chart-gray-muted: #3D3D3D;
+  }
+
+  :root[data-theme="dark"] body {
+    --wp--preset--color--background: var(--k-color-bg);
+    --wp--preset--color--surface: var(--k-color-bg-alt);
+    --wp--preset--color--ink: var(--k-color-ink);
+    --wp--preset--color--muted: var(--k-color-muted);
+    --wp--preset--color--hairline: var(--k-color-hair-2);
+    --wp--preset--color--blue: var(--k-color-accent);
+    --wp--preset--color--warm: var(--k-color-warm);
+    --wp--preset--color--warm-light: var(--k-color-warm-light);
+    --wp--preset--color--warm-tint: var(--k-color-bg-warm);
   }
 }
 

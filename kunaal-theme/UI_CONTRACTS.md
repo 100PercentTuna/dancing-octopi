@@ -112,7 +112,7 @@ All z-index values must follow this scale. Do not use values outside this scale 
 **Token overrides**: All core color tokens are redefined for dark backgrounds:
 - `--bg`: Dark background (via `--k-color-bg`)
 - `--ink`: Light text (via `--k-color-ink`)
-- `--blue`: **Theme accent** (still blue; do not repurpose as warm/orange)
+- `--blue`: Dark-mode accent (warm/orange; equivalent role to light-mode blue)
 
 **WordPress preset alignment (critical for legibility)**:
 - WP global styles (from `theme.json`) use `--wp--preset--color--*` variables.

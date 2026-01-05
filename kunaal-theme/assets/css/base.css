@@ -73,6 +73,9 @@ button, select, input { font: inherit; }
 ::selection { background: rgba(30,90,255,.18); }
 img { max-width: 100%; height: auto; display: block; }
 
+/* Headings must remain legible in both themes */
+:where(h1, h2, h3, h4, h5, h6) { color: var(--ink); }
+
 /* Prevent any element from causing horizontal overflow on mobile landscape */
 @media (max-width: 900px) and (orientation: landscape) {
   .container, main, article, section, .hero, .panorama, .mast, .home-content {

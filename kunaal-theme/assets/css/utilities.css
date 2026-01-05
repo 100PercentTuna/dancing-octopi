@@ -243,6 +243,7 @@
     position: relative;
     padding-bottom: 8px;
     /* No border-bottom here - gray line is on .sectionHead container */
+    color: var(--ink);
   }
 
   .u-section-underline::after {
