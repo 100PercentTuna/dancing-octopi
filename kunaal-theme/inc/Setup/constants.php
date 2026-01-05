@@ -46,7 +46,14 @@ if (!defined('KUNAAL_NAV_CURRENT_CLASS')) {
  * Cache-bust suffix: Increment this when CSS changes need to bypass stale page caches.
  * The filemtime alone isn't enough when WordPress page cache stores old timestamps.
  */
-define('KUNAAL_ASSET_CACHE_BUST', '25');
+if (!defined('KUNAAL_ASSET_CACHE_BUST')) {
+    define('KUNAAL_ASSET_CACHE_BUST', '26');
+}
+
+// Standard GMT datetime format used across queue/subscriber tables.
+if (!defined('KUNAAL_GMT_DATETIME_FORMAT')) {
+    define('KUNAAL_GMT_DATETIME_FORMAT', 'Y-m-d H:i:s');
+}
 
 function kunaal_asset_version(string $relative_path): string {
     $relative_path = ltrim((string) $relative_path, '/');

@@ -15,6 +15,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+const KUNAAL_TRACKING_ERROR_INVALID = 'Invalid tracking link.';
+
 /**
  * Enable click tracking.
  */
@@ -77,7 +79,7 @@ function kunaal_email_event_log(int $subscriber_id, int $queue_id, string $event
             'event' => $event,
             'url' => $url !== '' ? $url : null,
             'ua_hash' => isset($_SERVER['HTTP_USER_AGENT']) ? hash('sha256', (string) $_SERVER['HTTP_USER_AGENT']) : null,
-            'created_gmt' => gmdate('Y-m-d H:i:s'),
+            'created_gmt' => gmdate(KUNAAL_GMT_DATETIME_FORMAT),
         ),
         array('%d', '%d', '%s', '%s', '%s', '%s')
     );
@@ -99,18 +101,18 @@ function kunaal_handle_email_click_tracking(): void {
     $sig = isset($_GET['sig']) ? sanitize_text_field(wp_unslash($_GET['sig'])) : '';
 
     if ($qid <= 0 || $sid <= 0 || $u === '' || $sig === '') {
-        wp_die('Invalid tracking link.', 'Tracking', array('response' => 400));
+        wp_die(KUNAAL_TRACKING_ERROR_INVALID, 'Tracking', array('response' => 400));
     }
 
     $target = kunaal_b64url_decode($u);
     if ($target === '' || !preg_match('#^https?://#i', $target)) {
-        wp_die('Invalid tracking link.', 'Tracking', array('response' => 400));
+        wp_die(KUNAAL_TRACKING_ERROR_INVALID, 'Tracking', array('response' => 400));
     }
 
     $payload = $qid . '|' . $sid . '|' . $target;
     $expected = hash_hmac('sha256', $payload, wp_salt('nonce'));
     if (!hash_equals($expected, $sig)) {
-        wp_die('Invalid tracking link.', 'Tracking', array('response' => 400));
+        wp_die(KUNAAL_TRACKING_ERROR_INVALID, 'Tracking', array('response' => 400));
     }
 
     kunaal_email_event_log($sid, $qid, 'click', $target);

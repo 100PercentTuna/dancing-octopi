@@ -19,6 +19,9 @@ if (!defined('ABSPATH')) {
  * Bump when schema changes and implement an upgrade path.
  */
 const KUNAAL_SUBSCRIBERS_SCHEMA_VERSION = 1;
+const KUNAAL_SUBSCRIBERS_STATUS_PENDING = 'pending';
+const KUNAAL_SUBSCRIBERS_STATUS_CONFIRMED = 'confirmed';
+const KUNAAL_SUBSCRIBERS_STATUS_UNSUBSCRIBED = 'unsubscribed';
 
 /**
  * @return string
@@ -297,7 +300,7 @@ function kunaal_subscriber_touch_last_email_sent(int $subscriber_id): void {
     $table = kunaal_subscribers_table();
     $wpdb->update(
         $table,
-        array('last_email_sent_gmt' => gmdate('Y-m-d H:i:s')),
+        array('last_email_sent_gmt' => gmdate(KUNAAL_GMT_DATETIME_FORMAT)),
         array('id' => $subscriber_id),
         array('%s'),
         array('%d')
@@ -325,7 +328,7 @@ function kunaal_subscriber_insert(string $email, string $status = 'pending', str
         'email' => $email,
         'status' => $status,
         'token_hash' => $token_hash,
-        'created_gmt' => gmdate('Y-m-d H:i:s'),
+        'created_gmt' => gmdate(KUNAAL_GMT_DATETIME_FORMAT),
         'source' => $source !== '' ? $source : null,
     );
     $formats = array('%s', '%s', '%s', '%s', '%s');
@@ -350,14 +353,14 @@ function kunaal_subscriber_update_status(int $id, string $status): bool {
     $updates = array('status' => $status);
     $formats = array('%s');
 
-    if ($status === 'confirmed') {
-        $updates['confirmed_gmt'] = gmdate('Y-m-d H:i:s');
+    if ($status === KUNAAL_SUBSCRIBERS_STATUS_CONFIRMED) {
+        $updates['confirmed_gmt'] = gmdate(KUNAAL_GMT_DATETIME_FORMAT);
         $formats[] = '%s';
         $updates['token_hash'] = null;
         $formats[] = '%s';
     }
-    if ($status === 'unsubscribed') {
-        $updates['unsubscribed_gmt'] = gmdate('Y-m-d H:i:s');
+    if ($status === KUNAAL_SUBSCRIBERS_STATUS_UNSUBSCRIBED) {
+        $updates['unsubscribed_gmt'] = gmdate(KUNAAL_GMT_DATETIME_FORMAT);
         $formats[] = '%s';
     }
 
@@ -379,7 +382,7 @@ function kunaal_subscriber_set_token_hash(int $id, string $token_hash): bool {
         $table,
         array(
             'token_hash' => $token_hash,
-            'last_confirm_sent_gmt' => gmdate('Y-m-d H:i:s'),
+            'last_confirm_sent_gmt' => gmdate(KUNAAL_GMT_DATETIME_FORMAT),
         ),
         array('id' => $id),
         array('%s', '%s'),

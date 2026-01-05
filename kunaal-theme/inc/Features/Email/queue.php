@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 const KUNAAL_EMAIL_QUEUE_EVENT = 'kunaal_email_queue_process';
+const KUNAAL_EMAIL_QUEUE_CRON_SCHEDULE = 'kunaal_5min';
 
 /**
  * Get global minimum delay for subscriber notifications (minutes).
@@ -60,7 +61,7 @@ add_filter('cron_schedules', 'kunaal_email_queue_cron_schedules');
  */
 function kunaal_email_queue_ensure_cron(): void {
     if (!wp_next_scheduled(KUNAAL_EMAIL_QUEUE_EVENT)) {
-        wp_schedule_event(time() + 120, 'kunaal_5min', KUNAAL_EMAIL_QUEUE_EVENT);
+        wp_schedule_event(time() + 120, KUNAAL_EMAIL_QUEUE_CRON_SCHEDULE, KUNAAL_EMAIL_QUEUE_EVENT);
     }
 }
 add_action('init', 'kunaal_email_queue_ensure_cron');
@@ -94,7 +95,7 @@ function kunaal_email_queue_insert(array $email): int|WP_Error {
             'attempts' => 0,
             'last_error' => null,
             'status' => 'queued',
-            'created_gmt' => gmdate('Y-m-d H:i:s'),
+            'created_gmt' => gmdate(KUNAAL_GMT_DATETIME_FORMAT),
             'sent_gmt' => null,
         ),
         array('%s', '%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s')
@@ -122,7 +123,7 @@ function kunaal_subscribe_compute_scheduled_gmt(int $post_id): string {
         if ($ts === false || $ts < $earliest) {
             $ts = $earliest;
         }
-        return gmdate('Y-m-d H:i:s', $ts);
+        return gmdate(KUNAAL_GMT_DATETIME_FORMAT, $ts);
     }
 
     $delay_minutes = (int) get_post_meta($post_id, 'kunaal_notify_delay_minutes', true);
@@ -130,7 +131,152 @@ function kunaal_subscribe_compute_scheduled_gmt(int $post_id): string {
         $delay_minutes = kunaal_subscribe_default_delay_minutes();
     }
     $delay_minutes = max($min_delay, $delay_minutes);
-    return gmdate('Y-m-d H:i:s', $now + ($delay_minutes * MINUTE_IN_SECONDS));
+    return gmdate(KUNAAL_GMT_DATETIME_FORMAT, $now + ($delay_minutes * MINUTE_IN_SECONDS));
+}
+
+/**
+ * Fetch due queue rows.
+ *
+ * @param int $limit
+ * @param string $now_gmt
+ * @return array<int,array<string,mixed>>
+ */
+function kunaal_email_queue_fetch_due(int $limit, string $now_gmt): array {
+    global $wpdb;
+    $table = kunaal_email_queue_table();
+
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
+    $rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM {$table} WHERE status = %s AND scheduled_gmt <= %s ORDER BY scheduled_gmt ASC, id ASC LIMIT %d",
+            'queued',
+            $now_gmt,
+            $limit
+        ),
+        ARRAY_A
+    );
+    return is_array($rows) ? $rows : array();
+}
+
+/**
+ * Mark row as sending and increment attempts.
+ */
+function kunaal_email_queue_mark_sending(int $queue_id, int $attempts): void {
+    global $wpdb;
+    $table = kunaal_email_queue_table();
+    $wpdb->update(
+        $table,
+        array('status' => 'sending', 'attempts' => $attempts + 1),
+        array('id' => $queue_id),
+        array('%s', '%d'),
+        array('%d')
+    );
+}
+
+/**
+ * Mark row as sent.
+ */
+function kunaal_email_queue_mark_sent(int $queue_id): void {
+    global $wpdb;
+    $table = kunaal_email_queue_table();
+    $wpdb->update(
+        $table,
+        array('status' => 'sent', 'sent_gmt' => gmdate(KUNAAL_GMT_DATETIME_FORMAT), 'last_error' => null),
+        array('id' => $queue_id),
+        array('%s', '%s', '%s'),
+        array('%d')
+    );
+}
+
+/**
+ * Mark row as failed.
+ */
+function kunaal_email_queue_mark_failed(int $queue_id, string $error): void {
+    global $wpdb;
+    $table = kunaal_email_queue_table();
+    $wpdb->update(
+        $table,
+        array('status' => 'failed', 'last_error' => $error),
+        array('id' => $queue_id),
+        array('%s', '%s'),
+        array('%d')
+    );
+}
+
+/**
+ * Extract headers from a queue row.
+ *
+ * @param array<string,mixed> $row
+ * @return array<int,string>
+ */
+function kunaal_email_queue_headers_from_row(array $row): array {
+    if (!isset($row['headers_json']) || !$row['headers_json']) {
+        return array();
+    }
+    $decoded = json_decode((string) $row['headers_json'], true);
+    return is_array($decoded) ? $decoded : array();
+}
+
+/**
+ * Apply click tracking to the body for post notifications (best-effort).
+ */
+function kunaal_email_queue_apply_click_tracking(int $queue_id, int $subscriber_id, array $row, string $body): string {
+    if (!function_exists('kunaal_subscribe_click_tracking_enabled') || !kunaal_subscribe_click_tracking_enabled()) {
+        return $body;
+    }
+    $type = isset($row['type']) ? (string) $row['type'] : '';
+    $post_id = isset($row['post_id']) ? (int) $row['post_id'] : 0;
+    if ($type !== 'post_notify' || $post_id <= 0 || !function_exists('kunaal_email_click_tracking_url')) {
+        return $body;
+    }
+    $post_url = get_permalink($post_id);
+    if (!is_string($post_url) || $post_url === '') {
+        return $body;
+    }
+    $tracked = kunaal_email_click_tracking_url($queue_id, $subscriber_id, $post_url);
+    return str_replace($post_url, esc_url_raw($tracked), $body);
+}
+
+/**
+ * Send a single queued email row.
+ *
+ * @param array<string,mixed> $row
+ * @return void
+ */
+function kunaal_email_queue_send_row(array $row): void {
+    $queue_id = isset($row['id']) ? (int) $row['id'] : 0;
+    $subscriber_id = isset($row['subscriber_id']) ? (int) $row['subscriber_id'] : 0;
+    if ($queue_id <= 0 || $subscriber_id <= 0) {
+        return;
+    }
+
+    $attempts = isset($row['attempts']) ? (int) $row['attempts'] : 0;
+    kunaal_email_queue_mark_sending($queue_id, $attempts);
+
+    $subscriber = function_exists('kunaal_subscriber_get_by_id') ? kunaal_subscriber_get_by_id($subscriber_id) : null;
+    $to = ($subscriber && isset($subscriber['email'])) ? (string) $subscriber['email'] : '';
+    if (!is_email($to)) {
+        kunaal_email_queue_mark_failed($queue_id, 'Invalid subscriber email.');
+        return;
+    }
+
+    $subject = isset($row['subject']) ? (string) $row['subject'] : '';
+    $body = isset($row['body']) ? (string) $row['body'] : '';
+    $headers = kunaal_email_queue_headers_from_row($row);
+    $body = kunaal_email_queue_apply_click_tracking($queue_id, $subscriber_id, $row, $body);
+
+    $sent = wp_mail($to, $subject, $body, $headers);
+    if ($sent) {
+        kunaal_email_queue_mark_sent($queue_id);
+        if (function_exists('kunaal_subscriber_touch_last_email_sent')) {
+            kunaal_subscriber_touch_last_email_sent($subscriber_id);
+        }
+        return;
+    }
+
+    global $phpmailer;
+    $err = (isset($phpmailer) && is_object($phpmailer) && isset($phpmailer->ErrorInfo)) ? (string) $phpmailer->ErrorInfo : 'wp_mail failed';
+    kunaal_email_queue_mark_failed($queue_id, $err);
 }
 
 /**
@@ -243,103 +389,15 @@ function kunaal_email_queue_process(): void {
     if (!function_exists('kunaal_email_queue_table')) {
         return;
     }
-    global $wpdb;
-    $table = kunaal_email_queue_table();
-
-    $now = gmdate('Y-m-d H:i:s');
+    $now = gmdate(KUNAAL_GMT_DATETIME_FORMAT);
     $limit = 30; // batch size per cron tick
-
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- prepared below
-    $rows = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT * FROM {$table} WHERE status = %s AND scheduled_gmt <= %s ORDER BY scheduled_gmt ASC, id ASC LIMIT %d",
-            'queued',
-            $now,
-            $limit
-        ),
-        ARRAY_A
-    );
-
-    if (!is_array($rows) || !$rows) {
+    $rows = kunaal_email_queue_fetch_due($limit, $now);
+    if (!$rows) {
         return;
     }
 
     foreach ($rows as $r) {
-        $id = isset($r['id']) ? (int) $r['id'] : 0;
-        $sid = isset($r['subscriber_id']) ? (int) $r['subscriber_id'] : 0;
-        if ($id <= 0 || $sid <= 0) {
-            continue;
-        }
-
-        // Mark sending + increment attempts.
-        $attempts = isset($r['attempts']) ? (int) $r['attempts'] : 0;
-        $wpdb->update(
-            $table,
-            array('status' => 'sending', 'attempts' => $attempts + 1),
-            array('id' => $id),
-            array('%s', '%d'),
-            array('%d')
-        );
-
-        $subscriber = function_exists('kunaal_subscriber_get_by_id') ? kunaal_subscriber_get_by_id($sid) : null;
-        $to = ($subscriber && isset($subscriber['email'])) ? (string) $subscriber['email'] : '';
-        if (!is_email($to)) {
-            $wpdb->update(
-                $table,
-                array('status' => 'failed', 'last_error' => 'Invalid subscriber email.'),
-                array('id' => $id),
-                array('%s', '%s'),
-                array('%d')
-            );
-            continue;
-        }
-
-        $subject = isset($r['subject']) ? (string) $r['subject'] : '';
-        $body = isset($r['body']) ? (string) $r['body'] : '';
-        $headers = array();
-        if (isset($r['headers_json']) && $r['headers_json']) {
-            $decoded = json_decode((string) $r['headers_json'], true);
-            if (is_array($decoded)) {
-                $headers = $decoded;
-            }
-        }
-
-        // Optional click tracking (best-effort): rewrite the post URL to a signed redirect.
-        if (function_exists('kunaal_subscribe_click_tracking_enabled') && kunaal_subscribe_click_tracking_enabled()) {
-            $type = isset($r['type']) ? (string) $r['type'] : '';
-            $post_id = isset($r['post_id']) ? (int) $r['post_id'] : 0;
-            if ($type === 'post_notify' && $post_id > 0 && function_exists('kunaal_email_click_tracking_url')) {
-                $post_url = get_permalink($post_id);
-                if (is_string($post_url) && $post_url !== '') {
-                    $tracked = kunaal_email_click_tracking_url($id, $sid, $post_url);
-                    $body = str_replace($post_url, esc_url_raw($tracked), $body);
-                }
-            }
-        }
-
-        $sent = wp_mail($to, $subject, $body, $headers);
-        if ($sent) {
-            $wpdb->update(
-                $table,
-                array('status' => 'sent', 'sent_gmt' => gmdate('Y-m-d H:i:s'), 'last_error' => null),
-                array('id' => $id),
-                array('%s', '%s', '%s'),
-                array('%d')
-            );
-            if (function_exists('kunaal_subscriber_touch_last_email_sent')) {
-                kunaal_subscriber_touch_last_email_sent($sid);
-            }
-        } else {
-            global $phpmailer;
-            $err = (isset($phpmailer) && is_object($phpmailer) && isset($phpmailer->ErrorInfo)) ? (string) $phpmailer->ErrorInfo : 'wp_mail failed';
-            $wpdb->update(
-                $table,
-                array('status' => 'failed', 'last_error' => $err),
-                array('id' => $id),
-                array('%s', '%s'),
-                array('%d')
-            );
-        }
+        kunaal_email_queue_send_row($r);
     }
 }
 add_action(KUNAAL_EMAIL_QUEUE_EVENT, 'kunaal_email_queue_process');
