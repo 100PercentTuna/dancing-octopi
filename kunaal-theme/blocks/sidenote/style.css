@@ -26,7 +26,7 @@
     font-size: 1.1em;
     font-weight: 700;
     font-family: var(--sans, system-ui, sans-serif);
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     vertical-align: middle;
     line-height: 0;
     margin: 0 0.15em;
@@ -124,7 +124,7 @@
 }
 
 .sidenote-ref-preview {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     font-weight: 600;
     font-size: 0.8em;
     flex-shrink: 0;

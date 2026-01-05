@@ -10,14 +10,14 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 15px;
     font-weight: 600;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     margin: 0 0 var(--space-3, 24px);
     text-align: center;
     letter-spacing: -0.01em;
 }
 
 .chart-container {
-    background: var(--bg, #FDFCFA);
+    background: var(--bg, var(--k-color-bg));
     border: 1px solid var(--hair, rgba(11,18,32,0.14));
     padding: var(--space-4, 32px);
     border-radius: 0;
@@ -75,7 +75,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--bgWarm, #F9F7F4) 0%, var(--bgAlt, #F5F3EF) 100%);
+    background: linear-gradient(135deg, var(--bgWarm, var(--k-color-bg-warm)) 0%, var(--bgAlt, var(--k-color-bg-alt-2)) 100%);
     border: 2px dashed var(--hair, rgba(11,18,32,0.14));
     border-radius: 4px;
     padding: var(--space-4, 32px);
@@ -89,7 +89,7 @@
     display: inline-block;
     font-size: 18px;
     font-weight: 600;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     background: var(--blueTint, rgba(30,90,255,0.04));
     padding: 8px 16px;
     border-radius: 20px;

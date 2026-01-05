@@ -8,22 +8,22 @@
  */
 
 :root {
-  /* Chart colors - varied palette (not yet migrated to tokens) */
-  --chart-blue: #1E5AFF;
-  --chart-blue-light: #7BA3FF;
-  --chart-blue-muted: #B8CEFF;
-  --chart-warm: #7D6B5D;
-  --chart-warm-light: #B8A99A;
-  --chart-warm-muted: #D9CFC4;
-  --chart-accent: #FF6B6B;
-  --chart-accent-light: #FFA5A5;
-  --chart-accent-muted: #FFD4D4;
-  --chart-green: #2ECC71;
-  --chart-green-light: #7FE0A0;
-  --chart-green-muted: #C1F0D1;
-  --chart-gray: #95A5A6;
-  --chart-gray-light: #BDC3C7;
-  --chart-gray-muted: #ECF0F1;
+  /* Chart colors - mapping to tokens.css (single source of truth) */
+  --chart-blue: var(--k-chart-blue);
+  --chart-blue-light: var(--k-chart-blue-light);
+  --chart-blue-muted: var(--k-chart-blue-muted);
+  --chart-warm: var(--k-chart-warm);
+  --chart-warm-light: var(--k-chart-warm-light);
+  --chart-warm-muted: var(--k-chart-warm-muted);
+  --chart-accent: var(--k-chart-accent);
+  --chart-accent-light: var(--k-chart-accent-light);
+  --chart-accent-muted: var(--k-chart-accent-muted);
+  --chart-green: var(--k-chart-green);
+  --chart-green-light: var(--k-chart-green-light);
+  --chart-green-muted: var(--k-chart-green-muted);
+  --chart-gray: var(--k-chart-gray);
+  --chart-gray-light: var(--k-chart-gray-light);
+  --chart-gray-muted: var(--k-chart-gray-muted);
   
   /* Scroll progress (0→1) - set by JS */
   --p: 0;

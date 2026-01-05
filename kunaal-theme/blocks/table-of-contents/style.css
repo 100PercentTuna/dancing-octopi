@@ -88,13 +88,13 @@
 
 .toc__link:hover,
 .toc__link:focus-visible {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 /* Active state */
 .toc__link.is-active {
-    color: var(--blue, #1E5AFF);
-    border-left-color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
+    border-left-color: var(--blue, var(--k-color-accent));
     font-weight: 500;
 }
 

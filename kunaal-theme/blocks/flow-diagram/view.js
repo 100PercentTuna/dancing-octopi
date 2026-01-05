@@ -53,7 +53,9 @@
       const d3 = await loadD3();
       renderFlowDiagram(block, d3, diagramType, nodes, links);
     } catch (error) {
-      console.error('Failed to render flow diagram:', error);
+      if (window.kunaalTheme?.debug) {
+        console.error('Failed to render flow diagram:', error);
+      }
       const svg = block.querySelector('.flow-svg');
       svg.innerHTML = '';
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -77,7 +79,7 @@
     
     // Read colors from CSS tokens with fallbacks
     const computedStyle = getComputedStyle(document.documentElement);
-    const nodeStrokeColor = computedStyle.getPropertyValue('--k-color-ink').trim() || '#1A1A1A';
+    const nodeStrokeColor = computedStyle.getPropertyValue('--k-color-ink').trim() || '#0b1220';
 
     // Simple layout for Sankey
     if (type === 'sankey') {
@@ -109,14 +111,15 @@
 
       // Draw links
       const linkColorMode = block.dataset.linkColorMode || 'source';
-      const defaultLinkColor = computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A';
+      const defaultLinkColor = computedStyle.getPropertyValue('--k-chart-warm-light').trim()
+        || computedStyle.getPropertyValue('--chart-warm-light').trim()
+        || '#B8A99A';
       const singleLinkColor = block.dataset.singleLinkColor || defaultLinkColor;
       const themeColors = [
-        computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D',
-        computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A',
-        computedStyle.getPropertyValue('--chart-accent').trim() || '#C9553D',
-        '#8B7355', // Additional warm shade
-        computedStyle.getPropertyValue('--chart-warm-muted').trim() || '#D4C4B5'
+        computedStyle.getPropertyValue('--k-chart-warm').trim() || computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D',
+        computedStyle.getPropertyValue('--k-chart-warm-light').trim() || computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A',
+        computedStyle.getPropertyValue('--k-chart-accent').trim() || computedStyle.getPropertyValue('--chart-accent').trim() || '#C9553D',
+        computedStyle.getPropertyValue('--k-chart-warm-muted').trim() || computedStyle.getPropertyValue('--chart-warm-muted').trim() || '#D9CFC4'
       ];
 
       links.forEach(link => {

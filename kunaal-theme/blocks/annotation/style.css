@@ -36,7 +36,7 @@
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%) translateY(-8px);
-    background: var(--ink, #0b1220);
+    background: var(--ink, var(--k-color-ink));
     color: #fff;
     font-size: 13px;
     line-height: 1.5;
@@ -59,7 +59,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: var(--ink, #0b1220);
+    border-top-color: var(--ink, var(--k-color-ink));
 }
 
 .annotation-text:hover + .annotation-note,

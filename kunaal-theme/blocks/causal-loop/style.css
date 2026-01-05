@@ -4,7 +4,7 @@
 .wp-block-kunaal-causal-loop {
     margin: var(--space-8, 64px) 0;
     padding: var(--space-5, 40px);
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
     border: 1px solid var(--hair, rgba(11,18,32,0.14));
 }
 
@@ -48,7 +48,7 @@
 
 .loop-reinforcing .cl-loop-type {
     background: rgba(30, 90, 255, 0.1);
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 .loop-balancing .cl-loop-type {
@@ -80,13 +80,13 @@
 
 .cl-node-label {
     display: inline-block;
-    background: var(--bg, #FDFCFA);
+    background: var(--bg, var(--k-color-bg));
     border: 2px solid var(--hair, rgba(11,18,32,0.14));
     padding: 12px 20px;
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 14px;
     font-weight: 500;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     border-radius: 4px;
 }
 

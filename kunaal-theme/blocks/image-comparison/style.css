@@ -147,7 +147,7 @@
 }
 
 .imgcmp__handle:focus-visible .imgcmp__handle-button {
-    box-shadow: 0 0 0 3px var(--blue, #1E5AFF), 0 4px 12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 0 3px var(--blue, var(--k-color-accent)), 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* Labels */
@@ -212,7 +212,7 @@
 
 .imgcmp__container.is-dragging .imgcmp__handle-button {
     transform: scale(1.15);
-    background: var(--blue, #1E5AFF);
+    background: var(--blue, var(--k-color-accent));
 }
 
 .imgcmp__container.is-dragging .imgcmp__handle-button svg {

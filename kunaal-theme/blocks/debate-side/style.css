@@ -3,7 +3,7 @@
  */
 .wp-block-kunaal-debate-side {
     padding: var(--space-5, 40px);
-    background: var(--bg, #FDFCFA);
+    background: var(--bg, var(--k-color-bg));
 }
 
 .side-for {
@@ -41,7 +41,7 @@
     font-size: 16px;
     font-weight: 500;
     line-height: 1.5;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     margin: 0 0 var(--space-3, 24px);
 }
 

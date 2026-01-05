@@ -6,7 +6,7 @@
     margin: var(--space-4, 32px) 0;
     padding: var(--space-3, 24px) var(--space-4, 32px);
     background: var(--warmTint, rgba(125,107,93,0.06));
-    border-left: 3px solid var(--warm, #7D6B5D);
+    border-left: 3px solid var(--warm, var(--k-color-warm));
 }
 
 .wp-block-kunaal-insight .label {
@@ -16,7 +16,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--warm, #7D6B5D);
+    color: var(--warm, var(--k-color-warm));
     margin-bottom: var(--space-2, 16px);
 }
 
@@ -24,7 +24,7 @@
     font-family: var(--serif, Georgia, serif);
     font-size: 1.05rem;
     line-height: 1.65;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .wp-block-kunaal-insight .insightContent p {
@@ -32,7 +32,7 @@
 }
 
 .wp-block-kunaal-insight .insightContent strong {
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     font-weight: 600;
 }
 

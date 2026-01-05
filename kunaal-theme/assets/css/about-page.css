@@ -46,20 +46,19 @@ body.kunaal-about-page {
 
 /* =============================================
    DARK MODE - About Page Specific Overrides
-   Uses bright orange (#E8A87C) as the bold accent color
 ============================================= */
 
-/* Section underline: bright orange in dark mode */
+/* Section underline: use theme accent in dark mode */
 :root[data-theme="dark"] .kunaal-about-page .u-section-underline::after {
-  background: var(--k-color-dark-accent, #E8A87C);
+  background: var(--k-color-accent);
 }
 
 /* Media column title: white text, bright orange underline */
 :root[data-theme="dark"] .kunaal-about-page .media-col-title {
-  color: #fff;
+  color: var(--ink);
 }
 :root[data-theme="dark"] .kunaal-about-page .media-col-title.u-section-underline::after {
-  background: var(--k-color-dark-accent, #E8A87C);
+  background: var(--k-color-accent);
 }
 
 /* Say Hello section dark mode */
@@ -67,10 +66,10 @@ body.kunaal-about-page {
   border-top-color: rgba(201, 184, 168, 0.15);
 }
 :root[data-theme="dark"] .kunaal-about-page .say-hello .section-label {
-  color: var(--k-color-dark-accent, #E8A87C);
+  color: var(--k-color-accent);
 }
 :root[data-theme="dark"] .kunaal-about-page .say-hello .section-title {
-  color: #fff;
+  color: var(--ink);
 }
 :root[data-theme="dark"] .kunaal-about-page .say-hello-description {
   color: var(--muted);
@@ -80,7 +79,7 @@ body.kunaal-about-page {
 }
 :root[data-theme="dark"] .kunaal-about-page .say-hello-link,
 :root[data-theme="dark"] .kunaal-about-page .say-hello-social-link {
-  border-color: rgba(201, 184, 168, 0.25);
+  border-color: var(--hair2);
   color: var(--ink);
   background: var(--bg);
 }
@@ -88,11 +87,11 @@ body.kunaal-about-page {
 :root[data-theme="dark"] .kunaal-about-page .say-hello-social-link:hover,
 :root[data-theme="dark"] .kunaal-about-page .say-hello-link:focus-visible,
 :root[data-theme="dark"] .kunaal-about-page .say-hello-social-link:focus-visible {
-  border-color: var(--k-color-dark-accent, #E8A87C);
-  color: var(--k-color-dark-accent, #E8A87C);
-  background: rgba(232, 168, 124, 0.1);
-  box-shadow: 0 4px 12px rgba(232, 168, 124, 0.15);
-  outline-color: var(--k-color-dark-accent, #E8A87C);
+  border-color: var(--k-color-accent);
+  color: var(--k-color-accent);
+  background: color-mix(in srgb, var(--k-color-accent) 12%, transparent);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--k-color-accent) 16%, transparent);
+  outline-color: var(--k-color-accent);
 }
 :root[data-theme="dark"] .kunaal-about-page .say-hello-link svg,
 :root[data-theme="dark"] .kunaal-about-page .say-hello-social-link svg {
@@ -101,20 +100,20 @@ body.kunaal-about-page {
 
 /* Section title dark mode */
 :root[data-theme="dark"] .kunaal-about-page .section-title {
-  color: #fff;
+  color: var(--ink);
 }
 
 /* Media title/subtitle dark mode */
 :root[data-theme="dark"] .kunaal-about-page .media-title {
-  color: #fff;
+  color: var(--ink);
 }
 :root[data-theme="dark"] .kunaal-about-page .media-subtitle {
   color: var(--muted2);
 }
 
-/* Hero photo accent - bright orange in dark mode */
+/* Hero photo accent - use theme accent in dark mode */
 :root[data-theme="dark"] .kunaal-about-page .hero-photo.has-accent::before {
-  background-color: var(--k-color-dark-accent, #E8A87C);
+  background-color: var(--k-color-accent);
 }
 
 /* Base styles are in style.css - only About-specific overrides here */

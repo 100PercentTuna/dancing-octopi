@@ -12,10 +12,10 @@
     top: 4px;
     width: 16px;
     height: 16px;
-    background: var(--blue, #1E5AFF);
-    border: 3px solid var(--bg, #FDFCFA);
+    background: var(--blue, var(--k-color-accent));
+    border: 3px solid var(--bg, var(--k-color-bg));
     border-radius: 50%;
-    box-shadow: 0 0 0 2px var(--blue, #1E5AFF);
+    box-shadow: 0 0 0 2px var(--blue, var(--k-color-accent));
 }
 
 .timeline-content {
@@ -28,7 +28,7 @@
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.05em;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     margin-bottom: var(--space-1, 8px);
 }
 
@@ -36,7 +36,7 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 15px;
     font-weight: 600;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     margin: 0 0 var(--space-1, 8px);
 }
 

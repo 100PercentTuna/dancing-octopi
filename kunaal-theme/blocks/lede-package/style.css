@@ -158,7 +158,7 @@
 
 /* Editor */
 .lede-placeholder {
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
     border: 2px dashed var(--hair, rgba(11,18,32,0.14));
     padding: var(--space-8, 64px);
     text-align: center;

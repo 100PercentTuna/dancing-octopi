@@ -7,9 +7,9 @@
    SIDENOTE
    ========================================= */
 .kunaal-sidenote {
-    color: #1E5AFF;
+    color: var(--k-color-accent);
     cursor: help;
-    border-bottom: 1px dotted #1E5AFF;
+    border-bottom: 1px dotted var(--k-color-accent);
     position: relative;
     display: inline;
 }
@@ -19,7 +19,7 @@
     position: absolute;
     left: 0;
     top: calc(100% + 8px);
-    background: #0b1220;
+    background: var(--k-color-ink);
     color: #fff;
     padding: 12px 16px;
     border-radius: 8px;
@@ -45,7 +45,7 @@
     left: 20px;
     top: calc(100% + 2px);
     border: 6px solid transparent;
-    border-bottom-color: #0b1220;
+    border-bottom-color: var(--k-color-ink);
     z-index: 10000;
     opacity: 0;
     visibility: hidden;
@@ -93,8 +93,8 @@
 .kunaal-definition {
     font-style: normal;
     font-weight: 500;
-    color: #7D6B5D;
-    border-bottom: 2px solid #7D6B5D;
+    color: var(--k-color-warm);
+    border-bottom: 2px solid var(--k-color-warm);
     cursor: help;
     position: relative;
     display: inline;
@@ -105,8 +105,8 @@
     position: absolute;
     left: 0;
     top: calc(100% + 8px);
-    background: #F9F7F4;
-    color: #0b1220;
+    background: var(--k-color-bg-warm);
+    color: var(--k-color-ink);
     padding: 12px 16px;
     border-radius: 8px;
     font-size: 13px;
@@ -136,7 +136,7 @@
    ========================================= */
 .kunaal-key-term {
     font-weight: 600;
-    color: #1E5AFF;
+    color: var(--k-color-accent);
     background: rgba(30, 90, 255, 0.08);
     padding: 0.05em 0.35em;
     border-radius: 4px;
@@ -151,11 +151,11 @@
     font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
     font-weight: 600;
     font-size: 0.95em;
-    color: #0b1220;
+    color: var(--k-color-ink);
     background: linear-gradient(to right, rgba(30, 90, 255, 0.08), rgba(125, 107, 93, 0.08));
     padding: 0.1em 0.4em;
     border-radius: 4px;
-    border-bottom: 2px solid #1E5AFF;
+    border-bottom: 2px solid var(--k-color-accent);
     cursor: help;
     position: relative;
     display: inline;
@@ -166,7 +166,7 @@
     position: absolute;
     left: 0;
     top: calc(100% + 8px);
-    background: #0b1220;
+    background: var(--k-color-ink);
     color: #fff;
     padding: 8px 12px;
     border-radius: 6px;

@@ -31,7 +31,7 @@
     font-size: 20px;
     line-height: 1.6;
     font-style: italic;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     max-width: 560px;
     margin: var(--space-4, 32px) auto var(--space-3, 24px);
     position: relative;
@@ -57,7 +57,7 @@
 .citation-source a {
     font-family: var(--mono, monospace);
     font-size: 11px;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     text-decoration: none;
 }
 

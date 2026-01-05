@@ -60,7 +60,9 @@
       const d3 = await loadD3();
       renderNetworkGraph(block, d3, nodes, edges, layout, showLabels, enableDrag, enablePhysics, chargeStrength, linkDistance, colorByGroup, groupColors);
     } catch (error) {
-      console.error('Failed to render network graph:', error);
+      if (window.kunaalTheme?.debug) {
+        console.error('Failed to render network graph:', error);
+      }
       const svg = block.querySelector('.network-svg');
       svg.innerHTML = '';
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -84,16 +86,13 @@
     // Read colors from CSS tokens with fallbacks
     const computedStyle = getComputedStyle(document.documentElement);
     const themeColors = [
-      computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D',
-      computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A',
-      computedStyle.getPropertyValue('--chart-accent').trim() || '#C9553D',
-      '#8B7355', // Additional warm shade
-      computedStyle.getPropertyValue('--chart-warm-muted').trim() || '#D4C4B5',
-      '#6B5B4F', // Additional warm shade
-      '#A08B7A'  // Additional warm shade
+      computedStyle.getPropertyValue('--k-chart-warm').trim() || computedStyle.getPropertyValue('--chart-warm').trim() || '#7D6B5D',
+      computedStyle.getPropertyValue('--k-chart-warm-light').trim() || computedStyle.getPropertyValue('--chart-warm-light').trim() || '#B8A99A',
+      computedStyle.getPropertyValue('--k-chart-accent').trim() || computedStyle.getPropertyValue('--chart-accent').trim() || '#C9553D',
+      computedStyle.getPropertyValue('--k-chart-warm-muted').trim() || computedStyle.getPropertyValue('--chart-warm-muted').trim() || '#D9CFC4'
     ];
-    const linkColor = computedStyle.getPropertyValue('--chart-gray').trim() || '#999';
-    const nodeStrokeColor = computedStyle.getPropertyValue('--k-color-ink').trim() || '#1A1A1A';
+    const linkColor = computedStyle.getPropertyValue('--k-chart-gray').trim() || computedStyle.getPropertyValue('--chart-gray').trim() || '#999';
+    const nodeStrokeColor = computedStyle.getPropertyValue('--k-color-ink').trim() || '#0b1220';
     const sizeMap = { small: 8, medium: 12, large: 16 };
 
     // Color nodes

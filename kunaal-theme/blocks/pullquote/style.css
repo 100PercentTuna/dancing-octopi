@@ -6,13 +6,13 @@
     margin: var(--space-5, 40px) 0;
     padding: 0 0 0 var(--space-4, 32px);
     border: none;
-    border-left: 3px solid var(--blue, #1E5AFF);
+    border-left: 3px solid var(--blue, var(--k-color-accent));
     font-family: var(--serif, Georgia, serif);
     font-size: 1.35rem;
     font-weight: 400;
     font-style: italic;
     line-height: 1.5;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     background: none;
 }
 

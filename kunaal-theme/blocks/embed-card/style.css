@@ -19,13 +19,13 @@
 
 .embed-card__link:hover,
 .embed-card__link:focus-visible {
-    border-color: var(--blue, #1E5AFF);
+    border-color: var(--blue, var(--k-color-accent));
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transform: translateY(-2px);
 }
 
 .embed-card__link:focus-visible {
-    outline: 2px solid var(--blue, #1E5AFF);
+    outline: 2px solid var(--blue, var(--k-color-accent));
     outline-offset: 2px;
 }
 
@@ -131,7 +131,7 @@
 }
 
 .embed-card__link:hover .embed-card__title {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 /* Description */
@@ -163,7 +163,7 @@
 }
 
 .embed-card__link:hover .embed-card__arrow {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     transform: translate(2px, -2px);
 }
 

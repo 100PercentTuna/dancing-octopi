@@ -4,12 +4,12 @@
 .wp-block-kunaal-argument-map {
     margin: var(--space-8, 64px) 0;
     border: 1px solid var(--hair, rgba(11,18,32,0.14));
-    background: var(--bg, #FDFCFA);
+    background: var(--bg, var(--k-color-bg));
 }
 
 .argument-claim {
     padding: var(--space-4, 32px);
-    background: var(--ink, #0b1220);
+    background: var(--ink, var(--k-color-ink));
     color: #fff;
 }
 

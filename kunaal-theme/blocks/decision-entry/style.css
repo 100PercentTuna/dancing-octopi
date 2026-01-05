@@ -22,7 +22,7 @@
 }
 
 .de-active .de-marker {
-    background: var(--blue, #1E5AFF);
+    background: var(--blue, var(--k-color-accent));
 }
 
 .de-superseded .de-marker {
@@ -50,7 +50,7 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 15px;
     font-weight: 600;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     margin: 0;
     flex: 1;
 }
@@ -85,7 +85,7 @@
 
 .de-active .de-status {
     background: rgba(30, 90, 255, 0.1);
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 .de-superseded .de-status {
@@ -110,7 +110,7 @@
     padding-top: var(--space-2, 16px);
     border-top: 1px dashed var(--hair, rgba(11,18,32,0.14));
     font-size: 13px;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .de-outcome-label {

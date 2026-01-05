@@ -42,7 +42,7 @@
 .ar-assumption {
     font-size: 14px;
     line-height: 1.5;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .ar-confidence {

@@ -18,7 +18,7 @@ a.wp-block-kunaal-related-link:hover {
 
 .related-link-arrow {
     font-size: 16px;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     flex-shrink: 0;
     margin-top: 2px;
     transition: transform 150ms ease;
@@ -37,12 +37,12 @@ a.wp-block-kunaal-related-link:hover .related-link-arrow {
     font-family: var(--serif, Georgia, serif);
     font-size: 16px;
     font-weight: 500;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     line-height: 1.4;
 }
 
 a.wp-block-kunaal-related-link:hover .related-link-title {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 .related-link-source {

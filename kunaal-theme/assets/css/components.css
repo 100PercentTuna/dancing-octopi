@@ -835,19 +835,9 @@ a.jRow:hover h3.jTitle {
   transition: all 200ms ease;
 }
 .subscribe-form-dock button:hover {
-  background: #0D4DE6;
+  background: var(--k-color-accent-solid-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(30,90,255,0.3);
-}
-
-/* Dark mode: Subscribe button should use orange/warm accent, not blue */
-:root[data-theme="dark"] .subscribe-form-dock button {
-  background: var(--warm);
-  color: var(--bg);
-}
-:root[data-theme="dark"] .subscribe-form-dock button:hover {
-  background: color-mix(in srgb, var(--warm) 86%, #000);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--warm) 28%, transparent);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--k-color-accent) 28%, transparent);
 }
 
 /* ========================================

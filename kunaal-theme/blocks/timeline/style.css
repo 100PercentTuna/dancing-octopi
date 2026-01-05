@@ -10,7 +10,7 @@
     font-size: 18px;
     font-weight: 600;
     margin: 0 0 var(--space-4, 32px);
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 /* Vertical Timeline */

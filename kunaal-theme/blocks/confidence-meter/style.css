@@ -4,7 +4,7 @@
 .wp-block-kunaal-confidence-meter {
     margin: var(--space-4, 32px) 0;
     padding: var(--space-3, 24px);
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
     border-radius: 0;
 }
 
@@ -20,7 +20,7 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 15px;
     font-weight: 500;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
     flex: 1;
 }
 

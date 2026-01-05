@@ -6,8 +6,8 @@
 .wp-block-kunaal-aside {
     margin: var(--space-8, 64px) 0;
     padding: var(--space-4, 32px);
-    background: var(--bgWarm, #F9F7F4);
-    border-left: 3px solid var(--warmLight, #B8A99A);
+    background: var(--bgWarm, var(--k-color-bg-warm));
+    border-left: 3px solid var(--warmLight, var(--k-color-warm-light));
     border-radius: 0 4px 4px 0;
 }
 
@@ -18,7 +18,7 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--warm, #7D6B5D);
+    color: var(--warm, var(--k-color-warm));
     margin-bottom: var(--space-3, 24px);
     padding-bottom: var(--space-2, 16px);
     border-bottom: 1px solid var(--hair, rgba(11,18,32,0.14));
@@ -40,7 +40,7 @@
 }
 
 .aside-content strong {
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 /* Outcome */
@@ -50,11 +50,11 @@
     border-top: 1px solid var(--hair, rgba(11,18,32,0.14));
     font-family: var(--mono, monospace);
     font-size: 12px;
-    color: var(--warm, #7D6B5D);
+    color: var(--warm, var(--k-color-warm));
 }
 
 .aside-outcome strong {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 /* Type variations */
@@ -68,16 +68,16 @@
 }
 
 .aside-note {
-    border-left-color: var(--blue, #1E5AFF);
+    border-left-color: var(--blue, var(--k-color-accent));
     background: var(--blueTint, rgba(30,90,255,0.04));
 }
 
 .aside-note .aside-label {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 .aside-definition {
-    border-left-color: var(--ink, #0b1220);
+    border-left-color: var(--ink, var(--k-color-ink));
 }
 
 /* Editor preview */

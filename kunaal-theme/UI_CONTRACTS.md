@@ -110,9 +110,13 @@ All z-index values must follow this scale. Do not use values outside this scale 
 **Canonical owner**: `assets/css/dark-mode.css`
 
 **Token overrides**: All core color tokens are redefined for dark backgrounds:
-- `--bg`: Dark background (#1A1A1A)
-- `--ink`: Light text (#F5F0EB)
-- `--blue`: Warm accent (#E07A62) - shifts to coral for contrast
+- `--bg`: Dark background (via `--k-color-bg`)
+- `--ink`: Light text (via `--k-color-ink`)
+- `--blue`: **Theme accent** (still blue; do not repurpose as warm/orange)
+
+**WordPress preset alignment (critical for legibility)**:
+- WP global styles (from `theme.json`) use `--wp--preset--color--*` variables.
+- In dark mode, `assets/css/tokens.css` overrides these preset variables so headings and block content do not stay dark.
 
 **Scattered overrides**: Some component-specific dark mode rules remain in their owner files
 (e.g., `header.css` for nav colors). These should be consolidated over time.

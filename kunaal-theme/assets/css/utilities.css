@@ -272,18 +272,6 @@
     to { transform: scaleX(1); }
   }
 
-  /* Dark mode: section underline uses bright orange accent */
-  :root[data-theme="dark"] .u-section-underline::after {
-    background: var(--k-color-dark-accent, #E8A87C);
-  }
-  
-  /* Dark mode: section title text should be light */
-  :root[data-theme="dark"] .u-section-underline,
-  :root[data-theme="dark"] h2.u-section-underline,
-  :root[data-theme="dark"] h3.u-section-underline {
-    color: #f0f0f0 !important;
-  }
-
   /* ========================================
      DEPRECATED: .uBlue - Remove after 2025-03-01
      Use .u-underline-double or add element to :where() selector above

@@ -13,7 +13,7 @@
 
 .fcs-box {
     padding: var(--space-3, 24px);
-    background: var(--bg, #FDFCFA);
+    background: var(--bg, var(--k-color-bg));
     border: 2px solid var(--hair, rgba(11,18,32,0.14));
     min-width: 140px;
     text-align: center;
@@ -28,13 +28,13 @@
     transform: rotate(0deg);
     border-radius: 4px;
     background: linear-gradient(135deg, var(--bg) 50%, var(--bgWarm) 50%);
-    border-color: var(--blue, #1E5AFF);
+    border-color: var(--blue, var(--k-color-accent));
 }
 
 .step-terminal .fcs-box {
     border-radius: 40px;
-    background: var(--ink, #0b1220);
-    border-color: var(--ink, #0b1220);
+    background: var(--ink, var(--k-color-ink));
+    border-color: var(--ink, var(--k-color-ink));
 }
 
 .step-terminal .fcs-label {
@@ -43,7 +43,7 @@
 
 .step-io .fcs-box {
     transform: skewX(-10deg);
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
 }
 
 .step-io .fcs-box > * {
@@ -55,7 +55,7 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 14px;
     font-weight: 600;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .fcs-description {
@@ -70,7 +70,7 @@
     align-items: center;
     justify-content: center;
     width: 48px;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
 }
 
 .fcs-arrow svg {

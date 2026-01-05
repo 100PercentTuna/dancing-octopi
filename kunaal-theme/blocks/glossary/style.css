@@ -3,10 +3,10 @@
  */
 .wp-block-kunaal-glossary {
     margin: var(--space-8, 64px) 0;
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
     border-radius: 0;
     padding: var(--space-5, 40px);
-    border-left: 3px solid var(--blue, #1E5AFF);
+    border-left: 3px solid var(--blue, var(--k-color-accent));
 }
 
 .glossary-title {
@@ -15,7 +15,7 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     margin: 0 0 var(--space-4, 32px);
 }
 

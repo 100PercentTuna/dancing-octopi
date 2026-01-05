@@ -3,7 +3,7 @@
  */
 .wp-block-kunaal-rubric-row .rubric-criteria {
     font-weight: 500;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .wp-block-kunaal-rubric-row .rubric-level-cell {

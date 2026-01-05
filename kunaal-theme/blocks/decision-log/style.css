@@ -15,7 +15,7 @@
     color: var(--muted, rgba(11,18,32,0.66));
     margin: 0;
     padding: var(--space-3, 24px);
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
     border-bottom: 1px solid var(--hair, rgba(11,18,32,0.14));
 }
 

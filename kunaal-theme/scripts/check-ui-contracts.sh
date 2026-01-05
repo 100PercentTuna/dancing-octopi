@@ -241,6 +241,53 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# CHECK 7: Dark-mode accent drift (no hardcoded orange outside tokens)
+#
+# The RCA root cause: hardcoded orange used as dark-mode accent.
+# Warm may be orange in tokens, but accent/underline must not be hardcoded orange
+# outside the canonical token owner.
+# -----------------------------------------------------------------------------
+
+echo ""
+echo "[7/7] Checking for dark-mode accent drift (#E8A87C) outside tokens.css..."
+
+ORANGE_DRIFT=$(grep -rn "#E8A87C" "$THEME_DIR/assets/css" \
+    --include="*.css" \
+    | grep -v "tokens.css" \
+    | grep -v "print.css" \
+    | grep -v "pdf-ebook.css" \
+    | grep -v "compatibility.css" \
+    | grep -v "/* EXCEPTION" \
+    || true)
+
+if [ -n "$ORANGE_DRIFT" ]; then
+    echo "  ✗ FAIL: Hardcoded dark-mode orange (#E8A87C) found outside tokens.css:"
+    echo "$ORANGE_DRIFT" | while read -r line; do
+        echo "    $line"
+    done
+    echo "    Replace with semantic tokens (e.g., var(--k-color-accent) or var(--k-color-warm))"
+    FAIL=1
+else
+    echo "  ✓ No #E8A87C drift outside tokens.css"
+fi
+
+echo ""
+echo "[7b/7] Checking tokens.css does not repurpose accent as orange..."
+
+ACCENT_ORANGE=$(grep -n "^[[:space:]]*--k-color-accent:[[:space:]]*#E8A87C" "$THEME_DIR/assets/css/tokens.css" || true)
+UNDERLINE_ORANGE=$(grep -n "^[[:space:]]*--k-underline-blue-color:[[:space:]]*#E8A87C" "$THEME_DIR/assets/css/tokens.css" || true)
+
+if [ -n "$ACCENT_ORANGE" ] || [ -n "$UNDERLINE_ORANGE" ]; then
+    echo "  ✗ FAIL: tokens.css hardcodes orange for accent/underline in dark mode:"
+    [ -n "$ACCENT_ORANGE" ] && echo "    $ACCENT_ORANGE"
+    [ -n "$UNDERLINE_ORANGE" ] && echo "    $UNDERLINE_ORANGE"
+    echo "    Accent/underline must follow --k-color-accent (blue), warm/orange is separate."
+    FAIL=1
+else
+    echo "  ✓ tokens.css keeps accent/underline token-driven (no orange hardcode)"
+fi
+
+# -----------------------------------------------------------------------------
 # SUMMARY
 # -----------------------------------------------------------------------------
 

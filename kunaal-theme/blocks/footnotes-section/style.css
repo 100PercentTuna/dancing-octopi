@@ -9,7 +9,7 @@
     padding: var(--space-4, 32px);
     border: 2px dashed var(--hair, rgba(11,18,32,0.14));
     border-radius: 4px;
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
 }
 
 .footnotes-section-editor h4 {

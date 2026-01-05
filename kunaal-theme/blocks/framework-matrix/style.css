@@ -58,7 +58,7 @@
 }
 
 .fm-cell {
-    background: var(--bg, #FDFCFA);
+    background: var(--bg, var(--k-color-bg));
     padding: var(--space-4, 32px);
     text-align: center;
 }
@@ -68,7 +68,7 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 12px;
     font-weight: 700;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     margin-bottom: var(--space-2, 16px);
 }
 

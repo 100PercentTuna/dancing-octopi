@@ -63,7 +63,7 @@
 
 /* Hover effect - subtle color shift */
 .sectionDivider:hover .sectionDivider__ornament {
-    color: var(--warm, #7D6B5D);
+    color: var(--warm, var(--k-color-warm));
 }
 
 /* Optional: lines on either side of the ornament */

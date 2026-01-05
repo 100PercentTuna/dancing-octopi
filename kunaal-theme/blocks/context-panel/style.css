@@ -5,7 +5,7 @@
     margin: var(--space-6, 48px) 0;
     padding: var(--space-4, 32px);
     background: linear-gradient(135deg, rgba(30, 90, 255, 0.03) 0%, rgba(30, 90, 255, 0.06) 100%);
-    border-left: 3px solid var(--blue, #1E5AFF);
+    border-left: 3px solid var(--blue, var(--k-color-accent));
     position: relative;
 }
 
@@ -16,14 +16,14 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     margin-bottom: var(--space-2, 16px);
 }
 
 .context-content {
     font-size: 14px;
     line-height: 1.7;
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .context-content p {

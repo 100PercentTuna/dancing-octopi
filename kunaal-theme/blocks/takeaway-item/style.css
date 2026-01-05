@@ -38,7 +38,7 @@
     font-size: 16px;
     font-weight: 600;
     margin: 0 0 var(--space-1, 8px);
-    color: var(--ink, #0b1220);
+    color: var(--ink, var(--k-color-ink));
 }
 
 .takeaway-content p {
@@ -50,7 +50,7 @@
 
 /* Hover state */
 .wp-block-kunaal-takeaway-item:hover::before {
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     opacity: 1;
 }
 

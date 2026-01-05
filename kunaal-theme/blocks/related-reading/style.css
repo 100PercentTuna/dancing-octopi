@@ -4,7 +4,7 @@
 .wp-block-kunaal-related-reading {
     margin: var(--space-8, 64px) 0;
     padding: var(--space-5, 40px);
-    background: var(--bgWarm, #F9F7F4);
+    background: var(--bgWarm, var(--k-color-bg-warm));
     border-top: 1px solid var(--hair, rgba(11,18,32,0.14));
     border-bottom: 1px solid var(--hair, rgba(11,18,32,0.14));
 }

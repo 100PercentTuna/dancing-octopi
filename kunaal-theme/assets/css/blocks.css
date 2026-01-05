@@ -532,15 +532,10 @@
 /* TOC links: color change only (no underline) */
 .tocList a:hover,
 .tocList a:focus-visible {
-  color: #2563EB !important; /* Explicit blue for light mode */
+  color: var(--k-color-accent) !important;
   padding-left: 4px;
   background-image: none !important;
   text-decoration: none !important;
-}
-/* Dark mode: orange accent */
-:root[data-theme="dark"] .tocList a:hover,
-:root[data-theme="dark"] .tocList a:focus-visible {
-  color: var(--k-color-dark-accent, #E8A87C) !important;
 }
 .tocList a:last-child { border-bottom: none; }
 .tocList .num {
@@ -557,7 +552,7 @@
 
 /* Active state - current section in view */
 .tocList a.is-active {
-  color: #2563EB !important;
+  color: var(--k-color-accent) !important;
   font-weight: 600;
   padding-left: 4px;
   background-image: none !important;
@@ -565,13 +560,7 @@
 }
 .tocList a.is-active .num {
   opacity: 1;
-  color: #2563EB;
-}
-:root[data-theme="dark"] .tocList a.is-active {
-  color: var(--k-color-dark-accent, #E8A87C) !important;
-}
-:root[data-theme="dark"] .tocList a.is-active .num {
-  color: var(--k-color-dark-accent, #E8A87C);
+  color: var(--k-color-accent);
 }
 
 } /* End @layer blocks */

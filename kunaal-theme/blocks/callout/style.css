@@ -4,8 +4,8 @@
 
 .wp-block-kunaal-callout {
     --callout-bg: var(--bgAlt, #f8f9fa);
-    --callout-border: var(--blue, #1E5AFF);
-    --callout-icon: var(--blue, #1E5AFF);
+    --callout-border: var(--blue, var(--k-color-accent));
+    --callout-icon: var(--blue, var(--k-color-accent));
     --callout-title: var(--ink, #1a1a1a);
     
     margin: var(--space-4, 1rem) 0;
@@ -18,8 +18,8 @@
 /* Type variants */
 .callout--info {
     --callout-bg: rgba(30, 90, 255, 0.06);
-    --callout-border: #1E5AFF;
-    --callout-icon: #1E5AFF;
+    --callout-border: var(--k-color-accent);
+    --callout-icon: var(--k-color-accent);
 }
 
 .callout--warning {

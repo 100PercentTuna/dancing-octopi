@@ -91,7 +91,7 @@
 .author-bio__title {
     font-family: var(--mono, monospace);
     font-size: 0.75rem;
-    color: var(--warm, #7D6B5D);
+    color: var(--warm, var(--k-color-warm));
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 0.75rem;
@@ -130,7 +130,7 @@
 
 .author-bio__social-link:hover,
 .author-bio__social-link:focus-visible {
-    background: var(--blue, #1E5AFF);
+    background: var(--blue, var(--k-color-accent));
     color: #fff;
     transform: translateY(-2px);
 }
@@ -148,7 +148,7 @@
     font-family: var(--sans, system-ui, sans-serif);
     font-size: 0.8125rem;
     font-weight: 500;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     text-decoration: none;
     transition: gap 0.2s ease;
 }

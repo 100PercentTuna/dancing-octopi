@@ -42,10 +42,18 @@
     const regionData = safeJsonParse(block.dataset.regionData || '[]', []);
     const pointData = safeJsonParse(block.dataset.pointData || '[]', []);
     const colorScale = block.dataset.colorScale || 'sequential';
-    const colorLow = block.dataset.colorLow || '#F5F0EB';
-    const colorHigh = block.dataset.colorHigh || '#7D6B5D';
-    const colorMid = block.dataset.colorMid || '#F5F0EB';
-    const colorNegative = block.dataset.colorNegative || '#C9553D';
+    // Default colors come from theme tokens (ensures dark mode legibility).
+    // Use computed values so downstream hex parsing/interpolation keeps working.
+    const computedStyle = getComputedStyle(document.documentElement);
+    const defaultLow = computedStyle.getPropertyValue('--k-color-bg-alt').trim() || '#F5F3EF';
+    const defaultHigh = computedStyle.getPropertyValue('--k-color-warm').trim() || '#7D6B5D';
+    const defaultAccent = computedStyle.getPropertyValue('--k-chart-accent').trim()
+      || computedStyle.getPropertyValue('--chart-accent').trim()
+      || '#C9553D';
+    const colorLow = block.dataset.colorLow || defaultLow;
+    const colorHigh = block.dataset.colorHigh || defaultHigh;
+    const colorMid = block.dataset.colorMid || defaultLow;
+    const colorNegative = block.dataset.colorNegative || defaultAccent;
     const dotSizeMin = parseInt(block.dataset.dotSizeMin) || 4;
     const dotSizeMax = parseInt(block.dataset.dotSizeMax) || 40;
     const dotOpacity = parseFloat(block.dataset.dotOpacity) || 0.7;
@@ -60,11 +68,12 @@
     try {
       const L = await loadLeaflet();
       
-      // Determine tile layer based on theme
+      // Determine tile layer based on theme.
+      // Prefer localized config (avoid hardcoding), fallback to Carto basemaps.
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const tileUrl = isDark
-        ? 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+        ? (window.kunaalTheme?.mapTiles?.dark || 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png')
+        : (window.kunaalTheme?.mapTiles?.light || 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png');
 
       const map = L.map(mapContainer, {
         center: [centerLat, centerLng],
@@ -146,9 +155,10 @@
 
       // Listen for theme changes
       window.addEventListener('themechange', (e) => {
-        const newTileUrl = e.detail.theme === 'dark'
-          ? 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png'
-          : 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+        const nextIsDark = e.detail.theme === 'dark';
+        const newTileUrl = nextIsDark
+          ? (window.kunaalTheme?.mapTiles?.dark || 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png')
+          : (window.kunaalTheme?.mapTiles?.light || 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png');
         
         map.eachLayer(layer => {
           if (layer instanceof L.TileLayer) {
@@ -158,7 +168,9 @@
       });
 
     } catch (error) {
-      console.error('Failed to render map:', error);
+      if (window.kunaalTheme?.debug) {
+        console.error('Failed to render map:', error);
+      }
       const loading = mapContainer.querySelector('.map-loading');
       if (loading) {
         loading.textContent = 'Error loading map';

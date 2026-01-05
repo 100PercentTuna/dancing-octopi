@@ -62,7 +62,7 @@
     font-family: var(--mono, monospace);
     font-size: 10px;
     letter-spacing: 0.05em;
-    color: var(--blue, #1E5AFF);
+    color: var(--blue, var(--k-color-accent));
     margin-bottom: var(--space-2, 16px);
     padding-bottom: var(--space-1, 8px);
     border-bottom: 1px solid var(--blueStroke, rgba(30,90,255,0.28));
