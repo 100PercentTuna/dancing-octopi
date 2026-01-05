@@ -37,6 +37,13 @@ function kunaal_smtp_is_enabled(): bool {
     if (!(bool) kunaal_mod('kunaal_smtp_enabled', false)) {
         return false;
     }
+
+    // If we have a cached reachability failure, disable SMTP to avoid long timeouts.
+    // The diagnostics layer caches this for 10 minutes.
+    $cached = get_transient('kunaal_smtp_preflight_tcp_v1');
+    if (is_array($cached) && isset($cached['ok']) && $cached['ok'] === false) {
+        return false;
+    }
     
     // Check if wp-config.php constants are defined
     $has_config_creds = defined('KUNAAL_SMTP_HOST') && 
