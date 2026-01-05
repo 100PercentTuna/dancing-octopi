@@ -50,6 +50,9 @@ reference-files/
 # Local notes (kept on developer machine only)
 local-notes/
 
+# Local-only SEO guide (kept on developer machine only)
+SEO_README_LOCAL.md
+
 # SonarQube analysis scripts and output (generated files)
 sonarqube_issues.json
 sonarqube_issues_v2.json
