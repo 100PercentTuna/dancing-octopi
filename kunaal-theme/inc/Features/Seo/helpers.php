@@ -86,6 +86,10 @@ add_action('admin_init', 'kunaal_seo_maybe_flush_sitemap_rewrite');
 
 /**
  * Render sitemap for /sitemap.xml requests.
+ *
+ * Since WordPress core sitemaps are available at /wp-sitemap.xml (WP 5.5+),
+ * we redirect /sitemap.xml to the core sitemap for consistency and completeness.
+ * This ensures all post types, taxonomies, and pages are included automatically.
  */
 function kunaal_seo_maybe_render_sitemap_xml(): void {
     if ((int) get_query_var('kunaal_sitemap') !== 1) {
@@ -94,19 +98,14 @@ function kunaal_seo_maybe_render_sitemap_xml(): void {
 
     // Avoid duplication if Yoast is active; Yoast handles /sitemap_index.xml.
     if (kunaal_seo_is_yoast_active()) {
-        wp_redirect(home_url('/wp-sitemap.xml'), 302);
+        wp_redirect(home_url('/wp-sitemap.xml'), 301);
         exit;
     }
 
-    // Prefer WP core sitemaps if available.
-    if (function_exists('wp_sitemaps_get_server') && function_exists('wp_sitemaps_enabled') && wp_sitemaps_enabled()) {
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core renders XML.
-        wp_sitemaps_get_server()->render_index();
-        exit;
-    }
-
-    // Fallback: minimal URL set (home, about, contact, all essays/jottings).
-    kunaal_seo_render_simple_sitemap_xml();
+    // WordPress core sitemaps are available in WP 5.5+ at /wp-sitemap.xml.
+    // Redirect /sitemap.xml to the core sitemap for a single, canonical source.
+    // Use 301 (permanent) redirect so search engines update their index.
+    wp_redirect(home_url('/wp-sitemap.xml'), 301);
     exit;
 }
 add_action('template_redirect', 'kunaal_seo_maybe_render_sitemap_xml', 0);
