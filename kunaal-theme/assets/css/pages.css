@@ -61,8 +61,6 @@ main.article {
 /* Article header - matches prose width and alignment */
 .articleHeader {
   max-width: var(--prose);
-  margin-left: auto;
-  margin-right: auto;
   margin-bottom: var(--space-4);
 }
 
@@ -190,7 +188,7 @@ main.article {
 .heroImage {
   max-width: var(--prose);
   width: 100%;
-  margin: var(--space-3) auto var(--space-5);
+  margin: var(--space-3) 0 var(--space-5);
   position: relative;
   overflow: hidden;
   border-radius: 3px;
@@ -318,8 +316,6 @@ main.article {
 .prose {
   max-width: var(--prose);
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   font-size: 16px;
   line-height: 1.8;
   color: var(--muted);
