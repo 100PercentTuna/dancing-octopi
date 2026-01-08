@@ -54,8 +54,10 @@ if ($hide_mobile) {
     <?php endif; ?>
     
     <ul class="customToc__list">
-        <?php foreach ($items as $index => $item) : 
-            if (empty($item['label']) || empty($item['anchorId'])) continue;
+        <?php foreach ($items as $index => $item) :
+            if (empty($item['label']) || empty($item['anchorId'])) {
+                continue;
+            }
         ?>
             <li class="customToc__item">
                 <?php if ($show_numbers) : ?>
