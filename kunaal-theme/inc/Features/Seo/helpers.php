@@ -43,6 +43,133 @@ function kunaal_seo_setting(string $key, $default = null) {
     return array_key_exists($key, $settings) ? $settings[$key] : $default;
 }
 
+// ============================================================================
+// SITEMAP.XML (Theme-owned alias to WP core sitemaps)
+// ============================================================================
+
+/**
+ * Add /sitemap.xml endpoint.
+ *
+ * Preferred behavior: render the WordPress core sitemap index at /sitemap.xml
+ * (keeps a stable, conventional URL without relying on redirects).
+ */
+function kunaal_seo_register_sitemap_xml_endpoint(): void {
+    add_rewrite_rule('^sitemap\.xml$', 'index.php?kunaal_sitemap=1', 'top');
+}
+add_action('init', 'kunaal_seo_register_sitemap_xml_endpoint');
+
+/**
+ * @param array<int, string> $vars
+ * @return array<int, string>
+ */
+function kunaal_seo_add_sitemap_query_var(array $vars): array {
+    $vars[] = 'kunaal_sitemap';
+    return $vars;
+}
+add_filter('query_vars', 'kunaal_seo_add_sitemap_query_var');
+
+/**
+ * Flush rewrite rules once after deployment so /sitemap.xml begins working.
+ * Safe: runs only for admins, only once.
+ */
+function kunaal_seo_maybe_flush_sitemap_rewrite(): void {
+    if (!is_admin() || !current_user_can('manage_options')) {
+        return;
+    }
+    if (get_option('kunaal_seo_sitemap_rewrite_flushed')) {
+        return;
+    }
+    flush_rewrite_rules(false);
+    update_option('kunaal_seo_sitemap_rewrite_flushed', gmdate('c'));
+}
+add_action('admin_init', 'kunaal_seo_maybe_flush_sitemap_rewrite');
+
+/**
+ * Render sitemap for /sitemap.xml requests.
+ */
+function kunaal_seo_maybe_render_sitemap_xml(): void {
+    if ((int) get_query_var('kunaal_sitemap') !== 1) {
+        return;
+    }
+
+    // Avoid duplication if Yoast is active; Yoast handles /sitemap_index.xml.
+    if (kunaal_seo_is_yoast_active()) {
+        wp_redirect(home_url('/wp-sitemap.xml'), 302);
+        exit;
+    }
+
+    // Prefer WP core sitemaps if available.
+    if (function_exists('wp_sitemaps_get_server') && function_exists('wp_sitemaps_enabled') && wp_sitemaps_enabled()) {
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core renders XML.
+        wp_sitemaps_get_server()->render_index();
+        exit;
+    }
+
+    // Fallback: minimal URL set (home, about, contact, all essays/jottings).
+    kunaal_seo_render_simple_sitemap_xml();
+    exit;
+}
+add_action('template_redirect', 'kunaal_seo_maybe_render_sitemap_xml', 0);
+
+function kunaal_seo_render_simple_sitemap_xml(): void {
+    status_header(200);
+    header('Content-Type: application/xml; charset=' . get_option('blog_charset'), true);
+    nocache_headers();
+
+    $urls = array();
+
+    $urls[] = array('loc' => home_url('/'), 'lastmod' => gmdate('c'));
+
+    foreach (array('about', 'contact') as $slug) {
+        $page = get_page_by_path($slug);
+        if ($page) {
+            $urls[] = array(
+                'loc' => (string) get_permalink($page),
+                'lastmod' => (string) get_post_modified_time('c', true, $page),
+            );
+        }
+    }
+
+    $post_types = array('essay', 'jotting');
+    foreach ($post_types as $pt) {
+        $ids = get_posts(
+            array(
+                'post_type' => $pt,
+                'post_status' => 'publish',
+                'fields' => 'ids',
+                'posts_per_page' => 5000,
+                'no_found_rows' => true,
+                'orderby' => 'modified',
+                'order' => 'DESC',
+            )
+        );
+
+        foreach ($ids as $post_id) {
+            $urls[] = array(
+                'loc' => (string) get_permalink((int) $post_id),
+                'lastmod' => (string) get_post_modified_time('c', true, (int) $post_id),
+            );
+        }
+    }
+
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    echo "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+    foreach ($urls as $item) {
+        $loc = isset($item['loc']) ? (string) $item['loc'] : '';
+        $lastmod = isset($item['lastmod']) ? (string) $item['lastmod'] : '';
+        if ($loc === '') {
+            continue;
+        }
+        echo "  <url>\n";
+        echo "    <loc>" . esc_url($loc) . "</loc>\n";
+        if ($lastmod !== '') {
+            echo "    <lastmod>" . esc_html($lastmod) . "</lastmod>\n";
+        }
+        echo "  </url>\n";
+    }
+    echo "</urlset>\n";
+}
+
 /**
  * Build the SEO title (for <title>, OG, schema).
  */

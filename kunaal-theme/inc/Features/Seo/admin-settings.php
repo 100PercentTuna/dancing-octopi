@@ -13,6 +13,29 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Enqueue admin assets for Settings → SEO.
+ *
+ * Fixes the media picker not opening by ensuring wp.media is loaded and by using
+ * a stable, idempotent JS initializer (instead of brittle inline scripts).
+ */
+function kunaal_seo_admin_enqueue_assets(string $hook_suffix): void {
+    if ($hook_suffix !== 'settings_page_kunaal-seo') {
+        return;
+    }
+
+    wp_enqueue_media();
+
+    wp_enqueue_script(
+        'kunaal-seo-admin-media',
+        KUNAAL_THEME_URI . '/assets/js/admin/seo-media.js',
+        array('media-editor'),
+        (string) KUNAAL_THEME_VERSION,
+        true
+    );
+}
+add_action('admin_enqueue_scripts', 'kunaal_seo_admin_enqueue_assets');
+
 function kunaal_seo_register_settings(): void {
     register_setting(
         'kunaal_seo',
@@ -34,6 +57,50 @@ function kunaal_seo_register_settings(): void {
         array(
             'key' => 'default_description',
             'help' => 'Used when a page/post does not have an excerpt/subtitle/SEO description.',
+        )
+    );
+    add_settings_field(
+        'person_job_title',
+        'Person job title (Schema)',
+        'kunaal_seo_field_text',
+        'kunaal_seo',
+        'kunaal_seo_section_defaults',
+        array(
+            'key' => 'person_job_title',
+            'help' => 'Schema.org Person.jobTitle (e.g., "Writer").',
+        )
+    );
+    add_settings_field(
+        'person_description',
+        'Person description (Schema)',
+        'kunaal_seo_field_textarea',
+        'kunaal_seo',
+        'kunaal_seo_section_defaults',
+        array(
+            'key' => 'person_description',
+            'help' => 'Schema.org Person.description (keep it short and specific).',
+        )
+    );
+    add_settings_field(
+        'person_alternate_names',
+        'Person alternate names (Schema)',
+        'kunaal_seo_field_text',
+        'kunaal_seo',
+        'kunaal_seo_section_defaults',
+        array(
+            'key' => 'person_alternate_names',
+            'help' => 'Comma-separated (e.g., "Kunaal, Kunaal W").',
+        )
+    );
+    add_settings_field(
+        'person_same_as',
+        'Person sameAs URLs (Schema)',
+        'kunaal_seo_field_textarea',
+        'kunaal_seo',
+        'kunaal_seo_section_defaults',
+        array(
+            'key' => 'person_same_as',
+            'help' => 'One URL per line. These are merged with enabled social links.',
         )
     );
     add_settings_field(
@@ -85,6 +152,10 @@ function kunaal_seo_sanitize_settings($input): array {
     $out['archive_essay_description'] = isset($in['archive_essay_description']) ? sanitize_textarea_field((string) $in['archive_essay_description']) : '';
     $out['archive_jotting_description'] = isset($in['archive_jotting_description']) ? sanitize_textarea_field((string) $in['archive_jotting_description']) : '';
     $out['archive_topic_description'] = isset($in['archive_topic_description']) ? sanitize_textarea_field((string) $in['archive_topic_description']) : '';
+    $out['person_job_title'] = isset($in['person_job_title']) ? sanitize_text_field((string) $in['person_job_title']) : '';
+    $out['person_description'] = isset($in['person_description']) ? sanitize_textarea_field((string) $in['person_description']) : '';
+    $out['person_alternate_names'] = isset($in['person_alternate_names']) ? sanitize_text_field((string) $in['person_alternate_names']) : '';
+    $out['person_same_as'] = isset($in['person_same_as']) ? sanitize_textarea_field((string) $in['person_same_as']) : '';
     $out['default_share_image_id'] = isset($in['default_share_image_id']) ? absint($in['default_share_image_id']) : 0;
     $out['noindex_search'] = !empty($in['noindex_search']) ? 1 : 0;
     $out['noindex_paged_archives'] = !empty($in['noindex_paged_archives']) ? 1 : 0;
@@ -137,6 +208,23 @@ function kunaal_seo_field_textarea(array $args): void {
     }
 }
 
+function kunaal_seo_field_text(array $args): void {
+    $key = (string) ($args['key'] ?? '');
+    $settings = kunaal_seo_get_settings();
+    $value = isset($settings[$key]) ? (string) $settings[$key] : '';
+    $help = isset($args['help']) ? (string) $args['help'] : '';
+
+    printf(
+        '<input type="text" name="%1$s[%2$s]" value="%3$s" class="regular-text" />',
+        esc_attr('kunaal_seo_settings'),
+        esc_attr($key),
+        esc_attr($value)
+    );
+    if ($help !== '') {
+        printf('<p class="description">%s</p>', esc_html($help));
+    }
+}
+
 function kunaal_seo_field_checkbox(array $args): void {
     $key = (string) ($args['key'] ?? '');
     $label = (string) ($args['label'] ?? '');
@@ -159,8 +247,6 @@ function kunaal_seo_field_media(array $args): void {
     $help = isset($args['help']) ? (string) $args['help'] : '';
     $preview = $id ? wp_get_attachment_image($id, array(160, 160)) : '';
 
-    wp_enqueue_media();
-
     $field_name = 'kunaal_seo_settings[' . $key . ']';
     ?>
     <div data-kunaal-seo-media>
@@ -174,38 +260,6 @@ function kunaal_seo_field_media(array $args): void {
             <p class="description"><?php echo esc_html($help); ?></p>
         <?php endif; ?>
     </div>
-    <script>
-      (function(){
-        const root = document.currentScript && document.currentScript.previousElementSibling;
-        if (!root) return;
-        const idInput = root.querySelector('[data-kunaal-seo-media-id]');
-        const preview = root.querySelector('[data-kunaal-seo-media-preview]');
-        const pick = root.querySelector('[data-kunaal-seo-media-pick]');
-        const clear = root.querySelector('[data-kunaal-seo-media-clear]');
-        if (!idInput || !preview || !pick || !clear || !window.wp || !wp.media) return;
-
-        let frame;
-        pick.addEventListener('click', function(){
-          if (frame) { frame.open(); return; }
-          frame = wp.media({ title: 'Select image', button: { text: 'Use image' }, multiple: false });
-          frame.on('select', function(){
-            const attachment = frame.state().get('selection').first();
-            if (!attachment) return;
-            const data = attachment.toJSON();
-            idInput.value = String(data.id || '');
-            const thumb = (data.sizes && (data.sizes.thumbnail || data.sizes.medium)) ? (data.sizes.thumbnail || data.sizes.medium).url : data.url;
-            preview.innerHTML = thumb ? '<img src=\"' + thumb + '\" style=\"max-width:160px;height:auto;\" />' : '<em>Selected</em>';
-            clear.classList.remove('hidden');
-          });
-          frame.open();
-        });
-        clear.addEventListener('click', function(){
-          idInput.value = '';
-          preview.innerHTML = '<em>No image selected</em>';
-          clear.classList.add('hidden');
-        });
-      })();
-    </script>
     <?php
 }
 
