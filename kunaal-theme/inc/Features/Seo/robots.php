@@ -39,7 +39,9 @@ add_filter('wp_robots', 'kunaal_seo_wp_robots');
 /**
  * Ensure robots.txt includes a Sitemap directive pointing at /sitemap.xml.
  *
- * WordPress serves a virtual robots.txt at /robots.txt by default.
+ * WordPress core automatically adds /wp-sitemap.xml to robots.txt when core
+ * sitemaps are enabled. We replace it with /sitemap.xml (which redirects to
+ * /wp-sitemap.xml) for the conventional URL.
  *
  * @param string $output
  * @param bool   $public
@@ -50,12 +52,20 @@ function kunaal_seo_robots_txt(string $output, bool $public): string {
         return $output;
     }
 
-    $out = $output;
-
-    // If the site is set to discourage search engines, don't advertise sitemaps.
-    if ($public && stripos($out, 'sitemap:') === false) {
-        $out = rtrim($out) . "\nSitemap: " . home_url('/sitemap.xml') . "\n";
+    if (!$public) {
+        return $output;
     }
+
+    $out = $output;
+    $sitemap_url = home_url('/sitemap.xml');
+    $sitemap_line = "\nSitemap: " . $sitemap_url . "\n";
+
+    // Remove any existing Sitemap lines (WordPress core adds /wp-sitemap.xml).
+    // Use regex to match case-insensitive "Sitemap:" followed by any URL.
+    $out = preg_replace('/\n[Ss]itemap:\s*[^\n]*\n/i', '', $out);
+
+    // Add our sitemap line.
+    $out = rtrim($out) . $sitemap_line;
 
     return $out;
 }
