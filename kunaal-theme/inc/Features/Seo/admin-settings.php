@@ -14,13 +14,17 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Enqueue admin assets for Settings → SEO.
+ * Enqueue admin assets for Settings → SEO and post edit screens.
  *
  * Fixes the media picker not opening by ensuring wp.media is loaded and by using
  * a stable, idempotent JS initializer (instead of brittle inline scripts).
  */
 function kunaal_seo_admin_enqueue_assets(string $hook_suffix): void {
-    if ($hook_suffix !== 'settings_page_kunaal-seo') {
+    // Load on SEO settings page and post edit screens (essay, jotting, post, page).
+    $is_seo_page = ($hook_suffix === 'settings_page_kunaal-seo');
+    $is_post_edit = in_array($hook_suffix, array('post.php', 'post-new.php'), true);
+    
+    if (!$is_seo_page && !$is_post_edit) {
         return;
     }
 

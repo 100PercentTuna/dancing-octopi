@@ -26,7 +26,7 @@ function kunaal_seo_add_meta_boxes(): void {
 add_action('add_meta_boxes', 'kunaal_seo_add_meta_boxes');
 
 function kunaal_seo_render_meta_box(WP_Post $post): void {
-    wp_enqueue_media();
+    // Media picker JS is enqueued via kunaal_seo_admin_enqueue_assets() on post edit screens.
     wp_nonce_field('kunaal_seo_meta_box', 'kunaal_seo_meta_box_nonce');
 
     $title = (string) get_post_meta($post->ID, 'kunaal_seo_title', true);
@@ -59,38 +59,6 @@ function kunaal_seo_render_meta_box(WP_Post $post): void {
         <button type="button" class="button" data-kunaal-seo-meta-img-pick>Select image</button>
         <button type="button" class="button" data-kunaal-seo-meta-img-clear <?php echo $img_id ? '' : 'hidden'; ?>">Clear</button>
     </p>
-    <script>
-      (function(){
-        const box = document.currentScript && document.currentScript.parentElement;
-        if (!box) return;
-        const idInput = box.querySelector('[data-kunaal-seo-meta-img-id]');
-        const preview = box.querySelector('[data-kunaal-seo-meta-img-preview]');
-        const pick = box.querySelector('[data-kunaal-seo-meta-img-pick]');
-        const clear = box.querySelector('[data-kunaal-seo-meta-img-clear]');
-        if (!idInput || !preview || !pick || !clear || !window.wp || !wp.media) return;
-
-        let frame;
-        pick.addEventListener('click', function(){
-          if (frame) { frame.open(); return; }
-          frame = wp.media({ title: 'Select image', button: { text: 'Use image' }, multiple: false });
-          frame.on('select', function(){
-            const attachment = frame.state().get('selection').first();
-            if (!attachment) return;
-            const data = attachment.toJSON();
-            idInput.value = String(data.id || '');
-            const thumb = (data.sizes && (data.sizes.thumbnail || data.sizes.medium)) ? (data.sizes.thumbnail || data.sizes.medium).url : data.url;
-            preview.innerHTML = thumb ? '<img src=\"' + thumb + '\" style=\"max-width:160px;height:auto;\" />' : '<em>Selected</em>';
-            clear.classList.remove('hidden');
-          });
-          frame.open();
-        });
-        clear.addEventListener('click', function(){
-          idInput.value = '';
-          preview.innerHTML = '<em>No image selected</em>';
-          clear.classList.add('hidden');
-        });
-      })();
-    </script>
     <?php
 }
 
