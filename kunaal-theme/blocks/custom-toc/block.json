@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "kunaal/custom-toc",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "title": "Custom Table of Contents",
     "category": "kunaal-editorial",
     "icon": "list-view",
@@ -13,6 +13,14 @@
         "title": {
             "type": "string",
             "default": "Contents"
+        },
+        "showEyebrow": {
+            "type": "boolean",
+            "default": true
+        },
+        "eyebrowText": {
+            "type": "string",
+            "default": "IN THIS ESSAY"
         },
         "items": {
             "type": "array",

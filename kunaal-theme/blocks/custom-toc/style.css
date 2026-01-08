@@ -68,9 +68,8 @@
     position: relative;
 }
 
-/* Small "IN THIS ESSAY" label above title */
-.customToc__title::before {
-    content: 'IN THIS ESSAY';
+/* Eyebrow label above title (editable via block attributes) */
+.customToc__eyebrow {
     display: block;
     font-family: var(--mono, 'SF Mono', monospace);
     font-size: 9px;
@@ -79,6 +78,14 @@
     letter-spacing: 0.12em;
     color: var(--warm, #7D6B5D);
     margin-bottom: 6px;
+}
+
+.customToc__titleText {
+    display: block;
+}
+
+.customToc__toggleIcon {
+    display: none; /* Only used on mobile */
 }
 
 /* =========================================
@@ -283,23 +290,29 @@
         cursor: pointer;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-end;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
     }
     
-    /* Expand/collapse icon */
-    .customToc__title::after {
+    .customToc__toggleIcon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin-left: 12px;
+        flex: 0 0 auto;
+    }
+    .customToc__toggleIcon::before {
         content: '+';
         font-family: var(--mono, 'SF Mono', monospace);
         font-size: 16px;
         font-weight: 400;
         color: var(--warm, #7D6B5D);
-        transition: transform 200ms ease;
+        line-height: 1;
     }
-    
-    /* Expanded state - change icon to minus */
-    .customToc.is-expanded .customToc__title::after {
+    .customToc.is-expanded .customToc__toggleIcon::before {
         content: '−';
     }
     
@@ -376,7 +389,7 @@
         font-size: 13px;
     }
     
-    .customToc__title::before {
+    .customToc__eyebrow {
         font-size: 8px;
     }
     
@@ -410,11 +423,11 @@
     border-bottom-color: var(--hair, rgba(255,255,255,0.1));
 }
 
-:root[data-theme="dark"] .customToc__title::before {
+:root[data-theme="dark"] .customToc__eyebrow {
     color: var(--k-color-dark-accent, #E8A87C);
 }
 
-:root[data-theme="dark"] .customToc__title::after {
+:root[data-theme="dark"] .customToc__toggleIcon::before {
     color: var(--k-color-dark-accent, #E8A87C);
 }
 

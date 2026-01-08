@@ -6,6 +6,8 @@
  */
 
 $title = isset($attributes['title']) ? $attributes['title'] : 'Contents';
+$show_eyebrow = isset($attributes['showEyebrow']) ? (bool) $attributes['showEyebrow'] : true;
+$eyebrow_text = isset($attributes['eyebrowText']) ? (string) $attributes['eyebrowText'] : 'IN THIS ESSAY';
 $items = isset($attributes['items']) ? $attributes['items'] : array();
 $sticky = isset($attributes['sticky']) ? $attributes['sticky'] : true;
 $highlight_active = isset($attributes['highlightActive']) ? $attributes['highlightActive'] : true;
@@ -42,7 +44,13 @@ if ($hide_mobile) {
 ?>
 <nav<?php echo $anchor; ?> class="<?php echo esc_attr($classes); ?>" <?php echo $data_attrs; ?>>
     <?php if ($title) : ?>
-        <h4 class="customToc__title"><?php echo esc_html($title); ?></h4>
+        <h4 class="customToc__title">
+            <?php if ($show_eyebrow && $eyebrow_text) : ?>
+                <span class="customToc__eyebrow"><?php echo esc_html($eyebrow_text); ?></span>
+            <?php endif; ?>
+            <span class="customToc__titleText"><?php echo esc_html($title); ?></span>
+            <span class="customToc__toggleIcon" aria-hidden="true"></span>
+        </h4>
     <?php endif; ?>
     
     <ul class="customToc__list">

@@ -476,8 +476,8 @@
       const scrollY = getScrollTop();
       // Very subtle parallax: 6% speed difference
       const parallax = scrollY * 0.06;
-      // Apply transform with initial scale to prevent gaps
-      heroImg.style.transform = 'translateY(' + parallax + 'px) scale(1.02)';
+      // Drive parallax via CSS variable so CSS owns the transform contract
+      heroImg.style.setProperty('--hero-parallax-y', parallax + 'px');
     }
     
     // Use capture scroll so this works even when <body> (not window) is the scroller

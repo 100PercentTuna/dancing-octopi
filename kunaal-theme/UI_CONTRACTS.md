@@ -94,6 +94,28 @@ All z-index values must follow this scale. Do not use values outside this scale 
 
 ---
 
+## Hero Image (Single Essays/Jottings)
+
+**Markup contract (canonical)**: `template-parts/components/hero-image.php`
+
+**CSS owner (canonical)**: `assets/css/pages.css`
+
+**JS owner (canonical)**: `assets/js/main.js` (hero parallax)
+
+**Behavior**:
+- Layout: hero aligns with the same left/right margins as `.articleHeader` and `.prose`
+- Parallax: image subtly translates vertically on scroll (progressive enhancement)
+- Blend: hero fades into the page background at the bottom via a pinned mask/gradient
+
+**Contract rules**:
+- The fade/blend must be owned by the **stable wrapper**, not the moving `<img>`:
+  - Wrapper: `.heroImage__media` owns `mask-image` / `-webkit-mask-image`
+  - Image: `.heroImage__img` owns `transform` only
+- JS must not overwrite the `transform` string; it sets `--hero-parallax-y` and CSS composes:
+  - `transform: translateY(var(--hero-parallax-y)) scale(1.02)`
+
+---
+
 ## Filter Controls
 
 **Canonical owner**: `assets/css/filters.css`
@@ -120,6 +142,21 @@ All z-index values must follow this scale. Do not use values outside this scale 
 
 **Scattered overrides**: Some component-specific dark mode rules remain in their owner files
 (e.g., `header.css` for nav colors). These should be consolidated over time.
+
+---
+
+## Custom TOC Eyebrow (Custom Table of Contents Block)
+
+**Canonical owner**:
+- Markup/attributes: `blocks/custom-toc/render.php`, `blocks/custom-toc/block.json`
+- Styles: `blocks/custom-toc/style.css`
+
+**Behavior**:
+- Eyebrow label (e.g. “IN THIS ESSAY”) is editable per-essay via block attributes
+- Default: eyebrow shown with the default text, but it can be hidden or changed
+
+**Contract rules**:
+- The eyebrow text must not be hardcoded via CSS `content:`; it must come from block markup/attributes.
 
 ---
 

@@ -54,11 +54,17 @@ get_header();
         </div>
       </header>
 
-      <?php if (has_post_thumbnail()) : ?>
-        <figure class="heroImage reveal">
-          <?php the_post_thumbnail('essay-hero'); ?>
-        </figure>
-      <?php endif; ?>
+      <?php
+      get_template_part(
+          'template-parts/components/hero-image',
+          null,
+          array(
+              'post_id' => (int) get_the_ID(),
+              'size'    => 'essay-hero',
+              'reveal'  => true,
+          )
+      );
+      ?>
 
       <div class="articleContent">
         <div class="prose">

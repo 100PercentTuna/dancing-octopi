@@ -284,6 +284,69 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# CHECK 8: Custom TOC eyebrow must not be hardcoded via CSS content
+#
+# Eyebrow text must come from block attributes/markup, not from CSS `content:`.
+# -----------------------------------------------------------------------------
+
+echo ""
+echo "[8/8] Checking Custom TOC eyebrow is not hardcoded in CSS..."
+
+TOC_EYEBROW_DRIFT=$(grep -rn "content:[[:space:]]*['\"]IN THIS ESSAY['\"]" "$THEME_DIR/blocks/custom-toc" \
+    --include="*.css" \
+    || true)
+
+if [ -n "$TOC_EYEBROW_DRIFT" ]; then
+    echo "  ✗ FAIL: Custom TOC eyebrow is hardcoded in CSS (must be editable via block attributes):"
+    echo "$TOC_EYEBROW_DRIFT" | while read -r line; do
+        echo "    $line"
+    done
+    FAIL=1
+else
+    echo "  ✓ Custom TOC eyebrow is not hardcoded in CSS"
+fi
+
+# -----------------------------------------------------------------------------
+# CHECK 9: Hero parallax must be CSS-var driven and hero blend must be pinned
+# -----------------------------------------------------------------------------
+
+echo ""
+echo "[9/9] Checking hero parallax + blend contracts..."
+
+HERO_TRANSFORM_DRIFT=$(grep -n "heroImg\.style\.transform" "$THEME_DIR/assets/js/main.js" || true)
+if [ -n "$HERO_TRANSFORM_DRIFT" ]; then
+    echo "  ✗ FAIL: main.js overwrites hero image transform string (must set --hero-parallax-y):"
+    echo "$HERO_TRANSFORM_DRIFT" | while read -r line; do
+        echo "    $line"
+    done
+    FAIL=1
+else
+    echo "  ✓ main.js does not overwrite hero image transform string"
+fi
+
+HERO_VAR_JS=$(grep -n "--hero-parallax-y" "$THEME_DIR/assets/js/main.js" || true)
+HERO_VAR_CSS=$(grep -rn "--hero-parallax-y" "$THEME_DIR/assets/css/pages.css" || true)
+if [ -z "$HERO_VAR_JS" ] || [ -z "$HERO_VAR_CSS" ]; then
+    echo "  ✗ FAIL: --hero-parallax-y contract missing (must exist in JS and pages.css)"
+    FAIL=1
+else
+    echo "  ✓ --hero-parallax-y contract present in JS + CSS"
+fi
+
+HERO_MASK_ON_IMG=$(grep -rn "heroImage__img.*mask-image|mask-image.*heroImage__img" "$THEME_DIR/assets/css" \
+    --include="*.css" \
+    || true)
+if [ -n "$HERO_MASK_ON_IMG" ]; then
+    echo "  ✗ FAIL: Hero blend/mask attached to moving image (must be on .heroImage__media):"
+    echo "$HERO_MASK_ON_IMG" | while read -r line; do
+        echo "    $line"
+    done
+    FAIL=1
+else
+    echo "  ✓ Hero blend/mask is not attached to .heroImage__img"
+fi
+
+# -----------------------------------------------------------------------------
 # SUMMARY
 # -----------------------------------------------------------------------------
 

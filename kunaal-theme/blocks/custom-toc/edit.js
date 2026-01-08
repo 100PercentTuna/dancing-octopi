@@ -12,7 +12,7 @@
     registerBlockType('kunaal/custom-toc', {
         edit: function(props) {
             const { attributes, setAttributes } = props;
-            const { title, items, sticky, highlightActive, showNumbers } = attributes;
+            const { title, showEyebrow, eyebrowText, items, sticky, highlightActive, showNumbers } = attributes;
             
             const blockProps = useBlockProps({
                 className: 'customToc' + (sticky ? ' customToc--sticky' : '')
@@ -53,6 +53,18 @@
                     el(
                         PanelBody,
                         { title: __('TOC Settings', 'kunaal-theme'), initialOpen: true },
+                        el(ToggleControl, {
+                            label: __('Show Eyebrow Label', 'kunaal-theme'),
+                            help: __('Small label above the TOC title (e.g., “IN THIS ESSAY”)', 'kunaal-theme'),
+                            checked: showEyebrow,
+                            onChange: function(value) { setAttributes({ showEyebrow: value }); }
+                        }),
+                        showEyebrow && el(TextControl, {
+                            label: __('Eyebrow Text', 'kunaal-theme'),
+                            value: eyebrowText,
+                            onChange: function(value) { setAttributes({ eyebrowText: value }); },
+                            help: __('Text shown above the TOC title', 'kunaal-theme')
+                        }),
                         el(TextControl, {
                             label: __('Title', 'kunaal-theme'),
                             value: title,
@@ -80,7 +92,13 @@
                 el(
                     'nav',
                     blockProps,
-                    title && el('h4', { className: 'customToc__title' }, title),
+                    title && el(
+                        'h4',
+                        { className: 'customToc__title' },
+                        (showEyebrow && eyebrowText) ? el('span', { className: 'customToc__eyebrow' }, eyebrowText) : null,
+                        el('span', { className: 'customToc__titleText' }, title),
+                        el('span', { className: 'customToc__toggleIcon', 'aria-hidden': 'true' })
+                    ),
                     el(
                         'div',
                         { className: 'customToc__items' },
