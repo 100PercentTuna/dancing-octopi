@@ -50,15 +50,13 @@ function kunaal_seo_robots_txt(string $output, bool $public): string {
         return $output;
     }
 
+    $out = $output;
+
     // If the site is set to discourage search engines, don't advertise sitemaps.
-    if (!$public) {
-        return $output;
+    if ($public && stripos($out, 'sitemap:') === false) {
+        $out = rtrim($out) . "\nSitemap: " . home_url('/sitemap.xml') . "\n";
     }
 
-    if (stripos($output, 'sitemap:') !== false) {
-        return $output;
-    }
-
-    return rtrim($output) . "\nSitemap: " . home_url('/sitemap.xml') . "\n";
+    return $out;
 }
 add_filter('robots_txt', 'kunaal_seo_robots_txt', 10, 2);
