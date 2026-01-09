@@ -4,14 +4,48 @@
   <meta charset="<?php bloginfo('charset'); ?>" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <?php
-  // Custom favicon
-  $favicon = kunaal_mod('kunaal_favicon', '');
-  if ($favicon) {
-      ?>
-    <link rel="icon" type="image/png" href="<?php echo esc_url($favicon); ?>">
-    <link rel="apple-touch-icon" href="<?php echo esc_url($favicon); ?>">
-      <?php
+  // Favicon implementation for Google Search (meets Google's requirements)
+  // Priority: WordPress Site Icon (preferred by Google) → Custom favicon → /favicon.ico fallback
+  // Google requirements: minimum 48x48px, multiple sizes recommended, stable URL
+  
+  $has_site_icon = false;
+  if (function_exists('get_site_icon_url')) {
+      $test_icon = get_site_icon_url(32);
+      $has_site_icon = !empty($test_icon);
   }
+  
+  if ($has_site_icon) {
+      // WordPress Site Icon is set (preferred by Google)
+      // WordPress automatically generates multiple sizes, so we output all available sizes
+      $sizes = array(32, 180, 192, 270, 512);
+      foreach ($sizes as $size) {
+          $icon_url = get_site_icon_url($size);
+          if ($icon_url) {
+              if ($size === 180) {
+                  // Apple touch icon
+                  echo '<link rel="apple-touch-icon" sizes="' . esc_attr($size . 'x' . $size) . '" href="' . esc_url($icon_url) . '">' . "\n";
+              } else {
+                  // Standard favicon with sizes attribute (Google requirement)
+                  echo '<link rel="icon" type="image/png" sizes="' . esc_attr($size . 'x' . $size) . '" href="' . esc_url($icon_url) . '">' . "\n";
+              }
+          }
+      }
+  } else {
+      // Fallback to custom favicon from Customizer
+      $custom_favicon = kunaal_mod('kunaal_favicon', '');
+      if (!empty($custom_favicon)) {
+          // Output multiple sizes for better compatibility (Google recommends 48x48 minimum)
+          // Use the same image for all sizes (browsers will scale appropriately)
+          echo '<link rel="icon" type="image/png" sizes="32x32" href="' . esc_url($custom_favicon) . '">' . "\n";
+          echo '<link rel="icon" type="image/png" sizes="48x48" href="' . esc_url($custom_favicon) . '">' . "\n";
+          echo '<link rel="icon" type="image/png" sizes="192x192" href="' . esc_url($custom_favicon) . '">' . "\n";
+          echo '<link rel="apple-touch-icon" sizes="180x180" href="' . esc_url($custom_favicon) . '">' . "\n";
+      }
+  }
+  
+  // Fallback: /favicon.ico (Google checks this as a last resort)
+  // Note: WordPress doesn't automatically create this file, but the link tag helps
+  echo '<link rel="icon" href="' . esc_url(home_url('/favicon.ico')) . '" type="image/x-icon">' . "\n";
   ?>
   <?php
   // Theme preference script (prevents flash) - inline for critical path to avoid FOUC
