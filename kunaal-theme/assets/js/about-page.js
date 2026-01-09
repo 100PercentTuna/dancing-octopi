@@ -1082,7 +1082,8 @@
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             if (isDark) {
               // In dark mode, use bright orange beacon color from CSS token
-              const beaconColor = styles.getPropertyValue('--k-color-beacon')?.trim() || '#FF8C42';
+              // Use a vibrant orange that stands out clearly on dark backgrounds
+              const beaconColor = styles.getPropertyValue('--k-color-beacon')?.trim() || '#FF7A3D';
               return beaconColor;
             } else {
               // Light mode: use --blue CSS variable
