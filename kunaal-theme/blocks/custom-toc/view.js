@@ -137,30 +137,98 @@
                     title.setAttribute('aria-expanded', 'false');
                     title.setAttribute('tabindex', '0');
                     
-                    if (!title._toggleHandler) {
-                        title._toggleHandler = function(e) {
-                            e.preventDefault();
-                            var isExpanded = toc.classList.contains('is-expanded');
-                            if (isExpanded) {
-                                toc.classList.remove('is-expanded');
-                                title.setAttribute('aria-expanded', 'false');
-                            } else {
-                                toc.classList.add('is-expanded');
-                                title.setAttribute('aria-expanded', 'true');
-                            }
-                        };
-                        title.addEventListener('click', title._toggleHandler);
-                        title.addEventListener('keydown', function(e) {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                title._toggleHandler(e);
-                            }
-                        });
+                    // Track touch time for ghost click prevention (following nav toggle pattern)
+                    if (!title._lastTouchTime) {
+                        title._lastTouchTime = 0;
                     }
+                    
+                    // Toggle handler function
+                    var toggleHandler = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = toc.classList.contains('is-expanded');
+                        if (isExpanded) {
+                            toc.classList.remove('is-expanded');
+                            title.setAttribute('aria-expanded', 'false');
+                        } else {
+                            toc.classList.add('is-expanded');
+                            title.setAttribute('aria-expanded', 'true');
+                        }
+                    };
+                    
+                    // Remove existing handlers if they exist (idempotent)
+                    if (title._toggleClickHandler) {
+                        title.removeEventListener('click', title._toggleClickHandler);
+                    }
+                    if (title._toggleTouchStartHandler) {
+                        title.removeEventListener('touchstart', title._toggleTouchStartHandler);
+                    }
+                    if (title._toggleTouchEndHandler) {
+                        title.removeEventListener('touchend', title._toggleTouchEndHandler);
+                    }
+                    if (title._toggleKeydownHandler) {
+                        title.removeEventListener('keydown', title._toggleKeydownHandler);
+                    }
+                    
+                    // Touch start: record touch time
+                    title._toggleTouchStartHandler = function(e) {
+                        title._lastTouchTime = Date.now();
+                    };
+                    
+                    // Touch end: handle toggle
+                    title._toggleTouchEndHandler = function(e) {
+                        e.preventDefault();
+                        toggleHandler(e);
+                    };
+                    
+                    // Click: handle toggle with ghost click prevention
+                    title._toggleClickHandler = function(e) {
+                        // Ghost click prevention: skip if this click came right after a touch
+                        // iOS fires touchend, then click ~300ms later
+                        if (Date.now() - title._lastTouchTime < 500) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return; // Skip - already handled by touchend
+                        }
+                        toggleHandler(e);
+                    };
+                    
+                    // Keyboard: handle Enter and Space
+                    title._toggleKeydownHandler = function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            toggleHandler(e);
+                        }
+                    };
+                    
+                    // Attach all handlers
+                    title.addEventListener('touchstart', title._toggleTouchStartHandler, { passive: true });
+                    title.addEventListener('touchend', title._toggleTouchEndHandler);
+                    title.addEventListener('click', title._toggleClickHandler);
+                    title.addEventListener('keydown', title._toggleKeydownHandler);
                 } else {
                     toc.classList.remove('is-expanded');
                     title.removeAttribute('role');
                     title.removeAttribute('aria-expanded');
                     title.removeAttribute('tabindex');
+                    
+                    // Remove handlers when not mobile
+                    if (title._toggleClickHandler) {
+                        title.removeEventListener('click', title._toggleClickHandler);
+                        title._toggleClickHandler = null;
+                    }
+                    if (title._toggleTouchStartHandler) {
+                        title.removeEventListener('touchstart', title._toggleTouchStartHandler);
+                        title._toggleTouchStartHandler = null;
+                    }
+                    if (title._toggleTouchEndHandler) {
+                        title.removeEventListener('touchend', title._toggleTouchEndHandler);
+                        title._toggleTouchEndHandler = null;
+                    }
+                    if (title._toggleKeydownHandler) {
+                        title.removeEventListener('keydown', title._toggleKeydownHandler);
+                        title._toggleKeydownHandler = null;
+                    }
                 }
             }
             
@@ -205,47 +273,23 @@
                     // Provide additional breathing room so target text isn't tucked under the mast.
                     // (Users reported first line still clipping under mast on some viewports.)
                     var offset = mastHeight + 96;
-                    var scroller = getScroller();
                     
-                    // Get target position
-                    var targetRect = target.getBoundingClientRect();
-                    var scrollTop = (scroller && typeof scroller.scrollTop === 'number')
-                        ? scroller.scrollTop
-                        : (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
-                    var targetPosition = Math.max(0, scrollTop + targetRect.top - offset);
+                    // Reliable scroll method: Use scrollIntoView first, then adjust for masthead offset
+                    // This works consistently across all browsers and scroll containers
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     
-                    // iOS Safari scroll fix: Use multiple methods
-                    // Method 1: Direct scrollTo on the actual scroller
-                    try {
-                        if (scroller && scroller !== window && typeof scroller.scrollTo === 'function') {
-                            scroller.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                        } else {
-                            window.scrollTo({ top: targetPosition, left: 0, behavior: 'smooth' });
-                        }
-                    } catch (err) {
-                        // Method 2: Fallback for older browsers
-                        if (scroller && scroller !== window && typeof scroller.scrollTop === 'number') {
-                            scroller.scrollTop = targetPosition;
-                        } else {
-                            window.scrollTo(0, targetPosition);
-                        }
-                    }
-                    
-                    // Method 3: Also try scrolling documentElement and body (iOS Safari quirk)
-                    // Some iOS versions scroll body, others scroll documentElement
-                    setTimeout(function() {
-                        var currentScroll = (scroller && typeof scroller.scrollTop === 'number')
-                            ? scroller.scrollTop
-                            : (window.pageYOffset || document.documentElement.scrollTop || 0);
-                        // If scroll didn't happen, try alternative methods
-                        if (Math.abs(currentScroll - targetPosition) > 100) {
-                            if (scroller && scroller !== window && typeof scroller.scrollTop === 'number') {
-                                scroller.scrollTop = targetPosition;
-                            }
-                            document.documentElement.scrollTop = targetPosition;
-                            document.body.scrollTop = targetPosition;
-                        }
-                    }, 100);
+                    // After scrollIntoView, adjust for masthead offset
+                    // Use requestAnimationFrame to ensure scrollIntoView has started
+                    requestAnimationFrame(function() {
+                        requestAnimationFrame(function() {
+                            var currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                            var targetRect = target.getBoundingClientRect();
+                            var targetPosition = Math.max(0, currentScroll + targetRect.top - offset);
+                            
+                            // Apply the offset adjustment
+                            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                        });
+                    });
 
                     // Update URL hash
                     if (history.pushState) {

@@ -82,6 +82,7 @@
 
 .customToc__titleText {
     display: block;
+    flex: 1; /* Allow title text to take available space on mobile */
 }
 
 .customToc__toggleIcon {
@@ -283,25 +284,44 @@
     }
     
     /* Title becomes the toggle button */
+    /* Use CSS Grid to properly align eyebrow (top row, full width) and title+icon (second row, side by side) */
     .customToc__title {
         margin-bottom: 0;
         padding-bottom: 0;
         border-bottom: none;
         cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        align-items: start;
+        gap: 6px 12px;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
+        min-height: 44px; /* Accessibility: minimum touch target size */
     }
     
+    /* Eyebrow spans full width on top row */
+    .customToc__eyebrow {
+        grid-column: 1 / -1;
+        display: block;
+        width: 100%;
+    }
+    
+    /* Title text in first column, second row */
+    .customToc__titleText {
+        grid-column: 1;
+        font-size: 14px; /* Explicit size for mobile */
+        display: block;
+    }
+    
+    /* Toggle icon in second column, second row */
     .customToc__toggleIcon {
+        grid-column: 2;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         width: 24px;
         height: 24px;
-        margin-left: 12px;
         flex: 0 0 auto;
     }
     .customToc__toggleIcon::before {
