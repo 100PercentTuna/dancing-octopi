@@ -1079,17 +1079,11 @@
           // Get beacon color from CSS variables (respects dark mode)
           function getBeaconColor() {
             const styles = window.getComputedStyle(document.documentElement);
-            // Use --blue for light mode, or read a dark mode variant if available
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             if (isDark) {
-              // In dark mode, use orange (inverse of blue) - check if CSS variable exists
-              const darkBeacon = styles.getPropertyValue('--blue-dark-beacon')?.trim();
-              if (darkBeacon) {
-                return darkBeacon;
-              }
-              // Fallback: use CSS variable for orange if defined, otherwise use computed --blue and invert
-              const orange = styles.getPropertyValue('--orange')?.trim() || '#FF6B35';
-              return orange;
+              // In dark mode, use bright orange beacon color from CSS token
+              const beaconColor = styles.getPropertyValue('--k-color-beacon')?.trim() || '#FF8C42';
+              return beaconColor;
             } else {
               // Light mode: use --blue CSS variable
               return styles.getPropertyValue('--blue')?.trim() || '#1E5AFF';

@@ -1685,7 +1685,12 @@ a:focus-visible, button:focus-visible {
 }
 
 :root[data-theme="dark"] .kunaal-about-page .current-marker {
-  fill: var(--blue);
+  fill: var(--k-color-beacon, #FF8C42);
+}
+
+:root[data-theme="dark"] .kunaal-about-page .current-pulse {
+  stroke: var(--k-color-beacon, #FF8C42);
+  transition: stroke 300ms ease;
 }
 
 :root[data-theme="dark"] .kunaal-about-page .current-pulse {
