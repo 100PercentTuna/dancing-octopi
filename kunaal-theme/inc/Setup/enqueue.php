@@ -14,6 +14,23 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Get AJAX URL with forced HTTPS if site is HTTPS
+ * Prevents mixed content errors on mobile browsers and reverse proxies
+ *
+ * @return string AJAX URL with correct protocol
+ */
+function kunaal_get_ajax_url(): string {
+    $url = admin_url('admin-ajax.php');
+    // Force HTTPS if site is HTTPS (handles reverse proxies like Cloudflare)
+    if (is_ssl() || 
+        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+        (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
+        $url = str_replace('http://', 'https://', $url);
+    }
+    return $url;
+}
+
+/**
  * Enqueue Google Fonts
  */
 function kunaal_enqueue_google_fonts(): void {
@@ -304,7 +321,7 @@ function kunaal_enqueue_page_specific_assets(): void {
         wp_localize_script('kunaal-about-page', 'kunaalAbout', array(
             'places' => $places,
             'debug' => defined('WP_DEBUG') && WP_DEBUG, // Gate debug logging behind WP_DEBUG
-            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'ajaxUrl' => kunaal_get_ajax_url(),
             'nonce' => wp_create_nonce('kunaal_debug_log_nonce'),
         ));
     }
@@ -372,7 +389,7 @@ function kunaal_enqueue_assets(): void {
     // Localize script with data
     // Always localize to ensure kunaalTheme is available on all pages
     wp_localize_script('kunaal-theme-main', 'kunaalTheme', array(
-        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'ajaxUrl' => kunaal_get_ajax_url(),
         'nonce' => wp_create_nonce('kunaal_theme_nonce'),
         'pdfNonce' => wp_create_nonce('kunaal_pdf_nonce'),
         'homeUrl' => home_url('/'),
@@ -392,7 +409,7 @@ function kunaal_enqueue_assets(): void {
     // even if main.js loads late or fails
     if (is_page_template('page-contact.php') || (is_page() && get_page_template_slug() === 'page-contact.php')) {
         wp_add_inline_script('kunaal-theme-main',
-            'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(admin_url('admin-ajax.php')) . '" }; }',
+            'if (typeof kunaalTheme === "undefined") { window.kunaalTheme = { ajaxUrl: "' . esc_js(kunaal_get_ajax_url()) . '" }; }',
             'before'
         );
     }

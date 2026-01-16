@@ -1199,10 +1199,21 @@
           downloadButton.style.transform = `translateY(${shiftAmount}px)`;
           downloadButton.style.transition = 'transform 300ms cubic-bezier(0.34,1.56,0.64,1)';
         }
+        
+        // ALSO shift the subscribe panel itself to prevent overlap
+        if (subscribePanel) {
+          // Preserve the translateX(0) from .open class, add translateY
+          subscribePanel.style.transform = `translateX(0) translateY(${shiftAmount}px)`;
+          subscribePanel.style.transition = 'opacity 250ms ease, transform 250ms cubic-bezier(0.34,1.56,0.64,1)';
+        }
       } else {
         // Reset positions
         if (subscribeToggle) subscribeToggle.style.transform = '';
         if (downloadButton) downloadButton.style.transform = '';
+        // Reset subscribe panel transform (let CSS handle the translateX for .open state)
+        if (subscribePanel) {
+          subscribePanel.style.transform = '';
+        }
       }
     }
 
