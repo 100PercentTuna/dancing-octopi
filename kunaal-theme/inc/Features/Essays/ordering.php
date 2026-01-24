@@ -51,11 +51,23 @@ function kunaal_apply_essay_order(array $args, string $order_mode = 'default'): 
 
         case 'popular':
             // Popular: order by pageviews meta (DESC), fallback to date for ties
-            $args['meta_key'] = 'kunaal_pageviews';
+            // Use meta_query with EXISTS to include posts with 0 or missing pageviews
+            $args['meta_query'] = array(
+                'relation' => 'OR',
+                array(
+                    'key' => 'kunaal_pageviews',
+                    'compare' => 'EXISTS',
+                ),
+                array(
+                    'key' => 'kunaal_pageviews',
+                    'compare' => 'NOT EXISTS',
+                ),
+            );
             $args['orderby'] = array(
                 'meta_value_num' => 'DESC',
                 'date' => 'DESC',
             );
+            $args['meta_key'] = 'kunaal_pageviews';
             break;
 
         case 'title':

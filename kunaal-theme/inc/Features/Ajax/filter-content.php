@@ -75,11 +75,25 @@ function kunaal_build_filter_query_args(string $post_type, array $topics, string
             $args['order'] = 'ASC';
             break;
         case 'popular':
-            $args['meta_key'] = 'kunaal_pageviews';
+            // Popular: order by pageviews meta (DESC), fallback to date for ties
+            // Include posts with or without pageviews meta (treat missing as 0)
+            $args['meta_query'] = array(
+                'relation' => 'OR',
+                array(
+                    'key' => 'kunaal_pageviews',
+                    'compare' => 'EXISTS',
+                ),
+                array(
+                    'key' => 'kunaal_pageviews',
+                    'compare' => 'NOT EXISTS',
+                ),
+            );
+            // Use meta_value_num for ordering (posts without meta will be treated as 0)
             $args['orderby'] = array(
                 'meta_value_num' => 'DESC',
                 'date' => 'DESC',
             );
+            $args['meta_key'] = 'kunaal_pageviews';
             break;
         case 'title':
             $args['orderby'] = 'title';
@@ -182,6 +196,16 @@ function kunaal_filter_content(): void {
         $args = kunaal_build_filter_query_args($post_type, $topics, $sort, $search, $page, $per_page);
         $query = new WP_Query($args);
         $posts_data = array();
+        
+        // If popular sort returns no results (all pageviews are 0 or missing), fall back to date
+        if ($sort === 'popular' && !$query->have_posts() && $query->found_posts === 0) {
+            // Retry with date ordering as fallback
+            $args['meta_query'] = array();
+            unset($args['meta_key']);
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+            $query = new WP_Query($args);
+        }
         
         if ($query->have_posts()) {
             $post_ids = wp_list_pluck($query->posts, 'ID');

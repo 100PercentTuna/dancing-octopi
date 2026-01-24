@@ -210,6 +210,18 @@
   font-size: 12px;
   font-weight: 400;
   color: var(--muted);
+  background: var(--bg);
+}
+
+/* Dark mode: ensure dropdown options are visible with proper contrast */
+:root[data-theme="dark"] .modernSelect {
+  background-color: var(--bg);
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .modernSelect option {
+  background-color: var(--bg);
+  color: var(--ink);
 }
 
 /* Search input */
