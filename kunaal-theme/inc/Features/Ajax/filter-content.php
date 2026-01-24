@@ -74,6 +74,13 @@ function kunaal_build_filter_query_args(string $post_type, array $topics, string
             $args['orderby'] = 'date';
             $args['order'] = 'ASC';
             break;
+        case 'popular':
+            $args['meta_key'] = 'kunaal_pageviews';
+            $args['orderby'] = array(
+                'meta_value_num' => 'DESC',
+                'date' => 'DESC',
+            );
+            break;
         case 'title':
             $args['orderby'] = 'title';
             $args['order'] = 'ASC';

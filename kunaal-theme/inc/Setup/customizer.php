@@ -28,6 +28,7 @@ function kunaal_customize_register(WP_Customize_Manager $wp_customize): void {
     kunaal_customize_register_contact_page_section($wp_customize);
     kunaal_customize_register_email_delivery_section($wp_customize);
     kunaal_customize_register_contact_social_links($wp_customize);
+    kunaal_customize_register_essay_ordering_section($wp_customize);
 }
 add_action('customize_register', 'kunaal_customize_register');
 

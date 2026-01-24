@@ -64,6 +64,7 @@ if (!empty($class)) {
       <select class="modernSelect" data-role="sort" aria-label="<?php esc_attr_e('Sort by', 'kunaal-theme'); ?>">
         <option value="new"><?php esc_html_e('newest first', 'kunaal-theme'); ?></option>
         <option value="old"><?php esc_html_e('oldest first', 'kunaal-theme'); ?></option>
+        <option value="popular"><?php esc_html_e('most popular', 'kunaal-theme'); ?></option>
         <option value="title"><?php esc_html_e('alphabetical', 'kunaal-theme'); ?></option>
       </select>
       

@@ -193,4 +193,34 @@ if (kunaal_mod('kunaal_subscribe_enabled', false) && in_array($sub_location, arr
   <?php endwhile; ?>
 </main>
 
+<?php
+// Track pageview for logged-out visitors only
+if (!is_user_logged_in()) {
+    $post_id = get_the_ID();
+    $ajax_url = admin_url('admin-ajax.php');
+    $nonce = wp_create_nonce('kunaal_theme_nonce');
+    ?>
+    <script>
+    (function() {
+        // Non-blocking pageview tracking
+        if (typeof fetch !== 'undefined') {
+            var formData = new FormData();
+            formData.append('action', 'kunaal_track_pageview');
+            formData.append('post_id', <?php echo (int) $post_id; ?>);
+            formData.append('nonce', '<?php echo esc_js($nonce); ?>');
+            
+            fetch('<?php echo esc_url($ajax_url); ?>', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            }).catch(function() {
+                // Silently fail - tracking is non-critical
+            });
+        }
+    })();
+    </script>
+    <?php
+}
+?>
+
 <?php get_footer(); ?>

@@ -344,6 +344,16 @@ function kunaal_register_meta_fields(): void {
         },
     ));
 
+    register_post_meta('essay', 'kunaal_pageviews', array(
+        'show_in_rest' => false,
+        'single' => true,
+        'type' => 'integer',
+        'sanitize_callback' => 'absint',
+        'auth_callback' => function() {
+            return current_user_can('edit_posts');
+        },
+    ));
+
     register_post_meta('essay', 'kunaal_subtitle', array(
         'show_in_rest' => true,
         'single' => true,

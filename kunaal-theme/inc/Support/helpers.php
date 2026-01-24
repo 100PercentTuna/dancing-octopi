@@ -213,6 +213,8 @@ function kunaal_mod(string $key, mixed $default = ''): mixed {
  * Some managed hosts/plugins hook query filters differently on the front page.
  * We do a normal query first, and if it returns empty, we retry with
  * suppress_filters to bypass third-party query mutations.
+ * 
+ * Respects default essay order setting when querying essays.
  *
  * @param string $post_type Post type to query
  * @param int    $limit     Number of posts to retrieve
@@ -230,6 +232,11 @@ function kunaal_home_query(string $post_type, int $limit = 6): WP_Query {
         'update_post_meta_cache' => true,
         'update_post_term_cache' => true,
     );
+
+    // Apply default order for essays
+    if ($post_type === 'essay' && function_exists('kunaal_apply_essay_order')) {
+        $base = kunaal_apply_essay_order($base, 'default');
+    }
 
     $q = new WP_Query($base);
     if ($q->have_posts()) {

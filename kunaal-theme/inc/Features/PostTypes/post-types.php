@@ -35,7 +35,7 @@ function kunaal_register_post_types(): void {
         'public' => true,
         'has_archive' => true,
         'rewrite' => array('slug' => 'essays', 'with_front' => false),
-        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'custom-fields'),
+        'supports' => array('title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'custom-fields', 'page-attributes'),
         'menu_icon' => 'dashicons-media-document',
         'show_in_rest' => true,
         'template' => array(

@@ -989,6 +989,43 @@ function kunaal_get_social_icon(string $platform): string {
     return $icons[$platform] ?? '';
 }
 
+/**
+ * Register Essay Ordering section and controls
+ * 
+ * Allows site owner to set default order for essays (manual, popularity, date, title).
+ * Visitors can still override via the filter dropdown.
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance
+ */
+function kunaal_customize_register_essay_ordering_section(WP_Customize_Manager $wp_customize): void {
+    $wp_customize->add_section('kunaal_essay_ordering', array(
+        'title' => 'Essay Ordering',
+        'priority' => 35,
+        'description' => 'Set the default order for essays on archive and home pages. Visitors can still choose their own sort option via the filter dropdown.',
+    ));
+
+    $wp_customize->add_setting('kunaal_essay_default_order', array(
+        'default' => 'date',
+        'sanitize_callback' => function($value) {
+            $allowed = array('manual', 'popular', 'date', 'title');
+            return in_array($value, $allowed, true) ? $value : 'date';
+        },
+    ));
+
+    $wp_customize->add_control('kunaal_essay_default_order', array(
+        'label' => 'Default Order',
+        'description' => 'How essays are ordered by default (visitors can override via filter)',
+        'section' => 'kunaal_essay_ordering',
+        'type' => 'select',
+        'choices' => array(
+            'date' => 'Date (newest first)',
+            'popular' => 'Popularity (most views)',
+            'manual' => 'Manual (drag-and-drop in admin)',
+            'title' => 'Title (alphabetical)',
+        ),
+    ));
+}
+
 
 
 

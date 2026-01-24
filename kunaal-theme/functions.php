@@ -64,6 +64,11 @@ require_once KUNAAL_THEME_DIR . '/inc/Features/PostTypes/post-types.php';
 // Meta boxes and meta field registration
 require_once KUNAAL_THEME_DIR . '/inc/meta/meta-boxes.php';
 
+// Essay features (pageview tracking, ordering, admin columns)
+require_once KUNAAL_THEME_DIR . '/inc/Features/Essays/pageview-tracking.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Essays/ordering.php';
+require_once KUNAAL_THEME_DIR . '/inc/Features/Essays/admin-columns.php';
+
 // Validation (essay/jotting publish validation)
 require_once KUNAAL_THEME_DIR . '/inc/Support/validation.php';
 
