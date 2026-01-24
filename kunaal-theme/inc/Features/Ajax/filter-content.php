@@ -76,24 +76,12 @@ function kunaal_build_filter_query_args(string $post_type, array $topics, string
             break;
         case 'popular':
             // Popular: order by pageviews meta (DESC), fallback to date for ties
-            // Include posts with or without pageviews meta (treat missing as 0)
-            $args['meta_query'] = array(
-                'relation' => 'OR',
-                array(
-                    'key' => 'kunaal_pageviews',
-                    'compare' => 'EXISTS',
-                ),
-                array(
-                    'key' => 'kunaal_pageviews',
-                    'compare' => 'NOT EXISTS',
-                ),
-            );
-            // Use meta_value_num for ordering (posts without meta will be treated as 0)
+            // Custom posts_orderby filter handles NULL/missing values as 0
+            $args['meta_key'] = 'kunaal_pageviews';
             $args['orderby'] = array(
                 'meta_value_num' => 'DESC',
                 'date' => 'DESC',
             );
-            $args['meta_key'] = 'kunaal_pageviews';
             break;
         case 'title':
             $args['orderby'] = 'title';

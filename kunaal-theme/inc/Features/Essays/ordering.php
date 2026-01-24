@@ -51,23 +51,13 @@ function kunaal_apply_essay_order(array $args, string $order_mode = 'default'): 
 
         case 'popular':
             // Popular: order by pageviews meta (DESC), fallback to date for ties
-            // Use meta_query with EXISTS to include posts with 0 or missing pageviews
-            $args['meta_query'] = array(
-                'relation' => 'OR',
-                array(
-                    'key' => 'kunaal_pageviews',
-                    'compare' => 'EXISTS',
-                ),
-                array(
-                    'key' => 'kunaal_pageviews',
-                    'compare' => 'NOT EXISTS',
-                ),
-            );
+            // Use LEFT JOIN via meta_key to include all posts (missing meta treated as 0)
+            // Custom posts_orderby filter handles NULL values properly
+            $args['meta_key'] = 'kunaal_pageviews';
             $args['orderby'] = array(
                 'meta_value_num' => 'DESC',
                 'date' => 'DESC',
             );
-            $args['meta_key'] = 'kunaal_pageviews';
             break;
 
         case 'title':
@@ -141,3 +131,43 @@ function kunaal_essay_manual_orderby(string $orderby, WP_Query $query): string {
     return $orderby;
 }
 add_filter('posts_orderby', 'kunaal_essay_manual_orderby', 10, 2);
+
+/**
+ * Custom orderby for popularity: handle NULL/missing pageviews as 0
+ * 
+ * Ensures posts without pageviews meta are included and treated as 0.
+ * Uses COALESCE to handle NULL values from LEFT JOIN.
+ */
+function kunaal_essay_popular_orderby(string $orderby, WP_Query $query): string {
+    // Only apply if this is a popularity order query
+    // Check if meta_key is kunaal_pageviews and orderby includes meta_value_num
+    $meta_key = $query->get('meta_key');
+    if ($meta_key !== 'kunaal_pageviews') {
+        return $orderby;
+    }
+    
+    $orderby_value = $query->get('orderby');
+    
+    // Check if ordering by meta_value_num (popular sort)
+    $is_meta_order = false;
+    if (is_array($orderby_value)) {
+        $is_meta_order = isset($orderby_value['meta_value_num']);
+    } elseif (is_string($orderby_value) && strpos($orderby_value, 'meta_value_num') !== false) {
+        $is_meta_order = true;
+    }
+    
+    if (!$is_meta_order) {
+        return $orderby;
+    }
+    
+    global $wpdb;
+    
+    // Custom SQL: Use COALESCE to treat NULL/missing meta as 0
+    // WordPress does LEFT JOIN when meta_key is set, so we can reference postmeta table
+    // Then sort by pageviews DESC, then date DESC
+    $orderby = "COALESCE({$wpdb->postmeta}.meta_value, '0') + 0 DESC, "
+             . "{$wpdb->posts}.post_date DESC";
+    
+    return $orderby;
+}
+add_filter('posts_orderby', 'kunaal_essay_popular_orderby', 10, 2);
