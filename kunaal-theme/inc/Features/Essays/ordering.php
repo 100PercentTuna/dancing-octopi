@@ -163,9 +163,9 @@ function kunaal_essay_popular_orderby(string $orderby, WP_Query $query): string 
     global $wpdb;
     
     // Custom SQL: Use COALESCE to treat NULL/missing meta as 0
-    // WordPress does LEFT JOIN when meta_key is set, so we can reference postmeta table
+    // WordPress uses 'mt1' as alias for first meta_key JOIN
     // Then sort by pageviews DESC, then date DESC
-    $orderby = "COALESCE({$wpdb->postmeta}.meta_value, '0') + 0 DESC, "
+    $orderby = "COALESCE(mt1.meta_value, '0') + 0 DESC, "
              . "{$wpdb->posts}.post_date DESC";
     
     return $orderby;
